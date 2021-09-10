@@ -1,16 +1,6 @@
 Attribute VB_Name = "mTests"
 Option Explicit
 
-Sub test()
-    'Arrange
-    Dim Result As cFluent
-    Set Result = New cFluent
-    'Act
-    Result.TestValue = 10
-    'Assert
-    Debug.Assert Result.Should.Be.EqualTo(10)
-End Sub
-
 Private Sub MetaTests()
     Dim fluent As cFluent
     Dim testFluent As cFluent
