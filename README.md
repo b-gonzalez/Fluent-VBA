@@ -41,9 +41,9 @@ For you to be able to use this, you need to use the IFluentOf interface for the 
         Set Result2 = New cFluent
         Result2.TestValue = True
 
-        Debug.Assert Result2.Should.Be.EqualTo(True)
-        Debug.Assert Result.Of(True).Should.Be.EqualTo(True)
-        Debug.Assert Result.Of(True).Should.Be.EqualTo(False)
+        Debug.Assert Result2.Should.Be.EqualTo(True) '//true
+        Debug.Assert Result.Of(True).Should.Be.EqualTo(True) '//true
+        Debug.Assert Result.Of(True).Should.Be.EqualTo(False) '//false
     End Sub
 
 # Notes
