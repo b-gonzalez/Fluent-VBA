@@ -29,7 +29,9 @@ Several other tests are implemented documenting the flexibility with which these
 
 # IFluentOf interface
 
-One new big change is the additional of the IFluentOf interface. This new interface allows you to enter the test value in the testing line itself. So this removes the need for you to assign the test value using the TestValue property. For you to be able to do this, you need to use the IFluentOf interface for the cFluent object instead of the IFluent interface. You can see an example of the difference between the two interfaces below:
+One new big change is the additional of the IFluentOf interface. This new interface allows you to enter the test value in the testing line itself. So this removes the need for you to assign the test value using the TestValue property. It also can read more naturally for certain types of tests. 
+
+For you to be able to use this, you need to use the IFluentOf interface for the cFluent object instead of the IFluent interface. You can see an example of the difference between the two interfaces below:
 
     Sub FluentOfExample()
         Dim Result As IFluentOf
