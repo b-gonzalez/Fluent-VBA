@@ -34,7 +34,7 @@ Several other tests are implemented documenting the flexibility with which these
 
 # IFluentOf interface
 
-One new big change is the additional of the IFluentOf interface. This new interface allows you to enter the test value in the testing line itself. Using this interface has several advantages: 
+One new big change is the addition of the IFluentOf interface. This new interface allows you to enter the test value in the testing line itself. Using this interface has several advantages: 
 
 1. It removes the need for you to assign the test value using the TestValue property.
 2. Writing the test value in the same line as the test can make debugging easier
