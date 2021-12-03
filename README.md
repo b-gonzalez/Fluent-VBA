@@ -20,6 +20,10 @@ You can have code that reads more naturally like so:
     
     Debug.Assert Result.Should.Be.EqualTo(5)
     
+# Testing notes
+
+Most of the tests utilize the IFluent interface. This is because the tests were written before I introduced the new IFluentOf interface (see notes on this interface below)
+    
 # Meta tests
 
 The fluent unit testing framework uses itself to test itself. These set of tests are contained in the mTests module in the MetaTest sub
