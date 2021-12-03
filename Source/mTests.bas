@@ -1,21 +1,21 @@
 Attribute VB_Name = "mTests"
 Option Explicit
 
-Sub FluentOf()
+Public Function MakeFluent() As cFluent
+    Set MakeFluent = New cFluent
+End Function
+
+Sub FluentOfExample()
     Dim Result As IFluentOf
     Dim Result2 As IFluent
-    Dim TestValue As Variant
+
     Set Result = New cFluent
-    Set Result2 = Result
-    
-    TestValue = Result.Of(True).Should.Be.EqualTo(True)
-    Result.Meta.PrintResults = True
-    Result2.Meta.PrintResults = True
+    Set Result2 = New cFluent
     Result2.TestValue = True
     
-    Debug.Assert Result.Of(True).Should.Be.EqualTo(True)
     Debug.Assert Result2.Should.Be.EqualTo(True)
-    Debug.Assert Result.Of(TestValue).Should.Be.EqualTo(False)
+    Debug.Assert Result.Of(True).Should.Be.EqualTo(True)
+    Debug.Assert Result.Of(True).Should.Be.EqualTo(False)
 End Sub
 
 Private Sub runTests()
