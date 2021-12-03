@@ -3,16 +3,21 @@ Fluent VBA is a fluent unit testing framework for VBA
 
 Fluent frameworks are intended to be read like natural language. So instead of having something like:
 
-    Dim result = returnsFive() ‘returns the number 5
+    Dim result as long
     Dim Assert as cUnitTester
+    
+    result = returnsFive() ‘returns the number 5
     Set Assert = New cUnitTester
+    
     Assert.Equal(Result,5)
  
 You can have code that reads more naturally like so:
 
     Dim Result as cFluent
     Set Result = new cFluent
+    
     Result.TestValue = ReturnsFive()
+    
     Debug.Assert Result.Should.Be.EqualTo(5)
     
 # Meta tests
