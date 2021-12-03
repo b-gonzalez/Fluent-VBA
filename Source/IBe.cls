@@ -9,11 +9,19 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Function GreaterThan(value As Variant) As Boolean
+Public Function GreaterThan(value As Double) As Boolean
 
 End Function
 
-Public Function LessThan(value As Variant) As Boolean
+Public Function GreaterThanOrEqualTo(value As Double) As Boolean
+
+End Function
+
+Public Function LessThan(value As Double) As Boolean
+
+End Function
+
+Public Function LessThanOrEqualTo(value As Double) As Boolean
 
 End Function
 
