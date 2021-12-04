@@ -76,6 +76,7 @@ End Sub
         Debug.Assert Value.Of(testResult).Should.Be.EqualTo(True)
         Debug.Assert Value.Of(testResult).ShouldNot.Be.EqualTo(False)
     End Sub
+    
     Private Sub documentationTests()
         Dim Fluent As IFluent
         Dim testFluent As IFluent
@@ -83,6 +84,8 @@ End Sub
         
         Set testFluent = New cFluent
         Set Fluent = New cFluent
+        
+        '---------Second set of test go here------------
         
         testFluent.TestValue = 10
         Fluent.TestValue = testFluent.Should.Be.EqualTo(10)
@@ -204,27 +207,7 @@ End Sub
         Debug.Assert Fluent.Should.Be.EqualTo(True)
         Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
         
-        '---------negative test go here------------
-        
-        testFluent.TestValue = True
-        Fluent.TestValue = testFluent.ShouldNot.Be.EqualTo(False) ''
-        Debug.Assert Fluent.Should.Be.EqualTo(True)
-        Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
-        
-        testFluent.TestValue = True
-        Fluent.TestValue = testFluent.ShouldNot.Be.EqualTo(True) ''
-        Debug.Assert Fluent.Should.Be.EqualTo(False)
-        Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
-    
-        testFluent.TestValue = False
-        Fluent.TestValue = testFluent.ShouldNot.Be.EqualTo(False) ''
-        Debug.Assert Fluent.Should.Be.EqualTo(False)
-        Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
-        
-        testFluent.TestValue = False
-        Fluent.TestValue = testFluent.ShouldNot.Be.EqualTo(True) ''
-        Debug.Assert Fluent.Should.Be.EqualTo(True)
-        Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+        '---------Second set of test go here------------
         
         testFluent.TestValue = 10
         Fluent.TestValue = testFluent.ShouldNot.Be.EqualTo(10) ''
