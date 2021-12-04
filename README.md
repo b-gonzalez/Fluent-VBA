@@ -16,7 +16,7 @@ Fluent frameworks are intended to be read like natural language. So instead of h
 You can have code that reads more naturally like so:
 
     Sub FluentUnitTestExample
-        Dim Result as cFluent
+        Dim Result as IFluent
 
         Set Result = new cFluent
         Result.TestValue = ReturnsFive()
