@@ -23,10 +23,20 @@ You can have code that reads more naturally like so:
 
         Debug.Assert Result.Should.Be.EqualTo(5)
     End Sub
-    
+
+Or, arguably, even more naturally using the IFluentOf interface:
+
+    Sub FluentUnitTestExample2
+        Dim Result as IFluentOf
+
+        Set Result = new cFluent
+
+        Debug.Assert Result.Of(ReturnsFive).Should.Be.EqualTo(5)
+    End Sub
+
 # Testing notes
 
-Most of the tests utilize the IFluent interface. This is because the tests were written before I introduced the new IFluentOf interface (see notes on this interface below)
+Most of the tests utilize the IFluent interface. This is because the tests were written before I introduced the new IFluentOf interface (see notes on this interface below). The Meta tests (see below) do include an additional procedure using the IFluentOf interface.
     
 # Meta tests
 
