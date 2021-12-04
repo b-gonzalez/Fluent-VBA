@@ -30,7 +30,7 @@ Most of the tests utilize the IFluent interface. This is because the tests were 
     
 # Meta tests
 
-The fluent unit testing framework uses itself to test itself. These set of tests are contained in the mTests module in the MetaTests sub
+The fluent unit testing framework uses itself to test itself. These set of tests are contained in the mTests module in the MetaTests sub. You can also find a link to the MetaTests [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Meta-Tests)
 
 # Documentation tests
 
