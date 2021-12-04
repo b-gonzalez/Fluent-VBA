@@ -349,7 +349,7 @@ End Sub
     End Sub
     
     Private Sub Example1()
-        Dim Result As cFluent
+        Dim Result As IFluent
         Set Result = New cFluent
         Result.TestValue = 10
            
@@ -379,7 +379,7 @@ End Sub
     
     Private Sub Example2()
         Dim testNums As Long
-        Dim Result() As cFluent
+        Dim Result() As IFluent
         Dim TestNames() As String
         Dim i As Long
         Dim testResults() As Boolean
@@ -437,7 +437,7 @@ End Sub
     
     Private Sub Example3()
         Dim testNums As Long
-        Dim Result() As cFluent
+        Dim Result() As IFluent
         Dim TestNames() As String
         Dim i As Long
         Dim testResults() As Boolean
@@ -501,7 +501,7 @@ End Sub
     
     Private Sub Example4()
         Dim testNums As Long
-        Dim Result As cFluent
+        Dim Result As IFluent
         Dim TestNames() As String
         Dim i As Long
         'Dim testResults(4) As Boolean
@@ -565,7 +565,7 @@ End Sub
     
     Private Sub Example5()
         Dim testNums As Long
-        Dim Result As cFluent
+        Dim Result As IFluent
         Dim TestNames() As String
         Dim i As Long
         'Dim testResults(4) As Boolean
