@@ -30,15 +30,15 @@ Most of the tests utilize the IFluent interface. This is because the tests were 
     
 # Meta tests
 
-The fluent unit testing framework uses itself to test itself. These set of tests are contained in the mTests module in the MetaTests sub. You can also find a link to the MetaTests [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Meta-Tests).
+The fluent unit testing framework uses itself to test itself. These set of tests are contained in the mTests module in the MetaTests sub. You can also find a link to the meta tests [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Meta-Tests).
 
 # Documentation tests
 
-The mTests module has a DocumentationTests sub that contains several dozen tests. These tests document the various objects and methods in the API by using them in the tests. You can also find a link to the DocumentationTests [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Documentation-Tests).
+The mTests module has a DocumentationTests sub that contains several dozen tests. These tests document the various objects and methods in the API by using them in the tests. You can also find a link to the documentation tests [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Documentation-Tests).
 
 # Additional tests
 
-Several other tests are implemented documenting the flexibility with which these unit tests can be created. These tests can be found in the mTests module.
+Several other tests are implemented documenting the flexibility with which these unit tests can be created. These tests can be found in the mTests module. You can also find a link to the additional tests [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Additional-tests).
 
 # IFluentOf interface
 
