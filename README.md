@@ -23,10 +23,20 @@ You can have code that reads more naturally like so:
 
         Debug.Assert Result.Should.Be.EqualTo(5)
     End Sub
-    
+
+Or, arguably, even more naturally using the IFluentOf interface:
+
+    Sub FluentUnitTestExample2
+        Dim Result as IFluentOf
+
+        Set Result = new cFluent
+
+        Debug.Assert Result.Of(ReturnsFive).Should.Be.EqualTo(5)
+    End Sub
+
 # Testing notes
 
-Most of the tests utilize the IFluent interface. This is because the tests were written before I introduced the new IFluentOf interface (see notes on this interface below)
+Most of the tests utilize the IFluent interface. This is because the tests were written before I introduced the new IFluentOf interface (see notes on this interface below). The Meta tests (see below) do include an additional procedure using the IFluentOf interface.
     
 # Meta tests
 
@@ -42,26 +52,11 @@ Several other tests are implemented documenting the flexibility with which these
 
 # IFluentOf interface
 
-One new big change is the addition of the IFluentOf interface. This new interface allows you to enter the test value in the testing line itself. Using this interface has several advantages: 
+One new big change is the addition of the IFluentOf interface. This new interface allows you to enter the test value in the testing line itself. You can read more about using the IFluentOf interface [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/IFluentOf-interface)
 
-1. It removes the need for you to assign the test value using the TestValue property.
-2. Writing the test value in the same line as the test can make debugging easier
-3. Writing the test value in the test this way can also can read more naturally for certain types of tests.
+# Using Fluent VBA in an external project
 
-For you to be able to use this, you need to use the IFluentOf interface for the cFluent object instead of the IFluent interface. You can see an example of the difference between the two interfaces below:
-
-    Sub FluentOfExample()
-        Dim Result As IFluentOf
-        Dim Result2 As IFluent
-
-        Set Result = New cFluent
-        Set Result2 = New cFluent
-        Result2.TestValue = True
-
-        Debug.Assert Result2.Should.Be.EqualTo(True) '//true
-        Debug.Assert Result.Of(True).Should.Be.EqualTo(True) '//true
-        Debug.Assert Result.Of(True).Should.Be.EqualTo(False) '//false
-    End Sub
+All of the class modules in Fluent VBA are PublicNotCreatable. So the project can be used as a reference in other projects. You'd start by adding the project as a reference to whatever workbook you'd like to use. After you did that, you'd create a cFluent object using the MakeFluent() method in the mInit module. Once the object is created you should be able to execute the tests as normal.
 
 # Additional notes
 This framework is currently in beta. The design of the API is subject to change.
