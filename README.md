@@ -63,5 +63,5 @@ For you to be able to use this, you need to use the IFluentOf interface for the 
         Debug.Assert Result.Of(True).Should.Be.EqualTo(False) '//false
     End Sub
 
-# Notes
+# Additional notes
 This framework is currently in beta. The design of the API is subject to change.
