@@ -34,7 +34,7 @@ The fluent unit testing framework uses itself to test itself. These set of tests
 
 # Documentation tests
 
-The mTests module has a DocumentationTests sub that contains several dozen tests. These tests document the various objects and methods in the API by using them in the tests.
+The mTests module has a DocumentationTests sub that contains several dozen tests. These tests document the various objects and methods in the API by using them in the tests. You can also find a link to the DocumentationTests [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Documentation-Tests)
 
 # Additional tests
 
