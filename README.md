@@ -30,7 +30,7 @@ Most of the tests utilize the IFluent interface. This is because the tests were 
     
 # Meta tests
 
-The fluent unit testing framework uses itself to test itself. These set of tests are contained in the mTests module in the MetaTest sub
+The fluent unit testing framework uses itself to test itself. These set of tests are contained in the mTests module in the MetaTests sub
 
 # Documentation tests
 
