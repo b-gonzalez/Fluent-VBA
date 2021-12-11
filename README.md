@@ -58,7 +58,7 @@ One new big change is the addition of the IFluentOf interface. This new interfac
 
 All of the class modules in Fluent VBA are PublicNotCreatable. So the project can be used as a reference in other projects. You'd start by adding the project as a reference to whatever workbook you'd like to use. After you did that, you'd create a cFluent object using the MakeFluent() method in the mInit module. Once the object is created you should be able to execute the tests as normal.
 
-# Scrapped additional featuers
+# Scrapped additional features
 
 There were a number of features I considered implementing. They were scrapped for a variety of reasons. You can see a detailed breakdown of some featues I considered (but didn't implemnt) as well as my reasoning [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Scrapped-additional-features)
 
