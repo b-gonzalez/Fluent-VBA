@@ -56,7 +56,13 @@ One new big change is the addition of the IFluentOf interface. This new interfac
 
 # Using Fluent VBA in an external project
 
-All of the class modules in Fluent VBA are PublicNotCreatable. So the project can be used as a reference in other projects. You'd start by adding the project as a reference to whatever workbook you'd like to use. After you did that, you'd create a cFluent object using the MakeFluent() method in the mInit module. Once the object is created you should be able to execute the tests as normal.
+All of the class modules in Fluent VBA are PublicNotCreatable. So the project can be used as a reference in other projects. If you plan on doing this I'd recommend doing the following:
+
+1. Create a testing file that will reference the Fluent VBA workbook and the file containing the code to be tested
+2. In the VBA projects references for the testing file, reference both the Fluent VBA workbook and the file containing the code to be tested.
+3. Create a variable that has the type of IFluent or IFluentOf.
+4. Instantiate this variable using the MakeFluent function or the MakeFluentOf function for IFluent or IFluentOf types respectively.
+5. Write your tests.
 
 # Scrapped additional features
 
@@ -68,6 +74,4 @@ A high level design of the API. This is mostly been completed previously. You ca
 
 # Final notes
 
-I consider this API to be finished. I'm very happy with the API's internal and external design. There's only one small minor final change I'm currently considering making. And like the other recent changes, they're all related to the internal design.
-
-Unless a large bug is discovered or a very good feature is requested, I don't anticipate other future updates to this project.
+I consider this API to be finished. I'm very happy with the API's internal and external design. While other features may be implemented in the future I think it's unlikely. Unless a large bug is discovered or a very good feature is requested, I don't anticipate other future updates to this project.
