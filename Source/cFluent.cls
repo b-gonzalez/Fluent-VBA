@@ -14,12 +14,13 @@ Implements IFluentOf
 Implements IFluentNoMeta
 
 Private pShould As cShould
-Private pShouldSet As ISetExpression
+Private pShouldSet As ISetExpressionAndValue
 Private pShouldNot As cShouldNot
-Private pShouldNotSet As ISetExpression
+Private pShouldNotSet As ISetExpressionAndValue
 Private pExpressions As cExpressions
 Private pMeta As cMeta
-Private pMetaSet As ISetExpression
+Private pMetaSet As ISetExpressionAndValue
+Private pFluentVal As Variant
 
 Private Sub Class_Initialize()
     Set pExpressions = New cExpressions
@@ -27,65 +28,69 @@ Private Sub Class_Initialize()
     Set pExpressions.setMeta = pMeta
 End Sub
 
-Public Property Let IFluent_TestValue(value As Variant)
+Private Property Let IFluent_TestValue(value As Variant)
     pExpressions.TestValue = value
+    pFluentVal = pExpressions.TestValue
 End Property
 
-Public Property Get IFluent_TestValue() As Variant
-    IFluent_TestValue = pExpressions.TestValue
+Private Property Get IFluent_TestValue() As Variant
+    IFluent_TestValue = pFluentVal
 End Property
 
-Public Property Get IFluent_Should() As IShould
+Private Property Get IFluent_Should() As IShould
     Set pShould = getShould
     Set IFluent_Should = pShould
 End Property
 
-Public Property Get IFluent_ShouldNot() As IShould
+Private Property Get IFluent_ShouldNot() As IShould
     Set pShouldNot = getShouldNot
     Set IFluent_ShouldNot = pShouldNot
 End Property
 
-Public Property Get IFluent_Meta() As cMeta
+Private Property Get IFluent_Meta() As cMeta
     Set IFluent_Meta = pMeta
 End Property
 
-Public Property Get IFluentOf_Meta() As cMeta
+Private Property Get IFluentOf_Meta() As cMeta
     Set IFluentOf_Meta = pMeta
 End Property
 
-Public Function IFluentOf_Of(value As Variant) As IFluentNoMeta
+Private Function IFluentOf_Of(value As Variant) As IFluentNoMeta
     pExpressions.TestValue = value
+    pFluentVal = pExpressions.TestValue
     Set IFluentOf_Of = Me
 End Function
 
-Public Property Get IFluentNoMeta_Should() As IShould
+Private Property Get IFluentNoMeta_Should() As IShould
     Set pShould = getShould
     Set IFluentNoMeta_Should = pShould
 End Property
 
-Public Property Get IFluentNoMeta_ShouldNot() As IShould
+Private Property Get IFluentNoMeta_ShouldNot() As IShould
     Set pShouldNot = getShouldNot
     Set IFluentNoMeta_ShouldNot = pShouldNot
 End Property
 
 Private Function getShould() As cShould
-    Dim tempShould As ISetExpression
+    Dim tempShould As ISetExpressionAndValue
     
     If tempShould Is Nothing Then
         Set tempShould = New cShould
     End If
     
     Set tempShould.setExpr = pExpressions
+    tempShould.TestValue = pFluentVal
     Set getShould = tempShould
 End Function
 
 Private Function getShouldNot() As cShouldNot
-    Dim tempShouldNot As ISetExpression
+    Dim tempShouldNot As ISetExpressionAndValue
     
     If tempShouldNot Is Nothing Then
         Set tempShouldNot = New cShouldNot
     End If
     
     Set tempShouldNot.setExpr = pExpressions
+    tempShouldNot.TestValue = pFluentVal
     Set getShouldNot = tempShouldNot
 End Function

@@ -10,25 +10,28 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Implements IHave
-Implements ISetExpression
+Implements ISetExpressionAndValue
 
 Private pNotHaveVal As Variant
 Private pExpressions As cExpressions
 
-Public Property Set ISetExpression_setExpr(value As cExpressions)
+Private Property Set ISetExpressionAndValue_setExpr(value As cExpressions)
     Set pExpressions = value
+End Property
+
+Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
     pNotHaveVal = pExpressions.TestValue
 End Property
 
-Public Function IHave_LengthOf(value As Double) As Boolean
+Private Function IHave_LengthOf(value As Double) As Boolean
     IHave_LengthOf = Not pExpressions.LengthOf(CDbl(pNotHaveVal), value, True)
 End Function
 
-Public Function IHave_MaxLengthOf(value As Double) As Boolean
+Private Function IHave_MaxLengthOf(value As Double) As Boolean
     IHave_MaxLengthOf = Not pExpressions.MaxLengthOf(CDbl(pNotHaveVal), value, True)
 End Function
 
-Public Function IHave_MinLengthOf(value As Double) As Boolean
+Private Function IHave_MinLengthOf(value As Double) As Boolean
     IHave_MinLengthOf = Not pExpressions.MinLengthOf(CDbl(pNotHaveVal), value, True)
 End Function
 

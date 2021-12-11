@@ -10,33 +10,36 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Implements IBe
-Implements ISetExpression
+Implements ISetExpressionAndValue
 
 Private pNotBeValue As Variant
 Private pBe As IBe
 Private pExpressions As cExpressions
 
-Public Property Set ISetExpression_setExpr(value As cExpressions)
+Private Property Set ISetExpressionAndValue_setExpr(value As cExpressions)
     Set pExpressions = value
-    pNotBeValue = pExpressions.TestValue
 End Property
 
-Public Function IBe_GreaterThan(value As Double) As Boolean
+Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
+    pNotBeValue = value
+End Property
+
+Private Function IBe_GreaterThan(value As Double) As Boolean
     IBe_GreaterThan = Not pExpressions.GreaterThan(CDbl(pNotBeValue), value, True)
 End Function
 
-Public Function IBe_LessThan(value As Double) As Boolean
+Private Function IBe_LessThan(value As Double) As Boolean
     IBe_LessThan = Not pExpressions.LessThan(CDbl(pNotBeValue), value, True)
 End Function
 
-Public Function IBe_EqualTo(value As Variant) As Boolean
+Private Function IBe_EqualTo(value As Variant) As Boolean
     IBe_EqualTo = Not pExpressions.EqualTo(pNotBeValue, value, True)
 End Function
 
-Public Function IBe_GreaterThanOrEqualTo(value As Double) As Boolean
+Private Function IBe_GreaterThanOrEqualTo(value As Double) As Boolean
     IBe_GreaterThanOrEqualTo = Not pExpressions.GreaterThanOrEqualTo(CDbl(pNotBeValue), value, True)
 End Function
 
-Public Function IBe_LessThanOrEqualTo(value As Double) As Boolean
+Private Function IBe_LessThanOrEqualTo(value As Double) As Boolean
     IBe_LessThanOrEqualTo = Not pExpressions.LessThanOrEqualTo(CDbl(pNotBeValue), value, True)
 End Function

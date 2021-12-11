@@ -10,48 +10,52 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Implements IShould
-Implements ISetExpression
+Implements ISetExpressionAndValue
 
 Private pNotBe As cNotBe
-Private pNotBeSet As ISetExpression
+Private pNotBeSet As ISetExpressionAndValue
 Private pNotHave As cNotHave
-Private pNotHaveSet As ISetExpression
+Private pNotHaveSet As ISetExpressionAndValue
 Private pExpressions As cExpressions
 Private pShouldNotVal As Variant
 
-
-Public Property Set ISetExpression_setExpr(value As cExpressions)
+Private Property Set ISetExpressionAndValue_setExpr(value As cExpressions)
     Set pExpressions = value
+End Property
+
+Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
     pShouldNotVal = pExpressions.TestValue
 End Property
 
-Public Property Get IShould_Have() As IHave
+Private Property Get IShould_Have() As IHave
     If pNotHave Is Nothing Then
         Set pNotHave = New cNotHave
     End If
     Set pNotHaveSet = pNotHave
     Set pNotHaveSet.setExpr = pExpressions
+    pNotHaveSet.TestValue = pShouldNotVal
     Set IShould_Have = pNotHaveSet
 End Property
 
-Public Property Get IShould_Be() As IBe
+Private Property Get IShould_Be() As IBe
     If pNotBe Is Nothing Then
         Set pNotBe = New cNotBe
     End If
     Set pNotBeSet = pNotBe
     Set pNotBeSet.setExpr = pExpressions
+    pNotBeSet.TestValue = pShouldNotVal
     Set IShould_Be = pNotBeSet
 End Property
 
-Public Function IShould_Contain(value As Variant) As Boolean
+Private Function IShould_Contain(value As Variant) As Boolean
     IShould_Contain = Not pExpressions.Contain(pShouldNotVal, value, True)
 End Function
 
-Public Function IShould_StartWith(value As Variant) As Boolean
+Private Function IShould_StartWith(value As Variant) As Boolean
     IShould_StartWith = Not pExpressions.StartWith(pShouldNotVal, value, True)
 End Function
 
-Public Function IShould_EndWith(value As Variant) As Boolean
+Private Function IShould_EndWith(value As Variant) As Boolean
     IShould_EndWith = Not pExpressions.EndWith(pShouldNotVal, value, True)
 End Function
 
