@@ -58,7 +58,7 @@ One new big change is the addition of the IFluentOf interface. This new interfac
 
 All of the class modules in Fluent VBA are PublicNotCreatable. So the project can be used as a reference in other projects. You'd start by adding the project as a reference to whatever workbook you'd like to use. After you did that, you'd create a cFluent object using the MakeFluent() method in the mInit module. Once the object is created you should be able to execute the tests as normal.
 
-# Additional notes
+# Final notes
 
 I consider this API to be finished. I'm very happy with the API's internal and external design. There's only one small minor final change I'm currently considering making. And like the other recent changes, they're all related to the internal design.
 
