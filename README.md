@@ -60,7 +60,7 @@ All of the class modules in Fluent VBA are PublicNotCreatable. So the project ca
 
 1. Create a testing file that will reference the Fluent VBA workbook and the file containing the code to be tested
 2. In the VBA projects references for the testing file, reference both the Fluent VBA workbook and the file containing the code to be tested.
-3. Create a variable that has the type of IFluent or IFluentOf.
+3. Create a testing procedure that has a variable that has the type of IFluent or IFluentOf.
 4. Instantiate this variable using the MakeFluent function or the MakeFluentOf function for IFluent or IFluentOf types respectively.
 5. Write your tests.
 
