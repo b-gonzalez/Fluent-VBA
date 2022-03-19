@@ -23,6 +23,10 @@ Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
     pBeValue = value
 End Property
 
+Private Property Set ISetExpressionAndValue_TestValue(value As Variant)
+    Set pBeValue = value
+End Property
+
 Private Function IBe_GreaterThan(value As Double) As Boolean
     IBe_GreaterThan = pExpressions.GreaterThan(CDbl(pBeValue), value)
 End Function
@@ -41,4 +45,20 @@ End Function
 
 Private Function IBe_LessThanOrEqualTo(value As Double) As Boolean
     IBe_LessThanOrEqualTo = pExpressions.LessThanOrEqualTo(CDbl(pBeValue), value)
+End Function
+
+Private Function IBe_Something() As Boolean
+    IBe_Something = pExpressions.Something(pBeValue)
+End Function
+
+Private Function IBe_Between(lowerVal As Double, higherVal As Double) As Boolean
+    IBe_Between = pExpressions.Between(CDbl(pBeValue), lowerVal, higherVal)
+End Function
+
+Private Function IBe_OneOf(ParamArray vals() As Variant) As Boolean
+    IBe_OneOf = pExpressions.OneOf(pBeValue, False, vals)
+End Function
+
+Private Function IBe_InDataStructure(dataStructure As Variant) As Boolean
+    IBe_InDataStructure = pExpressions.InDataStructure(pBeValue, dataStructure)
 End Function

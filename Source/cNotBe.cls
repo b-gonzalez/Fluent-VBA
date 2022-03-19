@@ -20,6 +20,10 @@ Private Property Set ISetExpressionAndValue_setExpr(value As cExpressions)
     Set pExpressions = value
 End Property
 
+Private Property Set ISetExpressionAndValue_TestValue(value As Variant)
+    Set pNotBeValue = value
+End Property
+
 Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
     pNotBeValue = value
 End Property
@@ -42,4 +46,20 @@ End Function
 
 Private Function IBe_LessThanOrEqualTo(value As Double) As Boolean
     IBe_LessThanOrEqualTo = Not pExpressions.LessThanOrEqualTo(CDbl(pNotBeValue), value, True)
+End Function
+
+Private Function IBe_Something() As Boolean
+    IBe_Something = Not pExpressions.Something(pNotBeValue, True)
+End Function
+
+Private Function IBe_Between(lowerVal As Double, higherVal As Double) As Boolean
+    IBe_Between = Not pExpressions.Between(CDbl(pNotBeValue), lowerVal, higherVal, True)
+End Function
+
+Private Function IBe_OneOf(ParamArray vals() As Variant) As Boolean
+    IBe_OneOf = Not pExpressions.OneOf(pNotBeValue, False, vals)
+End Function
+
+Private Function IBe_InDataStructure(dataStructure As Variant) As Boolean
+    IBe_InDataStructure = Not pExpressions.InDataStructure(pNotBeValue, dataStructure, True)
 End Function

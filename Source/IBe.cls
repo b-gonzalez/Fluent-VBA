@@ -28,3 +28,20 @@ End Function
 Public Function EqualTo(value As Variant) As Boolean
 
 End Function
+
+Public Function Something() As Boolean
+
+End Function
+
+Public Function Between(lowerVal As Double, higherVal As Double) As Boolean
+
+End Function
+
+Public Function OneOf(ParamArray vals() As Variant) As Boolean
+
+End Function
+
+Public Function InDataStructure(dataStructure As Variant) As Boolean
+
+End Function
+

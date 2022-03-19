@@ -23,6 +23,10 @@ Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
     pHaveVal = pExpressions.TestValue
 End Property
 
+Private Property Set ISetExpressionAndValue_TestValue(value As Variant)
+    'intentionally left blank
+End Property
+
 Private Function IHave_LengthOf(value As Double) As Boolean
     IHave_LengthOf = pExpressions.LengthOf(CDbl(pHaveVal), value)
 End Function
@@ -33,4 +37,8 @@ End Function
 
 Private Function IHave_MinLengthOf(value As Double) As Boolean
     IHave_MinLengthOf = pExpressions.MinLengthOf(CDbl(pHaveVal), value)
+End Function
+
+Private Function IHave_LengthBetween(lowVal As Double, highVal As Double) As Boolean
+    IHave_LengthBetween = pExpressions.LengthBetween(CDbl(pHaveVal), lowVal, highVal)
 End Function

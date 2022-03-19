@@ -21,6 +21,7 @@ Private pExpressions As cExpressions
 Private pMeta As cMeta
 Private pMetaSet As ISetExpressionAndValue
 Private pFluentVal As Variant
+Private pTestCount As Long
 
 Private Sub Class_Initialize()
     Set pExpressions = New cExpressions
@@ -28,13 +29,24 @@ Private Sub Class_Initialize()
     Set pExpressions.setMeta = pMeta
 End Sub
 
+Private Property Set IFluent_TestValue(value As Variant)
+    pTestCount = pTestCount + 1
+    Set pExpressions.TestValue = value
+    Set pFluentVal = pExpressions.TestValue
+End Property
+
 Private Property Let IFluent_TestValue(value As Variant)
+    pTestCount = pTestCount + 1
     pExpressions.TestValue = value
     pFluentVal = pExpressions.TestValue
 End Property
 
 Private Property Get IFluent_TestValue() As Variant
-    IFluent_TestValue = pFluentVal
+    If IsObject(pFluentVal) Then
+        Set IFluent_TestValue = pFluentVal
+    Else
+        IFluent_TestValue = pFluentVal
+    End If
 End Property
 
 Private Property Get IFluent_Should() As IShould
@@ -55,12 +67,6 @@ Private Property Get IFluentOf_Meta() As cMeta
     Set IFluentOf_Meta = pMeta
 End Property
 
-Private Function IFluentOf_Of(value As Variant) As IFluentNoMeta
-    pExpressions.TestValue = value
-    pFluentVal = pExpressions.TestValue
-    Set IFluentOf_Of = Me
-End Function
-
 Private Property Get IFluentNoMeta_Should() As IShould
     Set pShould = getShould
     Set IFluentNoMeta_Should = pShould
@@ -71,6 +77,18 @@ Private Property Get IFluentNoMeta_ShouldNot() As IShould
     Set IFluentNoMeta_ShouldNot = pShouldNot
 End Property
 
+Private Function IFluentOf_Of(value As Variant) As IFluentNoMeta
+    pTestCount = pTestCount + 1
+    If IsObject(value) Then
+        Set pExpressions.TestValue = value
+        Set pFluentVal = pExpressions.TestValue
+    Else
+        pExpressions.TestValue = value
+        pFluentVal = pExpressions.TestValue
+    End If
+    Set IFluentOf_Of = Me
+End Function
+
 Private Function getShould() As cShould
     Dim tempShould As ISetExpressionAndValue
     
@@ -79,7 +97,12 @@ Private Function getShould() As cShould
     End If
     
     Set tempShould.setExpr = pExpressions
-    tempShould.TestValue = pFluentVal
+    
+    If IsObject(pFluentVal) Then
+        Set tempShould.TestValue = pFluentVal
+    Else
+        tempShould.TestValue = pFluentVal
+    End If
     Set getShould = tempShould
 End Function
 
@@ -91,6 +114,22 @@ Private Function getShouldNot() As cShouldNot
     End If
     
     Set tempShouldNot.setExpr = pExpressions
-    tempShouldNot.TestValue = pFluentVal
+    
+    If IsObject(pFluentVal) Then
+        Set tempShouldNot.TestValue = pFluentVal
+    Else
+        tempShouldNot.TestValue = pFluentVal
+    End If
+    
     Set getShouldNot = tempShouldNot
 End Function
+
+Private Sub Class_Terminate()
+    If pMeta.PrintTotalTests = True Then
+        If pTestCount = 1 Then
+            Debug.Print pTestCount & " test completed"
+        ElseIf pTestCount > 1 Then
+            Debug.Print pTestCount & " tests completed"
+        End If
+    End If
+End Sub

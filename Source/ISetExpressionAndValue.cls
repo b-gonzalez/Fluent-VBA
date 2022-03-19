@@ -17,6 +17,11 @@ Public Property Let TestValue(value As Variant)
 
 End Property
 
+Public Property Set TestValue(value As Variant)
+
+End Property
+
+
 'Public Property Get TestValue() As Variant
 '
 'End Property

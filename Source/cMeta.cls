@@ -11,6 +11,7 @@ Option Explicit
 
 Private pPrintResults As Boolean
 Private pTestName As String
+Private pPrintTotalTests As Boolean
 
 Public Property Let TestName(value As String)
     pTestName = value
@@ -26,4 +27,12 @@ End Property
 
 Public Property Get PrintResults() As Boolean
     PrintResults = pPrintResults
+End Property
+
+Public Property Let PrintTotalTests(value As Boolean)
+    pPrintTotalTests = value
+End Property
+
+Public Property Get PrintTotalTests() As Boolean
+    PrintTotalTests = pPrintTotalTests
 End Property

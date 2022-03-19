@@ -20,3 +20,7 @@ End Function
 Public Function MinLengthOf(value As Double) As Boolean
 
 End Function
+
+Public Function LengthBetween(lowValue As Double, highValue As Double) As Boolean
+
+End Function

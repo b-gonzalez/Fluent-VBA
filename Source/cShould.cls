@@ -27,6 +27,10 @@ Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
     pShouldVal = pExpressions.TestValue
 End Property
 
+Private Property Set ISetExpressionAndValue_TestValue(value As Variant)
+    Set pShouldVal = pExpressions.TestValue
+End Property
+
 Private Property Get IShould_Have() As IHave
     If pHave Is Nothing Then
         Set pHave = New cHave
@@ -43,7 +47,13 @@ Private Property Get IShould_Be() As IBe
     End If
     Set pBeSet = pBe
     Set pBeSet.setExpr = pExpressions
-    pBeSet.TestValue = pShouldVal
+    
+    If IsObject(pShouldVal) Then
+        Set pBeSet.TestValue = pShouldVal
+    Else
+        pBeSet.TestValue = pShouldVal
+    End If
+    
     Set IShould_Be = pBeSet
 End Property
 
