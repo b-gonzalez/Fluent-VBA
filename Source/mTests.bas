@@ -519,8 +519,8 @@ Private Sub positiveDocumentationTests(fluent As IFluent, testFluent As IFluent)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    testFluent.TestValue = 5
-    fluent.TestValue = testFluent.Should.Be.OneOf(col, d, 5)
+    testFluent.TestValue = 10
+    fluent.TestValue = testFluent.Should.Be.OneOf(col, d, 10)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     

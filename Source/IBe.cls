@@ -41,7 +41,7 @@ Public Function OneOf(ParamArray vals() As Variant) As Boolean
 
 End Function
 
-Public Function InDataStructure(dataStructure As Variant) As Boolean
+Public Function InDataStructure(dataStructure As Variant, Optional method As flMethod = flRecursive) As Boolean
 
 End Function
 

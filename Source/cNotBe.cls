@@ -60,6 +60,6 @@ Private Function IBe_OneOf(ParamArray vals() As Variant) As Boolean
     IBe_OneOf = Not pExpressions.OneOf(pNotBeValue, False, vals)
 End Function
 
-Private Function IBe_InDataStructure(dataStructure As Variant) As Boolean
-    IBe_InDataStructure = Not pExpressions.InDataStructure(pNotBeValue, dataStructure, True)
+Private Function IBe_InDataStructure(dataStructure As Variant, Optional method As flMethod = flRecursive) As Boolean
+    IBe_InDataStructure = Not pExpressions.InDataStructure(pNotBeValue, dataStructure, method, True)
 End Function

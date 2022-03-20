@@ -12,6 +12,11 @@ Option Explicit
 Private pTestValue As Variant
 Private pMeta As cMeta
 
+Enum flMethod
+    flRecursive
+    flIterative
+End Enum
+
 Public Property Let TestValue(value As Variant)
     pTestValue = value
 End Property
@@ -131,7 +136,7 @@ Public Function OneOf(origVal As Variant, negateValue As Boolean, ParamArray arg
     Call checkIfPrint(OneOf, negateValue)
 End Function
 
-Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Optional negateValue As Boolean = False) As Boolean
+Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Optional method As flMethod = flRecursive, Optional negateValue As Boolean = False) As Boolean
     Dim elem As Variant
     Dim col As Collection
     Dim tempBool As Boolean
@@ -139,7 +144,11 @@ Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Op
     tempBool = False
     
     If isDataStructure(dataStructure) Then
-        Set col = getNestedElements1(dataStructure)
+        If method = flRecursive Then
+            Set col = getNestedElementsRecur(dataStructure)
+        ElseIf method = flIterative Then
+            Set col = getNestedElementsIter(dataStructure)
+        End If
     End If
     
     For Each elem In col
@@ -172,7 +181,7 @@ Private Function isDataStructure(ByVal dataStructure As Variant)
     isDataStructure = tempBool
 End Function
 
-Private Function getNestedElements1(dataStructure As Variant, Optional ByRef col As Collection = Nothing) As Collection
+Private Function getNestedElementsRecur(dataStructure As Variant, Optional ByRef col As Collection = Nothing) As Collection
     Dim elem As Variant
     Dim tempDataStructure As Variant
     
@@ -182,7 +191,7 @@ Private Function getNestedElements1(dataStructure As Variant, Optional ByRef col
     
     If isDataStructure(dataStructure) Then
         If TypeName(dataStructure) = "Dictionary" Then
-            tempDataStructure = dataStructure.items
+            tempDataStructure = dataStructure.Items
         Else
             If IsObject(dataStructure) Then
                 Set tempDataStructure = dataStructure
@@ -193,7 +202,7 @@ Private Function getNestedElements1(dataStructure As Variant, Optional ByRef col
         
         For Each elem In tempDataStructure
             If isDataStructure(elem) Then
-                Set col = getNestedElements1(elem, col)
+                Set col = getNestedElementsRecur(elem, col)
             Else
                 col.Add elem
             End If
@@ -202,57 +211,57 @@ Private Function getNestedElements1(dataStructure As Variant, Optional ByRef col
         col.Add elem
     End If
     
-    Set getNestedElements1 = col
+    Set getNestedElementsRecur = col
 End Function
 
-'Private Function getNestedElements2(dataStructure As Variant) As Collection
-'    Dim elem As Variant
-'    Dim col As Collection
-'    Dim tempCol As Collection
-'    Dim tempDataStructure As Variant
-'    Dim i As Long
-'
-'    If col Is Nothing Then
-'        Set col = New Collection
-'        Set tempCol = New Collection
-'    End If
-'
-'    If TypeName(dataStructure) = "Dictionary" Then
-'        tempDataStructure = dataStructure.Items
-'    Else
-'        If IsObject(dataStructure) Then
-'            Set tempDataStructure = dataStructure
-'        Else
-'            tempDataStructure = dataStructure
-'        End If
-'    End If
-'
-'    For Each elem In tempDataStructure
-'        If isDataStructure(elem) Then
-'            tempCol.Add elem
-'        Else
-'            col.Add elem
-'        End If
-'    Next elem
-'
-'    Do While tempCol.Count > 0
-'        For i = 1 To tempCol.Count
-'            If isDataStructure(tempCol(i)) Then
-'                For Each elem In tempCol(i)
-'                    tempCol.Add elem
-'                Next elem
-'                tempCol.Remove i
-'                Exit For
-'            Else
-'                col.Add tempCol(i)
-'                tempCol.Remove i
-'                Exit For
-'            End If
-'        Next i
-'    Loop
-'
-'    Set getNestedElements2 = col
-'End Function
+Private Function getNestedElementsIter(dataStructure As Variant) As Collection
+    Dim elem As Variant
+    Dim col As Collection
+    Dim tempCol As Collection
+    Dim tempDataStructure As Variant
+    Dim i As Long
+
+    If col Is Nothing Then
+        Set col = New Collection
+        Set tempCol = New Collection
+    End If
+
+    If TypeName(dataStructure) = "Dictionary" Then
+        tempDataStructure = dataStructure.Items
+    Else
+        If IsObject(dataStructure) Then
+            Set tempDataStructure = dataStructure
+        Else
+            tempDataStructure = dataStructure
+        End If
+    End If
+
+    For Each elem In tempDataStructure
+        If isDataStructure(elem) Then
+            tempCol.Add elem
+        Else
+            col.Add elem
+        End If
+    Next elem
+
+    Do While tempCol.Count > 0
+        For i = 1 To tempCol.Count
+            If isDataStructure(tempCol(i)) Then
+                For Each elem In tempCol(i)
+                    tempCol.Add elem
+                Next elem
+                tempCol.Remove i
+                Exit For
+            Else
+                col.Add tempCol(i)
+                tempCol.Remove i
+                Exit For
+            End If
+        Next i
+    Loop
+
+    Set getNestedElementsIter = col
+End Function
 
 Public Function LengthBetween(origVal As Double, lowVal As Double, highVal As Double, Optional negateValue As Boolean = False)
     Dim tempOrigVal As Double
