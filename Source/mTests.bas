@@ -551,6 +551,20 @@ Private Sub positiveDocumentationTests(fluent As IFluent, testFluent As IFluent)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
+    ReDim arr(1, 1, 1)
+    arr(0, 0, 0) = 6
+    arr(0, 0, 1) = 7
+    arr(0, 1, 0) = 8
+    arr(0, 1, 1) = 9
+    arr(1, 0, 0) = 10
+    arr(1, 0, 1) = 11
+    arr(1, 1, 0) = 12
+    arr(1, 1, 1) = 13
+    testFluent.TestValue = 10
+    fluent.TestValue = testFluent.Should.Be.InDataStructure(arr)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
     arr = Array(9, Array(10, Array(11)))
     testFluent.TestValue = 10
     fluent.TestValue = testFluent.Should.Be.InDataStructure(arr)
@@ -811,6 +825,20 @@ Sub negativeDocumentationTests(fluent As IFluent, testFluent As IFluent)
     arr(0, 1) = 10
     arr(1, 0) = 11
     arr(1, 1) = 12
+    testFluent.TestValue = 10
+    fluent.TestValue = testFluent.ShouldNot.Be.InDataStructure(arr)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    ReDim arr(1, 1, 1)
+    arr(0, 0, 0) = 6
+    arr(0, 0, 1) = 7
+    arr(0, 1, 0) = 8
+    arr(0, 1, 1) = 9
+    arr(1, 0, 0) = 10
+    arr(1, 0, 1) = 11
+    arr(1, 1, 0) = 12
+    arr(1, 1, 1) = 13
     testFluent.TestValue = 10
     fluent.TestValue = testFluent.ShouldNot.Be.InDataStructure(arr)
     Debug.Assert fluent.Should.Be.EqualTo(False)
