@@ -68,7 +68,7 @@ Public Function EqualTo(origVal As Variant, NewVal As Variant, Optional negateVa
             tempBool = (origVal = NewVal)
         ElseIf TypeName(origVal) <> TypeName(NewVal) Then
             If IsNumeric(origVal) And IsNumeric(NewVal) Then
-                tempBool = (Abs(origVal - NewVal) < pMeta.Epsilon)
+                tempBool = (Abs(origVal - NewVal) <= pMeta.Epsilon)
             ElseIf VarType(origVal) = vbString Or VarType(NewVal) = vbString Then
                 tempBool = (StrComp(CStr(origVal), CStr(NewVal), vbTextCompare) = 0)
             End If

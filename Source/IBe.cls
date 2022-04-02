@@ -9,6 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
+Public Function OneOf(ParamArray vals() As Variant)
+
+End Function
+
 Public Function GreaterThan(value As Double) As Boolean
 
 End Function
@@ -37,9 +41,6 @@ Public Function Between(lowerVal As Double, higherVal As Double) As Boolean
 
 End Function
 
-Public Function OneOf(ParamArray vals() As Variant) As Boolean
-
-End Function
 
 Public Function InDataStructure(dataStructure As Variant, Optional method As flMethod = flRecursive) As Boolean
 

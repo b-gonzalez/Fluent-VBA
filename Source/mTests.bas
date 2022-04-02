@@ -18,6 +18,9 @@ Private Sub FluentOf()
     With result.Of(True).Should.Be
         Debug.Assert .EqualTo("True")
     End With
+    
+    Debug.Assert result2.Should.Be.OneOf(1, 2, True)
+    
 '    Debug.Assert result2.Should.Be.EqualTo(True)
 '    Debug.Assert result.Of(TestValue).Should.Be.EqualTo(False)
 End Sub
@@ -627,6 +630,30 @@ Private Sub positiveDocumentationTests(fluent As IFluent, testFluent As IFluent)
     fluent.TestValue = testFluent.Should.Be.InDataStructure(al)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    ' //Approximate equality tests
+    testFluent.Meta.ApproximateEqual = True
+    testFluent.TestValue = "10"
+    fluent.TestValue = testFluent.Should.Be.EqualTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.Meta.ApproximateEqual = True
+    testFluent.TestValue = "True"
+    fluent.TestValue = testFluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    '//default epsilon for double comparisons is 0.000001
+    '//the default can be modified by setting a value
+    '//for the epsilon property in the Meta object.
+    
+    testFluent.Meta.ApproximateEqual = True
+    testFluent.TestValue = 5.0000001
+    fluent.TestValue = testFluent.Should.Be.EqualTo(5)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
 End Sub
 
 Sub negativeDocumentationTests(fluent As IFluent, testFluent As IFluent)
@@ -904,6 +931,29 @@ Sub negativeDocumentationTests(fluent As IFluent, testFluent As IFluent)
     al.Add 11
     testFluent.TestValue = 10
     fluent.TestValue = testFluent.ShouldNot.Be.InDataStructure(al)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    ' //Approximate equality tests
+    testFluent.Meta.ApproximateEqual = True
+    testFluent.TestValue = "10"
+    fluent.TestValue = testFluent.ShouldNot.Be.EqualTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.Meta.ApproximateEqual = True
+    testFluent.TestValue = "True"
+    fluent.TestValue = testFluent.ShouldNot.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    '//default epsilon for double comparisons is 0.000001
+    '//the default can be modified by setting a value
+    '//for the epsilon property in the Meta object.
+    
+    testFluent.Meta.ApproximateEqual = True
+    testFluent.TestValue = 5.0000001
+    fluent.TestValue = testFluent.ShouldNot.Be.EqualTo(5)
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
 End Sub

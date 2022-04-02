@@ -55,7 +55,7 @@ Private Function IBe_Between(lowerVal As Double, higherVal As Double) As Boolean
     IBe_Between = pExpressions.Between(CDbl(pBeValue), lowerVal, higherVal)
 End Function
 
-Private Function IBe_OneOf(ParamArray vals() As Variant) As Boolean
+Private Function IBe_OneOf(ParamArray vals() As Variant)
     IBe_OneOf = pExpressions.OneOf(pBeValue, False, vals)
 End Function
 
