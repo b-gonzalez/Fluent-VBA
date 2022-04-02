@@ -13,9 +13,13 @@ Private Sub FluentOf()
     result2.Meta.PrintResults = True
     result2.TestValue = True
     
-    Debug.Assert result.Of(True).Should.Be.EqualTo(True)
-    Debug.Assert result2.Should.Be.EqualTo(True)
-    Debug.Assert result.Of(TestValue).Should.Be.EqualTo(False)
+    result.Meta.ApproximateEqual = True
+    
+    With result.Of(True).Should.Be
+        Debug.Assert .EqualTo("True")
+    End With
+'    Debug.Assert result2.Should.Be.EqualTo(True)
+'    Debug.Assert result.Of(TestValue).Should.Be.EqualTo(False)
 End Sub
 
 Public Sub runMainTests()
@@ -30,7 +34,7 @@ Public Sub runMainTests()
     Call MetaTests(fluent, testFluent)
     Call positiveDocumentationTests(fluent, testFluent)
     Call negativeDocumentationTests(fluent, testFluent)
-    'Debug.Print "All tests Finished!"
+    Debug.Print "All tests Finished!"
 End Sub
 
 Private Sub Example1()

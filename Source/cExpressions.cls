@@ -58,7 +58,25 @@ Public Function LessThanOrEqualTo(origVal As Double, NewVal As Double, Optional 
 End Function
 
 Public Function EqualTo(origVal As Variant, NewVal As Variant, Optional negateValue As Boolean = False) As Boolean
-    EqualTo = (origVal = NewVal)
+
+    Dim tempBool As Boolean
+    
+    tempBool = (origVal = NewVal)
+    
+    If pMeta.ApproximateEqual Then
+        If TypeName(origVal) = TypeName(NewVal) Then
+            tempBool = (origVal = NewVal)
+        ElseIf TypeName(origVal) <> TypeName(NewVal) Then
+            If IsNumeric(origVal) And IsNumeric(NewVal) Then
+                tempBool = (Abs(origVal - NewVal) < pMeta.Epsilon)
+            ElseIf VarType(origVal) = vbString Or VarType(NewVal) = vbString Then
+                tempBool = (StrComp(CStr(origVal), CStr(NewVal), vbTextCompare) = 0)
+            End If
+        End If
+    End If
+    
+    EqualTo = tempBool
+
     Call checkIfPrint(EqualTo, negateValue)
 End Function
 

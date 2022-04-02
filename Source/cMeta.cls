@@ -12,6 +12,24 @@ Option Explicit
 Private pPrintResults As Boolean
 Private pTestName As String
 Private pPrintTotalTests As Boolean
+Private pApproximateEqual As Boolean
+Private pEpsilon As Double
+
+Public Property Let Epsilon(value As Double)
+    pEpsilon = value
+End Property
+
+Public Property Get Epsilon() As Double
+    Epsilon = pEpsilon
+End Property
+
+Public Property Let ApproximateEqual(value As Boolean)
+    pApproximateEqual = value
+End Property
+
+Public Property Get ApproximateEqual() As Boolean
+    ApproximateEqual = pApproximateEqual
+End Property
 
 Public Property Let TestName(value As String)
     pTestName = value
@@ -36,3 +54,7 @@ End Property
 Public Property Get PrintTotalTests() As Boolean
     PrintTotalTests = pPrintTotalTests
 End Property
+
+Private Sub Class_Initialize()
+    Me.Epsilon = 0.000001
+End Sub
