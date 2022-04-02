@@ -15,6 +15,8 @@ Private pPrintTotalTests As Boolean
 Private pApproximateEqual As Boolean
 Private pEpsilon As Double
 
+Private Const defaultEpsilon As Double = 0.000001
+
 Public Property Let Epsilon(value As Double)
     pEpsilon = value
 End Property
@@ -56,5 +58,5 @@ Public Property Get PrintTotalTests() As Boolean
 End Property
 
 Private Sub Class_Initialize()
-    Me.Epsilon = 0.000001
+    Me.Epsilon = defaultEpsilon
 End Sub
