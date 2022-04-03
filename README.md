@@ -8,10 +8,14 @@ Fluent frameworks are intended to be read like natural language. So instead of h
     Sub NormalUnitTestExample
         Dim result as long
         Dim Assert as cUnitTester
-
-        result = returnsFive() ‘returns the number 5
+        
+        '//Arrange
         Set Assert = New cUnitTester
-
+        
+        '//Act
+        result = returnsFive() ‘returns the number 5
+        
+        '//Assert
         Assert.Equal(Result,5)
     End Sub
  
