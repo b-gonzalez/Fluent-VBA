@@ -13,11 +13,15 @@ Fluent frameworks are intended to be read like natural language. So instead of h
         Set Assert = New cUnitTester
         
         '//Act
-        result = returnsFive() ‘returns the number 5
+        result = returnVal(5) ‘returns the value provided as an argument
         
         '//Assert
         Assert.Equal(Result,5)
     End Sub
+    
+    Public Function returnVal(value As Variant)
+        returnVal = value
+    End Function
  
 You can have code that reads more naturally like so:
 
@@ -37,10 +41,6 @@ You can have code that reads more naturally like so:
         '//Assert
         Debug.Assert Result1.Should.Be.EqualTo(5)
     End Sub
-    
-    Public Function returnVal(value As Variant)
-        returnVal = value
-    End Function
 
 Or, arguably, even more naturally using the IFluentOf interface like this:
 
