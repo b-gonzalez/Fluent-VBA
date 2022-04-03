@@ -42,7 +42,7 @@ You can have code that reads more naturally like so:
         Debug.Assert Result.Should.Be.EqualTo(5)
     End Sub
 
-Or, arguably, even more naturally using the IFluentOf interface like this:
+Or, arguably, even more naturally using cFluentOf objects like this:
 
     Option Explicit
 
