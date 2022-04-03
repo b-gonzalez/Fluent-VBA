@@ -15,23 +15,60 @@ Fluent frameworks are intended to be read like natural language. So instead of h
  
 You can have code that reads more naturally like so:
 
+    Option Explicit
+
     Sub FluentUnitTestExample
-        Dim Result as IFluent
-
-        Set Result = new cFluent
-        Result.TestValue = ReturnsFive()
-
-        Debug.Assert Result.Should.Be.EqualTo(5)
+        Dim Result As IFluent
+        Dim returnedResult As Variant
+        
+        '//arrange
+        Set Result = New cFluent
+        returnedResult = returnVal(5)
+        
+        '//Act
+        Result1.TestValue = returnedResult
+        
+        '//Assert
+        Debug.Assert Result1.Should.Be.EqualTo(5)
     End Sub
+    
+    Public Function returnVal(value As Variant)
+        returnVal = value
+    End Function
 
-Or, arguably, even more naturally using the IFluentOf interface:
+Or, arguably, even more naturally using the IFluentOf interface like this:
 
-    Sub FluentUnitTestExample2
-        Dim Result as IFluentOf
+    Option Explicit
 
-        Set Result = new cFluent
+    Sub FluentUnitTestExample2()
+        Dim Result As IFluentOf
+        Dim returnedResult As Variant
+        
+        '//arrange
+        Set Result = New cFluent
+        returnedResult = returnVal(5)
+        
+        '//Act
+        With Result2.Of(returnedResult).Should
+            '//Assert
+            Debug.Assert .Be.EqualTo(5) And .Be.LessThanOrEqualTo(5) And .Be.GreaterThanOrEqualTo(5)
+        End With
+    End Sub
+    
+Or like this:
 
-        Debug.Assert Result.Of(ReturnsFive).Should.Be.EqualTo(5)
+    Option Explicit
+
+    Sub FluentUnitTestExample3()
+        Dim Result As IFluentOf
+        Dim returnedResult As Variant
+        
+        '//arrange
+        Set Result = New cFluent
+        returnedResult = returnVal(5)
+        
+        '//Act & Assert
+        Debug.Assert Result2.Of(returnedResult).Should.Be.EqualTo(5)
     End Sub
 
 # Testing notes
