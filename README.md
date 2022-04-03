@@ -36,10 +36,10 @@ You can have code that reads more naturally like so:
         returnedResult = returnVal(5)
         
         '//Act
-        Result1.TestValue = returnedResult
+        Result.TestValue = returnedResult
         
         '//Assert
-        Debug.Assert Result1.Should.Be.EqualTo(5)
+        Debug.Assert Result.Should.Be.EqualTo(5)
     End Sub
 
 Or, arguably, even more naturally using the IFluentOf interface like this:
@@ -55,9 +55,9 @@ Or, arguably, even more naturally using the IFluentOf interface like this:
         returnedResult = returnVal(5)
         
         '//Act
-        With Result2.Of(returnedResult).Should
+        With Result.Of(returnedResult)
             '//Assert
-            Debug.Assert .Be.EqualTo(5) And .Be.LessThanOrEqualTo(5) And .Be.GreaterThanOrEqualTo(5)
+            Debug.Assert .Should.Be.EqualTo(5)
         End With
     End Sub
     
@@ -74,7 +74,7 @@ Or like this:
         returnedResult = returnVal(5)
         
         '//Act & Assert
-        Debug.Assert Result2.Of(returnedResult).Should.Be.EqualTo(5)
+        Debug.Assert Result.Of(returnedResult).Should.Be.EqualTo(5)
     End Sub
 
 # Testing notes
