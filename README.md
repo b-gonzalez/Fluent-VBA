@@ -27,7 +27,7 @@ You can have code that reads more naturally like so:
 
     Option Explicit
 
-    Sub FluentUnitTestExample
+    Sub FluentUnitTestExample1
         Dim Result As IFluent
         Dim returnedResult As Variant
         
