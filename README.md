@@ -111,6 +111,18 @@ All of the class modules in Fluent VBA are PublicNotCreatable. So the project ca
 
 A high level design of the API. This is mostly been completed previously. You can find a post of mine describing an older version of the API's structure on CodeReview on StackExchange [here](https://codereview.stackexchange.com/questions/267836/a-fluent-unit-testing-framework-in-vba). It is almost certainly at least a bit outdated. So when I have some time I will take some time to create a post with an updated API design on this project.
 
+# Contacting me
+
+You can contact me at b.gonzalez.programming@gmail.com. Feel free to contact me regarding bug fixes or contributions (see more below.)
+
+# Contributing to Fluent VBA
+
+I'm open to external contributions for Fluent VBA. I do need to work on a style guide to determine how I'd like such contributions to be implemented. I also expect any contributions to have unit tests using the Fluent VBA framework.
+
+# Feature requests
+
+You are free to contact me regarding feature requests as long as you understand that I'm not obligated to implement them. I expect messages to be polite, respectful, and without a sense of entitlement. As long as you do those things, I'm happy to hear what you have to say.
+
 # Final notes
 
-The API is in a good and usable state. Overall I'm pretty happy with the API's internal and external design. As of right now, I only anticipate internal changes and feature enhancements. So the design of the API should be relatively stable. I'd be open to changing certain design aspects of the API if I found a good reason to do so however.
+The API is in a good and usable state. Overall I'm pretty happy with the API's internal and external design. As of right now, I only anticipate internal changes and feature enhancements. So the design of the API should be relatively stable. I'd be open to changing certain design aspects of the API if I found a good reason to do so however. Naturally, this is dependant on time and availability on my part however.
