@@ -6,5 +6,5 @@ Public Function MakeFluent() As cFluent
 End Function
 
 Public Function MakeFluentOf() As cFluentOf
-    Set MakeFluent = New cFluentOf
+    Set MakeFluentOf = New cFluentOf
 End Function
