@@ -28,7 +28,7 @@ You can have code that reads more naturally like so:
     Option Explicit
 
     Sub FluentUnitTestExample1
-        Dim Result As IFluent
+        Dim Result As cFluent
         Dim returnedResult As Variant
         
         '//arrange
@@ -42,16 +42,16 @@ You can have code that reads more naturally like so:
         Debug.Assert Result.Should.Be.EqualTo(5)
     End Sub
 
-Or, arguably, even more naturally using the IFluentOf interface like this:
+Or, arguably, even more naturally using cFluentOf objects like this:
 
     Option Explicit
 
     Sub FluentUnitTestExample2()
-        Dim Result As IFluentOf
+        Dim Result As cFluentOf
         Dim returnedResult As Variant
         
         '//arrange
-        Set Result = New cFluent
+        Set Result = New cFluentOf
         returnedResult = returnVal(5)
         
         '//Act
@@ -66,11 +66,11 @@ Or like this:
     Option Explicit
 
     Sub FluentUnitTestExample3()
-        Dim Result As IFluentOf
+        Dim Result As cFluentOf
         Dim returnedResult As Variant
         
         '//arrange
-        Set Result = New cFluent
+        Set Result = New cFluentOf
         returnedResult = returnVal(5)
         
         '//Act & Assert
@@ -79,7 +79,7 @@ Or like this:
 
 # Testing notes
 
-All of the tests are written in the mTests.bas. There are 100+ tests within this file. Most of the tests utilize the IFluent interface. This is because the tests were written before I introduced the new IFluentOf interface (see notes on this interface below). The Meta tests do include additional tests using the IFluentOf interface. And I will probably refactor most of the tests to also use IFluentOf at a later time.
+All of the tests are written in the mTests.bas. There are 100+ tests within this file. Most of the tests utilize the cFluent objects. This is because the tests were written before I introduced the new cFluentOf object. The Meta tests do include additional tests using cFluentOf objects however.
     
 # Meta tests
 
@@ -93,9 +93,9 @@ The mTests module has a DocumentationTests sub that contains several dozen tests
 
 Several other tests are implemented documenting the flexibility with which these unit tests can be created.
 
-# IFluentOf interface
+# cFluentOf class
 
-One new big change is the addition of the IFluentOf interface. This new interface allows you to enter the test value in the testing line itself. You can read more about using the IFluentOf interface [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/IFluentOf-interface)
+One new big change is the addition of the cFluentOf class. This new class allows you to enter the test value in the testing line itself. You can read more about using the cFluentOf class [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/cFluentOf-objects)
 
 # Using Fluent VBA in an external project
 
@@ -111,6 +111,18 @@ All of the class modules in Fluent VBA are PublicNotCreatable. So the project ca
 
 A high level design of the API. This is mostly been completed previously. You can find a post of mine describing an older version of the API's structure on CodeReview on StackExchange [here](https://codereview.stackexchange.com/questions/267836/a-fluent-unit-testing-framework-in-vba). It is almost certainly at least a bit outdated. So when I have some time I will take some time to create a post with an updated API design on this project.
 
+# Contacting me
+
+You can contact me at b.gonzalez.programming@gmail.com. Feel free to contact me regarding bug fixes or contributions (see more below.)
+
+# Contributing to Fluent VBA
+
+I'm open to external contributions for Fluent VBA. I do need to work on a style guide to determine how I'd like such contributions to be implemented. I also expect any contributions to have unit tests using the Fluent VBA framework.
+
+# Feature requests
+
+You are free to contact me regarding feature requests as long as you understand that I'm not obligated to implement them. I expect messages to be polite, respectful, and without a sense of entitlement. As long as you do those things, I'm happy to hear what you have to say.
+
 # Final notes
 
-I think most, if not all, of the work on the API has been completed. I'm very happy with the API's internal and external design. I currently have no major changes I'm in a rush to implement. While I do have some that are in consideration, those may never be implemented. I may implement addition features in the future based on availability and feedback however. Or perhaps if I get new ideas. I previously wrote that I thought the framwork was complete. And so no new additional work would be done. I then proceeded to add several new and powerful features to the API. So while I don't anticipate additional changes to this project it's certainly possible.
+The API is in a good and usable state. Overall I'm pretty happy with the API's internal and external design. As of right now, I only anticipate internal changes and feature enhancements. So the design of the API should be relatively stable. I'd be open to changing certain design aspects of the API if I found a good reason to do so however. Naturally, this is dependant on time and availability on my part however.
