@@ -297,25 +297,25 @@ Private Sub checkIfPrint(ByVal value As Boolean, Optional negateValue As Boolean
 End Sub
 
 Private Sub printEval(ByVal value As Boolean)
-    Dim result As String
+    Dim Result As String
     Dim TestPassed As Boolean
     
-    result = ""
+    Result = ""
     TestPassed = value
 
     If TestPassed Then
-        result = "Passed"
+        Result = "Passed"
         If pMeta.TestName <> Empty Then
-            Debug.Print pMeta.TestName & result
+            Debug.Print pMeta.TestName & Result
         Else
-            Debug.Print "Passed: " & result
+            Debug.Print "Passed: " & Result
         End If
     Else
-        result = "Failed"
+        Result = "Failed"
         If pMeta.TestName <> Empty Then
-            Debug.Print pMeta.TestName & result
+            Debug.Print pMeta.TestName & Result
         Else
-            Debug.Print "Failed: " & result
+            Debug.Print "Failed: " & Result
         End If
     End If
 End Sub
