@@ -28,7 +28,7 @@ You can have code that reads more naturally like so:
     Option Explicit
 
     Sub FluentUnitTestExample1
-        Dim Result As IFluent
+        Dim Result As cFluent
         Dim returnedResult As Variant
         
         '//arrange
@@ -47,11 +47,11 @@ Or, arguably, even more naturally using the IFluentOf interface like this:
     Option Explicit
 
     Sub FluentUnitTestExample2()
-        Dim Result As IFluentOf
+        Dim Result As cFluentOf
         Dim returnedResult As Variant
         
         '//arrange
-        Set Result = New cFluent
+        Set Result = New cFluentOf
         returnedResult = returnVal(5)
         
         '//Act
@@ -66,11 +66,11 @@ Or like this:
     Option Explicit
 
     Sub FluentUnitTestExample3()
-        Dim Result As IFluentOf
+        Dim Result As cFluentOf
         Dim returnedResult As Variant
         
         '//arrange
-        Set Result = New cFluent
+        Set Result = New cFluentOf
         returnedResult = returnVal(5)
         
         '//Act & Assert
