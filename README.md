@@ -79,7 +79,7 @@ Or like this:
 
 # Testing notes
 
-Most of the tests utilize the IFluent interface. This is because the tests were written before I introduced the new IFluentOf interface (see notes on this interface below). The Meta tests (see below) do include an additional procedure using the IFluentOf interface. I will probably refactor most of the tests to also use IFluentOf at a later time. All of the tests are written in the mTests.bas file.
+All of the tests are written in the mTests.bas. There are 100+ tests within this file. Most of the tests utilize the IFluent interface. This is because the tests were written before I introduced the new IFluentOf interface (see notes on this interface below). The Meta tests do include additional tests using the IFluentOf interface. And I will probably refactor most of the tests to also use IFluentOf at a later time.
     
 # Meta tests
 
