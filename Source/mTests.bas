@@ -2,13 +2,13 @@ Attribute VB_Name = "mTests"
 Option Explicit
 
 Private Sub FluentAAAExamples()
-    Dim Result1 As IFluent
-    Dim Result2 As IFluentOf
+    Dim Result1 As cFluent
+    Dim Result2 As cFluentOf
     Dim returnedResult As Variant
     
     '//arrange
     Set Result1 = New cFluent
-    Set Result2 = New cFluent
+    Set Result2 = New cFluentOf
     returnedResult = returnVal(5)
     
     '//Act
@@ -32,22 +32,22 @@ Private Function returnVal(value As Variant)
 End Function
 
 Public Sub runMainTests()
-    Dim fluent As IFluentOf
-    Dim testFluent As IFluent
+    Dim fluent As cFluentOf
+    Dim testFluent As cFluent
     
-    Set fluent = New cFluent
+    Set fluent = New cFluentOf
     Set testFluent = New cFluent
     
-    fluent.Meta.PrintTotalTests = True
+    testFluent.Meta.PrintTotalTests = True
     
     Call MetaTests(fluent, testFluent)
-    Call positiveDocumentationTests(fluent, testFluent)
-    Call negativeDocumentationTests(fluent, testFluent)
+    Call positiveDocumentationTests(testFluent)
+    Call negativeDocumentationTests(testFluent)
     Debug.Print "All tests Finished!"
 End Sub
 
 Private Sub Example1()
-    Dim Result As IFluent
+    Dim Result As cFluent
     Set Result = New cFluent
     Result.TestValue = 10
        
@@ -77,7 +77,7 @@ End Sub
 
 Private Sub Example2()
     Dim testNums As Long
-    Dim Result As IFluent
+    Dim Result As cFluent
     Dim TestNames() As String
     Dim i As Long
     Dim temp As Boolean
@@ -102,7 +102,7 @@ End Sub
 
 Private Sub Example3()
     Dim testNums As Long
-    Dim Result As IFluent
+    Dim Result As cFluent
     Dim TestNames() As String
     Dim i As Long
     'Dim testResults(4) As Boolean
@@ -167,7 +167,7 @@ End Sub
 
 Private Sub Example4()
     Dim testNums As Long
-    Dim Result() As IFluent
+    Dim Result() As cFluent
     Dim TestNames() As String
     Dim i As Long
     Dim testResults() As Boolean
@@ -225,7 +225,7 @@ End Sub
 
 Private Sub Example5()
     Dim testNums As Long
-    Dim Result() As IFluent
+    Dim Result() As cFluent
     Dim TestNames() As String
     Dim i As Long
     Dim testResults() As Boolean
@@ -289,7 +289,7 @@ End Sub
 
 Private Sub Example6()
     Dim testNums As Long
-    Dim Result As IFluent
+    Dim Result As cFluent
     Dim TestNames() As String
     Dim i As Long
     'Dim testResults(4) As Boolean
@@ -351,7 +351,7 @@ Private Sub Example6()
     
 End Sub
 
-Private Sub MetaTests(fluent As IFluentOf, testFluent As IFluent)
+Private Sub MetaTests(fluent As cFluentOf, testFluent As cFluent)
     Dim testResult As Boolean
 
     testFluent.TestValue = True
@@ -478,12 +478,15 @@ Private Sub MetaTests(fluent As IFluentOf, testFluent As IFluent)
     
 End Sub
 
-Private Sub positiveDocumentationTests(fluent As IFluent, testFluent As IFluent)
+Private Sub positiveDocumentationTests(testFluent As cFluent)
+    Dim fluent As cFluent
     Dim testResult As Boolean
     Dim col As Collection
     Dim arr As Variant
     Dim d As Object
     Dim al As Object
+    
+    Set fluent = New cFluent
     
     testFluent.TestValue = 10
     fluent.TestValue = testFluent.Should.Be.EqualTo(10)
@@ -759,12 +762,15 @@ Private Sub positiveDocumentationTests(fluent As IFluent, testFluent As IFluent)
     
 End Sub
 
-Sub negativeDocumentationTests(fluent As IFluent, testFluent As IFluent)
+Sub negativeDocumentationTests(testFluent As cFluent)
+    Dim fluent As cFluent
     Dim testResult As Boolean
     Dim col As Collection
     Dim arr As Variant
     Dim d As Object
     Dim al As Object
+    
+    Set fluent = New cFluent
     
     testFluent.TestValue = True
     fluent.TestValue = testFluent.ShouldNot.Be.EqualTo(False)
