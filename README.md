@@ -3,6 +3,8 @@ Fluent VBA is a fluent unit testing framework for VBA
 
 Fluent frameworks are intended to be read like natural language. So instead of having something like:
 
+    Option Explicit
+
     Sub NormalUnitTestExample
         Dim result as long
         Dim Assert as cUnitTester
