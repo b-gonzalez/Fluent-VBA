@@ -27,12 +27,12 @@ Private Sub FluentAAAExamples()
     Debug.Assert Result2.Of(returnedResult).Should.Be.EqualTo(5)
 End Sub
 
-Public Function returnVal(value As Variant)
+Private Function returnVal(value As Variant)
     returnVal = value
 End Function
 
 Public Sub runMainTests()
-    Dim fluent As IFluent
+    Dim fluent As IFluentOf
     Dim testFluent As IFluent
     
     Set fluent = New cFluent
@@ -351,98 +351,130 @@ Private Sub Example6()
     
 End Sub
 
-Private Sub MetaTests(fluent As IFluent, testFluent As IFluent)
+Private Sub MetaTests(fluent As IFluentOf, testFluent As IFluent)
     Dim testResult As Boolean
-    
+
     testFluent.TestValue = True
-    fluent.TestValue = testFluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-    
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(True)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(True)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(False)
+    End With
+
     testFluent.TestValue = True
-    fluent.TestValue = testFluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(False)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(False)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(True)
+    End With
 
     testFluent.TestValue = False
-    fluent.TestValue = testFluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
-    
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(True)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(False)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(True)
+    End With
+
     testFluent.TestValue = False
-    fluent.TestValue = testFluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(False)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(True)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(False)
+    End With
+
+    testFluent.TestValue = -1 '// -1 = true in boolean enum
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(True)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(True)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(False)
+    End With
     
     testFluent.TestValue = -1 '// -1 = true in boolean enum
-    fluent.TestValue = testFluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-    
-    testFluent.TestValue = -1 '// -1 = true in boolean enum
-    fluent.TestValue = testFluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(False)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(False)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(True)
+    End With
 
     testFluent.TestValue = 0 '// 0 = false in boolean enum
-    fluent.TestValue = testFluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
-    
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(False)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(True)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(False)
+    End With
+
     testFluent.TestValue = 0 '// 0 = false in boolean enum
-    fluent.TestValue = testFluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(True)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(False)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(True)
+    End With
     
-    '//Consider adding tests that check for approximate equality.
+    '//Approximate equality tests
     
     testFluent.Meta.ApproximateEqual = True
     testFluent.TestValue = "TRUE"
-    fluent.TestValue = testFluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(True)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(True)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(False)
+    End With
     
     testFluent.Meta.ApproximateEqual = True
     testFluent.TestValue = "TRUE"
-    fluent.TestValue = testFluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(False)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(False)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(True)
+    End With
 
     testFluent.Meta.ApproximateEqual = True
     testFluent.TestValue = "FALSE"
-    fluent.TestValue = testFluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(True)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(False)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(True)
+    End With
     
     testFluent.Meta.ApproximateEqual = True
     testFluent.TestValue = "FALSE"
-    fluent.TestValue = testFluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(False)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(True)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(False)
+    End With
+    
+        testFluent.Meta.ApproximateEqual = True
+    testFluent.TestValue = "true"
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(True)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(True)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(False)
+    End With
     
     testFluent.Meta.ApproximateEqual = True
     testFluent.TestValue = "true"
-    fluent.TestValue = testFluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-    
-    testFluent.Meta.ApproximateEqual = True
-    testFluent.TestValue = "true"
-    fluent.TestValue = testFluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(False)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(False)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(True)
+    End With
 
     testFluent.Meta.ApproximateEqual = True
     testFluent.TestValue = "false"
-    fluent.TestValue = testFluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(True)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(False)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(True)
+    End With
     
     testFluent.Meta.ApproximateEqual = True
     testFluent.TestValue = "false"
-    fluent.TestValue = testFluent.Should.Be.EqualTo(False)
-    Debug.Assert fluent.Should.Be.EqualTo(True)
-    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    testFluent.TestValue = testFluent.Should.Be.EqualTo(False)
+    With testFluent
+        Debug.Assert fluent.Of(.TestValue).Should.Be.EqualTo(True)
+        Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(False)
+    End With
     
 End Sub
 
