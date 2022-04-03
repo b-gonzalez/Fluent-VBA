@@ -109,7 +109,7 @@ All of the class modules in Fluent VBA are PublicNotCreatable. So the project ca
 
 # TODO: High level API design overview
 
-A high level design of the API. This is mostly been completed previously. You can find a post of mine describing an older version of the API's structure on CodeExchange [here](https://codereview.stackexchange.com/questions/267836/a-fluent-unit-testing-framework-in-vba). It is almost certainly at least a bit outdated. So when I have some time I will take some time to create a post with an updated API design on this project.
+A high level design of the API. This is mostly been completed previously. You can find a post of mine describing an older version of the API's structure on CodeReview on StackExchange [here](https://codereview.stackexchange.com/questions/267836/a-fluent-unit-testing-framework-in-vba). It is almost certainly at least a bit outdated. So when I have some time I will take some time to create a post with an updated API design on this project.
 
 # Final notes
 
