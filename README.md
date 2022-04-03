@@ -113,4 +113,4 @@ A high level design of the API. This is mostly been completed previously. You ca
 
 # Final notes
 
-I think most, if not all, of the work on the API has been completed. I'm very happy with the API's internal and external design. I currently have no major changes I'm in a rush to implement. While I do have some that are in consideration, those may never be implemented. I may implement addition features in the future based on availability and feedback however. Or perhaps if I get new ideas. I previously wrote that I thought the framwork was complete. And so no new additional work would be done. I then proceeded to add several new and powerful features to the API. So while I don't anticipate additional changes to this project it's certainly possible.
+The API is in a good and usable state. Overall I'm pretty happy with the API's internal and external design. As of right now, I only anticipate internal changes and feature enhancements. So the design of the API should be relatively stable. I'd be open to changing certain design aspects of the API if I found a good reason to do so however.
