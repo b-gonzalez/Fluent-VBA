@@ -79,7 +79,7 @@ Or like this:
 
 # Testing notes
 
-All of the tests are written in the mTests.bas. There are 100+ tests within this file. Most of the tests utilize the IFluent interface. This is because the tests were written before I introduced the new IFluentOf interface (see notes on this interface below). The Meta tests do include additional tests using the IFluentOf interface. And I will probably refactor most of the tests to also use IFluentOf at a later time.
+All of the tests are written in the mTests.bas. There are 100+ tests within this file. Most of the tests utilize the cFluent objects. This is because the tests were written before I introduced the new cFluentOf object. The Meta tests do include additional tests using cFluentOf objects however.
     
 # Meta tests
 
@@ -93,9 +93,9 @@ The mTests module has a DocumentationTests sub that contains several dozen tests
 
 Several other tests are implemented documenting the flexibility with which these unit tests can be created.
 
-# IFluentOf interface
+# cFluentOf class
 
-One new big change is the addition of the IFluentOf interface. This new interface allows you to enter the test value in the testing line itself. You can read more about using the IFluentOf interface [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/IFluentOf-interface)
+One new big change is the addition of the cFluentOf class. This new class allows you to enter the test value in the testing line itself. You can read more about using the cFluentOf class [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/cFluentOf-objects)
 
 # Using Fluent VBA in an external project
 
