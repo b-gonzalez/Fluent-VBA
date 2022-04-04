@@ -113,7 +113,7 @@ A high level design of the API. This is mostly been completed previously. You ca
 
 # Contacting me
 
-You can contact me at b.gonzalez.programming@gmail.com. Feel free to contact me regarding bug fixes or contributions (see more below.)
+You can contact me at b.gonzalez.programming@gmail.com. Feel free to contact me regarding bug fixes, contributions (see more below), or other topics.
 
 # Contributing to Fluent VBA
 
