@@ -278,12 +278,11 @@ Private Sub Example5()
     testResults(14) = Result(14).Should.Have.LengthOf(0) 'false
     testResults(15) = Result(15).Should.Have.MaxLengthOf(1) 'false
     testResults(16) = Result(16).Should.Have.MinLengthOf(3) 'false
-
     
     For i = LBound(testResults) To UBound(testResults)
         temp = testResults(i)
-        Debug.Assert temp
         Debug.Print temp
+        Debug.Assert temp
     Next i
 End Sub
 
