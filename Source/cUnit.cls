@@ -42,10 +42,6 @@ Public Property Get TestValue() As Variant
     End If
 End Property
 
-Public Property Get Expressions() As cExpressions
-    Set Expressions = pExpressions
-End Property
-
 Public Property Get Should() As IShould
     Set pShould = getShould
     Set Should = pShould
