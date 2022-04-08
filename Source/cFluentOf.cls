@@ -11,12 +11,19 @@ Option Explicit
 
 Private pUnit As cUnit
 Private pUnitMeta As IMeta
+Private pUnitTestVal As ISetExpressionAndValue
+Private pUnitExpr As ISetExpressionAndValue
 Private pMeta As cMeta
 Private pFluentOfVal As Variant
+Private pExpressions As cExpressions
 
 Private Sub Class_Initialize()
-    Set pUnit = New cUnit
+    Set pExpressions = New cExpressions
     Set pMeta = New cMeta
+    Set pUnit = New cUnit
+    Set pUnitExpr = pUnit
+    Set pUnitExpr.setExpr = pExpressions
+    Set pUnitTestVal = pUnit
     Set pUnitMeta = pUnit
     Set pUnitMeta.Meta = pMeta
 End Sub
@@ -28,10 +35,10 @@ End Property
 Public Function Of(value As Variant) As cUnit
     If IsObject(value) Then
         Set pFluentOfVal = value
-        Set pUnit.TestValue = value
+        Set pUnitTestVal.TestValue = value
     Else
         pFluentOfVal = value
-        pUnit.TestValue = value
+        pUnitTestVal.TestValue = value
     End If
     Set Of = pUnit
 End Function

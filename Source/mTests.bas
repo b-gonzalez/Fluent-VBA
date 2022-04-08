@@ -17,6 +17,10 @@ Private Sub FluentAAAExamples()
     '//Assert
     Debug.Assert Result1.Should.Be.EqualTo(5)
     
+    Result1.Meta.PrintResults = True
+    Result2.Meta.PrintResults = True
+    
+    
     '//Act
     With Result2.Of(returnedResult).Should
         '//Assert

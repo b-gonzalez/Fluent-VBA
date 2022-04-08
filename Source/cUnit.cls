@@ -10,6 +10,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Implements IMeta
+Implements ISetExpressionAndValue
 
 Private pShould As cShould
 Private pShouldSet As ISetExpressionAndValue
@@ -21,27 +22,32 @@ Private pUnitVal As Variant
 Private pTestCount As Long
 
 Private Sub Class_Initialize()
-    Set pExpressions = New cExpressions
+    'Set pExpressions = New cExpressions
 End Sub
 
-Public Property Set TestValue(value As Variant)
+Private Property Set ISetExpressionAndValue_TestValue(value As Variant)
     pTestCount = pTestCount + 1
     Set pExpressions.TestValue = value
     Set pUnitVal = pExpressions.TestValue
 End Property
 
-Public Property Let TestValue(value As Variant)
+Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
     pTestCount = pTestCount + 1
     pExpressions.TestValue = value
     pUnitVal = pExpressions.TestValue
 End Property
 
-Public Property Get TestValue() As Variant
-    If IsObject(pUnitVal) Then
-        Set TestValue = pUnitVal
-    Else
-        TestValue = pUnitVal
-    End If
+'Private Property Get ISetExpressionAndValue_TestValue() As Variant
+'    If IsObject(pUnitVal) Then
+'        Set ISetExpressionAndValue_TestValue = pUnitVal
+'    Else
+'        ISetExpressionAndValue_TestValue = pUnitVal
+'    End If
+'End Property
+
+
+Private Property Set ISetExpressionAndValue_setExpr(value As cExpressions)
+    Set pExpressions = value
 End Property
 
 Public Property Get Should() As IShould

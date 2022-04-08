@@ -11,12 +11,18 @@ Option Explicit
 
 Private pUnit As cUnit
 Private pUnitMeta As IMeta
+Private pUnitExpr As ISetExpressionAndValue
 Private pMeta As cMeta
 Private pFluentVal As Variant
+Private pExpressions As cExpressions
 
 Private Sub Class_Initialize()
+    Set pExpressions = New cExpressions
     Set pUnit = New cUnit
     Set pMeta = New cMeta
+    
+    Set pUnitExpr = pUnit
+    Set pUnitExpr.setExpr = pExpressions
     Set pUnitMeta = pUnit
     Set pUnitMeta.Meta = pMeta
 End Sub
@@ -35,18 +41,18 @@ End Property
 
 Public Property Set TestValue(value As Variant)
     Set pFluentVal = value
-    Set pUnit.TestValue = pFluentVal
+    Set pUnitExpr.TestValue = pFluentVal
 End Property
 
 Public Property Let TestValue(value As Variant)
     pFluentVal = value
-    pUnit.TestValue = pFluentVal
+    pUnitExpr.TestValue = pFluentVal
 End Property
 
 Public Property Get TestValue() As Variant
     If IsObject(pFluentVal) Then
-        Set TestValue = pFluentVal
+        Set TestValue = pExpressions.TestValue
     Else
-        TestValue = pFluentVal
+        TestValue = pExpressions.TestValue
     End If
 End Property
