@@ -9,6 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
+Implements IMeta
+
 Private pShould As cShould
 Private pShouldSet As ISetExpressionAndValue
 Private pShouldNot As cShouldNot
@@ -52,13 +54,13 @@ Public Property Get ShouldNot() As IShould
     Set ShouldNot = pShouldNot
 End Property
 
-Public Property Set Meta(value As cMeta)
+Private Property Set IMeta_Meta(value As cMeta)
     Set pMeta = value
     Set pExpressions.setMeta = pMeta
 End Property
 
-Public Property Get Meta() As cMeta
-    Set Meta = pMeta
+Private Property Get IMeta_Meta() As cMeta
+    Set IMeta_Meta = pMeta
 End Property
 
 Private Function getShould() As cShould

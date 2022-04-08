@@ -10,13 +10,15 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Private pUnit As cUnit
+Private pUnitMeta As IMeta
 Private pMeta As cMeta
 Private pFluentVal As Variant
 
 Private Sub Class_Initialize()
     Set pUnit = New cUnit
     Set pMeta = New cMeta
-    Set pUnit.Meta = pMeta
+    Set pUnitMeta = pUnit
+    Set pUnitMeta.Meta = pMeta
 End Sub
 
 Public Property Get Should() As IShould
