@@ -21,10 +21,13 @@ Private Sub Class_Initialize()
     Set pUnit = New cUnit
     Set pMeta = New cMeta
     
+    
     Set pUnitExpr = pUnit
     Set pUnitExpr.setExpr = pExpressions
     Set pUnitMeta = pUnit
     Set pUnitMeta.Meta = pMeta
+    Set pUnitMeta.setPrintSettings = pMeta.PrintSettings
+    
 End Sub
 
 Public Property Get Should() As IShould

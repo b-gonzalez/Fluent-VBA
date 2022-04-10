@@ -20,6 +20,7 @@ Private pExpressions As cExpressions
 Private pMeta As cMeta
 Private pUnitVal As Variant
 Private pTestCount As Long
+Private pPrintSettings As cPrintSettings
 
 Private Sub Class_Initialize()
     'Set pExpressions = New cExpressions
@@ -69,6 +70,11 @@ Private Property Get IMeta_Meta() As cMeta
     Set IMeta_Meta = pMeta
 End Property
 
+Private Property Set IMeta_setPrintSettings(value As cPrintSettings)
+    Set pPrintSettings = value
+    Set pExpressions.setPrintSettings = pPrintSettings
+End Property
+
 Private Function getShould() As cShould
     Dim tempShould As ISetExpressionAndValue
     
@@ -105,7 +111,7 @@ Private Function getShouldNot() As cShouldNot
 End Function
 
 Private Sub Class_Terminate()
-    If pMeta.PrintTotalTests = True Then
+    If pMeta.PrintSettings.PrintTotalTests = True Then
         If pTestCount = 1 Then
             Debug.Print pTestCount & " test completed"
         ElseIf pTestCount > 1 Then

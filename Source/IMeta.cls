@@ -10,7 +10,13 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Public Property Set Meta(value As cMeta)
+
 End Property
 
 Public Property Get Meta() As cMeta
+
+End Property
+
+Public Property Set setPrintSettings(value As cPrintSettings)
+
 End Property

@@ -19,13 +19,17 @@ Private pExpressions As cExpressions
 
 Private Sub Class_Initialize()
     Set pExpressions = New cExpressions
+    
     Set pMeta = New cMeta
     Set pUnit = New cUnit
+        
     Set pUnitExpr = pUnit
-    Set pUnitExpr.setExpr = pExpressions
     Set pUnitTestVal = pUnit
     Set pUnitMeta = pUnit
+    Set pUnitExpr.setExpr = pExpressions
     Set pUnitMeta.Meta = pMeta
+    Set pExpressions.setPrintSettings = pMeta.PrintSettings
+
 End Sub
 
 Public Property Get Meta() As cMeta

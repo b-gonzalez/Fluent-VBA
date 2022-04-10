@@ -9,21 +9,12 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Private pPrintResults As Boolean
 Private pTestName As String
-Private pPrintTotalTests As Boolean
 Private pApproximateEqual As Boolean
 Private pEpsilon As Double
+Private pPrintSettings As IPrintSettings
 
 Private Const defaultEpsilon As Double = 0.000001
-
-Public Property Let Epsilon(value As Double)
-    pEpsilon = value
-End Property
-
-Public Property Get Epsilon() As Double
-    Epsilon = pEpsilon
-End Property
 
 Public Property Let ApproximateEqual(value As Boolean)
     pApproximateEqual = value
@@ -33,30 +24,28 @@ Public Property Get ApproximateEqual() As Boolean
     ApproximateEqual = pApproximateEqual
 End Property
 
+Public Property Let Epsilon(value As Double)
+    pEpsilon = value
+End Property
+
+Public Property Get Epsilon() As Double
+    Epsilon = pEpsilon
+End Property
+
+Public Property Get PrintSettings() As cPrintSettings
+    Set PrintSettings = pPrintSettings
+End Property
+
 Public Property Let TestName(value As String)
     pTestName = value
+    pPrintSettings.TestName = pTestName
 End Property
 
 Public Property Get TestName() As String
-    TestName = pTestName
-End Property
-
-Public Property Let PrintResults(value As Boolean)
-    pPrintResults = value
-End Property
-
-Public Property Get PrintResults() As Boolean
-    PrintResults = pPrintResults
-End Property
-
-Public Property Let PrintTotalTests(value As Boolean)
-    pPrintTotalTests = value
-End Property
-
-Public Property Get PrintTotalTests() As Boolean
-    PrintTotalTests = pPrintTotalTests
+    TestName = pPrintSettings.TestName
 End Property
 
 Private Sub Class_Initialize()
     Me.Epsilon = defaultEpsilon
+    Set pPrintSettings = New cPrintSettings
 End Sub

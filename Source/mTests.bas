@@ -15,20 +15,25 @@ Private Sub FluentAAAExamples()
     Result1.TestValue = returnedResult
     
     '//Assert
-    Debug.Assert Result1.Should.Be.EqualTo(5)
+    With Result1.Should.Be
+        Debug.Assert .EqualTo(5)
+    End With
     
-    Result1.Meta.PrintResults = True
-    Result2.Meta.PrintResults = True
+    Result1.Meta.PrintSettings.PrintTestsToImmediate = True
+    Result2.Meta.PrintSettings.PrintTestsToImmediate = True
     
     
     '//Act
     With Result2.Of(returnedResult).Should
         '//Assert
-        Debug.Assert .Be.EqualTo(5) And .Be.LessThanOrEqualTo(5) And .Be.GreaterThanOrEqualTo(5)
+         .Be.EqualTo (6)
     End With
     
     '//Act & Assert
     Debug.Assert Result2.Of(returnedResult).Should.Be.EqualTo(5)
+    
+    Result1.Meta.PrintSettings.PrintToImmediate
+    Result2.Meta.PrintSettings.PrintToImmediate
 End Sub
 
 Private Function returnVal(value As Variant)
@@ -42,7 +47,7 @@ Public Sub runMainTests()
     Set fluent = New cFluentOf
     Set testFluent = New cFluent
     
-    testFluent.Meta.PrintTotalTests = True
+    testFluent.Meta.PrintSettings.PrintTotalTests = True
     
     Call MetaTests(fluent, testFluent)
     Call positiveDocumentationTests(testFluent)
@@ -50,12 +55,13 @@ Public Sub runMainTests()
     Debug.Print "All tests Finished!"
 End Sub
 
-Private Sub Example1()
+Public Sub Example1()
     Dim Result As cFluent
     Set Result = New cFluent
     Result.TestValue = 10
        
-    Result.Meta.PrintResults = True
+    Result.Meta.PrintSettings.PrintTestsToImmediate = True
+    Result.Meta.PrintSettings.PrintTestsToSheet = True
     
     Result.Should.Be.EqualTo (10) 'true
     Result.Should.Be.GreaterThan (9) 'true
@@ -76,6 +82,9 @@ Private Sub Example1()
     Result.Should.Have.LengthOf (0) 'false
     Result.Should.Have.MaxLengthOf (1) 'false
     Result.Should.Have.MinLengthOf (3) 'false
+    
+    Result.Meta.PrintSettings.PrintToImmediate
+    Result.Meta.PrintSettings.PrintToSheet
     
 End Sub
 
@@ -204,7 +213,7 @@ Private Sub Example4()
     For i = LBound(Result) To UBound(Result)
         Set Result(i) = New cFluent
         Result(i).Meta.TestName = TestNames(i)
-        Result(i).Meta.PrintResults = True
+        Result(i).Meta.PrintSettings.PrintTestsToImmediate = True
         Result(i).TestValue = 10
     Next i
     

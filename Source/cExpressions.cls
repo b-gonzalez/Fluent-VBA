@@ -11,6 +11,7 @@ Option Explicit
 
 Private pTestValue As Variant
 Private pMeta As cMeta
+Private pPrintSettings As IPrintSettings
 
 Enum flMethod
     flRecursive
@@ -37,127 +38,15 @@ Public Property Set setMeta(value As cMeta)
     Set pMeta = value
 End Property
 
-Public Function GreaterThan(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
-    GreaterThan = (origVal > NewVal)
-    Call checkIfPrint(GreaterThan, negateValue)
-End Function
-
-Public Function GreaterThanOrEqualTo(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
-    GreaterThanOrEqualTo = (origVal >= NewVal)
-    Call checkIfPrint(GreaterThanOrEqualTo, negateValue)
-End Function
-
-Public Function LessThan(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
-    LessThan = (origVal < NewVal)
-    Call checkIfPrint(LessThan, negateValue)
-End Function
-
-Public Function LessThanOrEqualTo(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
-    LessThanOrEqualTo = (origVal <= NewVal)
-    Call checkIfPrint(LessThanOrEqualTo, negateValue)
-End Function
-
-Public Function EqualTo(origVal As Variant, NewVal As Variant, Optional negateValue As Boolean = False) As Boolean
-
-    Dim tempBool As Boolean
-    
-    tempBool = (origVal = NewVal)
-    
-    If pMeta.ApproximateEqual Then
-        If TypeName(origVal) = TypeName(NewVal) Then
-            tempBool = (origVal = NewVal)
-        ElseIf TypeName(origVal) <> TypeName(NewVal) Then
-            If IsNumeric(origVal) And IsNumeric(NewVal) Then
-                tempBool = (Abs(origVal - NewVal) <= pMeta.Epsilon)
-            ElseIf VarType(origVal) = vbString Or VarType(NewVal) = vbString Then
-                tempBool = (StrComp(CStr(origVal), CStr(NewVal), vbTextCompare) = 0)
-            End If
-        End If
-    End If
-    
-    EqualTo = tempBool
-
-    Call checkIfPrint(EqualTo, negateValue)
-End Function
-
-Public Function Contain(origVal As Variant, NewVal As Variant, Optional negateValue As Boolean = False) As Boolean
-    If origVal Like "*" & NewVal & "*" Then
-        Contain = True
-    End If
-    Call checkIfPrint(Contain, negateValue)
-End Function
-
-Public Function StartWith(origVal As Variant, NewVal As Variant, Optional negateValue As Boolean = False) As Boolean
-    Dim valLength As Long
-    valLength = Len(NewVal)
-    If Left(origVal, valLength) = CStr(NewVal) Then
-        StartWith = True
-    End If
-    Call checkIfPrint(StartWith, negateValue)
-End Function
-
-Public Function EndWith(origVal As Variant, NewVal As Variant, Optional negateValue As Boolean = False) As Boolean
-    Dim valLength As Long
-    valLength = Len(NewVal)
-    If Right(origVal, valLength) = CStr(NewVal) Then
-        EndWith = True
-    End If
-    Call checkIfPrint(EndWith, negateValue)
-End Function
-
-Public Function LengthOf(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
-    LengthOf = (Len(CStr(origVal)) = NewVal)
-    Call checkIfPrint(LengthOf, negateValue)
-End Function
-
-Public Function MaxLengthOf(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
-    MaxLengthOf = (Len(CStr(origVal)) <= NewVal)
-    Call checkIfPrint(MaxLengthOf, negateValue)
-End Function
-
-Public Function MinLengthOf(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
-    MinLengthOf = (Len(CStr(origVal)) >= NewVal)
-    Call checkIfPrint(MinLengthOf, negateValue)
-End Function
-
-Public Function Something(origVal As Variant, Optional negateValue As Boolean = False) As Boolean
-    Something = (Not origVal Is Nothing)
-    Call checkIfPrint(Something, negateValue)
-End Function
-
-Public Function Between(origVal As Double, lowerVal As Double, higherVal As Double, Optional negateValue As Boolean = False) As Boolean
-    Between = (GreaterThanOrEqualTo(origVal, lowerVal) And LessThanOrEqualTo(origVal, higherVal))
-    Call checkIfPrint(Between, negateValue)
-End Function
-
-Public Function OneOf(origVal As Variant, negateValue As Boolean, ParamArray args() As Variant)
-    Dim i As Long
-    Dim j As Long
-    Dim tempBool As Boolean
-    Dim arr As Variant
-    
-    arr = args(0)
-    tempBool = False
-    
-    For i = LBound(arr) To UBound(arr)
-        If IsObject(arr(i)) Then
-            If TypeName(arr(i)) = TypeName(origVal) Then
-                tempBool = True
-            End If
-        ElseIf arr(i) = origVal Then
-            tempBool = True
-            Exit For
-        End If
-    Next i
-    
-    OneOf = tempBool
-    Call checkIfPrint(OneOf, negateValue)
-End Function
+Public Property Set setPrintSettings(value As IPrintSettings)
+    Set pPrintSettings = value
+End Property
 
 Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Optional method As flMethod = flRecursive, Optional negateValue As Boolean = False) As Boolean
     Dim elem As Variant
     Dim col As Collection
     Dim tempBool As Boolean
+    Dim fluentPath As String
     
     tempBool = False
     
@@ -178,7 +67,10 @@ Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Op
     
     InDataStructure = tempBool
     
-    Call checkIfPrint(InDataStructure, negateValue)
+    fluentPath = CLng(InDataStructure) & " = " & pPrintSettings.TestName & " Should be in datastructure. "
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(InDataStructure, fluentPath, negateValue)
     
 End Function
 
@@ -281,41 +173,227 @@ Private Function getNestedElementsIter(dataStructure As Variant) As Collection
     Set getNestedElementsIter = col
 End Function
 
-Public Function LengthBetween(origVal As Double, lowVal As Double, highVal As Double, Optional negateValue As Boolean = False)
-    Dim tempOrigVal As Double
-    tempOrigVal = Len(CStr(origVal))
-    LengthBetween = (MinLengthOf(tempOrigVal, lowVal) And MaxLengthOf(tempOrigVal, highVal))
+Public Function GreaterThan(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
+    Dim fluentPath As String
+    
+    GreaterThan = (origVal > NewVal)
+    
+    fluentPath = pPrintSettings.TestName & " Should be greater than. "
+    fluentPath = CLng(GreaterThan) & " = " & fluentPath & "Expected: " & origVal & "; Actual: " & NewVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(GreaterThan, fluentPath, negateValue)
+    
 End Function
 
-Private Sub checkIfPrint(ByVal value As Boolean, Optional negateValue As Boolean = False)
-    If pMeta.PrintResults Then
-        If negateValue Then
-            value = Not value
-        End If
-        printEval (value)
-    End If
-End Sub
-
-Private Sub printEval(ByVal value As Boolean)
-    Dim Result As String
-    Dim TestPassed As Boolean
+Public Function GreaterThanOrEqualTo(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
+    Dim fluentPath As String
     
-    Result = ""
-    TestPassed = value
+    GreaterThanOrEqualTo = (origVal >= NewVal)
+    
+    fluentPath = CLng(GreaterThanOrEqualTo) & " = " & pPrintSettings.TestName & " Should be greater than or equal to. "
+    fluentPath = fluentPath & "Expected: " & origVal & "; Actual: " & NewVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(GreaterThanOrEqualTo, fluentPath, negateValue)
+End Function
 
-    If TestPassed Then
-        Result = "Passed"
-        If pMeta.TestName <> Empty Then
-            Debug.Print pMeta.TestName & Result
-        Else
-            Debug.Print "Passed: " & Result
-        End If
-    Else
-        Result = "Failed"
-        If pMeta.TestName <> Empty Then
-            Debug.Print pMeta.TestName & Result
-        Else
-            Debug.Print "Failed: " & Result
+Public Function LessThan(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
+    Dim fluentPath As String
+    
+    LessThan = (origVal < NewVal)
+    
+    fluentPath = CLng(LessThan) & " = " & pPrintSettings.TestName & " Should be less than. "
+    fluentPath = fluentPath & "Expected: " & origVal & "; Actual: " & NewVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(LessThan, fluentPath, negateValue)
+End Function
+
+Public Function LessThanOrEqualTo(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
+    Dim fluentPath As String
+    
+    LessThanOrEqualTo = (origVal <= NewVal)
+    
+    fluentPath = CLng(LessThanOrEqualTo) & " - " & pPrintSettings.TestName & " Should be less than or equal to. "
+    fluentPath = fluentPath & "Expected: " & origVal & "; Actual: " & NewVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(LessThanOrEqualTo, fluentPath, negateValue)
+End Function
+
+Public Function EqualTo(origVal As Variant, NewVal As Variant, Optional negateValue As Boolean = False) As Boolean
+    Dim tempBool As Boolean
+    Dim fluentPath As String
+    
+    
+    tempBool = (origVal = NewVal)
+    
+    If pMeta.ApproximateEqual Then
+        If TypeName(origVal) = TypeName(NewVal) Then
+            tempBool = (origVal = NewVal)
+        ElseIf TypeName(origVal) <> TypeName(NewVal) Then
+            If IsNumeric(origVal) And IsNumeric(NewVal) Then
+                tempBool = (Abs(origVal - NewVal) <= pMeta.Epsilon)
+            ElseIf VarType(origVal) = vbString Or VarType(NewVal) = vbString Then
+                tempBool = (StrComp(CStr(origVal), CStr(NewVal), vbTextCompare) = 0)
+            End If
         End If
     End If
-End Sub
+    
+    EqualTo = tempBool
+    
+    fluentPath = CLng(EqualTo) & " = " & pPrintSettings.TestName & " Should be equal to. "
+    fluentPath = fluentPath & "Expected: " & origVal & "; Actual: " & NewVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(EqualTo, fluentPath, negateValue)
+End Function
+
+Public Function Contain(origVal As Variant, NewVal As Variant, Optional negateValue As Boolean = False) As Boolean
+    Dim fluentPath As String
+    
+    If origVal Like "*" & NewVal & "*" Then
+        Contain = True
+    End If
+    
+    fluentPath = CLng(Contain) & " = " & pPrintSettings.TestName & " Should contain. "
+    fluentPath = fluentPath & "Expected: " & origVal & "; Actual: " & NewVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(Contain, fluentPath, negateValue)
+End Function
+
+Public Function StartWith(origVal As Variant, NewVal As Variant, Optional negateValue As Boolean = False) As Boolean
+    Dim valLength As Long
+    Dim fluentPath As String
+    
+    valLength = Len(NewVal)
+    If Left(origVal, valLength) = CStr(NewVal) Then
+        StartWith = True
+    End If
+    
+    fluentPath = CLng(StartWith) & " = " & pPrintSettings.TestName & " Should start with. "
+    fluentPath = fluentPath & "Expected: " & origVal & "; Actual: " & NewVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(StartWith, fluentPath, negateValue)
+End Function
+
+Public Function EndWith(origVal As Variant, NewVal As Variant, Optional negateValue As Boolean = False) As Boolean
+    Dim valLength As Long
+    Dim fluentPath As String
+    
+    valLength = Len(NewVal)
+    If Right(origVal, valLength) = CStr(NewVal) Then
+        EndWith = True
+    End If
+    
+    fluentPath = CLng(EndWith) & " = " & pPrintSettings.TestName & " Should end with. "
+    fluentPath = fluentPath & "Expected: " & origVal & "; Actual: " & NewVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(EndWith, fluentPath, negateValue)
+End Function
+
+Public Function LengthOf(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
+    Dim fluentPath As String
+    
+    LengthOf = (Len(CStr(origVal)) = NewVal)
+    
+    fluentPath = CLng(LengthOf) & " = " & pPrintSettings.TestName & " Should have length of. "
+    fluentPath = fluentPath & "Expected: " & origVal & "; Actual: " & NewVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(LengthOf, fluentPath, negateValue)
+End Function
+
+Public Function MaxLengthOf(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
+    Dim fluentPath As String
+    
+    MaxLengthOf = (Len(CStr(origVal)) <= NewVal)
+    
+    fluentPath = CLng(MaxLengthOf) & " = " & pPrintSettings.TestName & " Should have max length of. "
+    fluentPath = fluentPath & "Expected: " & origVal & "; Actual: " & NewVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(MaxLengthOf, fluentPath, negateValue)
+End Function
+
+Public Function MinLengthOf(origVal As Double, NewVal As Double, Optional negateValue As Boolean = False) As Boolean
+    Dim fluentPath As String
+    
+    MinLengthOf = (Len(CStr(origVal)) >= NewVal)
+    
+    fluentPath = CLng(MinLengthOf) & " = " & pPrintSettings.TestName & " Should have min length of. "
+    fluentPath = fluentPath & "Expected: " & origVal & "; Actual: " & NewVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(MinLengthOf, fluentPath, negateValue)
+End Function
+
+Public Function Something(origVal As Variant, Optional negateValue As Boolean = False) As Boolean
+    Dim fluentPath As String
+    
+    Something = (Not origVal Is Nothing)
+    
+    fluentPath = CLng(Something) & " = " & pPrintSettings.TestName & " Should be equal something. "
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(Something, fluentPath, negateValue)
+End Function
+
+Public Function Between(origVal As Double, lowerVal As Double, higherVal As Double, Optional negateValue As Boolean = False) As Boolean
+    Dim fluentPath As String
+    
+    Between = (GreaterThanOrEqualTo(origVal, lowerVal) And LessThanOrEqualTo(origVal, higherVal))
+    
+    fluentPath = CLng(Between) & " = " & pPrintSettings.TestName & " Should be between. "
+    fluentPath = fluentPath & "Expected: Greater than " & lowerVal & " less than " & higherVal & "; Actual: " & origVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(Between, fluentPath, negateValue)
+End Function
+
+Public Function OneOf(origVal As Variant, negateValue As Boolean, ParamArray args() As Variant)
+    Dim i As Long
+    Dim j As Long
+    Dim tempBool As Boolean
+    Dim arr As Variant
+    Dim fluentPath As String
+    
+    arr = args(0)
+    tempBool = False
+    
+    For i = LBound(arr) To UBound(arr)
+        If IsObject(arr(i)) Then
+            If TypeName(arr(i)) = TypeName(origVal) Then
+                tempBool = True
+            End If
+        ElseIf arr(i) = origVal Then
+            tempBool = True
+            Exit For
+        End If
+    Next i
+    
+    OneOf = tempBool
+    
+    fluentPath = CLng(OneOf) & " = " & pPrintSettings.TestName & " Should be one of. "
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(OneOf, fluentPath, negateValue)
+End Function
+
+Public Function LengthBetween(origVal As Double, lowerVal As Double, higherVal As Double, Optional negateValue As Boolean = False)
+    Dim tempOrigVal As Double
+    Dim fluentPath As String
+    
+    tempOrigVal = Len(CStr(origVal))
+    LengthBetween = (MinLengthOf(tempOrigVal, lowerVal) And MaxLengthOf(tempOrigVal, higherVal))
+    
+    fluentPath = CLng(LengthBetween) & " = " & pPrintSettings.TestName & " Should have length between. "
+    fluentPath = fluentPath & "Expected: Greater than " & lowerVal & " less than " & higherVal & "; Actual: " & origVal
+    
+    Call pPrintSettings.TestCollection.Add(fluentPath)
+    'Call pPrintSettings.checkIfPrint(LengthBetween, fluentPath, negateValue)
+End Function
