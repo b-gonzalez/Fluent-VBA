@@ -19,7 +19,6 @@ Private pExpressions As cExpressions
 
 Private Sub Class_Initialize()
     Set pExpressions = New cExpressions
-    
     Set pMeta = New cMeta
     Set pUnit = New cUnit
         
@@ -28,7 +27,7 @@ Private Sub Class_Initialize()
     Set pUnitMeta = pUnit
     Set pUnitExpr.setExpr = pExpressions
     Set pUnitMeta.Meta = pMeta
-    Set pExpressions.setPrintSettings = pMeta.PrintSettings
+    Set pUnitMeta.setPrintSettings = pMeta.PrintSettings
 
 End Sub
 

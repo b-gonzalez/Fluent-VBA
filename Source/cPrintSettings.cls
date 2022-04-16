@@ -16,6 +16,7 @@ Private pPrintTotalTests As Boolean
 Private pPrintTestsToSheet As Boolean
 Private pTestName As String
 Private pTestCollection As Collection
+Private pTestCount As Long
 
 Public Property Let PrintTestsToImmediate(value As Boolean)
     pPrintTestsToImmediate = value
@@ -41,6 +42,14 @@ Public Property Get PrintTotalTests() As Boolean
     PrintTotalTests = pPrintTotalTests
 End Property
 
+Public Property Let TestCount(value As Long)
+    pTestCount = value
+End Property
+
+Public Property Get TestCount() As Long
+    TestCount = pTestCount
+End Property
+
 Private Property Let IPrintSettings_testname(value As String)
     pTestName = value
 End Property
@@ -56,53 +65,31 @@ Private Property Get IPrintSettings_TestCollection() As Collection
     Set IPrintSettings_TestCollection = pTestCollection
 End Property
 
-Private Sub IPrintSettings_checkIfPrint(ByVal value As Boolean, testMessage As String, Optional negateValue As Boolean = False)
-'    Dim arr() As Variant
-'
-'    arr = getArrayFromCollection(pTestCollection)
-'
-'    If negateValue Then
-'        value = Not value
-'    End If
-'
-'    If pPrintTestsToImmediate Then
-'        Call PrintToImmediate(value, arr)
-'    ElseIf pPrintTestsToSheet Then
-'        Call PrintToSheet(value, arr)
-'    End If
+Private Sub IPrintSettings_printTestCounts()
+    If Me.TestCount = 1 Then
+        Debug.Print Me.TestCount & " test completed"
+    ElseIf Me.TestCount > 1 Then
+        Debug.Print Me.TestCount & " tests completed"
+    End If
 End Sub
 
+'Private Property Let IPrintSettings_TestCount(value As Long)
+'    pTestCount = value
+'End Property
+'
+'Private Property Get IPrintSettings_TestCount() As Long
+'    IPrintSettings_TestCount = pTestCount
+'End Property
+
 Public Sub PrintToImmediate()
-Dim arr() As Variant
+    Dim arr() As Variant
     Dim i As Long
-'    Dim Result As String
-'    Dim TestPassed As Boolean
-'
-'    Result = ""
-'    TestPassed = value
-'
-'    If TestPassed Then
-'        Result = "Passed"
-'        If pTestName <> Empty Then
-'            Debug.Print Result & " - " & pTestName & testMessage
-'        Else
-'            Debug.Print Result & " - " & testMessage
-'        End If
-'    Else
-'        Result = "Failed"
-'        If pTestName <> Empty Then
-'            Debug.Print Result & " - " & pTestName & testMessage
-'        Else
-'            Debug.Print Result & " - " & testMessage
-'        End If
-'    End If
-
-arr = getArrayFromCollection(pTestCollection)
-
-For i = LBound(arr, 1) To UBound(arr, 1)
-    Debug.Print arr(i, 1)
-Next i
-
+    
+    arr = getArrayFromCollection(pTestCollection)
+    
+    For i = LBound(arr, 1) To UBound(arr, 1)
+        Debug.Print arr(i, 1)
+    Next i
 End Sub
 
 Public Sub PrintToSheet()
@@ -126,6 +113,8 @@ Public Sub PrintToSheet()
     Call addValueConditColors(testNameCol, "Passed", "Failed")
     
     lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
+    
+    Columns("B:B").EntireColumn.AutoFit
 
 End Sub
 

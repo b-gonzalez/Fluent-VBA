@@ -21,7 +21,6 @@ Private Sub Class_Initialize()
     Set pUnit = New cUnit
     Set pMeta = New cMeta
     
-    
     Set pUnitExpr = pUnit
     Set pUnitExpr.setExpr = pExpressions
     Set pUnitMeta = pUnit

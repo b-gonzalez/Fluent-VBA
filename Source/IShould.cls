@@ -30,3 +30,6 @@ Public Function EndWith(value As Variant) As Boolean
 
 End Function
 
+Public Function EvaluateTo(value As Variant) As Boolean
+
+End Function

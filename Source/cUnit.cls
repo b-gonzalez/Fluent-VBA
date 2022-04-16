@@ -21,31 +21,19 @@ Private pMeta As cMeta
 Private pUnitVal As Variant
 Private pTestCount As Long
 Private pPrintSettings As cPrintSettings
-
-Private Sub Class_Initialize()
-    'Set pExpressions = New cExpressions
-End Sub
+Private IPrint As IPrintSettings
 
 Private Property Set ISetExpressionAndValue_TestValue(value As Variant)
-    pTestCount = pTestCount + 1
+    pPrintSettings.TestCount = pPrintSettings.TestCount + 1
     Set pExpressions.TestValue = value
     Set pUnitVal = pExpressions.TestValue
 End Property
 
 Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
-    pTestCount = pTestCount + 1
+    pPrintSettings.TestCount = pPrintSettings.TestCount + 1
     pExpressions.TestValue = value
     pUnitVal = pExpressions.TestValue
 End Property
-
-'Private Property Get ISetExpressionAndValue_TestValue() As Variant
-'    If IsObject(pUnitVal) Then
-'        Set ISetExpressionAndValue_TestValue = pUnitVal
-'    Else
-'        ISetExpressionAndValue_TestValue = pUnitVal
-'    End If
-'End Property
-
 
 Private Property Set ISetExpressionAndValue_setExpr(value As cExpressions)
     Set pExpressions = value
@@ -73,6 +61,7 @@ End Property
 Private Property Set IMeta_setPrintSettings(value As cPrintSettings)
     Set pPrintSettings = value
     Set pExpressions.setPrintSettings = pPrintSettings
+    Set IPrint = pPrintSettings
 End Property
 
 Private Function getShould() As cShould
@@ -111,11 +100,7 @@ Private Function getShouldNot() As cShouldNot
 End Function
 
 Private Sub Class_Terminate()
-    If pMeta.PrintSettings.PrintTotalTests = True Then
-        If pTestCount = 1 Then
-            Debug.Print pTestCount & " test completed"
-        ElseIf pTestCount > 1 Then
-            Debug.Print pTestCount & " tests completed"
-        End If
+    If pPrintSettings.PrintTotalTests = True Then
+        IPrint.printTestCounts
     End If
 End Sub

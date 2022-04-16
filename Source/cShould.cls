@@ -69,3 +69,6 @@ Private Function IShould_EndWith(value As Variant) As Boolean
     IShould_EndWith = pExpressions.EndWith(pShouldVal, value)
 End Function
 
+Public Function IShould_EvaluateTo(value As Variant) As Boolean
+    IShould_EvaluateTo = pExpressions.EvaluateTo(pShouldVal, value)
+End Function

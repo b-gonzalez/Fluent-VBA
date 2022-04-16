@@ -12,7 +12,7 @@ Private Sub FluentAAAExamples()
     returnedResult = returnVal(5)
     
     '//Act
-    Result1.TestValue = returnedResult
+    Result1.TestValue = 5 + 0
     
     '//Assert
     With Result1.Should.Be
@@ -40,6 +40,33 @@ Private Function returnVal(value As Variant)
     returnVal = value
 End Function
 
+Private Sub EvaluateTo()
+    Dim Result As cFluentOf
+    Dim val As Variant
+    Dim exprStr As String
+    
+    Set Result = New cFluentOf
+    
+    exprStr = "5 + 5"
+    
+    Result.Meta.PrintSettings.PrintTestsToImmediate = True = True
+    
+    Debug.Assert Result.Of(exprStr).ShouldNot.Be.EqualTo(10) '//True. This is true because the Should test fails.
+
+    Result.Meta.ApproximateEqual = True
+    Debug.Assert Result.Of(exprStr).ShouldNot.Be.EqualTo(10) '//True. Test still fails with approximate equal set to true
+    
+    Result.Meta.ApproximateEqual = False
+    Debug.Assert Result.Of(exprStr).Should.EvaluateTo(10) '//Test passes
+    
+    Debug.Assert Result.Of("1/0").Should.EvaluateTo(CVErr(xlErrDiv0)) '//Test passes. Errors are capable of being evaluated in strings.
+    
+    Debug.Assert Result.Of(True).Should.EvaluateTo(True) '//test passes
+    
+    Result.Meta.PrintSettings.PrintToImmediate
+
+End Sub
+
 Public Sub runMainTests()
     Dim fluent As cFluentOf
     Dim testFluent As cFluent
@@ -55,14 +82,14 @@ Public Sub runMainTests()
     Debug.Print "All tests Finished!"
 End Sub
 
-Public Sub Example1()
+Private Sub Example1()
     Dim Result As cFluent
     Set Result = New cFluent
-    Result.TestValue = 10
+    Result.TestValue = 5 + 5
        
     Result.Meta.PrintSettings.PrintTestsToImmediate = True
     Result.Meta.PrintSettings.PrintTestsToSheet = True
-    
+
     Result.Should.Be.EqualTo (10) 'true
     Result.Should.Be.GreaterThan (9) 'true
     Result.Should.Be.LessThan (11) 'true
@@ -71,10 +98,11 @@ Public Sub Example1()
     Result.Should.StartWith (1) 'true
     Result.Should.EndWith (0) 'true
     Result.Should.Contain (10) 'true
+    
     Result.Should.EndWith (9) 'false
-
     Result.ShouldNot.StartWith (1) 'false
     Result.ShouldNot.EndWith (0) 'false
+    
     Result.ShouldNot.Have.LengthOf (0) 'true
     Result.ShouldNot.Have.MaxLengthOf (0) 'true
     Result.ShouldNot.Have.MinLengthOf (3) 'true
@@ -82,8 +110,8 @@ Public Sub Example1()
     Result.Should.Have.LengthOf (0) 'false
     Result.Should.Have.MaxLengthOf (1) 'false
     Result.Should.Have.MinLengthOf (3) 'false
-    
-    Result.Meta.PrintSettings.PrintToImmediate
+
+    'Result.Meta.PrintSettings.PrintToImmediate
     Result.Meta.PrintSettings.PrintToSheet
     
 End Sub
@@ -488,6 +516,7 @@ Private Sub MetaTests(fluent As cFluentOf, testFluent As cFluent)
         Debug.Assert fluent.Of(.TestValue).ShouldNot.Be.EqualTo(False)
     End With
     
+
 End Sub
 
 Private Sub positiveDocumentationTests(testFluent As cFluent)
@@ -771,6 +800,115 @@ Private Sub positiveDocumentationTests(testFluent As cFluent)
     fluent.TestValue = testFluent.Should.Be.EqualTo(5)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    testFluent.Meta.ApproximateEqual = False
+    
+    '//Evaluation tests
+    
+    testFluent.TestValue = True
+    fluent.TestValue = testFluent.Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = True
+    fluent.TestValue = testFluent.Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = False
+    fluent.TestValue = testFluent.Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = False
+    fluent.TestValue = testFluent.Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = "true" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = "false" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = "TRUE" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = "FALSE" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = -1 '// -1 = true in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = -1 '// -1 = true in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = 0 '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = 0 '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = "-1" '// -1 = true in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = "-1" '// -1 = true in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = "0" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = "0" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = 5 + 5
+    fluent.TestValue = testFluent.Should.EvaluateTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = "5 + 5"
+    fluent.TestValue = testFluent.Should.EvaluateTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = "5 + 5 = 10"
+    fluent.TestValue = testFluent.Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = "5 + 5 > 9"
+    fluent.TestValue = testFluent.Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    '//Testing errors is possible if they're put in strings
+    testFluent.TestValue = "1 / 0"
+    fluent.TestValue = testFluent.Should.EvaluateTo(CVErr(xlErrDiv0))
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
 End Sub
 
@@ -931,7 +1069,7 @@ Sub negativeDocumentationTests(testFluent As cFluent)
     
     testFluent.TestValue = 10
     fluent.TestValue = testFluent.ShouldNot.Have.LengthBetween(1, 3)
-    Debug.Assert fluent.Should.Be.EqualTo(False)
+    fluent.Should.Be.EqualTo (False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     testFluent.TestValue = 10
@@ -1075,6 +1213,114 @@ Sub negativeDocumentationTests(testFluent As cFluent)
     testFluent.Meta.ApproximateEqual = True
     testFluent.TestValue = 5.0000001
     fluent.TestValue = testFluent.ShouldNot.Be.EqualTo(5)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    '//Evaluation tests
+    
+    testFluent.TestValue = True
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = True
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = False
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = False
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = "true" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(True)
+      Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = "false" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = "TRUE" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = "FALSE" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = -1 '// -1 = true in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = -1 '// -1 = true in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = 0 '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(False)
+       Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = 0 '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = "-1" '// -1 = true in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = "-1" '// -1 = true in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = "0" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = "0" '// 0 = false in boolean enum
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    
+    testFluent.TestValue = 5 + 5
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = "5 + 5"
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = "5 + 5 = 10"
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    testFluent.TestValue = "5 + 5 > 9"
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    
+    '//Testing errors is possible if they're put in strings
+    testFluent.TestValue = "1 / 0"
+    fluent.TestValue = testFluent.ShouldNot.EvaluateTo(CVErr(xlErrDiv0))
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
 End Sub
