@@ -422,6 +422,8 @@ Optional origVal As Variant, Optional newVal As Variant, Optional lowerVal As Va
     Dim fluentPath As String
     Dim shouldStr As String
     Dim fluentBool As Boolean
+    Dim fluentTestName As String
+    Dim fluentCategory As String
     
     If negateValue Then
         fluentBool = Not functionBool
@@ -431,54 +433,56 @@ Optional origVal As Variant, Optional newVal As Variant, Optional lowerVal As Va
         shouldStr = "Should"
     End If
     
+    If pPrintSettings.CATEGORY <> "" Then fluentCategory = pPrintSettings.CATEGORY & " = "
+    
     Select Case functionName
         Case "InDataStructure"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " be in datastructure. "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " be in datastructure. "
         Case "GreaterThan"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " be greater than "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " be greater than "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
         Case "GreaterThanOrEqualTo"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " be greater than or equal to "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " be greater than or equal to "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
         Case "LessThan"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " be less than "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " be less than "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
         Case "LessThanOrEqualTo"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " be less than or equal to "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " be less than or equal to "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
         Case "EqualTo"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " be equal to "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " be equal to "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
         Case "Contain"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " contain "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " contain "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
         Case "StartWith"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " start with "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " start with "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
         Case "EndWith"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " end with "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " end with "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
         Case "LengthOf"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " have length of "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " have length of "
             fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
         Case "MaxLengthOf"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " have max length of "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " have max length of "
             fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
         Case "MinLengthOf"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " have min length of "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " have min length of "
             fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
         Case "Something"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " be something. "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " be something. "
         Case "Between"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " be between "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " be between "
             fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & origVal
         Case "OneOf"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " be one of "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " be one of "
         Case "LengthBetween"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " have length between "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " have length between "
             fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & Len(origVal)
         Case "EvaluateTo"
-            fluentPath = CLng(fluentBool) & " = " & pPrintSettings.TestName & shouldStr & " evaluate to "
+            fluentPath = fluentCategory & CLng(fluentBool) & " = " & pPrintSettings.TESTNAME & shouldStr & " evaluate to "
             fluentPath = fluentPath & CStr(newVal) & ". Actual: " & origVal
     End Select
     

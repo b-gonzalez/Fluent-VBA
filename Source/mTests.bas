@@ -40,33 +40,6 @@ Private Function returnVal(value As Variant)
     returnVal = value
 End Function
 
-Private Sub EvaluateTo()
-    Dim Result As cFluentOf
-    Dim val As Variant
-    Dim exprStr As String
-    
-    Set Result = New cFluentOf
-    
-    exprStr = "5 + 5"
-    
-    Result.Meta.PrintSettings.PrintTestsToImmediate = True = True
-    
-    Debug.Assert Result.Of(exprStr).ShouldNot.Be.EqualTo(10) '//True. This is true because the Should test fails.
-
-    Result.Meta.ApproximateEqual = True
-    Debug.Assert Result.Of(exprStr).ShouldNot.Be.EqualTo(10) '//True. Test still fails with approximate equal set to true
-    
-    Result.Meta.ApproximateEqual = False
-    Debug.Assert Result.Of(exprStr).Should.EvaluateTo(10) '//Test passes
-    
-    Debug.Assert Result.Of("1/0").Should.EvaluateTo(CVErr(xlErrDiv0)) '//Test passes. Errors are capable of being evaluated in strings.
-    
-    Debug.Assert Result.Of(True).Should.EvaluateTo(True) '//test passes
-    
-    Result.Meta.PrintSettings.PrintToImmediate
-
-End Sub
-
 Public Sub runMainTests()
     Dim fluent As cFluent
     
@@ -78,17 +51,28 @@ Public Sub runMainTests()
     Call MetaTests(fluent)
     Call positiveDocumentationTests(fluent)
     Call negativeDocumentationTests(fluent)
-    Debug.Print "All tests Finished!"
-    'fluent.Meta.PrintSettings.PrintToSheet
+    'Debug.Print "All tests Finished!"
+    Call printTestCount(fluent.Meta.TestCount)
+    fluent.Meta.PrintSettings.PrintToSheet
 End Sub
 
-Private Sub Example1()
+Private Sub printTestCount(TestCount As Long)
+    If TestCount > 2 Then
+        Debug.Print TestCount & " tests finished!"
+    ElseIf TestCount > 1 Then
+        Debug.Print "Test finished!"
+    End If
+End Sub
+
+Public Sub Example1()
     Dim Result As cFluent
     Set Result = New cFluent
     Result.TestValue = 5 + 5
        
+    Result.Meta.CATEGORY = "abc"
     Result.Meta.PrintSettings.PrintTestsToImmediate = True
     Result.Meta.PrintSettings.PrintTestsToSheet = True
+    
 
     Result.Should.Be.EqualTo (10) 'true
     Result.Should.Be.GreaterThan (9) 'true
@@ -153,55 +137,55 @@ Private Sub Example3()
     Result.TestValue = 10
     
     With Result
-        .Meta.TestName = "Test - Result should be equal to 10 - "
+        .Meta.TESTNAME = "Test - Result should be equal to 10 - "
         Debug.Assert .Should.Be.EqualTo(10)  ' true
         
-        .Meta.TestName = "Test - Result should greater than 9 - "
+        .Meta.TESTNAME = "Test - Result should greater than 9 - "
         Debug.Assert .Should.Be.GreaterThan(9)  'true
         
-        .Meta.TestName = "Test - Result should be less than 11 - "
+        .Meta.TESTNAME = "Test - Result should be less than 11 - "
         Debug.Assert .Should.Be.LessThan(11)  ' true
         
-        .Meta.TestName = "Test - Result should not be equal to 9 - "
+        .Meta.TESTNAME = "Test - Result should not be equal to 9 - "
         Debug.Assert .ShouldNot.Be.EqualTo(9)  'true
         
-        .Meta.TestName = "Test - Result should not contain 4 - "
+        .Meta.TESTNAME = "Test - Result should not contain 4 - "
         Debug.Assert .ShouldNot.Contain(4)  'true
         
-        .Meta.TestName = "Test - Result should start with 1 - "
+        .Meta.TESTNAME = "Test - Result should start with 1 - "
         Debug.Assert .Should.StartWith(1)  'true
         
-        .Meta.TestName = "Test - Result should end with 0 - "
+        .Meta.TESTNAME = "Test - Result should end with 0 - "
         Debug.Assert .Should.EndWith(0)  'true
     
-        .Meta.TestName = "Test - Result should contain 10 - "
+        .Meta.TESTNAME = "Test - Result should contain 10 - "
         Debug.Assert .Should.Contain(10)  'true
     
-        .Meta.TestName = "Test - Result should end with 9 - "
+        .Meta.TESTNAME = "Test - Result should end with 9 - "
         Debug.Assert .Should.EndWith(9)  'false
         
-        .Meta.TestName = "Test -  - "
+        .Meta.TESTNAME = "Test -  - "
         Debug.Assert .ShouldNot.StartWith(1)  'false
         
-        .Meta.TestName = "Test - Result shoudl not end with 0  - "
+        .Meta.TESTNAME = "Test - Result shoudl not end with 0  - "
         Debug.Assert .ShouldNot.EndWith(0)  'false
         
-        .Meta.TestName = "Test - result should not have length of 0 - "
+        .Meta.TESTNAME = "Test - result should not have length of 0 - "
         Debug.Assert .ShouldNot.Have.LengthOf(0)  'true
         
-        .Meta.TestName = "Test - result should not have max length of 0 - "
+        .Meta.TESTNAME = "Test - result should not have max length of 0 - "
         Debug.Assert .ShouldNot.Have.MaxLengthOf(0)  'true
         
-        .Meta.TestName = "Test - result should not have min length of 3 - "
+        .Meta.TESTNAME = "Test - result should not have min length of 3 - "
         Debug.Assert .ShouldNot.Have.MinLengthOf(3)  'true
         
-        .Meta.TestName = "Test - result should have length of 0 - "
+        .Meta.TESTNAME = "Test - result should have length of 0 - "
         Debug.Assert .Should.Have.LengthOf(0)  'false
         
-        .Meta.TestName = "Test - result should have max length of 1 - "
+        .Meta.TESTNAME = "Test - result should have max length of 1 - "
         Debug.Assert .Should.Have.MaxLengthOf(1)  'false
         
-        .Meta.TestName = "Test - result should have min length of 3 - "
+        .Meta.TESTNAME = "Test - result should have min length of 3 - "
         Debug.Assert .Should.Have.MinLengthOf(3)  'false
     End With
 End Sub
@@ -240,7 +224,7 @@ Private Sub Example4()
     
     For i = LBound(Result) To UBound(Result)
         Set Result(i) = New cFluent
-        Result(i).Meta.TestName = TestNames(i)
+        Result(i).Meta.TESTNAME = TestNames(i)
         Result(i).Meta.PrintSettings.PrintTestsToImmediate = True
         Result(i).TestValue = 10
     Next i
@@ -298,7 +282,7 @@ Private Sub Example5()
     
     For i = LBound(Result) To UBound(Result)
         Set Result(i) = New cFluent
-        Result(i).Meta.TestName = TestNames(i)
+        Result(i).Meta.TESTNAME = TestNames(i)
         Result(i).TestValue = 10
     Next i
     
@@ -338,61 +322,61 @@ Private Sub Example6()
     Set Result = New cFluent
     Result.TestValue = 10
     
-    Result.Meta.TestName = "Test - Result should be equal to 10 - "
+    Result.Meta.TESTNAME = "Test - Result should be equal to 10 - "
     Debug.Assert Result.Should.Be.EqualTo(10)  ' true
     
-    Result.Meta.TestName = "Test - Result should greater than 9 - "
+    Result.Meta.TESTNAME = "Test - Result should greater than 9 - "
     Debug.Assert Result.Should.Be.GreaterThan(9)  'true
     
-    Result.Meta.TestName = "Test - Result should be less than 11 - "
+    Result.Meta.TESTNAME = "Test - Result should be less than 11 - "
     Debug.Assert Result.Should.Be.LessThan(11)  ' true
     
-    Result.Meta.TestName = "Test - Result should not be equal to 9 - "
+    Result.Meta.TESTNAME = "Test - Result should not be equal to 9 - "
     Debug.Assert Result.ShouldNot.Be.EqualTo(9)   'true
     
-    Result.Meta.TestName = "Test - Result should not contain 4 - "
+    Result.Meta.TESTNAME = "Test - Result should not contain 4 - "
     Debug.Assert Result.ShouldNot.Contain(4)  'true
     
-    Result.Meta.TestName = "Test - Result should start with 1 - "
+    Result.Meta.TESTNAME = "Test - Result should start with 1 - "
     Debug.Assert Result.Should.StartWith(1)  'true
     
-    Result.Meta.TestName = "Test - Result should end with 0 - "
+    Result.Meta.TESTNAME = "Test - Result should end with 0 - "
     Debug.Assert Result.Should.EndWith(0)  'true
 
-    Result.Meta.TestName = "Test - Result should contain 10 - "
+    Result.Meta.TESTNAME = "Test - Result should contain 10 - "
     Debug.Assert Result.Should.Contain(10)  'true
 
-    Result.Meta.TestName = "Test - Result should end with 9 - "
+    Result.Meta.TESTNAME = "Test - Result should end with 9 - "
     Debug.Assert Result.Should.EndWith(9)  'false
     
-    Result.Meta.TestName = "Test -  - "
+    Result.Meta.TESTNAME = "Test -  - "
     Debug.Assert Result.ShouldNot.StartWith(1)  'false
     
-    Result.Meta.TestName = "Test - Result shoudl not end with 0  - "
+    Result.Meta.TESTNAME = "Test - Result shoudl not end with 0  - "
     Debug.Assert Result.ShouldNot.EndWith(0)  'false
     
-    Result.Meta.TestName = "Test - result should not have length of 0 - "
+    Result.Meta.TESTNAME = "Test - result should not have length of 0 - "
     Debug.Assert Result.ShouldNot.Have.LengthOf(0)  'true
     
-    Result.Meta.TestName = "Test - result should not have max length of 0 - "
+    Result.Meta.TESTNAME = "Test - result should not have max length of 0 - "
     Debug.Assert Result.ShouldNot.Have.MaxLengthOf(0)  'true
     
-    Result.Meta.TestName = "Test - result should not have min length of 3 - "
+    Result.Meta.TESTNAME = "Test - result should not have min length of 3 - "
     Debug.Assert Result.ShouldNot.Have.MinLengthOf(3)  'true
     
-    Result.Meta.TestName = "Test - result should have length of 0 - "
+    Result.Meta.TESTNAME = "Test - result should have length of 0 - "
     Debug.Assert Result.Should.Have.LengthOf(0)  'false
     
-    Result.Meta.TestName = "Test - result should have max length of 1 - "
+    Result.Meta.TESTNAME = "Test - result should have max length of 1 - "
     Debug.Assert Result.Should.Have.MaxLengthOf(1)  'false
     
-    Result.Meta.TestName = "Test - result should have min length of 3 - "
+    Result.Meta.TESTNAME = "Test - result should have min length of 3 - "
     Debug.Assert Result.Should.Have.MinLengthOf(3)  'false
     
 End Sub
 
 Private Sub MetaTests(fluent As cFluent)
-    Dim testResult As Boolean
+    Dim TESTRESULT As Boolean
     Dim testFluent As cFluentOf
     
     Set testFluent = New cFluentOf
@@ -475,7 +459,7 @@ End Sub
 
 Private Sub positiveDocumentationTests(fluent As cFluent)
     Dim testFluent As cFluent
-    Dim testResult As Boolean
+    Dim TESTRESULT As Boolean
     Dim col As Collection
     Dim arr As Variant
     Dim d As Object
@@ -870,7 +854,7 @@ End Sub
 Sub negativeDocumentationTests(fluent As cFluent)
     'Dim fluent As cFluent
     Dim testFluent As cFluent
-    Dim testResult As Boolean
+    Dim TESTRESULT As Boolean
     Dim col As Collection
     Dim arr As Variant
     Dim d As Object

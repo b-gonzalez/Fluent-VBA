@@ -20,7 +20,7 @@ Private pExpressions As cExpressions
 Private pMeta As cMeta
 Private pUnitVal As Variant
 Private pTestCount As Long
-Private pPrintSettings As cPrintSettings
+Private pPrintSettings As IPrintSettings
 Private IPrint As IPrintSettings
 
 Private Property Set ISetExpressionAndValue_TestValue(value As Variant)
@@ -100,7 +100,7 @@ Private Function getShouldNot() As cShouldNot
 End Function
 
 Private Sub Class_Terminate()
-    If pPrintSettings.PrintTotalTests = True Then
-        IPrint.printTestCounts
-    End If
+'    If pPrintSettings.PrintTotalTests = True Then
+'        IPrint.printTestCounts
+'    End If
 End Sub

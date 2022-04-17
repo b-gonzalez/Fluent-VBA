@@ -12,6 +12,8 @@ Option Explicit
 Private pTestName As String
 Private pApproximateEqual As Boolean
 Private pEpsilon As Double
+Private pTestCount As Long
+Private pCategory As String
 Private pPrintSettings As IPrintSettings
 
 Private Const defaultEpsilon As Double = 0.000001
@@ -36,13 +38,31 @@ Public Property Get PrintSettings() As cPrintSettings
     Set PrintSettings = pPrintSettings
 End Property
 
-Public Property Let TestName(value As String)
+Public Property Let TESTNAME(value As String)
     pTestName = value
-    pPrintSettings.TestName = pTestName
+    pPrintSettings.TESTNAME = pTestName
 End Property
 
-Public Property Get TestName() As String
-    TestName = pPrintSettings.TestName
+Public Property Get TESTNAME() As String
+    TESTNAME = pPrintSettings.TESTNAME
+End Property
+
+Public Property Let TestCount(value As Long)
+    pTestCount = value
+    pPrintSettings.TestCount = pTestCount
+End Property
+
+Public Property Get TestCount() As Long
+    TestCount = pPrintSettings.TestCount
+End Property
+
+Public Property Let CATEGORY(value As String)
+    pCategory = value
+    pPrintSettings.CATEGORY = pCategory
+End Property
+
+Public Property Get CATEGORY() As String
+    CATEGORY = pPrintSettings.CATEGORY
 End Property
 
 Private Sub Class_Initialize()

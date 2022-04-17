@@ -17,6 +17,39 @@ Private pPrintTestsToSheet As Boolean
 Private pTestName As String
 Private pTestCollection As Collection
 Private pTestCount As Long
+Private pCategory As String
+Private IPrint As IPrintSettings
+
+Private Property Let IPrintSettings_testCount(value As Long)
+    pTestCount = value
+End Property
+
+Private Property Get IPrintSettings_testCount() As Long
+    IPrintSettings_testCount = pTestCount
+End Property
+
+Private Property Let IPrintSettings_testname(value As String)
+    pTestName = value
+End Property
+
+Private Property Get IPrintSettings_testname() As String
+    IPrintSettings_testname = pTestName
+End Property
+
+Private Property Let IPrintSettings_category(value As String)
+    pCategory = value
+End Property
+
+Private Property Get IPrintSettings_category() As String
+    IPrintSettings_category = pCategory
+End Property
+
+Private Property Get IPrintSettings_TestCollection() As Collection
+    If pTestCollection Is Nothing Then
+        Set pTestCollection = New Collection
+    End If
+    Set IPrintSettings_TestCollection = pTestCollection
+End Property
 
 Public Property Let PrintTestsToImmediate(value As Boolean)
     pPrintTestsToImmediate = value
@@ -42,44 +75,6 @@ Public Property Get PrintTotalTests() As Boolean
     PrintTotalTests = pPrintTotalTests
 End Property
 
-Public Property Let TestCount(value As Long)
-    pTestCount = value
-End Property
-
-Public Property Get TestCount() As Long
-    TestCount = pTestCount
-End Property
-
-Private Property Let IPrintSettings_testname(value As String)
-    pTestName = value
-End Property
-
-Private Property Get IPrintSettings_testname() As String
-    IPrintSettings_testname = pTestName
-End Property
-
-Private Property Get IPrintSettings_TestCollection() As Collection
-    If pTestCollection Is Nothing Then
-        Set pTestCollection = New Collection
-    End If
-    Set IPrintSettings_TestCollection = pTestCollection
-End Property
-
-Private Sub IPrintSettings_printTestCounts()
-    If Me.TestCount = 1 Then
-        Debug.Print Me.TestCount & " test completed"
-    ElseIf Me.TestCount > 1 Then
-        Debug.Print Me.TestCount & " tests completed"
-    End If
-End Sub
-
-'Private Property Let IPrintSettings_TestCount(value As Long)
-'    pTestCount = value
-'End Property
-'
-'Private Property Get IPrintSettings_TestCount() As Long
-'    IPrintSettings_TestCount = pTestCount
-'End Property
 
 Public Sub PrintToImmediate()
     Dim arr() As Variant
@@ -96,6 +91,7 @@ Public Sub PrintToSheet()
     Dim lo As ListObject
     Dim testResultCol As ListColumn
     Dim testNameCol As ListColumn
+    Dim categoryCol As ListColumn
     Dim arr() As Variant
     
     arr = getArrayFromCollection(pTestCollection)
@@ -106,6 +102,8 @@ Public Sub PrintToSheet()
     
     Set testNameCol = lo.ListColumns("Test name")
     
+    Set categoryCol = lo.ListColumns("Category")
+    
     Call addResultsIconSets(testResultCol)
     
     Call addValueConditColors(testResultCol, "-1", "0")
@@ -114,7 +112,12 @@ Public Sub PrintToSheet()
     
     lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
     
-    Columns("B:B").EntireColumn.AutoFit
+    'Columns("B:B").EntireColumn.AutoFit
+    Columns("C:C").EntireColumn.AutoFit
+    
+    If pCategory <> "" Then
+        Call addCategoryStyle(testResultCol, categoryCol)
+    End If
 
 End Sub
 
@@ -134,9 +137,12 @@ Private Function getTableFromWorkbook() As ListObject
     
     Set wb = xl.Workbooks.Add
     Set ws = wb.ActiveSheet
-    ws.Range("A1").value = "Test result"
-    ws.Range("B1").value = "Test name"
-    Set lo = ws.ListObjects.Add(xlSrcRange, Range("$A$1:$B$1"), , xlYes)
+'    ws.Range("A1").value = "Test result"
+'    ws.Range("B1").value = "Test name"
+    ws.Range("A1").value = "Category"
+    ws.Range("B1").value = "Test result"
+    ws.Range("C1").value = "Test name"
+    Set lo = ws.ListObjects.Add(xlSrcRange, Range("$A$1:$C$1"), , xlYes)
     lo.Name = "Table1"
         
     Set getTableFromWorkbook = lo
@@ -199,21 +205,38 @@ Private Sub addValueConditColors(lc As ListColumn, passedMsg As String, failedMs
 End Sub
 
 Private Function getArrayFromCollection(col As Collection) As Variant()
+    Const CATEGORY As Long = 0
+    Const TESTRESULT As Long = 1
+    Const TESTNAME As Long = 2
+    
     Dim arr() As Variant
     Dim i As Long
     Dim temp As Variant
     
-    ReDim arr(col.Count - 1, 1)
+    ReDim arr(col.Count - 1, 2)
     
     For i = 1 To col.Count
        temp = Split(col(i), "=")
-       arr(i - 1, 0) = temp(0)
-        If temp(0) = -1 Then
-            arr(i - 1, 1) = "PASSED - " & temp(1)
-        ElseIf temp(0) = 0 Then
-            arr(i - 1, 1) = "FAILED - " & temp(1)
+       arr(i - 1, CATEGORY) = temp(CATEGORY)
+       arr(i - 1, TESTRESULT) = temp(TESTRESULT)
+        If temp(1) = -1 Then
+            arr(i - 1, 2) = "PASSED - " & temp(TESTNAME)
+        ElseIf temp(1) = 0 Then
+            arr(i - 1, 2) = "FAILED - " & temp(TESTNAME)
         End If
     Next i
     
     getArrayFromCollection = arr
 End Function
+
+Private Sub addCategoryStyle(resultCol As ListColumn, categoryCol As ListColumn)
+    Dim i As Long
+    
+    For i = 1 To resultCol.Range.Rows.Count
+        If resultCol.Range.Cells(i, 1).value = -1 Then
+            categoryCol.Range.Cells(i, 1).Style = "Good"
+        ElseIf resultCol.Range.Cells(i, 1).value = 0 Then
+            categoryCol.Range.Cells(i, 1).Style = "Bad"
+        End If
+    Next i
+End Sub
