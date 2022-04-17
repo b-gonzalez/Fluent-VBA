@@ -9,10 +9,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-'Public Sub checkIfPrint(ByVal value As Boolean, testMessage As String, Optional negateValue As Boolean = False)
-'
-'End Sub
-
 Public Property Let TestName(value As String)
 
 End Property
