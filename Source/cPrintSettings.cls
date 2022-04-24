@@ -11,9 +11,7 @@ Option Explicit
 
 Implements IPrintSettings
 
-Private pPrintTestsToImmediate As Boolean
 Private pPrintTotalTests As Boolean
-Private pPrintTestsToSheet As Boolean
 Private pTestName As String
 Private pTestCollection As Collection
 Private pTestCount As Long
@@ -51,39 +49,25 @@ Private Property Get IPrintSettings_TestCollection() As Collection
     Set IPrintSettings_TestCollection = pTestCollection
 End Property
 
-Public Property Let PrintTestsToImmediate(value As Boolean)
-    pPrintTestsToImmediate = value
-End Property
-
-Public Property Get PrintTestsToImmediate() As Boolean
-    PrintTestsToImmediate = pPrintTestsToImmediate
-End Property
-
-Public Property Let PrintTestsToSheet(value As Boolean)
-    pPrintTestsToSheet = value
-End Property
-
-Public Property Get PrintTestsToSheet() As Boolean
-    PrintTestsToSheet = pPrintTestsToSheet
-End Property
-
-Public Property Let PrintTotalTests(value As Boolean)
-    pPrintTotalTests = value
-End Property
-
-Public Property Get PrintTotalTests() As Boolean
-    PrintTotalTests = pPrintTotalTests
-End Property
-
-
 Public Sub PrintToImmediate()
     Dim arr() As Variant
     Dim i As Long
+    Dim testName As Long
+    
+    If pCategory = "" Then
+        testName = 1
+    Else
+        testName = 2
+    End If
     
     arr = getArrayFromCollection(pTestCollection)
     
     For i = LBound(arr, 1) To UBound(arr, 1)
-        Debug.Print arr(i, 1)
+        If pCategory <> "" Then
+            Debug.Print pCategory & " - " & arr(i, testName)
+        Else
+            Debug.Print arr(i, testName)
+        End If
     Next i
 End Sub
 
@@ -102,21 +86,20 @@ Public Sub PrintToSheet()
     
     Set testNameCol = lo.ListColumns("Test name")
     
-    Set categoryCol = lo.ListColumns("Category")
-    
     Call addResultsIconSets(testResultCol)
     
     Call addValueConditColors(testResultCol, "-1", "0")
     
     Call addValueConditColors(testNameCol, "Passed", "Failed")
     
-    lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
-    
-    'Columns("B:B").EntireColumn.AutoFit
-    Columns("C:C").EntireColumn.AutoFit
-    
     If pCategory <> "" Then
+        Set categoryCol = lo.ListColumns("Category")
+        lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
+        Columns("C:C").EntireColumn.AutoFit
         Call addCategoryStyle(testResultCol, categoryCol)
+    Else
+        lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
+        Columns("B:B").EntireColumn.AutoFit
     End If
 
 End Sub
@@ -137,12 +120,18 @@ Private Function getTableFromWorkbook() As ListObject
     
     Set wb = xl.Workbooks.Add
     Set ws = wb.ActiveSheet
-'    ws.Range("A1").value = "Test result"
-'    ws.Range("B1").value = "Test name"
-    ws.Range("A1").value = "Category"
-    ws.Range("B1").value = "Test result"
-    ws.Range("C1").value = "Test name"
-    Set lo = ws.ListObjects.Add(xlSrcRange, Range("$A$1:$C$1"), , xlYes)
+
+    If pCategory <> "" Then
+        ws.Range("A1").value = "Category"
+        ws.Range("B1").value = "Test result"
+        ws.Range("C1").value = "Test name"
+        Set lo = ws.ListObjects.Add(xlSrcRange, Range("$A$1:$C$1"), , xlYes)
+    Else
+        ws.Range("A1").value = "Test result"
+        ws.Range("B1").value = "Test name"
+        Set lo = ws.ListObjects.Add(xlSrcRange, Range("$A$1:$B$1"), , xlYes)
+    End If
+    
     lo.Name = "Table1"
         
     Set getTableFromWorkbook = lo
@@ -205,24 +194,32 @@ Private Sub addValueConditColors(lc As ListColumn, passedMsg As String, failedMs
 End Sub
 
 Private Function getArrayFromCollection(col As Collection) As Variant()
-    Const CATEGORY As Long = 0
-    Const TESTRESULT As Long = 1
-    Const TESTNAME As Long = 2
-    
+    Dim Category As Long
+    Dim TestResult As Long
+    Dim testName As Long
     Dim arr() As Variant
     Dim i As Long
     Dim temp As Variant
     
-    ReDim arr(col.Count - 1, 2)
+    If pCategory = "" Then
+        TestResult = 0
+        testName = 1
+        ReDim arr(col.Count - 1, 1)
+    Else
+        Category = 0
+        TestResult = 1
+        testName = 2
+        ReDim arr(col.Count - 1, 2)
+    End If
     
     For i = 1 To col.Count
        temp = Split(col(i), "=")
-       arr(i - 1, CATEGORY) = temp(CATEGORY)
-       arr(i - 1, TESTRESULT) = temp(TESTRESULT)
-        If temp(1) = -1 Then
-            arr(i - 1, 2) = "PASSED - " & temp(TESTNAME)
-        ElseIf temp(1) = 0 Then
-            arr(i - 1, 2) = "FAILED - " & temp(TESTNAME)
+       arr(i - 1, Category) = temp(Category)
+       arr(i - 1, TestResult) = temp(TestResult)
+        If temp(TestResult) = -1 Then
+            arr(i - 1, testName) = "PASSED - " & temp(testName)
+        ElseIf temp(TestResult) = 0 Then
+            arr(i - 1, testName) = "FAILED - " & temp(testName)
         End If
     Next i
     

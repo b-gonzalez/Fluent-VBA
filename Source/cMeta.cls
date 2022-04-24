@@ -38,13 +38,13 @@ Public Property Get PrintSettings() As cPrintSettings
     Set PrintSettings = pPrintSettings
 End Property
 
-Public Property Let TESTNAME(value As String)
+Public Property Let testName(value As String)
     pTestName = value
-    pPrintSettings.TESTNAME = pTestName
+    pPrintSettings.testName = pTestName
 End Property
 
-Public Property Get TESTNAME() As String
-    TESTNAME = pPrintSettings.TESTNAME
+Public Property Get testName() As String
+    testName = pPrintSettings.testName
 End Property
 
 Public Property Let TestCount(value As Long)
@@ -56,13 +56,13 @@ Public Property Get TestCount() As Long
     TestCount = pPrintSettings.TestCount
 End Property
 
-Public Property Let CATEGORY(value As String)
+Public Property Let Category(value As String)
     pCategory = value
-    pPrintSettings.CATEGORY = pCategory
+    pPrintSettings.Category = pCategory
 End Property
 
-Public Property Get CATEGORY() As String
-    CATEGORY = pPrintSettings.CATEGORY
+Public Property Get Category() As String
+    Category = pPrintSettings.Category
 End Property
 
 Private Sub Class_Initialize()

@@ -9,11 +9,11 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Let TESTNAME(value As String)
+Public Property Let testName(value As String)
 
 End Property
 
-Public Property Get TESTNAME() As String
+Public Property Get testName() As String
 
 End Property
 
@@ -29,12 +29,12 @@ Public Property Get TestCount() As Long
     
 End Property
 
-Public Property Let CATEGORY(value As String)
-    
+Public Property Let Category(value As String)
+
 End Property
 
-Public Property Get CATEGORY() As String
-    
+Public Property Get Category() As String
+
 End Property
 
 

@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Private pUnit As cUnit
-Private pUnitMeta As IMeta
+Private pUnitMeta As IUnit
 Private pUnitTestVal As ISetExpressionAndValue
 Private pUnitExpr As ISetExpressionAndValue
 Private pMeta As cMeta

@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Implements IMeta
+Implements IUnit
 Implements ISetExpressionAndValue
 
 Private pShould As cShould
@@ -49,16 +49,16 @@ Public Property Get ShouldNot() As IShould
     Set ShouldNot = pShouldNot
 End Property
 
-Private Property Set IMeta_Meta(value As cMeta)
+Private Property Set IUnit_Meta(value As cMeta)
     Set pMeta = value
     Set pExpressions.setMeta = pMeta
 End Property
 
-Private Property Get IMeta_Meta() As cMeta
-    Set IMeta_Meta = pMeta
+Private Property Get IUnit_Meta() As cMeta
+    Set IUnit_Meta = pMeta
 End Property
 
-Private Property Set IMeta_setPrintSettings(value As cPrintSettings)
+Private Property Set IUnit_setPrintSettings(value As cPrintSettings)
     Set pPrintSettings = value
     Set pExpressions.setPrintSettings = pPrintSettings
     Set IPrint = pPrintSettings
