@@ -79,23 +79,23 @@ Or like this:
 
 # Testing notes
 
-All of the tests are written in the mTests.bas. There are 100+ tests within this file. Most of the tests utilize the cFluent objects. This is because the tests were written before I introduced the new cFluentOf object. The Meta tests do include additional tests using cFluentOf objects however.
+All of the tests are written in the mTests.bas module. There are nearly 150 tests within this file. The tests use a combination of cFluent and cFluentOf objects to test the framework. See specific testing notes below for more details on how the tests are constructed.
     
 # Meta tests
 
-The fluent unit testing framework uses itself to test itself. The mTests module has a MetaTests sub that the framework uses to accomplish this.
+The fluent unit testing framework uses itself to test itself. The mTests.bas module has a MetaTests sub that the framework uses to accomplish this.
 
 # Documentation tests
 
-The mTests module has a DocumentationTests sub that contains several dozen tests. These tests document the various objects and methods in the API by using them in the tests.
+The mTests module has a DocumentationTests sub that contains several dozen tests. These tests document the various objects and methods in the API by using them in the tests. This is broken down into two types of documentation tests: positiveDocumentationTests and negativeDocumentationTests. The negativeDocumentationTests check the opposite of what the positiveDocumenationTests test for. They are there to ensure that tests don't pass due to false positives. A test that shoudld evaluate to false may pass simply because the default data type of the boolean is false. Not because the test evaluates as it should for example. If there was some issue with the framework and this happened in a positive test, it would be caught in the corresponding negative test.
 
 # Additional tests
 
-Several other tests are implemented documenting the flexibility with which these unit tests can be created.
+Several other tests are implemented documenting the flexibility with which these unit tests can be created. I will probably consolidate these tests into a runExamples sub which I've already created. Currently only one of the six examples is implemented. So it's a relatively small update to add the other examples. That will likely happen soon.
 
 # cFluentOf class
 
-One new big change is the addition of the cFluentOf class. This new class allows you to enter the test value in the testing line itself. You can read more about using the cFluentOf class [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/cFluentOf-objects)
+One new big change is the addition of the cFluentOf class. This new class allows you to enter the test value in the testing line itself. The cFluentOf class is now on par with the cFluent class in terms of being utilized within the tests. You can read more about using the cFluentOf class [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/cFluentOf-objects)
 
 # Using Fluent VBA in an external project
 
@@ -109,7 +109,7 @@ All of the class modules in Fluent VBA are PublicNotCreatable. So the project ca
 
 # TODO: High level API design overview
 
-A high level design of the API. This is mostly been completed previously. You can find a post of mine describing an older version of the API's structure on CodeReview on StackExchange [here](https://codereview.stackexchange.com/questions/267836/a-fluent-unit-testing-framework-in-vba). It is almost certainly at least a bit outdated. So when I have some time I will take some time to create a post with an updated API design on this project.
+I'd like to write a high-level overview of the API's design. This had been completed previously but is now outdated. You can find a post of mine describing an older version of the API's structure on CodeReview on StackExchange [here](https://codereview.stackexchange.com/questions/267836/a-fluent-unit-testing-framework-in-vba). I will likely be updating this within the coming weeks.
 
 # Contacting me
 
