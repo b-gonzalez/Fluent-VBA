@@ -25,7 +25,7 @@ Private Sub Class_Initialize()
     Set pUnitExpr.setExpr = pExpressions
     Set pUnitMeta = pUnit
     Set pUnitMeta.Meta = pMeta
-    Set pUnitMeta.setPrintSettings = pMeta.PrintSettings
+    Set pUnitMeta.setPrinting = pMeta.Printing
     
 End Sub
 

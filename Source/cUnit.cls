@@ -20,17 +20,17 @@ Private pExpressions As cExpressions
 Private pMeta As cMeta
 Private pUnitVal As Variant
 Private pTestCount As Long
-Private pPrintSettings As IPrintSettings
-Private IPrint As IPrintSettings
+Private pPrinting As IPrinting
+Private iPrint As IPrinting
 
 Private Property Set ISetExpressionAndValue_TestValue(value As Variant)
-    pPrintSettings.TestCount = pPrintSettings.TestCount + 1
+    pPrinting.TestCount = pPrinting.TestCount + 1
     Set pExpressions.TestValue = value
     Set pUnitVal = pExpressions.TestValue
 End Property
 
 Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
-    pPrintSettings.TestCount = pPrintSettings.TestCount + 1
+    pPrinting.TestCount = pPrinting.TestCount + 1
     pExpressions.TestValue = value
     pUnitVal = pExpressions.TestValue
 End Property
@@ -58,10 +58,10 @@ Private Property Get IUnit_Meta() As cMeta
     Set IUnit_Meta = pMeta
 End Property
 
-Private Property Set IUnit_setPrintSettings(value As cPrintSettings)
-    Set pPrintSettings = value
-    Set pExpressions.setPrintSettings = pPrintSettings
-    Set IPrint = pPrintSettings
+Private Property Set IUnit_setPrinting(value As cPrinting)
+    Set pPrinting = value
+    Set pExpressions.setPrinting = pPrinting
+    Set iPrint = pPrinting
 End Property
 
 Private Function getShould() As cShould

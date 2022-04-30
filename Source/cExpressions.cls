@@ -11,7 +11,8 @@ Option Explicit
 
 Private pTestValue As Variant
 Private pMeta As cMeta
-Private pPrintSettings As IPrintSettings
+Private pPrinting As cPrinting
+Private iPrint As IPrinting
 
 Enum flMethod
     flRecursive
@@ -38,8 +39,9 @@ Public Property Set setMeta(value As cMeta)
     Set pMeta = value
 End Property
 
-Public Property Set setPrintSettings(value As IPrintSettings)
-    Set pPrintSettings = value
+Public Property Set setPrinting(value As IPrinting)
+    Set pPrinting = value
+    Set iPrint = value
 End Property
 
 Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Optional method As flMethod = flRecursive, Optional negateValue As Boolean = False) As Boolean
@@ -414,11 +416,11 @@ Optional origVal As Variant, Optional newVal As Variant, Optional lowerVal As Va
     
     fluentPath = ""
     
-    If pPrintSettings.Category <> "" Then fluentPath = fluentPath & pPrintSettings.Category & "="
+    If pPrinting.Category <> "" Then fluentPath = fluentPath & pPrinting.Category & "="
     
     fluentPath = fluentPath & CLng(fluentBool) & "="
     
-    If pPrintSettings.testName <> "" Then fluentPath = fluentPath & pPrintSettings.testName & " "
+    If pPrinting.TestName <> "" Then fluentPath = fluentPath & pPrinting.TestName & " "
         
     Select Case functionName
         Case "InDataStructure"
@@ -471,5 +473,5 @@ Optional origVal As Variant, Optional newVal As Variant, Optional lowerVal As Va
             fluentPath = fluentPath & CStr(newVal) & ". Actual: " & origVal
     End Select
     
-    pPrintSettings.TestCollection.Add fluentPath
+    iPrint.TestCollection.Add fluentPath
 End Sub

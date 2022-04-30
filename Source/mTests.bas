@@ -28,8 +28,8 @@ Private Sub FluentAAAExamples()
     '//Act & Assert
     Debug.Assert Result2.Of(returnedResult).Should.Be.EqualTo(5)
     
-    Result1.Meta.PrintSettings.PrintToImmediate
-    Result2.Meta.PrintSettings.PrintToImmediate
+    Result1.Meta.Printing.PrintToImmediate
+    Result2.Meta.Printing.PrintToImmediate
 End Sub
 
 Private Function returnVal(value As Variant)
@@ -43,28 +43,28 @@ Public Sub runMainTests()
     Set Fluent = New cFluent
     Set testFluent = New cFluentOf
     
-    With Fluent.Meta
-        .testName = "Result"
+    With Fluent.Meta.Printing
+        .TestName = "Result"
     End With
     
-    Fluent.Meta.Category = "metaTests"
-    testFluent.Meta.Category = "metaTests"
+    Fluent.Meta.Printing.Category = "metaTests"
+    testFluent.Meta.Printing.Category = "metaTests"
     Call MetaTests(Fluent, testFluent)
     
-    Fluent.Meta.Category = "positiveDocumentationTests"
-    testFluent.Meta.Category = "positiveDocumentationTests"
+    Fluent.Meta.Printing.Category = "positiveDocumentationTests"
+    testFluent.Meta.Printing.Category = "positiveDocumentationTests"
     Call positiveDocumentationTests(Fluent, testFluent)
     
-    Fluent.Meta.Category = "negativeDocumentationTests"
-    testFluent.Meta.Category = "negativeDocumentationTests"
+    Fluent.Meta.Printing.Category = "negativeDocumentationTests"
+    testFluent.Meta.Printing.Category = "negativeDocumentationTests"
     Call negativeDocumentationTests(Fluent, testFluent)
     
     Debug.Print "All tests Finished!"
     Call printTestCount(Fluent.Meta.TestCount)
     
-    Fluent.Meta.PrintSettings.PrintToSheet
-    testFluent.Meta.PrintSettings.PrintToSheet
-    'Fluent.Meta.PrintSettings.PrintToImmediate
+    'Fluent.Meta.Printing.PrintToSheet
+    'testFluent.Meta.Printing.PrintToSheet
+    Fluent.Meta.Printing.PrintToImmediate
 End Sub
 
 Public Sub runExamples()
@@ -74,8 +74,8 @@ Public Sub runExamples()
     
     Call Example1(Fluent)
     
-    Call Fluent.Meta.PrintSettings.PrintToSheet
-    'Call fluent.Meta.PrintSettings.PrintToImmediate
+    Call Fluent.Meta.Printing.PrintToSheet
+    'Call fluent.Meta.Printing.PrintToImmediate
 End Sub
 
 Private Sub printTestCount(TestCount As Long)
@@ -87,7 +87,7 @@ Private Sub printTestCount(TestCount As Long)
 End Sub
 
 Private Sub Example1(Result As cFluent)
-    Result.Meta.Category = "Example 1"
+    Result.Meta.Printing.Category = "Example 1"
     Result.TestValue = 5 + 5
 
     Result.Should.Be.EqualTo (10) 'true
@@ -150,55 +150,55 @@ Private Sub Example3()
     Result.TestValue = 10
     
     With Result
-        .Meta.testName = "Test - Result should be equal to 10 - "
+        .Meta.Printing.TestName = "Test - Result should be equal to 10 - "
         Debug.Assert .Should.Be.EqualTo(10)  ' true
         
-        .Meta.testName = "Test - Result should greater than 9 - "
+        .Meta.Printing.TestName = "Test - Result should greater than 9 - "
         Debug.Assert .Should.Be.GreaterThan(9)  'true
         
-        .Meta.testName = "Test - Result should be less than 11 - "
+        .Meta.Printing.TestName = "Test - Result should be less than 11 - "
         Debug.Assert .Should.Be.LessThan(11)  ' true
         
-        .Meta.testName = "Test - Result should not be equal to 9 - "
+        .Meta.Printing.TestName = "Test - Result should not be equal to 9 - "
         Debug.Assert .ShouldNot.Be.EqualTo(9)  'true
         
-        .Meta.testName = "Test - Result should not contain 4 - "
+        .Meta.Printing.TestName = "Test - Result should not contain 4 - "
         Debug.Assert .ShouldNot.Contain(4)  'true
         
-        .Meta.testName = "Test - Result should start with 1 - "
+        .Meta.Printing.TestName = "Test - Result should start with 1 - "
         Debug.Assert .Should.StartWith(1)  'true
         
-        .Meta.testName = "Test - Result should end with 0 - "
+        .Meta.Printing.TestName = "Test - Result should end with 0 - "
         Debug.Assert .Should.EndWith(0)  'true
     
-        .Meta.testName = "Test - Result should contain 10 - "
+        .Meta.Printing.TestName = "Test - Result should contain 10 - "
         Debug.Assert .Should.Contain(10)  'true
     
-        .Meta.testName = "Test - Result should end with 9 - "
+        .Meta.Printing.TestName = "Test - Result should end with 9 - "
         Debug.Assert .Should.EndWith(9)  'false
         
-        .Meta.testName = "Test -  - "
+        .Meta.Printing.TestName = "Test -  - "
         Debug.Assert .ShouldNot.StartWith(1)  'false
         
-        .Meta.testName = "Test - Result shoudl not end with 0  - "
+        .Meta.Printing.TestName = "Test - Result shoudl not end with 0  - "
         Debug.Assert .ShouldNot.EndWith(0)  'false
         
-        .Meta.testName = "Test - result should not have length of 0 - "
+        .Meta.Printing.TestName = "Test - result should not have length of 0 - "
         Debug.Assert .ShouldNot.Have.LengthOf(0)  'true
         
-        .Meta.testName = "Test - result should not have max length of 0 - "
+        .Meta.Printing.TestName = "Test - result should not have max length of 0 - "
         Debug.Assert .ShouldNot.Have.MaxLengthOf(0)  'true
         
-        .Meta.testName = "Test - result should not have min length of 3 - "
+        .Meta.Printing.TestName = "Test - result should not have min length of 3 - "
         Debug.Assert .ShouldNot.Have.MinLengthOf(3)  'true
         
-        .Meta.testName = "Test - result should have length of 0 - "
+        .Meta.Printing.TestName = "Test - result should have length of 0 - "
         Debug.Assert .Should.Have.LengthOf(0)  'false
         
-        .Meta.testName = "Test - result should have max length of 1 - "
+        .Meta.Printing.TestName = "Test - result should have max length of 1 - "
         Debug.Assert .Should.Have.MaxLengthOf(1)  'false
         
-        .Meta.testName = "Test - result should have min length of 3 - "
+        .Meta.Printing.TestName = "Test - result should have min length of 3 - "
         Debug.Assert .Should.Have.MinLengthOf(3)  'false
     End With
 End Sub
@@ -237,7 +237,7 @@ Private Sub Example4()
     
     For i = LBound(Result) To UBound(Result)
         Set Result(i) = New cFluent
-        Result(i).Meta.testName = TestNames(i)
+        Result(i).Meta.Printing.TestName = TestNames(i)
         'Result(i).Meta.PrintSettings.PrintTestsToImmediate = True
         Result(i).TestValue = 10
     Next i
@@ -295,7 +295,7 @@ Private Sub Example5()
     
     For i = LBound(Result) To UBound(Result)
         Set Result(i) = New cFluent
-        Result(i).Meta.testName = TestNames(i)
+        Result(i).Meta.Printing.TestName = TestNames(i)
         Result(i).TestValue = 10
     Next i
     
@@ -335,55 +335,55 @@ Private Sub Example6()
     Set Result = New cFluent
     Result.TestValue = 10
     
-    Result.Meta.testName = "Test - Result should be equal to 10 - "
+    Result.Meta.Printing.TestName = "Test - Result should be equal to 10 - "
     Debug.Assert Result.Should.Be.EqualTo(10)  ' true
     
-    Result.Meta.testName = "Test - Result should greater than 9 - "
+    Result.Meta.Printing.TestName = "Test - Result should greater than 9 - "
     Debug.Assert Result.Should.Be.GreaterThan(9)  'true
     
-    Result.Meta.testName = "Test - Result should be less than 11 - "
+    Result.Meta.Printing.TestName = "Test - Result should be less than 11 - "
     Debug.Assert Result.Should.Be.LessThan(11)  ' true
     
-    Result.Meta.testName = "Test - Result should not be equal to 9 - "
+    Result.Meta.Printing.TestName = "Test - Result should not be equal to 9 - "
     Debug.Assert Result.ShouldNot.Be.EqualTo(9)   'true
     
-    Result.Meta.testName = "Test - Result should not contain 4 - "
+    Result.Meta.Printing.TestName = "Test - Result should not contain 4 - "
     Debug.Assert Result.ShouldNot.Contain(4)  'true
     
-    Result.Meta.testName = "Test - Result should start with 1 - "
+    Result.Meta.Printing.TestName = "Test - Result should start with 1 - "
     Debug.Assert Result.Should.StartWith(1)  'true
     
-    Result.Meta.testName = "Test - Result should end with 0 - "
+    Result.Meta.Printing.TestName = "Test - Result should end with 0 - "
     Debug.Assert Result.Should.EndWith(0)  'true
 
-    Result.Meta.testName = "Test - Result should contain 10 - "
+    Result.Meta.Printing.TestName = "Test - Result should contain 10 - "
     Debug.Assert Result.Should.Contain(10)  'true
 
-    Result.Meta.testName = "Test - Result should end with 9 - "
+    Result.Meta.Printing.TestName = "Test - Result should end with 9 - "
     Debug.Assert Result.Should.EndWith(9)  'false
     
-    Result.Meta.testName = "Test -  - "
+    Result.Meta.Printing.TestName = "Test -  - "
     Debug.Assert Result.ShouldNot.StartWith(1)  'false
     
-    Result.Meta.testName = "Test - Result shoudl not end with 0  - "
+    Result.Meta.Printing.TestName = "Test - Result shoudl not end with 0  - "
     Debug.Assert Result.ShouldNot.EndWith(0)  'false
     
-    Result.Meta.testName = "Test - result should not have length of 0 - "
+    Result.Meta.Printing.TestName = "Test - result should not have length of 0 - "
     Debug.Assert Result.ShouldNot.Have.LengthOf(0)  'true
     
-    Result.Meta.testName = "Test - result should not have max length of 0 - "
+    Result.Meta.Printing.TestName = "Test - result should not have max length of 0 - "
     Debug.Assert Result.ShouldNot.Have.MaxLengthOf(0)  'true
     
-    Result.Meta.testName = "Test - result should not have min length of 3 - "
+    Result.Meta.Printing.TestName = "Test - result should not have min length of 3 - "
     Debug.Assert Result.ShouldNot.Have.MinLengthOf(3)  'true
     
-    Result.Meta.testName = "Test - result should have length of 0 - "
+    Result.Meta.Printing.TestName = "Test - result should have length of 0 - "
     Debug.Assert Result.Should.Have.LengthOf(0)  'false
     
-    Result.Meta.testName = "Test - result should have max length of 1 - "
+    Result.Meta.Printing.TestName = "Test - result should have max length of 1 - "
     Debug.Assert Result.Should.Have.MaxLengthOf(1)  'false
     
-    Result.Meta.testName = "Test - result should have min length of 3 - "
+    Result.Meta.Printing.TestName = "Test - result should have min length of 3 - "
     Debug.Assert Result.Should.Have.MinLengthOf(3)  'false
     
 End Sub

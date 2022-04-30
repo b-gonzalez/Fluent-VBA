@@ -17,6 +17,6 @@ Public Property Get Meta() As cMeta
 
 End Property
 
-Public Property Set setPrintSettings(value As cPrintSettings)
+Public Property Set setPrinting(value As cPrinting)
 
 End Property
