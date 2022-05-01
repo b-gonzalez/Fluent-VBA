@@ -18,20 +18,19 @@ Private pTestCount As Long
 Private pCategory As String
 Private iPrint As IPrinting
 
+Private Property Get IPrinting_TestCollection() As Collection
+    If pTestCollection Is Nothing Then
+        Set pTestCollection = New Collection
+    End If
+    Set IPrinting_TestCollection = pTestCollection
+End Property
+
 Private Property Let IPrinting_testCount(value As Long)
     pTestCount = value
 End Property
 
 Private Property Get IPrinting_testCount() As Long
     IPrinting_testCount = pTestCount
-End Property
-
-Public Property Let TestName(value As String)
-    pTestName = value
-End Property
-
-Public Property Get TestName() As String
-    TestName = pTestName
 End Property
 
 Public Property Let Category(value As String)
@@ -42,11 +41,12 @@ Public Property Get Category() As String
     Category = pCategory
 End Property
 
-Private Property Get IPrinting_TestCollection() As Collection
-    If pTestCollection Is Nothing Then
-        Set pTestCollection = New Collection
-    End If
-    Set IPrinting_TestCollection = pTestCollection
+Public Property Let TestName(value As String)
+    pTestName = value
+End Property
+
+Public Property Get TestName() As String
+    TestName = pTestName
 End Property
 
 Public Sub PrintToImmediate()

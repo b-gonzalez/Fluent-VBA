@@ -473,5 +473,7 @@ Optional origVal As Variant, Optional newVal As Variant, Optional lowerVal As Va
             fluentPath = fluentPath & CStr(newVal) & ". Actual: " & origVal
     End Select
     
+    iPrint.TestCount = iPrint.TestCount + 1
+    
     iPrint.TestCollection.Add fluentPath
 End Sub

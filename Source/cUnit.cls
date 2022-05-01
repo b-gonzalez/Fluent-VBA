@@ -24,13 +24,13 @@ Private pPrinting As IPrinting
 Private iPrint As IPrinting
 
 Private Property Set ISetExpressionAndValue_TestValue(value As Variant)
-    pPrinting.TestCount = pPrinting.TestCount + 1
+    'pPrinting.TestCount = pPrinting.TestCount + 1
     Set pExpressions.TestValue = value
     Set pUnitVal = pExpressions.TestValue
 End Property
 
 Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
-    pPrinting.TestCount = pPrinting.TestCount + 1
+    'pPrinting.TestCount = pPrinting.TestCount + 1
     pExpressions.TestValue = value
     pUnitVal = pExpressions.TestValue
 End Property
