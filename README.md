@@ -93,10 +93,6 @@ The mTests module has a DocumentationTests sub that contains several dozen tests
 
 Several other tests are implemented documenting the flexibility with which these unit tests can be created. I will probably consolidate these tests into a runExamples sub which I've already created. Currently only one of the six examples is implemented. So it's a relatively small update to add the other examples. That will likely happen soon.
 
-# cFluentOf class
-
-One new big change is the addition of the cFluentOf class. This new class allows you to enter the test value in the testing line itself. The cFluentOf class is now on par with the cFluent class in terms of being utilized within the tests. You can read more about using the cFluentOf class [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/cFluentOf-objects)
-
 # Using Fluent VBA in an external project
 
 All of the class modules in Fluent VBA are PublicNotCreatable. So the project can be used as a reference in other projects. If you plan on doing this I'd recommend doing the following:
