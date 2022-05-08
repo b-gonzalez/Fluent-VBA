@@ -79,23 +79,7 @@ Or like this:
 
 # Testing notes
 
-All of the tests are written in the mTests.bas module. There are nearly 150 tests within this file. The tests use a combination of cFluent and cFluentOf objects to test the framework. See specific testing notes below for more details on how the tests are constructed.
-    
-# Meta tests
-
-The fluent unit testing framework uses itself to test itself. Currently, the testing that's done to test itself is testing the test count property. This will later be expanded to test other functionality as well. This will include testing things like the fluent path, test name, and category.
-
-# Equality tests
-
-Most of the tests use the EqualTo() method to ensure that the correct result is returned. Because of this, I wrote a number of tests using the EqualTo() method to ensure that the tests are working correctly.
-
-# Documentation tests
-
-The mTests module has a DocumentationTests sub that contains several dozen tests. These tests document the various objects and methods in the API by using them in the tests. This is broken down into two types of documentation tests: positiveDocumentationTests and negativeDocumentationTests. The negativeDocumentationTests check the opposite of what the positiveDocumenationTests test for. They are there to ensure that tests don't pass due to false positives. A test that shoudld evaluate to false may pass simply because the default data type of the boolean is false. Not because the test evaluates as it should for example. If there was some issue with the framework and this happened in a positive test, it would be caught in the corresponding negative test.
-
-# Additional tests
-
-Several other tests are implemented documenting the flexibility with which these unit tests can be created. I will probably consolidate these tests into a runExamples sub which I've already created. Currently only one of the six examples is implemented. So it's a relatively small update to add the other examples. That will likely happen soon.
+All of the tests are written in the mTests.bas module. There are nearly 150 tests within this file. The tests use a combination of cFluent and cFluentOf objects to test the framework. You can see more information regarding the testing notes [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Testing-notes)
 
 # Using Fluent VBA in an external project
 
