@@ -83,7 +83,11 @@ All of the tests are written in the mTests.bas module. There are nearly 150 test
     
 # Meta tests
 
-The fluent unit testing framework uses itself to test itself. The mTests.bas module has a MetaTests sub that the framework uses to accomplish this.
+The fluent unit testing framework uses itself to test itself. Currently, the testing that's done to test itself is testing the test count property. This will later be expanded to test other functionality as well. This will include testing things like the fluent path, test name, and category.
+
+# Equality tests
+
+Most of the tests use the EqualTo() method to ensure that the correct result is returned. Because of this, I wrote a number of tests using the EqualTo() method to ensure that the tests are working correctly.
 
 # Documentation tests
 
