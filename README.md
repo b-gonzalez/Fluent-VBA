@@ -19,7 +19,7 @@ Fluent frameworks are intended to be read like natural language. So instead of h
         Assert.Equal(Result,5)
     End Sub
     
-    Public Function returnVal(value As Variant)
+    Public Function returnVal(value As Variant) As Variant
         returnVal = value
     End Function
  
