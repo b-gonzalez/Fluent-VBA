@@ -81,15 +81,9 @@ Or like this:
 
 All of the tests are written in the mTests.bas module. There are nearly 150 tests within this file. The tests use a combination of cFluent and cFluentOf objects to test the framework. You can see more information regarding the testing notes [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Testing-notes)
 
-# Using Fluent VBA in an external project
+# External projects
 
-All of the class modules in Fluent VBA are PublicNotCreatable. So the project can be used as a reference in other projects. If you plan on doing this I'd recommend doing the following:
-
-1. Create a testing file that will reference the Fluent VBA workbook and the file containing the code to be tested
-2. In the VBA projects references for the testing file, reference both the Fluent VBA workbook and the file containing the code to be tested.
-3. Create a testing procedure that has a variable that has the type of IFluent or IFluentOf.
-4. Instantiate this variable using the MakeFluent function or the MakeFluentOf function for IFluent or IFluentOf types respectively.
-5. Write your tests.
+Fluent VBA supports being used in projects outside of Excel with some limitations. You can read more about using Fluent VBA in external projects [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/External-projects)
 
 # TODO: High level API design overview
 
