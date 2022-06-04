@@ -9,14 +9,26 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Set Meta(value As cMeta)
-
-End Property
-
 Public Property Get Meta() As cMeta
 
 End Property
 
-Public Property Set setPrinting(value As cPrinting)
+Public Property Get Printing() As cPrinting
+
+End Property
+
+Public Property Get Expressiongs() As cExpressions
+    
+End Property
+
+Public Property Let TestValue(value As Variant)
+
+End Property
+
+Public Property Set TestValue(value As Variant)
+
+End Property
+
+Public Property Get TestValue() As Variant
 
 End Property

@@ -38,24 +38,6 @@ Public Property Get Printing() As cPrinting
     Set Printing = pPrinting
 End Property
 
-'Public Property Let testName(value As String)
-'    pTestName = value
-'    pPrintSettings.testName = pTestName
-'End Property
-'
-'Public Property Get testName() As String
-'    testName = pPrintSettings.testName
-'End Property
-'
-'Public Property Let Category(value As String)
-'    pCategory = value
-'    pPrintSettings.Category = pCategory
-'End Property
-'
-'Public Property Get Category() As String
-'    Category = pPrintSettings.Category
-'End Property
-
 Public Property Let TestCount(value As Long)
     pTestCount = value
     pPrinting.TestCount = pTestCount

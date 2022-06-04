@@ -9,26 +9,17 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Private pUnit As cUnit
-Private pUnitMeta As IUnit
-Private pUnitTestVal As ISetExpressionAndValue
-Private pUnitExpr As ISetExpressionAndValue
+Private pUnit As IUnit
+Private pUnitShould As cUnit
 Private pMeta As cMeta
-Private pFluentOfVal As Variant
 Private pExpressions As cExpressions
+Private pFluentOfVal As Variant
 
 Private Sub Class_Initialize()
-    Set pExpressions = New cExpressions
-    Set pMeta = New cMeta
     Set pUnit = New cUnit
-        
-    Set pUnitExpr = pUnit
-    Set pUnitTestVal = pUnit
-    Set pUnitMeta = pUnit
-    Set pUnitExpr.setExpr = pExpressions
-    Set pUnitMeta.Meta = pMeta
-    Set pUnitMeta.setPrinting = pMeta.Printing
-
+    Set pUnitShould = pUnit
+    Set pExpressions = pUnit.Expressiongs
+    Set pMeta = pUnit.Meta
 End Sub
 
 Public Property Get Meta() As cMeta
@@ -38,10 +29,12 @@ End Property
 Public Function Of(value As Variant) As cUnit
     If IsObject(value) Then
         Set pFluentOfVal = value
-        Set pUnitTestVal.TestValue = value
+        Set pUnit.TestValue = value
+        Set pExpressions.TestValue = value
     Else
         pFluentOfVal = value
-        pUnitTestVal.TestValue = value
+        pUnit.TestValue = value
+        pExpressions.TestValue = value
     End If
     Set Of = pUnit
 End Function

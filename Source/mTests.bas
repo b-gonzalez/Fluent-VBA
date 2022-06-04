@@ -19,6 +19,8 @@ Private Sub FluentAAAExamples()
         Debug.Assert .EqualTo(5)
     End With
     
+
+    
     '//Act
     With Result2.Of(returnedResult).Should
         '//Assert
@@ -51,17 +53,17 @@ Public Sub runMainTests()
     testFluent.Meta.Printing.Category = "metaTests"
     Call MetaTests(Fluent, testFluent)
     
-'    Fluent.Meta.Printing.Category = "EqualityTests"
-'    testFluent.Meta.Printing.Category = "EqualityTests"
-'    Call EqualityTests(Fluent, testFluent)
-'
-'    Fluent.Meta.Printing.Category = "positiveDocumentationTests"
-'    testFluent.Meta.Printing.Category = "positiveDocumentationTests"
-'    Call positiveDocumentationTests(Fluent, testFluent)
-'
-'    Fluent.Meta.Printing.Category = "negativeDocumentationTests"
-'    testFluent.Meta.Printing.Category = "negativeDocumentationTests"
-'    Call negativeDocumentationTests(Fluent, testFluent)
+    Fluent.Meta.Printing.Category = "EqualityTests"
+    testFluent.Meta.Printing.Category = "EqualityTests"
+    Call EqualityTests(Fluent, testFluent)
+
+    Fluent.Meta.Printing.Category = "positiveDocumentationTests"
+    testFluent.Meta.Printing.Category = "positiveDocumentationTests"
+    Call positiveDocumentationTests(Fluent, testFluent)
+
+    Fluent.Meta.Printing.Category = "negativeDocumentationTests"
+    testFluent.Meta.Printing.Category = "negativeDocumentationTests"
+    Call negativeDocumentationTests(Fluent, testFluent)
     
     Debug.Print "All tests Finished!"
     Call printTestCount(testFluent.Meta.TestCount)

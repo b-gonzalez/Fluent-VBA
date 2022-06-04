@@ -10,7 +10,6 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Implements IUnit
-Implements ISetExpressionAndValue
 
 Private pShould As cShould
 Private pShouldSet As ISetExpressionAndValue
@@ -20,24 +19,8 @@ Private pExpressions As cExpressions
 Private pMeta As cMeta
 Private pUnitVal As Variant
 Private pTestCount As Long
-Private pPrinting As IPrinting
+Private pPrinting As cPrinting
 Private iPrint As IPrinting
-
-Private Property Set ISetExpressionAndValue_TestValue(value As Variant)
-    'pPrinting.TestCount = pPrinting.TestCount + 1
-    Set pExpressions.TestValue = value
-    Set pUnitVal = pExpressions.TestValue
-End Property
-
-Private Property Let ISetExpressionAndValue_TestValue(value As Variant)
-    'pPrinting.TestCount = pPrinting.TestCount + 1
-    pExpressions.TestValue = value
-    pUnitVal = pExpressions.TestValue
-End Property
-
-Private Property Set ISetExpressionAndValue_setExpr(value As cExpressions)
-    Set pExpressions = value
-End Property
 
 Public Property Get Should() As IShould
     Set pShould = getShould
@@ -49,19 +32,30 @@ Public Property Get ShouldNot() As IShould
     Set ShouldNot = pShouldNot
 End Property
 
-Private Property Set IUnit_Meta(value As cMeta)
-    Set pMeta = value
-    Set pExpressions.setMeta = pMeta
-End Property
-
 Private Property Get IUnit_Meta() As cMeta
     Set IUnit_Meta = pMeta
 End Property
 
-Private Property Set IUnit_setPrinting(value As cPrinting)
-    Set pPrinting = value
-    Set pExpressions.setPrinting = pPrinting
-    Set iPrint = pPrinting
+Private Property Get IUnit_Printing() As cPrinting
+    Set IUnit_Printing = pPrinting
+End Property
+
+Private Property Get IUnit_Expressiongs() As cExpressions
+    Set IUnit_Expressiongs = pExpressions
+End Property
+
+Private Property Let IUnit_TestValue(value As Variant)
+    pExpressions.TestValue = value
+    pUnitVal = pExpressions.TestValue
+End Property
+
+Private Property Set IUnit_TestValue(value As Variant)
+    Set pExpressions.TestValue = value
+    Set pUnitVal = pExpressions.TestValue
+End Property
+
+Private Property Get IUnit_TestValue() As Variant
+    IUnit_TestValue = pUnitVal
 End Property
 
 Private Function getShould() As cShould
@@ -99,8 +93,13 @@ Private Function getShouldNot() As cShouldNot
     Set getShouldNot = tempShouldNot
 End Function
 
+Private Sub Class_Initialize()
+    Set pExpressions = New cExpressions
+    Set pMeta = New cMeta
+    Set pExpressions.setMeta = pMeta
+    Set pExpressions.setPrinting = pMeta.Printing
+End Sub
+
 Private Sub Class_Terminate()
-'    If pPrintSettings.PrintTotalTests = True Then
-'        IPrint.printTestCounts
-'    End If
+
 End Sub

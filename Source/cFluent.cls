@@ -9,32 +9,25 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Private pUnit As cUnit
-Private pUnitMeta As IUnit
-Private pUnitExpr As ISetExpressionAndValue
+Private pUnit As IUnit
+Private pUnitShould As cUnit
 Private pMeta As cMeta
-Private pFluentVal As Variant
 Private pExpressions As cExpressions
+Private pFluentVal As Variant
 
 Private Sub Class_Initialize()
-    Set pExpressions = New cExpressions
     Set pUnit = New cUnit
-    Set pMeta = New cMeta
-    
-    Set pUnitExpr = pUnit
-    Set pUnitExpr.setExpr = pExpressions
-    Set pUnitMeta = pUnit
-    Set pUnitMeta.Meta = pMeta
-    Set pUnitMeta.setPrinting = pMeta.Printing
-    
+    Set pUnitShould = pUnit
+    Set pExpressions = pUnit.Expressiongs
+    Set pMeta = pUnit.Meta
 End Sub
 
 Public Property Get Should() As IShould
-    Set Should = pUnit.Should
+    Set Should = pUnitShould.Should
 End Property
 
 Public Property Get ShouldNot() As IShould
-    Set ShouldNot = pUnit.ShouldNot
+    Set ShouldNot = pUnitShould.ShouldNot
 End Property
 
 Public Property Get Meta() As cMeta
@@ -43,12 +36,12 @@ End Property
 
 Public Property Set TestValue(value As Variant)
     Set pFluentVal = value
-    Set pUnitExpr.TestValue = pFluentVal
+    Set pExpressions.TestValue = pFluentVal
 End Property
 
 Public Property Let TestValue(value As Variant)
     pFluentVal = value
-    pUnitExpr.TestValue = pFluentVal
+    pExpressions.TestValue = pFluentVal
 End Property
 
 Public Property Get TestValue() As Variant

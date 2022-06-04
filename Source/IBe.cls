@@ -41,7 +41,6 @@ Public Function Between(lowerVal As Double, higherVal As Double) As Boolean
 
 End Function
 
-
 Public Function InDataStructure(dataStructure As Variant, Optional method As flMethod = flRecursive) As Boolean
 
 End Function

@@ -17,7 +17,6 @@ Public Property Get Have() As IHave
 
 End Property
 
-
 Public Function Contain(value As Variant) As Boolean
 
 End Function

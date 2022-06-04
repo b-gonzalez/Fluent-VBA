@@ -237,3 +237,14 @@ Private Sub addCategoryStyle(resultCol As ListColumn, categoryCol As ListColumn)
         End If
     Next i
 End Sub
+
+Private Sub setGood()
+    ActiveCell.Interior.Color = 13561798
+    ActiveCell.Font.Color = 24832
+End Sub
+
+Private Sub setBad()
+    ActiveCell.Interior.Color = 13551615
+    ActiveCell.Font.Color = 393372
+End Sub
+

@@ -9,22 +9,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-'Public Property Let TestName(value As String)
-'
-'End Property
-'
-'Public Property Get TestName() As String
-'
-'End Property
-'
-'Public Property Let Category(value As String)
-'
-'End Property
-'
-'Public Property Get Category() As String
-'
-'End Property
-
 Public Property Get TestCollection() As Collection
 
 End Property
@@ -36,8 +20,3 @@ End Property
 Public Property Get TestCount() As Long
     
 End Property
-
-
-'Public Sub printTestCounts()
-'
-'End Sub
