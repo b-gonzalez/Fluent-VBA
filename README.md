@@ -19,7 +19,7 @@ Fluent frameworks are intended to be read like natural language. So instead of h
         Assert.Equal(Result,5)
     End Sub
     
-    Public Function returnVal(value As Variant)
+    Public Function returnVal(value As Variant) As Variant
         returnVal = value
     End Function
  
@@ -79,33 +79,11 @@ Or like this:
 
 # Testing notes
 
-All of the tests are written in the mTests.bas module. There are nearly 150 tests within this file. The tests use a combination of cFluent and cFluentOf objects to test the framework. See specific testing notes below for more details on how the tests are constructed.
-    
-# Meta tests
+All of the tests are written in the mTests.bas module. There are nearly 150 tests within this file. The tests use a combination of cFluent and cFluentOf objects to test the framework. You can see more information regarding the testing notes [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Testing-notes)
 
-The fluent unit testing framework uses itself to test itself. The mTests.bas module has a MetaTests sub that the framework uses to accomplish this.
+# External projects
 
-# Documentation tests
-
-The mTests module has a DocumentationTests sub that contains several dozen tests. These tests document the various objects and methods in the API by using them in the tests. This is broken down into two types of documentation tests: positiveDocumentationTests and negativeDocumentationTests. The negativeDocumentationTests check the opposite of what the positiveDocumenationTests test for. They are there to ensure that tests don't pass due to false positives. A test that shoudld evaluate to false may pass simply because the default data type of the boolean is false. Not because the test evaluates as it should for example. If there was some issue with the framework and this happened in a positive test, it would be caught in the corresponding negative test.
-
-# Additional tests
-
-Several other tests are implemented documenting the flexibility with which these unit tests can be created. I will probably consolidate these tests into a runExamples sub which I've already created. Currently only one of the six examples is implemented. So it's a relatively small update to add the other examples. That will likely happen soon.
-
-# cFluentOf class
-
-One new big change is the addition of the cFluentOf class. This new class allows you to enter the test value in the testing line itself. The cFluentOf class is now on par with the cFluent class in terms of being utilized within the tests. You can read more about using the cFluentOf class [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/cFluentOf-objects)
-
-# Using Fluent VBA in an external project
-
-All of the class modules in Fluent VBA are PublicNotCreatable. So the project can be used as a reference in other projects. If you plan on doing this I'd recommend doing the following:
-
-1. Create a testing file that will reference the Fluent VBA workbook and the file containing the code to be tested
-2. In the VBA projects references for the testing file, reference both the Fluent VBA workbook and the file containing the code to be tested.
-3. Create a testing procedure that has a variable that has the type of IFluent or IFluentOf.
-4. Instantiate this variable using the MakeFluent function or the MakeFluentOf function for IFluent or IFluentOf types respectively.
-5. Write your tests.
+Fluent VBA supports being used in projects outside of Excel with some limitations. You can read more about using Fluent VBA in external projects [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/External-projects)
 
 # TODO: High level API design overview
 
