@@ -17,10 +17,11 @@ Private pShouldNot As cShouldNot
 Private pShouldNotSet As ISetExpressionAndValue
 Private pExpressions As cExpressions
 Private pMeta As cMeta
-Private pUnitVal As Variant
-Private pTestCount As Long
 Private pPrinting As cPrinting
 Private iPrint As IPrinting
+
+Private pUnitVal As Variant
+Private pTestCount As Long
 
 Public Property Get Should() As IShould
     Set pShould = getShould
@@ -96,10 +97,9 @@ End Function
 Private Sub Class_Initialize()
     Set pExpressions = New cExpressions
     Set pMeta = New cMeta
+    
     Set pExpressions.setMeta = pMeta
     Set pExpressions.setPrinting = pMeta.Printing
+    Set pExpressions.setTestResult = pMeta.TestResult
 End Sub
 
-Private Sub Class_Terminate()
-
-End Sub

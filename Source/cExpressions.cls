@@ -9,10 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Private pTestValue As Variant
 Private pMeta As cMeta
+Private pTestResult As cTestResult
 Private pPrinting As cPrinting
 Private iPrint As IPrinting
+
+Private pTestValue As Variant
+Private pFluentPath As String
 
 Enum flMethod
     flRecursive
@@ -39,10 +42,15 @@ Public Property Set setMeta(value As cMeta)
     Set pMeta = value
 End Property
 
+Public Property Set setTestResult(value As cTestResult)
+    Set pTestResult = value
+End Property
+
 Public Property Set setPrinting(value As IPrinting)
     Set pPrinting = value
     Set iPrint = value
 End Property
+
 
 Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Optional method As flMethod = flRecursive, Optional negateValue As Boolean = False) As Boolean
     Dim elem As Variant
@@ -473,7 +481,11 @@ Optional origVal As Variant, Optional newVal As Variant, Optional lowerVal As Va
             fluentPath = fluentPath & CStr(newVal) & ". Actual: " & origVal
     End Select
     
+    pFluentPath = fluentPath
+    
     iPrint.TestCount = iPrint.TestCount + 1
     
     iPrint.TestCollection.Add fluentPath
+    
+    Call pTestResult.CheckTest(fluentBool, fluentPath)
 End Sub
