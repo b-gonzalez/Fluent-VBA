@@ -39,31 +39,31 @@ Private Function returnVal(value As Variant)
 End Function
 
 Public Sub runMainTests()
-    Dim Fluent As cFluent
+    Dim fluent As cFluent
     Dim testFluent As cFluentOf
     
-    Set Fluent = New cFluent
+    Set fluent = New cFluent
     Set testFluent = New cFluentOf
     
-    With Fluent.Meta.Printing
+    With fluent.Meta.Printing
         .TestName = "Result"
     End With
     
-    Fluent.Meta.Printing.Category = "metaTests"
+    fluent.Meta.Printing.Category = "metaTests"
     testFluent.Meta.Printing.Category = "metaTests"
-    Call MetaTests(Fluent, testFluent)
+    Call MetaTests(fluent, testFluent)
     
-    Fluent.Meta.Printing.Category = "EqualityTests"
+    fluent.Meta.Printing.Category = "EqualityTests"
     testFluent.Meta.Printing.Category = "EqualityTests"
-    Call EqualityTests(Fluent, testFluent)
+    Call EqualityTests(fluent, testFluent)
 
-    Fluent.Meta.Printing.Category = "positiveDocumentationTests"
+    fluent.Meta.Printing.Category = "positiveDocumentationTests"
     testFluent.Meta.Printing.Category = "positiveDocumentationTests"
-    Call positiveDocumentationTests(Fluent, testFluent)
+    Call positiveDocumentationTests(fluent, testFluent)
 
-    Fluent.Meta.Printing.Category = "negativeDocumentationTests"
+    fluent.Meta.Printing.Category = "negativeDocumentationTests"
     testFluent.Meta.Printing.Category = "negativeDocumentationTests"
-    Call negativeDocumentationTests(Fluent, testFluent)
+    Call negativeDocumentationTests(fluent, testFluent)
     
     Debug.Print "All tests Finished!"
     Call printTestCount(testFluent.Meta.TestCount)
@@ -74,11 +74,11 @@ Public Sub runMainTests()
 End Sub
 
 Public Sub runExamples()
-    Dim Fluent As cFluent
+    Dim fluent As cFluent
     
-    Set Fluent = New cFluent
+    Set fluent = New cFluent
     
-    Call Example1(Fluent)
+    Call Example1(fluent)
     
     'Call Fluent.Meta.Printing.PrintToSheet
     'Call fluent.Meta.Printing.PrintToImmediate
@@ -396,107 +396,107 @@ Private Sub Example6()
     
 End Sub
 
-Private Sub MetaTests(Fluent As cFluent, testFluent As cFluentOf)
-    Call checkTestCount(Fluent, testFluent)
+Private Sub MetaTests(fluent As cFluent, testFluent As cFluentOf)
+    Call checkTestCount(fluent, testFluent)
 End Sub
 
-Private Sub checkTestCount(testFluent As cFluent, Fluent As cFluentOf)
+Private Sub checkTestCount(testFluent As cFluent, fluent As cFluentOf)
     Dim result As Variant
     
     result = testFluent.Meta.TestCount
-    Debug.Assert Fluent.Of(result).Should.Be.EqualTo(0)
+    Debug.Assert fluent.Of(result).Should.Be.EqualTo(0)
     
     testFluent.TestValue = "Test"
     Debug.Assert testFluent.Should.Be.EqualTo("Test")
     result = testFluent.Meta.TestCount
-    Debug.Assert Fluent.Of(result).Should.Be.EqualTo(1)
+    Debug.Assert fluent.Of(result).Should.Be.EqualTo(1)
     
     testFluent.TestValue = "Test"
     Debug.Assert testFluent.Should.Be.EqualTo("Test")
     result = testFluent.Meta.TestCount
-    Debug.Assert Fluent.Of(result).Should.Be.EqualTo(2)
+    Debug.Assert fluent.Of(result).Should.Be.EqualTo(2)
 End Sub
 
-Private Sub EqualityTests(Fluent As cFluent, testFluent As cFluentOf)
+Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf)
     Dim TestResult As Boolean
     
-    Fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(False).Should.Be.EqualTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(False).Should.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
 
-    Fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
 
-    Fluent.TestValue = testFluent.Of(-1).Should.Be.EqualTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(-1).Should.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(-1).Should.Be.EqualTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(-1).Should.Be.EqualTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
 
-    Fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
 
-    Fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     '//Approximate equality tests
 
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("TRUE").Should.Be.EqualTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("TRUE").Should.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
 
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("TRUE").Should.Be.EqualTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("TRUE").Should.Be.EqualTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
 
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("FALSE").Should.Be.EqualTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("FALSE").Should.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
 
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("FALSE").Should.Be.EqualTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("FALSE").Should.Be.EqualTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
 
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("true").Should.Be.EqualTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("true").Should.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
 
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("true").Should.Be.EqualTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("true").Should.Be.EqualTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
 
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("false").Should.Be.EqualTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("false").Should.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
 
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("false").Should.Be.EqualTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("false").Should.Be.EqualTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
 End Sub
 
-Private Sub positiveDocumentationTests(Fluent As cFluent, testFluent As cFluentOf)
+Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentOf)
     'Dim testFluent As cFluentOf
     Dim TestResult As Boolean
     Dim col As Collection
@@ -506,148 +506,148 @@ Private Sub positiveDocumentationTests(Fluent As cFluent, testFluent As cFluentO
     
     'Set testFluent = New cFluentOf
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.EqualTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.EqualTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThan(9)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThan(9)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.LessThan(9)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).Should.Be.LessThan(9)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.LessThan(11)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.LessThan(11)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThan(11)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThan(11)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Contain(1)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Contain(1)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Contain(0)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Contain(0)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Contain(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Contain(10)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Contain(2)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).Should.Contain(2)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).Should.StartWith(1)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.StartWith(1)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.StartWith(2)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).Should.StartWith(2)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).Should.EndWith(0)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.EndWith(0)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.EndWith(2)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).Should.EndWith(2)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Have.LengthOf(2)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Have.LengthOf(2)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Have.LengthOf(1)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).Should.Have.LengthOf(1)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Have.MaxLengthOf(3)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Have.MaxLengthOf(3)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Have.MaxLengthOf(1)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).Should.Have.MaxLengthOf(1)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Have.MinLengthOf(3)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).Should.Have.MinLengthOf(3)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(9)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(9)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(11)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(11)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(9)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(9)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(11)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(11)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.Between(9, 11)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.Between(9, 11)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(1, 3)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(1, 3)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(9, 10, 11)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(9, 10, 11)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     ' //Object and data structure tests
     
     Set col = New Collection
     Set d = CreateObject("Scripting.Dictionary")
-    Fluent.TestValue = testFluent.Of(col).Should.Be.OneOf(col, d)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(col).Should.Be.OneOf(col, d)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(col, d, 10)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(col, d, 10)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(col).Should.Be.Something
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(col).Should.Be.Something
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     Set col = Nothing
-    Fluent.TestValue = testFluent.Of(col).Should.Be.Something
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(col).Should.Be.Something
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     arr = Array(9, 10, 11)
-    Fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     ReDim arr(1, 1)
     arr(0, 0) = 9
     arr(0, 1) = 10
     arr(1, 0) = 11
     arr(1, 1) = 12
-    Fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     ReDim arr(1, 1, 1)
     arr(0, 0, 0) = 6
@@ -658,173 +658,173 @@ Private Sub positiveDocumentationTests(Fluent As cFluent, testFluent As cFluentO
     arr(1, 0, 1) = 11
     arr(1, 1, 0) = 12
     arr(1, 1, 1) = 13
-    Fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     arr = Array(9, Array(10, Array(11)))
-    Fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     Set col = New Collection
     col.Add 9
     col.Add 10
     col.Add 11
-    Fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     Set col = New Collection
     col.Add 9
     col.Add Array(10, Array(11))
-    Fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     Set col = Nothing
     
     Set d = CreateObject("Scripting.Dictionary")
     d.Add 1, 9
     d.Add 2, 10
     d.Add 3, 11
-    Fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     Set d = CreateObject("Scripting.Dictionary")
     d.Add 1, 9
     d.Add 2, Array(10, Array(11))
-    Fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     Set d = CreateObject("Scripting.Dictionary")
     d.Add 9, 1
     d.Add 10, 2
     d.Add 11, 3
-    Fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d.keys)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d.keys)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     Set al = CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    Fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(al)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(al)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     ' //Approximate equality tests
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("10").Should.Be.EqualTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("10").Should.Be.EqualTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("True").Should.Be.EqualTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("True").Should.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     '//default epsilon for double comparisons is 0.000001
     '//the default can be modified by setting a value
     '//for the epsilon property in the Meta object.
     
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of(5.0000001).Should.Be.EqualTo(5)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(5.0000001).Should.Be.EqualTo(5)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     testFluent.Meta.ApproximateEqual = False
     
     '//Evaluation tests
     
-    Fluent.TestValue = testFluent.Of(True).Should.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(True).Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(True).Should.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(True).Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(False).Should.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(False).Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(False).Should.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(False).Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of("true").Should.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("true").Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of("false").Should.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("false").Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of("TRUE").Should.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("TRUE").Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of("FALSE").Should.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("FALSE").Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(-1).Should.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(-1).Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(-1).Should.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(-1).Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(0).Should.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(0).Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(0).Should.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(0).Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of("-1").Should.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("-1").Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of("-1").Should.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("-1").Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of("0").Should.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("0").Should.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of("0").Should.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("0").Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(5 + 5).Should.EvaluateTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(5 + 5).Should.EvaluateTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of("5 + 5").Should.EvaluateTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("5 + 5").Should.EvaluateTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of("5 + 5 = 10").Should.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("5 + 5 = 10").Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of("5 + 5 > 9").Should.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("5 + 5 > 9").Should.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     '//Testing errors is possible if they're put in strings
-    Fluent.TestValue = testFluent.Of("1 / 0").Should.EvaluateTo(CVErr(xlErrDiv0))
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("1 / 0").Should.EvaluateTo(CVErr(xlErrDiv0))
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
 End Sub
 
-Private Sub negativeDocumentationTests(Fluent As cFluent, testFluent As cFluentOf)
+Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentOf)
     'Dim testFluent As cFluentOf
     Dim TestResult As Boolean
     Dim col As Collection
@@ -834,148 +834,148 @@ Private Sub negativeDocumentationTests(Fluent As cFluent, testFluent As cFluentO
     
     'Set testFluent = New cFluentOf
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.EqualTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.EqualTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThan(9)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThan(9)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThan(9)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThan(9)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThan(11)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThan(11)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThan(11)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThan(11)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(1)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(1)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(0)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(0)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(10)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(2)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(2)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.StartWith(1)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.StartWith(1)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.StartWith(2)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.StartWith(2)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.EndWith(0)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.EndWith(0)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.EndWith(2)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.EndWith(2)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthOf(2)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthOf(2)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthOf(1)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthOf(1)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MaxLengthOf(3)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MaxLengthOf(3)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MaxLengthOf(1)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MaxLengthOf(1)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MinLengthOf(3)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MinLengthOf(3)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(9)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(9)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(11)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(11)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(9)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(9)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(11)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(11)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(9, 11)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(9, 11)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(1, 3)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(1, 3)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(9, 10, 11)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(9, 10, 11)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     ' //Object and data structure tests
     
     Set col = New Collection
     Set d = CreateObject("Scripting.Dictionary")
-    Fluent.TestValue = testFluent.Of(col).ShouldNot.Be.OneOf(col, d)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.OneOf(col, d)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(col, d, 10)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(col, d, 10)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Something
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Something
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     Set col = Nothing
-    Fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Something
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Something
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
     arr = Array(9, 10, 11)
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     ReDim arr(1, 1)
     arr(0, 0) = 9
     arr(0, 1) = 10
     arr(1, 0) = 11
     arr(1, 1) = 12
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     ReDim arr(1, 1, 1)
     arr(0, 0, 0) = 6
@@ -986,168 +986,168 @@ Private Sub negativeDocumentationTests(Fluent As cFluent, testFluent As cFluentO
     arr(1, 0, 1) = 11
     arr(1, 1, 0) = 12
     arr(1, 1, 1) = 13
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     arr = Array(9, Array(10, Array(11)))
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     Set col = New Collection
     col.Add 9
     col.Add 10
     col.Add 11
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     Set col = New Collection
     col.Add 9
     col.Add Array(10, Array(11))
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     Set col = Nothing
     
     Set d = CreateObject("Scripting.Dictionary")
     d.Add 1, 9
     d.Add 2, 10
     d.Add 3, 11
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     Set d = CreateObject("Scripting.Dictionary")
     d.Add 1, 9
     d.Add 2, Array(10, Array(11))
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     Set d = CreateObject("Scripting.Dictionary")
     d.Add 9, 1
     d.Add 10, 2
     d.Add 11, 3
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d.keys)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d.keys)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     Set al = CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    Fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     ' //Approximate equality tests
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("10").ShouldNot.Be.EqualTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("10").ShouldNot.Be.EqualTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of("True").ShouldNot.Be.EqualTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("True").ShouldNot.Be.EqualTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     '//default epsilon for double comparisons is 0.000001
     '//the default can be modified by setting a value
     '//for the epsilon property in the Meta object.
     
     testFluent.Meta.ApproximateEqual = True
-    Fluent.TestValue = testFluent.Of(5.0000001).ShouldNot.Be.EqualTo(5)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(5.0000001).ShouldNot.Be.EqualTo(5)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     testFluent.Meta.ApproximateEqual = False
     
     '//Evaluation tests
     
-    Fluent.TestValue = testFluent.Of(True).ShouldNot.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(True).ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(True).ShouldNot.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(True).ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(False).ShouldNot.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(False).ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(False).ShouldNot.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(False).ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of("true").ShouldNot.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("true").ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of("false").ShouldNot.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("false").ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of("TRUE").ShouldNot.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("TRUE").ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of("FALSE").ShouldNot.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("FALSE").ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(-1).ShouldNot.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(-1).ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(-1).ShouldNot.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(-1).ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(0).ShouldNot.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(0).ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of(0).ShouldNot.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of(0).ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of("-1").ShouldNot.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("-1").ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of("-1").ShouldNot.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("-1").ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of("0").ShouldNot.EvaluateTo(False)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("0").ShouldNot.EvaluateTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of("0").ShouldNot.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(True)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(False)
+    fluent.TestValue = testFluent.Of("0").ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Fluent.TestValue = testFluent.Of(5 + 5).ShouldNot.EvaluateTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of(5 + 5).ShouldNot.EvaluateTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of("5 + 5").ShouldNot.EvaluateTo(10)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("5 + 5").ShouldNot.EvaluateTo(10)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of("5 + 5 = 10").ShouldNot.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("5 + 5 = 10").ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Fluent.TestValue = testFluent.Of("5 + 5 > 9").ShouldNot.EvaluateTo(True)
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("5 + 5 > 9").ShouldNot.EvaluateTo(True)
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
     '//Testing errors is possible if they're put in strings
-    Fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.EvaluateTo(CVErr(xlErrDiv0))
-    Debug.Assert Fluent.Should.Be.EqualTo(False)
-    Debug.Assert Fluent.ShouldNot.Be.EqualTo(True)
+    fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.EvaluateTo(CVErr(xlErrDiv0))
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
 End Sub

@@ -13,6 +13,7 @@ Private pMeta As cMeta
 Private pTestResult As cTestResult
 Private pPrinting As cPrinting
 Private iPrint As IPrinting
+Private pExprDict As Object
 
 Private pTestValue As Variant
 Private pFluentPath As String
@@ -51,7 +52,6 @@ Public Property Set setPrinting(value As IPrinting)
     Set iPrint = value
 End Property
 
-
 Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Optional method As flMethod = flRecursive, Optional negateValue As Boolean = False) As Boolean
     Dim elem As Variant
     Dim col As Collection
@@ -79,7 +79,14 @@ Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Op
     
     InDataStructure = tempBool
     
-    Call addFluentPath("InDataStructure", CBool(InDataStructure), CBool(negateValue), origVal)
+    pExprDict.Add "functionName", "InDataStructure"
+    pExprDict.Add "result", CBool(InDataStructure)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    'pExprDict.Add "actual", newVal
+    
+    'Call addFluentPath("InDataStructure", CBool(InDataStructure), CBool(negateValue), origVal)
+    Call addFluentPathNew(pExprDict)
     
 End Function
 
@@ -191,7 +198,15 @@ Public Function GreaterThan(origVal As Double, newVal As Double, Optional negate
     
     GreaterThan = (origVal > newVal)
             
-    Call addFluentPath("GreaterThan", CBool(GreaterThan), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("GreaterThan", CBool(GreaterThan), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "GreaterThan"
+    pExprDict.Add "result", CBool(GreaterThan)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
     
 End Function
 
@@ -202,7 +217,15 @@ Public Function GreaterThanOrEqualTo(origVal As Double, newVal As Double, Option
     
     GreaterThanOrEqualTo = (origVal >= newVal)
     
-    Call addFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "GreaterThanOrEqualTo"
+    pExprDict.Add "result", CBool(GreaterThanOrEqualTo)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
         
 End Function
 
@@ -213,7 +236,15 @@ Public Function LessThan(origVal As Double, newVal As Double, Optional negateVal
         
     LessThan = (origVal < newVal)
     
-    Call addFluentPath("LessThan", CBool(LessThan), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("LessThan", CBool(LessThan), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "LessThan"
+    pExprDict.Add "result", CBool(LessThan)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
 
 End Function
 
@@ -224,7 +255,15 @@ Public Function LessThanOrEqualTo(origVal As Double, newVal As Double, Optional 
        
     LessThanOrEqualTo = (origVal <= newVal)
     
-    Call addFluentPath("LessThanOrEqualTo", CBool(LessThanOrEqualTo), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("LessThanOrEqualTo", CBool(LessThanOrEqualTo), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "LessThanOrEqualTo"
+    pExprDict.Add "result", CBool(LessThanOrEqualTo)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
         
 End Function
 
@@ -248,7 +287,15 @@ Public Function EqualTo(origVal As Variant, newVal As Variant, Optional negateVa
     
     EqualTo = tempBool
     
-    Call addFluentPath("EqualTo", CBool(EqualTo), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("EqualTo", CBool(EqualTo), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "EqualTo"
+    pExprDict.Add "result", CBool(EqualTo)
+    pExprDict.Add "negateValue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
         
 End Function
 
@@ -261,7 +308,15 @@ Public Function Contain(origVal As Variant, newVal As Variant, Optional negateVa
         Contain = True
     End If
     
-    Call addFluentPath("Contain", CBool(Contain), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("Contain", CBool(Contain), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "Contain"
+    pExprDict.Add "result", CBool(Contain)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
         
 End Function
 
@@ -277,7 +332,15 @@ Public Function StartWith(origVal As Variant, newVal As Variant, Optional negate
         StartWith = True
     End If
     
-    Call addFluentPath("StartWith", CBool(StartWith), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("StartWith", CBool(StartWith), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "StartWith"
+    pExprDict.Add "result", CBool(StartWith)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
         
 End Function
 
@@ -293,7 +356,15 @@ Public Function EndWith(origVal As Variant, newVal As Variant, Optional negateVa
         EndWith = True
     End If
     
-    Call addFluentPath("EndWith", CBool(EndWith), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("EndWith", CBool(EndWith), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "EndWith"
+    pExprDict.Add "result", CBool(EndWith)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
     
 End Function
 
@@ -304,7 +375,15 @@ Public Function LengthOf(origVal As Double, newVal As Double, Optional negateVal
         
     LengthOf = (Len(CStr(origVal)) = newVal)
     
-    Call addFluentPath("LengthOf", CBool(LengthOf), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("LengthOf", CBool(LengthOf), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "LengthOf"
+    pExprDict.Add "result", CBool(LengthOf)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
             
 End Function
 
@@ -315,7 +394,15 @@ Public Function MaxLengthOf(origVal As Double, newVal As Double, Optional negate
         
     MaxLengthOf = (Len(CStr(origVal)) <= newVal)
     
-    Call addFluentPath("MaxLengthOf", CBool(MaxLengthOf), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("MaxLengthOf", CBool(MaxLengthOf), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "MaxLengthOf"
+    pExprDict.Add "result", CBool(MaxLengthOf)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
             
 End Function
 
@@ -326,7 +413,15 @@ Public Function MinLengthOf(origVal As Double, newVal As Double, Optional negate
         
     MinLengthOf = (Len(CStr(origVal)) >= newVal)
     
-    Call addFluentPath("MinLengthOf", CBool(MinLengthOf), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("MinLengthOf", CBool(MinLengthOf), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "MinLengthOf"
+    pExprDict.Add "result", CBool(MinLengthOf)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
         
 End Function
 
@@ -337,7 +432,14 @@ Public Function Something(origVal As Variant, Optional negateValue As Boolean = 
         
     Something = (Not origVal Is Nothing)
     
-    Call addFluentPath("Something", CBool(Something), CBool(negateValue), origVal)
+    'Call addFluentPath("Something", CBool(Something), CBool(negateValue), origVal)
+    
+    pExprDict.Add "functionName", "Something"
+    pExprDict.Add "result", CBool(Something)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", ""
+    
+    Call addFluentPathNew(pExprDict)
         
 End Function
 
@@ -348,7 +450,16 @@ Public Function Between(origVal As Double, lowerVal As Double, higherVal As Doub
         
     Between = (GreaterThanOrEqualTo(origVal, lowerVal) And LessThanOrEqualTo(origVal, higherVal))
     
-    Call addFluentPath("Between", CBool(Between), CBool(negateValue), origVal:=origVal, lowerVal:=lowerVal, higherVal:=higherVal)
+    'Call addFluentPath("Between", CBool(Between), CBool(negateValue), origVal:=origVal, lowerVal:=lowerVal, higherVal:=higherVal)
+    
+    pExprDict.Add "functionName", "Between"
+    pExprDict.Add "result", CBool(Between)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "lowerVal", lowerVal
+    pExprDict.Add "higherVal", higherVal
+    
+    Call addFluentPathNew(pExprDict)
         
 End Function
 
@@ -377,7 +488,14 @@ Public Function OneOf(origVal As Variant, negateValue As Boolean, ParamArray arg
     
     OneOf = tempBool
     
-    Call addFluentPath("OneOf", CBool(OneOf), CBool(negateValue))
+    'Call addFluentPath("OneOf", CBool(OneOf), CBool(negateValue))
+    
+    pExprDict.Add "functionName", "OneOf"
+    pExprDict.Add "result", CBool(OneOf)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", ""
+    
+    Call addFluentPathNew(pExprDict)
         
 End Function
 
@@ -391,7 +509,16 @@ Public Function LengthBetween(origVal As Double, lowerVal As Double, higherVal A
     
     LengthBetween = (MinLengthOf(tempOrigVal, lowerVal) And MaxLengthOf(tempOrigVal, higherVal))
     
-    Call addFluentPath("LengthBetween", CBool(LengthBetween), CBool(negateValue), origVal:=origVal, lowerVal:=lowerVal, higherVal:=higherVal)
+    'Call addFluentPath("LengthBetween", CBool(LengthBetween), CBool(negateValue), origVal:=origVal, lowerVal:=lowerVal, higherVal:=higherVal)
+    
+    pExprDict.Add "functionName", "LengthBetween"
+    pExprDict.Add "result", CBool(LengthBetween)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "lowerVal", lowerVal
+    pExprDict.Add "higherVal", higherVal
+    
+    Call addFluentPathNew(pExprDict)
 
 End Function
 
@@ -402,23 +529,121 @@ Public Function EvaluateTo(origVal As Variant, newVal As Variant, Optional negat
     
     EvaluateTo = (Evaluate(origVal) = newVal)
     
-    Call addFluentPath("EvaluateTo", CBool(EvaluateTo), CBool(negateValue), origVal, newVal)
+    'Call addFluentPath("EvaluateTo", CBool(EvaluateTo), CBool(negateValue), origVal, newVal)
+    
+    pExprDict.Add "functionName", "EvaluateTo"
+    pExprDict.Add "result", CBool(EvaluateTo)
+    pExprDict.Add "negatevalue", CBool(negateValue)
+    pExprDict.Add "expected", origVal
+    pExprDict.Add "actual", newVal
+    
+    Call addFluentPathNew(pExprDict)
     
 End Function
 
-Private Sub addFluentPath(functionName As String, functionBool As Boolean, negateValue As Boolean, _
-Optional origVal As Variant, Optional newVal As Variant, Optional lowerVal As Variant, Optional higherVal As Variant)
+'Private Sub addFluentPath(functionName As String, functionBool As Boolean, negateValue As Boolean, _
+'Optional origVal As Variant, Optional newVal As Variant, Optional lowerVal As Variant, Optional higherVal As Variant)
+'    Dim fluentPath As String
+'    Dim shouldStr As String
+'    Dim fluentBool As Boolean
+'    Dim fluentTestName As String
+'    Dim fluentCategory As String
+'
+'    If negateValue Then
+'        fluentBool = Not functionBool
+'        shouldStr = "should not"
+'    Else
+'        fluentBool = functionBool
+'        shouldStr = "should"
+'    End If
+'
+'    fluentPath = ""
+'
+'    If pPrinting.Category <> "" Then fluentPath = fluentPath & pPrinting.Category & "="
+'
+'    fluentPath = fluentPath & CLng(fluentBool) & "="
+'
+'    If pPrinting.TestName <> "" Then fluentPath = fluentPath & pPrinting.TestName & " "
+'
+'    Select Case functionName
+'        Case "InDataStructure"
+'            fluentPath = fluentPath & shouldStr & " be in datastructure. "
+'        Case "GreaterThan"
+'            fluentPath = fluentPath & shouldStr & " be greater than "
+'            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+'        Case "GreaterThanOrEqualTo"
+'            fluentPath = fluentPath & shouldStr & " be greater than or equal to "
+'            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+'        Case "LessThan"
+'            fluentPath = fluentPath & shouldStr & " be less than "
+'            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+'        Case "LessThanOrEqualTo"
+'            fluentPath = fluentPath & shouldStr & " be less than or equal to "
+'            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+'        Case "EqualTo"
+'            fluentPath = fluentPath & shouldStr & " be equal to "
+'            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+'        Case "Contain"
+'            fluentPath = fluentPath & shouldStr & " contain "
+'            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+'        Case "StartWith"
+'            fluentPath = fluentPath & shouldStr & " start with "
+'            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+'        Case "EndWith"
+'            fluentPath = fluentPath & shouldStr & " end with "
+'            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+'        Case "LengthOf"
+'            fluentPath = fluentPath & shouldStr & " have length of "
+'            fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
+'        Case "MaxLengthOf"
+'            fluentPath = fluentPath & shouldStr & " have max length of "
+'            fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
+'        Case "MinLengthOf"
+'            fluentPath = fluentPath & shouldStr & " have min length of "
+'            fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
+'        Case "Something"
+'            fluentPath = fluentPath & shouldStr & " be something. "
+'        Case "Between"
+'            fluentPath = fluentPath & shouldStr & " be between "
+'            fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & origVal
+'        Case "OneOf"
+'            fluentPath = fluentPath & shouldStr & " be one of "
+'        Case "LengthBetween"
+'            fluentPath = fluentPath & shouldStr & " have length between "
+'            fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & Len(origVal)
+'        Case "EvaluateTo"
+'            fluentPath = fluentPath & shouldStr & " evaluate to "
+'            fluentPath = fluentPath & CStr(newVal) & ". Actual: " & origVal
+'    End Select
+'
+'    pFluentPath = fluentPath
+'
+'    iPrint.TestCount = iPrint.TestCount + 1
+'
+'    iPrint.TestCollection.Add fluentPath
+'
+'    Call pTestResult.CheckTest(fluentBool, pExprDict)
+'End Sub
+
+Private Sub addFluentPathNew(dict As Object)
     Dim fluentPath As String
     Dim shouldStr As String
     Dim fluentBool As Boolean
     Dim fluentTestName As String
     Dim fluentCategory As String
+    Dim newVal As Variant
+    Dim origVal As Variant
+    Dim lowerVal As Variant
+    Dim higherVal As Variant
+    Dim functionName As String
     
-    If negateValue Then
-        fluentBool = Not functionBool
+    functionName = dict("functionName")
+    
+    If dict("negateValue") Then
+        fluentBool = Not dict("result")
         shouldStr = "should not"
     Else
-        fluentBool = functionBool
+        fluentBool = dict("result")
         shouldStr = "should"
     End If
     
@@ -429,6 +654,14 @@ Optional origVal As Variant, Optional newVal As Variant, Optional lowerVal As Va
     fluentPath = fluentPath & CLng(fluentBool) & "="
     
     If pPrinting.TestName <> "" Then fluentPath = fluentPath & pPrinting.TestName & " "
+    
+    origVal = dict("expected")
+    
+    If Not dict.exists("actual") Then
+        dict.Add "actual", ""
+    End If
+    
+    newVal = dict("actual")
         
     Select Case functionName
         Case "InDataStructure"
@@ -469,11 +702,15 @@ Optional origVal As Variant, Optional newVal As Variant, Optional lowerVal As Va
         Case "Something"
             fluentPath = fluentPath & shouldStr & " be something. "
         Case "Between"
+            lowerVal = dict("lowerVal")
+            higherVal = dict("higherVal")
             fluentPath = fluentPath & shouldStr & " be between "
             fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & origVal
         Case "OneOf"
             fluentPath = fluentPath & shouldStr & " be one of "
         Case "LengthBetween"
+            lowerVal = dict("lowerVal")
+            higherVal = dict("higherVal")
             fluentPath = fluentPath & shouldStr & " have length between "
             fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & Len(origVal)
         Case "EvaluateTo"
@@ -481,11 +718,19 @@ Optional origVal As Variant, Optional newVal As Variant, Optional lowerVal As Va
             fluentPath = fluentPath & CStr(newVal) & ". Actual: " & origVal
     End Select
     
-    pFluentPath = fluentPath
+    'pFluentPath = fluentPath
     
     iPrint.TestCount = iPrint.TestCount + 1
     
     iPrint.TestCollection.Add fluentPath
     
-    Call pTestResult.CheckTest(fluentBool, fluentPath)
+    pExprDict.Add "fluentPath", Split(fluentPath, "=")(1)
+    
+    Call pTestResult.CheckTest(fluentBool, pExprDict)
+    
+    Set pExprDict = CreateObject("Scripting.Dictionary")
+End Sub
+
+Private Sub Class_Initialize()
+    Set pExprDict = CreateObject("Scripting.Dictionary")
 End Sub

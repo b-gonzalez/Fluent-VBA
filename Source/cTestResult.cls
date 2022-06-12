@@ -9,13 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Event TestPassed(fluentPath As String)
-Public Event TestFailed(fluentPath As String)
+Public Event TestPassed(TestDict As Object)
+Public Event TestFailed(TestDict As Object)
 
-Public Sub CheckTest(fluentBool As Boolean, fluentPath As String)
-    If fluentBool Then
-        RaiseEvent TestPassed(fluentPath)
+Public Sub CheckTest(result As Boolean, TestDict As Object)
+    If result Then
+        RaiseEvent TestPassed(TestDict)
     Else
-        RaiseEvent TestFailed(fluentPath)
+        RaiseEvent TestFailed(TestDict)
     End If
 End Sub
