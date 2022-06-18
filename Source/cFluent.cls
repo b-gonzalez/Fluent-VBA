@@ -36,18 +36,18 @@ End Property
 
 Public Property Set TestValue(value As Variant)
     Set pFluentVal = value
-    Set pExpressions.TestValue = pFluentVal
+    Set pUnit.TestValue = pFluentVal
 End Property
 
 Public Property Let TestValue(value As Variant)
     pFluentVal = value
-    pExpressions.TestValue = pFluentVal
+    pUnit.TestValue = pFluentVal
 End Property
 
 Public Property Get TestValue() As Variant
     If IsObject(pFluentVal) Then
-        Set TestValue = pExpressions.TestValue
+        Set TestValue = pUnit.TestValue
     Else
-        TestValue = pExpressions.TestValue
+        TestValue = pUnit.TestValue
     End If
 End Property

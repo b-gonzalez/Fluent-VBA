@@ -437,7 +437,8 @@ Public Function Something(origVal As Variant, Optional negateValue As Boolean = 
     pExprDict.Add "functionName", "Something"
     pExprDict.Add "result", CBool(Something)
     pExprDict.Add "negatevalue", CBool(negateValue)
-    pExprDict.Add "expected", ""
+    'pExprDict.Add "expected", ""
+    pExprDict.Add "expected", TypeName(origVal)
     
     Call addFluentPathNew(pExprDict)
         
@@ -471,20 +472,29 @@ Public Function OneOf(origVal As Variant, negateValue As Boolean, ParamArray arg
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
+    Dim expectedStr As String
         
     arr = args(0)
     tempBool = False
     
     For i = LBound(arr) To UBound(arr)
         If IsObject(arr(i)) Then
+            expectedStr = expectedStr & TypeName(arr(i)) & ", "
+        Else
+            expectedStr = expectedStr & arr(i) & ", "
+        End If
+    
+        If IsObject(arr(i)) Or IsObject(origVal) Then
             If TypeName(arr(i)) = TypeName(origVal) Then
                 tempBool = True
             End If
         ElseIf arr(i) = origVal Then
             tempBool = True
-            Exit For
+            'Exit For
         End If
     Next i
+    
+    expectedStr = Left(expectedStr, Len(expectedStr) - 2)
     
     OneOf = tempBool
     
@@ -493,7 +503,7 @@ Public Function OneOf(origVal As Variant, negateValue As Boolean, ParamArray arg
     pExprDict.Add "functionName", "OneOf"
     pExprDict.Add "result", CBool(OneOf)
     pExprDict.Add "negatevalue", CBool(negateValue)
-    pExprDict.Add "expected", ""
+    pExprDict.Add "expected", expectedStr
     
     Call addFluentPathNew(pExprDict)
         
@@ -664,58 +674,58 @@ Private Sub addFluentPathNew(dict As Object)
     newVal = dict("actual")
         
     Select Case functionName
-        Case "InDataStructure"
-            fluentPath = fluentPath & shouldStr & " be in datastructure. "
+        Case "Between"
+            lowerVal = dict("lowerVal")
+            higherVal = dict("higherVal")
+            fluentPath = fluentPath & shouldStr & " be between "
+            fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & origVal
+        Case "Contain"
+            fluentPath = fluentPath & shouldStr & " contain "
+            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+        Case "EqualTo"
+            fluentPath = fluentPath & shouldStr & " be equal to "
+            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+        Case "EndWith"
+            fluentPath = fluentPath & shouldStr & " end with "
+            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+        Case "EvaluateTo"
+            fluentPath = fluentPath & shouldStr & " evaluate to "
+            fluentPath = fluentPath & CStr(newVal) & ". Actual: " & origVal
         Case "GreaterThan"
             fluentPath = fluentPath & shouldStr & " be greater than "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
         Case "GreaterThanOrEqualTo"
             fluentPath = fluentPath & shouldStr & " be greater than or equal to "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
+        Case "InDataStructure"
+            fluentPath = fluentPath & shouldStr & " be in datastructure. "
+        Case "LengthBetween"
+            lowerVal = dict("lowerVal")
+            higherVal = dict("higherVal")
+            fluentPath = fluentPath & shouldStr & " have length between "
+            fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & Len(origVal)
+        Case "LengthOf"
+            fluentPath = fluentPath & shouldStr & " have length of "
+            fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
         Case "LessThan"
             fluentPath = fluentPath & shouldStr & " be less than "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
         Case "LessThanOrEqualTo"
             fluentPath = fluentPath & shouldStr & " be less than or equal to "
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
-        Case "EqualTo"
-            fluentPath = fluentPath & shouldStr & " be equal to "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
-        Case "Contain"
-            fluentPath = fluentPath & shouldStr & " contain "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
-        Case "StartWith"
-            fluentPath = fluentPath & shouldStr & " start with "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
-        Case "EndWith"
-            fluentPath = fluentPath & shouldStr & " end with "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
-        Case "LengthOf"
-            fluentPath = fluentPath & shouldStr & " have length of "
-            fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
         Case "MaxLengthOf"
             fluentPath = fluentPath & shouldStr & " have max length of "
             fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
         Case "MinLengthOf"
             fluentPath = fluentPath & shouldStr & " have min length of "
             fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
-        Case "Something"
-            fluentPath = fluentPath & shouldStr & " be something. "
-        Case "Between"
-            lowerVal = dict("lowerVal")
-            higherVal = dict("higherVal")
-            fluentPath = fluentPath & shouldStr & " be between "
-            fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & origVal
         Case "OneOf"
-            fluentPath = fluentPath & shouldStr & " be one of "
-        Case "LengthBetween"
-            lowerVal = dict("lowerVal")
-            higherVal = dict("higherVal")
-            fluentPath = fluentPath & shouldStr & " have length between "
-            fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & Len(origVal)
-        Case "EvaluateTo"
-            fluentPath = fluentPath & shouldStr & " evaluate to "
-            fluentPath = fluentPath & CStr(newVal) & ". Actual: " & origVal
+            fluentPath = fluentPath & shouldStr & " be one of: " & dict("expected")
+        Case "Something"
+            fluentPath = fluentPath & shouldStr & " be something: " & dict("expected")
+        Case "StartWith"
+            fluentPath = fluentPath & shouldStr & " start with "
+            fluentPath = fluentPath & newVal & ". Actual: " & origVal
     End Select
     
     'pFluentPath = fluentPath

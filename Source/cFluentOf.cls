@@ -30,11 +30,11 @@ Public Function Of(value As Variant) As cUnit
     If IsObject(value) Then
         Set pFluentOfVal = value
         Set pUnit.TestValue = value
-        Set pExpressions.TestValue = value
+        'Set pExpressions.TestValue = value
     Else
         pFluentOfVal = value
         pUnit.TestValue = value
-        pExpressions.TestValue = value
+        'pExpressions.TestValue = value
     End If
     Set Of = pUnit
 End Function
