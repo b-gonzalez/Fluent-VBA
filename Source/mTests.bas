@@ -64,12 +64,12 @@ Public Sub runMainTests()
     fluent.Meta.Printing.Category = "negativeDocumentationTests"
     testFluent.Meta.Printing.Category = "negativeDocumentationTests"
     Call negativeDocumentationTests(fluent, testFluent)
-    
+
     Debug.Print "All tests Finished!"
     Call printTestCount(testFluent.Meta.TestCount)
     
-    'Fluent.Meta.Printing.PrintToSheet
-    'testFluent.Meta.Printing.PrintToSheet
+    fluent.Meta.Printing.PrintToSheet
+    testFluent.Meta.Printing.PrintToSheet
     'Fluent.Meta.Printing.PrintToImmediate
 End Sub
 

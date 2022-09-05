@@ -88,19 +88,20 @@ Public Sub PrintToSheet()
     
     Call addResultsIconSets(testResultCol)
     
-    Call addValueConditColors(testResultCol, "-1", "0")
-    
-    Call addValueConditColors(testNameCol, "Passed", "Failed")
-    
     If pCategory <> "" Then
         Set categoryCol = lo.ListColumns("Category")
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
         Columns("C:C").EntireColumn.AutoFit
         Call addCategoryStyle(testResultCol, categoryCol)
+        'Call addValueConditColorsNew(categoryCol)
     Else
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
         Columns("B:B").EntireColumn.AutoFit
     End If
+    
+    Call addValueConditColorsNew(testResultCol)
+    
+    Call addValueConditColorsNew(testNameCol)
 
 End Sub
 
@@ -125,11 +126,11 @@ Private Function getTableFromWorkbook() As ListObject
         ws.Range("A1").value = "Category"
         ws.Range("B1").value = "Test result"
         ws.Range("C1").value = "Test name"
-        Set lo = ws.ListObjects.Add(xlSrcRange, Range("$A$1:$C$1"), , xlYes)
+        Set lo = ws.ListObjects.Add(xlSrcRange, ws.Range("$A$1:$C$1"), , xlYes)
     Else
         ws.Range("A1").value = "Test result"
         ws.Range("B1").value = "Test name"
-        Set lo = ws.ListObjects.Add(xlSrcRange, Range("$A$1:$B$1"), , xlYes)
+        Set lo = ws.ListObjects.Add(xlSrcRange, ws.Range("$A$1:$B$1"), , xlYes)
     End If
     
     lo.Name = "Table1"
@@ -160,37 +161,6 @@ Private Sub addResultsIconSets(lc As ListColumn)
         .Operator = 7
         .Icon = xlIconRedCross
     End With
-End Sub
-
-Private Sub addValueConditColors(lc As ListColumn, passedMsg As String, failedMsg As String)
-    lc.Range.Select
-    
-    Selection.FormatConditions.Add Type:=xlTextString, String:=failedMsg, _
-        TextOperator:=xlContains
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Font
-        .Color = -16383844
-        .TintAndShade = 0
-    End With
-    With Selection.FormatConditions(1).Interior
-        .PatternColorIndex = xlAutomatic
-        .Color = 13551615
-        .TintAndShade = 0
-    End With
-    Selection.FormatConditions(1).StopIfTrue = False
-    Selection.FormatConditions.Add Type:=xlTextString, String:=passedMsg, _
-        TextOperator:=xlContains
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Font
-        .Color = -16752384
-        .TintAndShade = 0
-    End With
-    With Selection.FormatConditions(1).Interior
-        .PatternColorIndex = xlAutomatic
-        .Color = 13561798
-        .TintAndShade = 0
-    End With
-    Selection.FormatConditions(1).StopIfTrue = False
 End Sub
 
 Private Function getArrayFromCollection(col As Collection) As Variant()
@@ -231,20 +201,34 @@ Private Sub addCategoryStyle(resultCol As ListColumn, categoryCol As ListColumn)
     
     For i = 1 To resultCol.Range.Rows.Count
         If resultCol.Range.Cells(i, 1).value = -1 Then
-            categoryCol.Range.Cells(i, 1).Style = "Good"
+            'categoryCol.Range.Cells(i, 1).Style = "Good"
+            Call setGood(categoryCol.Range.Cells(i, 1))
         ElseIf resultCol.Range.Cells(i, 1).value = 0 Then
-            categoryCol.Range.Cells(i, 1).Style = "Bad"
+            'categoryCol.Range.Cells(i, 1).Style = "Bad"
+            Call setBad(categoryCol.Range.Cells(i, 1))
         End If
     Next i
 End Sub
 
-Private Sub setGood()
-    ActiveCell.Interior.Color = 13561798
-    ActiveCell.Font.Color = 24832
+Private Sub addValueConditColorsNew(lc As ListColumn)
+    Dim cell As Range
+    
+    For Each cell In lc.DataBodyRange
+        If cell.value Like "*-1*" Or cell.value Like "*PASSED*" Then
+            Call setGood(cell)
+        ElseIf cell.value Like "*0*" Or cell.value Like "*FAILED*" Then
+            Call setBad(cell)
+        End If
+    Next cell
 End Sub
 
-Private Sub setBad()
-    ActiveCell.Interior.Color = 13551615
-    ActiveCell.Font.Color = 393372
+Private Sub setGood(cell As Variant)
+    cell.Interior.Color = 13561798
+    cell.Font.Color = 24832
+End Sub
+
+Private Sub setBad(cell As Variant)
+    cell.Interior.Color = 13551615
+    cell.Font.Color = 393372
 End Sub
 
