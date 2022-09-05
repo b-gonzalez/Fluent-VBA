@@ -31,7 +31,7 @@ You can have code that reads more naturally like so:
         Dim Result As cFluent
         Dim returnedResult As Variant
         
-        '//arrange
+        '//Arrange
         Set Result = New cFluent
         returnedResult = returnVal(5)
         
