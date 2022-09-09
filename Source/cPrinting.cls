@@ -214,9 +214,13 @@ Private Sub addValueConditColorsNew(lc As ListColumn)
     Dim cell As Range
     
     For Each cell In lc.DataBodyRange
-        If cell.value Like "*-1*" Or cell.value Like "*PASSED*" Then
+        If cell.value Like "*PASSED*" Then
             Call setGood(cell)
-        ElseIf cell.value Like "*0*" Or cell.value Like "*FAILED*" Then
+        ElseIf cell.value Like "*FAILED*" Then
+            Call setBad(cell)
+        ElseIf cell.value Like "*-1*" Then
+            Call setGood(cell)
+        ElseIf cell.value Like "*0*" Then
             Call setBad(cell)
         End If
     Next cell
