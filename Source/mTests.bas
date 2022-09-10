@@ -49,6 +49,16 @@ Public Sub runMainTests()
         .TestName = "Result"
     End With
     
+    With fluent.Meta.Printing
+        .PassedMessage = "Success"
+        .FailedMessage = "Failure"
+    End With
+    
+    With testFluent.Meta.Printing
+        .PassedMessage = "Success"
+        .FailedMessage = "Failure"
+    End With
+    
     fluent.Meta.Printing.Category = "metaTests"
     testFluent.Meta.Printing.Category = "metaTests"
     Call MetaTests(fluent, testFluent)

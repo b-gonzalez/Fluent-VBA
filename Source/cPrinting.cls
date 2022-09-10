@@ -17,6 +17,13 @@ Private pTestCollection As Collection
 Private pTestCount As Long
 Private pCategory As String
 Private iPrint As IPrinting
+Private pPassedMessage As String
+Private pFailedMessage As String
+
+Private Sub Class_Initialize()
+    pPassedMessage = "PASSED"
+    pFailedMessage = "FAILED"
+End Sub
 
 Private Property Get IPrinting_TestCollection() As Collection
     If pTestCollection Is Nothing Then
@@ -47,6 +54,22 @@ End Property
 
 Public Property Get TestName() As String
     TestName = pTestName
+End Property
+
+Public Property Let PassedMessage(value As String)
+    pPassedMessage = value
+End Property
+
+Public Property Get PassedMessage() As String
+    PassedMessage = pPassedMessage
+End Property
+
+Public Property Let FailedMessage(value As String)
+    pFailedMessage = value
+End Property
+
+Public Property Get FailedMessage() As String
+    FailedMessage = pFailedMessage
 End Property
 
 Public Sub PrintToImmediate()
@@ -101,7 +124,7 @@ Public Sub PrintToSheet()
 
     Call addValueConditColorsNew(testResultCol, "-1", "0")
     
-    Call addValueConditColorsNew(testNameCol, "*PASSED*", "*FAILED*")
+    Call addValueConditColorsNew(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*")
 
 End Sub
 
@@ -187,9 +210,9 @@ Private Function getArrayFromCollection(Col As Collection) As Variant()
        arr(i - 1, Category) = temp(Category)
        arr(i - 1, TestResult) = temp(TestResult)
         If temp(TestResult) = -1 Then
-            arr(i - 1, TestName) = "PASSED - " & temp(TestName)
+            arr(i - 1, TestName) = pPassedMessage & " - " & temp(TestName)
         ElseIf temp(TestResult) = 0 Then
-            arr(i - 1, TestName) = "FAILED - " & temp(TestName)
+            arr(i - 1, TestName) = pFailedMessage & " - " & temp(TestName)
         End If
     Next i
     
@@ -231,4 +254,5 @@ Private Sub setBad(cell As Variant)
     cell.Interior.Color = 13551615
     cell.Font.Color = 393372
 End Sub
+
 
