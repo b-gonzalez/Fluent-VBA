@@ -79,7 +79,7 @@ Or like this:
 
 # Testing notes
 
-All of the tests are written in the mTests.bas module. There are nearly 150 tests within this file. The tests use a combination of cFluent and cFluentOf objects to test the framework. You can see more information regarding the testing notes [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Testing-notes)
+All of the tests are written in the mTests.bas module. There are over 150 tests within this file. The tests use a combination of cFluent and cFluentOf objects to test the framework. You can see more information regarding the testing notes [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Testing-notes)
 
 # External projects
 
