@@ -531,8 +531,6 @@ Private Sub addFluentPathNew(dict As Object)
             fluentPath = fluentPath & newVal & ". Actual: " & origVal
     End Select
     
-    'pFluentPath = fluentPath
-    
     iPrint.TestCount = iPrint.TestCount + 1
     
     iPrint.TestCollection.Add fluentPath

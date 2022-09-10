@@ -98,10 +98,10 @@ Public Sub PrintToSheet()
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
         Columns("B:B").EntireColumn.AutoFit
     End If
+
+    Call addValueConditColorsNew(testResultCol, "-1", "0")
     
-    Call addValueConditColorsNew(testResultCol)
-    
-    Call addValueConditColorsNew(testNameCol)
+    Call addValueConditColorsNew(testNameCol, "*PASSED*", "*FAILED*")
 
 End Sub
 
@@ -210,17 +210,13 @@ Private Sub addCategoryStyle(resultCol As ListColumn, categoryCol As ListColumn)
     Next i
 End Sub
 
-Private Sub addValueConditColorsNew(lc As ListColumn)
+Private Sub addValueConditColorsNew(lc As ListColumn, passedValue As String, failedValue As String)
     Dim cell As Range
     
     For Each cell In lc.DataBodyRange
-        If cell.value Like "*PASSED*" Then
+        If cell.value Like passedValue Then
             Call setGood(cell)
-        ElseIf cell.value Like "*FAILED*" Then
-            Call setBad(cell)
-        ElseIf cell.value Like "*-1*" Then
-            Call setGood(cell)
-        ElseIf cell.value Like "*0*" Then
+        ElseIf cell.value Like failedValue Then
             Call setBad(cell)
         End If
     Next cell
