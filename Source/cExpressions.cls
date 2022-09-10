@@ -52,9 +52,9 @@ Public Property Set setPrinting(value As IPrinting)
     Set iPrint = value
 End Property
 
-Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Optional method As flMethod = flRecursive, Optional negateValue As Boolean = False) As Boolean
+Public Function InDataStructure(ExpectedVal As Variant, DataStructure As Variant, Optional Method As flMethod = flRecursive, Optional NegateValue As Boolean = False) As Boolean
     Dim elem As Variant
-    Dim col As Collection
+    Dim Col As Collection
     Dim tempBool As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
@@ -62,16 +62,16 @@ Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Op
     
     tempBool = False
     
-    If isDataStructure(dataStructure) Then
-        If method = flRecursive Then
-            Set col = getNestedElementsRecur(dataStructure)
-        ElseIf method = flIterative Then
-            Set col = getNestedElementsIter(dataStructure)
+    If isDataStructure(DataStructure) Then
+        If Method = flRecursive Then
+            Set Col = getNestedElementsRecur(DataStructure)
+        ElseIf Method = flIterative Then
+            Set Col = getNestedElementsIter(DataStructure)
         End If
     End If
     
-    For Each elem In col
-        If origVal = elem Then
+    For Each elem In Col
+        If ExpectedVal = elem Then
             tempBool = True
             Exit For
         End If
@@ -79,81 +79,81 @@ Public Function InDataStructure(origVal As Variant, dataStructure As Variant, Op
     
     InDataStructure = tempBool
     
-    Call addToDictAndFluentPath("InDataStructure", CBool(InDataStructure), CBool(negateValue), origVal)
+    Call addToDictAndFluentPath("InDataStructure", CBool(InDataStructure), CBool(NegateValue), ExpectedVal)
     
 End Function
 
-Private Function isDataStructure(ByVal dataStructure As Variant)
+Private Function isDataStructure(ByVal DataStructure As Variant)
     Dim dsTypeName As String
     Dim tempBool As Boolean
     Dim fluentBool As Boolean
     
-    dsTypeName = TypeName(dataStructure)
+    dsTypeName = TypeName(DataStructure)
     tempBool = False
     
     Select Case True
-        Case IsArray(dataStructure)
+        Case IsArray(DataStructure)
             tempBool = True
-        Case TypeName(dataStructure) = "Collection", TypeName(dataStructure) = "Dictionary", TypeName(dataStructure) = "ArrayList"
+        Case TypeName(DataStructure) = "Collection", TypeName(DataStructure) = "Dictionary", TypeName(DataStructure) = "ArrayList"
             tempBool = True
     End Select
     
     isDataStructure = tempBool
 End Function
 
-Private Function getNestedElementsRecur(dataStructure As Variant, Optional ByRef col As Collection = Nothing) As Collection
+Private Function getNestedElementsRecur(DataStructure As Variant, Optional ByRef Col As Collection = Nothing) As Collection
     Dim elem As Variant
     Dim tempDataStructure As Variant
     
     
-    If col Is Nothing Then
-        Set col = New Collection
+    If Col Is Nothing Then
+        Set Col = New Collection
     End If
     
-    If isDataStructure(dataStructure) Then
-        If TypeName(dataStructure) = "Dictionary" Then
-            tempDataStructure = dataStructure.Items
+    If isDataStructure(DataStructure) Then
+        If TypeName(DataStructure) = "Dictionary" Then
+            tempDataStructure = DataStructure.Items
         Else
-            If IsObject(dataStructure) Then
-                Set tempDataStructure = dataStructure
+            If IsObject(DataStructure) Then
+                Set tempDataStructure = DataStructure
             Else
-                tempDataStructure = dataStructure
+                tempDataStructure = DataStructure
             End If
         End If
         
         For Each elem In tempDataStructure
             If isDataStructure(elem) Then
-                Set col = getNestedElementsRecur(elem, col)
+                Set Col = getNestedElementsRecur(elem, Col)
             Else
-                col.Add elem
+                Col.Add elem
             End If
         Next elem
     Else
-        col.Add elem
+        Col.Add elem
     End If
     
-    Set getNestedElementsRecur = col
+    Set getNestedElementsRecur = Col
 End Function
 
-Private Function getNestedElementsIter(dataStructure As Variant) As Collection
+Private Function getNestedElementsIter(DataStructure As Variant) As Collection
     Dim elem As Variant
-    Dim col As Collection
+    Dim Col As Collection
     Dim tempCol As Collection
     Dim tempDataStructure As Variant
     Dim i As Long
 
-    If col Is Nothing Then
-        Set col = New Collection
+    If Col Is Nothing Then
+        Set Col = New Collection
         Set tempCol = New Collection
     End If
 
-    If TypeName(dataStructure) = "Dictionary" Then
-        tempDataStructure = dataStructure.Items
+    If TypeName(DataStructure) = "Dictionary" Then
+        tempDataStructure = DataStructure.Items
     Else
-        If IsObject(dataStructure) Then
-            Set tempDataStructure = dataStructure
+        If IsObject(DataStructure) Then
+            Set tempDataStructure = DataStructure
         Else
-            tempDataStructure = dataStructure
+            tempDataStructure = DataStructure
         End If
     End If
 
@@ -161,7 +161,7 @@ Private Function getNestedElementsIter(dataStructure As Variant) As Collection
         If isDataStructure(elem) Then
             tempCol.Add elem
         Else
-            col.Add elem
+            Col.Add elem
         End If
     Next elem
 
@@ -174,185 +174,185 @@ Private Function getNestedElementsIter(dataStructure As Variant) As Collection
                 tempCol.Remove i
                 Exit For
             Else
-                col.Add tempCol(i)
+                Col.Add tempCol(i)
                 tempCol.Remove i
                 Exit For
             End If
         Next i
     Loop
 
-    Set getNestedElementsIter = col
+    Set getNestedElementsIter = Col
 End Function
 
-Public Function GreaterThan(origVal As Double, newVal As Double, Optional negateValue As Boolean = False) As Boolean
+Public Function GreaterThan(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
     
-    GreaterThan = (origVal > newVal)
+    GreaterThan = (ExpectedVal > ActualVal)
     
-    Call addToDictAndFluentPath("GreaterThan", CBool(GreaterThan), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("GreaterThan", CBool(GreaterThan), CBool(NegateValue), ExpectedVal, ActualVal)
     
 End Function
 
-Public Function GreaterThanOrEqualTo(origVal As Double, newVal As Double, Optional negateValue As Boolean = False) As Boolean
+Public Function GreaterThanOrEqualTo(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
     
-    GreaterThanOrEqualTo = (origVal >= newVal)
+    GreaterThanOrEqualTo = (ExpectedVal >= ActualVal)
     
-    Call addToDictAndFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(NegateValue), ExpectedVal, ActualVal)
         
 End Function
 
-Public Function LessThan(origVal As Double, newVal As Double, Optional negateValue As Boolean = False) As Boolean
+Public Function LessThan(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    LessThan = (origVal < newVal)
+    LessThan = (ExpectedVal < ActualVal)
     
-    Call addToDictAndFluentPath("LessThan", CBool(LessThan), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("LessThan", CBool(LessThan), CBool(NegateValue), ExpectedVal, ActualVal)
 
 End Function
 
-Public Function LessThanOrEqualTo(origVal As Double, newVal As Double, Optional negateValue As Boolean = False) As Boolean
+Public Function LessThanOrEqualTo(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
        
-    LessThanOrEqualTo = (origVal <= newVal)
+    LessThanOrEqualTo = (ExpectedVal <= ActualVal)
     
-    Call addToDictAndFluentPath("LessThanOrEqualTo", CBool(LessThanOrEqualTo), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("LessThanOrEqualTo", CBool(LessThanOrEqualTo), CBool(NegateValue), ExpectedVal, ActualVal)
         
 End Function
 
-Public Function EqualTo(origVal As Variant, newVal As Variant, Optional negateValue As Boolean = False) As Boolean
+Public Function EqualTo(ExpectedVal As Variant, ActualVal As Variant, Optional NegateValue As Boolean = False) As Boolean
     Dim tempBool As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
     
-    tempBool = (origVal = newVal)
+    tempBool = (ExpectedVal = ActualVal)
     
     If pMeta.ApproximateEqual Then
-        If TypeName(origVal) <> TypeName(newVal) Then
-            If IsNumeric(origVal) And IsNumeric(newVal) Then
-                tempBool = (Abs(origVal - newVal) <= pMeta.Epsilon)
-            ElseIf VarType(origVal) = vbString Or VarType(newVal) = vbString Then
-                tempBool = (StrComp(CStr(origVal), CStr(newVal), vbTextCompare) = 0)
+        If TypeName(ExpectedVal) <> TypeName(ActualVal) Then
+            If IsNumeric(ExpectedVal) And IsNumeric(ActualVal) Then
+                tempBool = (Abs(ExpectedVal - ActualVal) <= pMeta.Epsilon)
+            ElseIf VarType(ExpectedVal) = vbString Or VarType(ActualVal) = vbString Then
+                tempBool = (StrComp(CStr(ExpectedVal), CStr(ActualVal), vbTextCompare) = 0)
             End If
         End If
     End If
     
     EqualTo = tempBool
     
-    Call addToDictAndFluentPath("EqualTo", CBool(EqualTo), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("EqualTo", CBool(EqualTo), CBool(NegateValue), ExpectedVal, ActualVal)
         
 End Function
 
-Public Function Contain(origVal As Variant, newVal As Variant, Optional negateValue As Boolean = False) As Boolean
+Public Function Contain(ExpectedVal As Variant, ActualVal As Variant, Optional NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    If origVal Like "*" & newVal & "*" Then
+    If ExpectedVal Like "*" & ActualVal & "*" Then
         Contain = True
     End If
     
-    Call addToDictAndFluentPath("Contain", CBool(Contain), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("Contain", CBool(Contain), CBool(NegateValue), ExpectedVal, ActualVal)
         
 End Function
 
-Public Function StartWith(origVal As Variant, newVal As Variant, Optional negateValue As Boolean = False) As Boolean
+Public Function StartWith(ExpectedVal As Variant, ActualVal As Variant, Optional NegateValue As Boolean = False) As Boolean
     Dim valLength As Long
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    valLength = Len(newVal)
+    valLength = Len(ActualVal)
     
-    If Left(origVal, valLength) = CStr(newVal) Then
+    If Left(ExpectedVal, valLength) = CStr(ActualVal) Then
         StartWith = True
     End If
     
-    Call addToDictAndFluentPath("StartWith", CBool(StartWith), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("StartWith", CBool(StartWith), CBool(NegateValue), ExpectedVal, ActualVal)
         
 End Function
 
-Public Function EndWith(origVal As Variant, newVal As Variant, Optional negateValue As Boolean = False) As Boolean
+Public Function EndWith(ExpectedVal As Variant, ActualVal As Variant, Optional NegateValue As Boolean = False) As Boolean
     Dim valLength As Long
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    valLength = Len(newVal)
+    valLength = Len(ActualVal)
     
-    If Right(origVal, valLength) = CStr(newVal) Then
+    If Right(ExpectedVal, valLength) = CStr(ActualVal) Then
         EndWith = True
     End If
     
-    Call addToDictAndFluentPath("EndWith", CBool(EndWith), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("EndWith", CBool(EndWith), CBool(NegateValue), ExpectedVal, ActualVal)
     
 End Function
 
-Public Function LengthOf(origVal As Double, newVal As Double, Optional negateValue As Boolean = False) As Boolean
+Public Function LengthOf(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    LengthOf = (Len(CStr(origVal)) = newVal)
+    LengthOf = (Len(CStr(ExpectedVal)) = ActualVal)
     
-    Call addToDictAndFluentPath("LengthOf", CBool(LengthOf), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("LengthOf", CBool(LengthOf), CBool(NegateValue), ExpectedVal, ActualVal)
             
 End Function
 
-Public Function MaxLengthOf(origVal As Double, newVal As Double, Optional negateValue As Boolean = False) As Boolean
+Public Function MaxLengthOf(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    MaxLengthOf = (Len(CStr(origVal)) <= newVal)
+    MaxLengthOf = (Len(CStr(ExpectedVal)) <= ActualVal)
     
-    Call addToDictAndFluentPath("MaxLengthOf", CBool(MaxLengthOf), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("MaxLengthOf", CBool(MaxLengthOf), CBool(NegateValue), ExpectedVal, ActualVal)
             
 End Function
 
-Public Function MinLengthOf(origVal As Double, newVal As Double, Optional negateValue As Boolean = False) As Boolean
+Public Function MinLengthOf(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    MinLengthOf = (Len(CStr(origVal)) >= newVal)
+    MinLengthOf = (Len(CStr(ExpectedVal)) >= ActualVal)
     
-    Call addToDictAndFluentPath("MinLengthOf", CBool(MinLengthOf), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("MinLengthOf", CBool(MinLengthOf), CBool(NegateValue), ExpectedVal, ActualVal)
         
 End Function
 
-Public Function Something(origVal As Variant, Optional negateValue As Boolean = False) As Boolean
+Public Function Something(ExpectedVal As Variant, Optional NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    Something = (Not origVal Is Nothing)
+    Something = (Not ExpectedVal Is Nothing)
     
-    Call addToDictAndFluentPath("Something", CBool(Something), CBool(negateValue), TypeName(origVal))
+    Call addToDictAndFluentPath("Something", CBool(Something), CBool(NegateValue), TypeName(ExpectedVal))
         
 End Function
 
-Public Function Between(origVal As Double, lowerVal As Double, higherVal As Double, Optional negateValue As Boolean = False) As Boolean
+Public Function Between(ExpectedVal As Double, LowerVal As Double, HigherVal As Double, Optional NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    Between = (GreaterThanOrEqualTo(origVal, lowerVal) And LessThanOrEqualTo(origVal, higherVal))
+    Between = (GreaterThanOrEqualTo(ExpectedVal, LowerVal) And LessThanOrEqualTo(ExpectedVal, HigherVal))
     
-    Call addToDictAndFluentPath("Between", CBool(Between), CBool(negateValue), expected:=origVal, lowerVal:=lowerVal, higherVal:=higherVal)
+    Call addToDictAndFluentPath("Between", CBool(Between), CBool(NegateValue), Expected:=ExpectedVal, LowerVal:=LowerVal, HigherVal:=HigherVal)
         
 End Function
 
-Public Function OneOf(origVal As Variant, negateValue As Boolean, ParamArray args() As Variant)
+Public Function OneOf(ExpectedVal As Variant, NegateValue As Boolean, ParamArray Args() As Variant)
     Dim i As Long
     Dim j As Long
     Dim tempBool As Boolean
@@ -362,7 +362,7 @@ Public Function OneOf(origVal As Variant, negateValue As Boolean, ParamArray arg
     Dim shouldStr As String
     Dim expectedStr As String
         
-    arr = args(0)
+    arr = Args(0)
     tempBool = False
     
     For i = LBound(arr) To UBound(arr)
@@ -372,11 +372,11 @@ Public Function OneOf(origVal As Variant, negateValue As Boolean, ParamArray arg
             expectedStr = expectedStr & arr(i) & ", "
         End If
     
-        If IsObject(arr(i)) Or IsObject(origVal) Then
-            If TypeName(arr(i)) = TypeName(origVal) Then
+        If IsObject(arr(i)) Or IsObject(ExpectedVal) Then
+            If TypeName(arr(i)) = TypeName(ExpectedVal) Then
                 tempBool = True
             End If
-        ElseIf arr(i) = origVal Then
+        ElseIf arr(i) = ExpectedVal Then
             tempBool = True
             'Exit For
         End If
@@ -386,52 +386,52 @@ Public Function OneOf(origVal As Variant, negateValue As Boolean, ParamArray arg
     
     OneOf = tempBool
     
-    Call addToDictAndFluentPath("OneOf", CBool(OneOf), CBool(negateValue), expectedStr)
+    Call addToDictAndFluentPath("OneOf", CBool(OneOf), CBool(NegateValue), expectedStr)
         
 End Function
 
-Public Function LengthBetween(origVal As Double, lowerVal As Double, higherVal As Double, Optional negateValue As Boolean = False) As Boolean
+Public Function LengthBetween(ExpectedVal As Double, LowerVal As Double, HigherVal As Double, Optional NegateValue As Boolean = False) As Boolean
     Dim tempOrigVal As Double
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    tempOrigVal = Len(CStr(origVal))
+    tempOrigVal = Len(CStr(ExpectedVal))
     
-    LengthBetween = (MinLengthOf(tempOrigVal, lowerVal) And MaxLengthOf(tempOrigVal, higherVal))
+    LengthBetween = (MinLengthOf(tempOrigVal, LowerVal) And MaxLengthOf(tempOrigVal, HigherVal))
     
-    Call addToDictAndFluentPath("LengthBetween", CBool(LengthBetween), CBool(negateValue), expected:=origVal, lowerVal:=lowerVal, higherVal:=higherVal)
+    Call addToDictAndFluentPath("LengthBetween", CBool(LengthBetween), CBool(NegateValue), Expected:=ExpectedVal, LowerVal:=LowerVal, HigherVal:=HigherVal)
 
 End Function
 
-Public Function EvaluateTo(origVal As Variant, newVal As Variant, Optional negateValue = False) As Variant
+Public Function EvaluateTo(ExpectedVal As Variant, ActualVal As Variant, Optional NegateValue = False) As Variant
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
     
-    EvaluateTo = (Evaluate(origVal) = newVal)
+    EvaluateTo = (Evaluate(ExpectedVal) = ActualVal)
 
-    Call addToDictAndFluentPath("EvaluateTo", CBool(EvaluateTo), CBool(negateValue), origVal, newVal)
+    Call addToDictAndFluentPath("EvaluateTo", CBool(EvaluateTo), CBool(NegateValue), ExpectedVal, ActualVal)
     
 End Function
 
-Private Sub addToDictAndFluentPath(functionName As String, result As Boolean, negateValue As Boolean, expected As Variant, Optional actual As Variant, Optional lowerVal As Variant, Optional higherVal As Variant)
+Private Sub addToDictAndFluentPath(FunctionName As String, result As Boolean, NegateValue As Boolean, Expected As Variant, Optional actual As Variant, Optional LowerVal As Variant, Optional HigherVal As Variant)
 
-    pExprDict.Add "functionName", functionName
+    pExprDict.Add "functionName", FunctionName
     pExprDict.Add "result", result
-    pExprDict.Add "negatevalue", negateValue
-    pExprDict.Add "expected", expected
+    pExprDict.Add "negatevalue", NegateValue
+    pExprDict.Add "expected", Expected
     
     If Not IsMissing(actual) Then
         pExprDict.Add "actual", actual
     End If
     
-    If Not IsMissing(lowerVal) Then
-        pExprDict.Add "lowerVal", lowerVal
+    If Not IsMissing(LowerVal) Then
+        pExprDict.Add "lowerVal", LowerVal
     End If
     
-    If Not IsMissing(higherVal) Then
-        pExprDict.Add "higherVal", higherVal
+    If Not IsMissing(HigherVal) Then
+        pExprDict.Add "higherVal", HigherVal
     End If
     
     Call addFluentPathNew(pExprDict)
@@ -445,12 +445,12 @@ Private Sub addFluentPathNew(dict As Object)
     Dim fluentTestName As String
     Dim fluentCategory As String
     Dim newVal As Variant
-    Dim origVal As Variant
-    Dim lowerVal As Variant
-    Dim higherVal As Variant
-    Dim functionName As String
+    Dim ExpectedVal As Variant
+    Dim LowerVal As Variant
+    Dim HigherVal As Variant
+    Dim FunctionName As String
     
-    functionName = dict("functionName")
+    FunctionName = dict("functionName")
     
     If dict("negateValue") Then
         fluentBool = Not dict("result")
@@ -468,7 +468,7 @@ Private Sub addFluentPathNew(dict As Object)
     
     If pPrinting.TestName <> "" Then fluentPath = fluentPath & pPrinting.TestName & " "
     
-    origVal = dict("expected")
+    ExpectedVal = dict("expected")
     
     If Not dict.exists("actual") Then
         dict.Add "actual", ""
@@ -476,59 +476,59 @@ Private Sub addFluentPathNew(dict As Object)
     
     newVal = dict("actual")
         
-    Select Case functionName
+    Select Case FunctionName
         Case "Between"
-            lowerVal = dict("lowerVal")
-            higherVal = dict("higherVal")
+            LowerVal = dict("lowerVal")
+            HigherVal = dict("higherVal")
             fluentPath = fluentPath & shouldStr & " be between "
-            fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & origVal
+            fluentPath = fluentPath & LowerVal & " and " & HigherVal & ". Actual: " & ExpectedVal
         Case "Contain"
             fluentPath = fluentPath & shouldStr & " contain "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+            fluentPath = fluentPath & newVal & ". Actual: " & ExpectedVal
         Case "EqualTo"
             fluentPath = fluentPath & shouldStr & " be equal to "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+            fluentPath = fluentPath & newVal & ". Actual: " & ExpectedVal
         Case "EndWith"
             fluentPath = fluentPath & shouldStr & " end with "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+            fluentPath = fluentPath & newVal & ". Actual: " & ExpectedVal
         Case "EvaluateTo"
             fluentPath = fluentPath & shouldStr & " evaluate to "
-            fluentPath = fluentPath & CStr(newVal) & ". Actual: " & origVal
+            fluentPath = fluentPath & CStr(newVal) & ". Actual: " & ExpectedVal
         Case "GreaterThan"
             fluentPath = fluentPath & shouldStr & " be greater than "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+            fluentPath = fluentPath & newVal & ". Actual: " & ExpectedVal
         Case "GreaterThanOrEqualTo"
             fluentPath = fluentPath & shouldStr & " be greater than or equal to "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+            fluentPath = fluentPath & newVal & ". Actual: " & ExpectedVal
         Case "InDataStructure"
             fluentPath = fluentPath & shouldStr & " be in datastructure. "
         Case "LengthBetween"
-            lowerVal = dict("lowerVal")
-            higherVal = dict("higherVal")
+            LowerVal = dict("lowerVal")
+            HigherVal = dict("higherVal")
             fluentPath = fluentPath & shouldStr & " have length between "
-            fluentPath = fluentPath & lowerVal & " and " & higherVal & ". Actual: " & Len(origVal)
+            fluentPath = fluentPath & LowerVal & " and " & HigherVal & ". Actual: " & Len(ExpectedVal)
         Case "LengthOf"
             fluentPath = fluentPath & shouldStr & " have length of "
-            fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
+            fluentPath = fluentPath & newVal & ". Actual: " & Len(ExpectedVal)
         Case "LessThan"
             fluentPath = fluentPath & shouldStr & " be less than "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+            fluentPath = fluentPath & newVal & ". Actual: " & ExpectedVal
         Case "LessThanOrEqualTo"
             fluentPath = fluentPath & shouldStr & " be less than or equal to "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+            fluentPath = fluentPath & newVal & ". Actual: " & ExpectedVal
         Case "MaxLengthOf"
             fluentPath = fluentPath & shouldStr & " have max length of "
-            fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
+            fluentPath = fluentPath & newVal & ". Actual: " & Len(ExpectedVal)
         Case "MinLengthOf"
             fluentPath = fluentPath & shouldStr & " have min length of "
-            fluentPath = fluentPath & newVal & ". Actual: " & Len(origVal)
+            fluentPath = fluentPath & newVal & ". Actual: " & Len(ExpectedVal)
         Case "OneOf"
             fluentPath = fluentPath & shouldStr & " be one of: " & dict("expected")
         Case "Something"
             fluentPath = fluentPath & shouldStr & " be something: " & dict("expected")
         Case "StartWith"
             fluentPath = fluentPath & shouldStr & " start with "
-            fluentPath = fluentPath & newVal & ". Actual: " & origVal
+            fluentPath = fluentPath & newVal & ". Actual: " & ExpectedVal
     End Select
     
     iPrint.TestCount = iPrint.TestCount + 1

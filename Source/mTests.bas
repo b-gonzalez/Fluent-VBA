@@ -70,7 +70,7 @@ Public Sub runMainTests()
     
     fluent.Meta.Printing.PrintToSheet
     testFluent.Meta.Printing.PrintToSheet
-    'Fluent.Meta.Printing.PrintToImmediate
+    'fluent.Meta.Printing.PrintToImmediate
 End Sub
 
 Public Sub runExamples()
@@ -499,7 +499,7 @@ End Sub
 Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentOf)
     'Dim testFluent As cFluentOf
     Dim TestResult As Boolean
-    Dim col As Collection
+    Dim Col As Collection
     Dim arr As Variant
     Dim d As Object
     Dim al As Object
@@ -616,22 +616,22 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
     
     ' //Object and data structure tests
     
-    Set col = New Collection
+    Set Col = New Collection
     Set d = CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(col).Should.Be.OneOf(col, d)
+    fluent.TestValue = testFluent.Of(Col).Should.Be.OneOf(Col, d)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(col, d, 10)
+    fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(Col, d, 10)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    fluent.TestValue = testFluent.Of(col).Should.Be.Something
+    fluent.TestValue = testFluent.Of(Col).Should.Be.Something
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Set col = Nothing
-    fluent.TestValue = testFluent.Of(col).Should.Be.Something
+    Set Col = Nothing
+    fluent.TestValue = testFluent.Of(Col).Should.Be.Something
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
@@ -667,21 +667,21 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Set col = New Collection
-    col.Add 9
-    col.Add 10
-    col.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col)
+    Set Col = New Collection
+    Col.Add 9
+    Col.Add 10
+    Col.Add 11
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(Col)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    Set col = New Collection
-    col.Add 9
-    col.Add Array(10, Array(11))
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col)
+    Set Col = New Collection
+    Col.Add 9
+    Col.Add Array(10, Array(11))
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(Col)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-    Set col = Nothing
+    Set Col = Nothing
     
     Set d = CreateObject("Scripting.Dictionary")
     d.Add 1, 9
@@ -827,7 +827,7 @@ End Sub
 Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentOf)
     'Dim testFluent As cFluentOf
     Dim TestResult As Boolean
-    Dim col As Collection
+    Dim Col As Collection
     Dim arr As Variant
     Dim d As Object
     Dim al As Object
@@ -944,22 +944,22 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
     
     ' //Object and data structure tests
     
-    Set col = New Collection
+    Set Col = New Collection
     Set d = CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.OneOf(col, d)
+    fluent.TestValue = testFluent.Of(Col).ShouldNot.Be.OneOf(Col, d)
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(col, d, 10)
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(Col, d, 10)
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Something
+    fluent.TestValue = testFluent.Of(Col).ShouldNot.Be.Something
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Set col = Nothing
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Something
+    Set Col = Nothing
+    fluent.TestValue = testFluent.Of(Col).ShouldNot.Be.Something
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
@@ -995,21 +995,21 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Set col = New Collection
-    col.Add 9
-    col.Add 10
-    col.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col)
+    Set Col = New Collection
+    Col.Add 9
+    Col.Add 10
+    Col.Add 11
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(Col)
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     
-    Set col = New Collection
-    col.Add 9
-    col.Add Array(10, Array(11))
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col)
+    Set Col = New Collection
+    Col.Add 9
+    Col.Add Array(10, Array(11))
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(Col)
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
-    Set col = Nothing
+    Set Col = Nothing
     
     Set d = CreateObject("Scripting.Dictionary")
     d.Add 1, 9

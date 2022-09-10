@@ -51,14 +51,14 @@ Private Function IBe_Something() As Boolean
     IBe_Something = pExpressions.Something(pBeValue)
 End Function
 
-Private Function IBe_Between(lowerVal As Double, higherVal As Double) As Boolean
-    IBe_Between = pExpressions.Between(CDbl(pBeValue), lowerVal, higherVal)
+Private Function IBe_Between(LowerVal As Double, HigherVal As Double) As Boolean
+    IBe_Between = pExpressions.Between(CDbl(pBeValue), LowerVal, HigherVal)
 End Function
 
 Private Function IBe_OneOf(ParamArray vals() As Variant)
     IBe_OneOf = pExpressions.OneOf(pBeValue, False, vals)
 End Function
 
-Private Function IBe_InDataStructure(dataStructure As Variant, Optional method As flMethod = flRecursive) As Boolean
-    IBe_InDataStructure = pExpressions.InDataStructure(pBeValue, dataStructure, method)
+Private Function IBe_InDataStructure(DataStructure As Variant, Optional Method As flMethod = flRecursive) As Boolean
+    IBe_InDataStructure = pExpressions.InDataStructure(pBeValue, DataStructure, Method)
 End Function

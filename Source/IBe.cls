@@ -37,11 +37,11 @@ Public Function Something() As Boolean
 
 End Function
 
-Public Function Between(lowerVal As Double, higherVal As Double) As Boolean
+Public Function Between(LowerVal As Double, HigherVal As Double) As Boolean
 
 End Function
 
-Public Function InDataStructure(dataStructure As Variant, Optional method As flMethod = flRecursive) As Boolean
+Public Function InDataStructure(DataStructure As Variant, Optional Method As flMethod = flRecursive) As Boolean
 
 End Function
 

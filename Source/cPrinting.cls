@@ -163,7 +163,7 @@ Private Sub addResultsIconSets(lc As ListColumn)
     End With
 End Sub
 
-Private Function getArrayFromCollection(col As Collection) As Variant()
+Private Function getArrayFromCollection(Col As Collection) As Variant()
     Dim Category As Long
     Dim TestResult As Long
     Dim TestName As Long
@@ -174,16 +174,16 @@ Private Function getArrayFromCollection(col As Collection) As Variant()
     If pCategory = "" Then
         TestResult = 0
         TestName = 1
-        ReDim arr(col.Count - 1, 1)
+        ReDim arr(Col.Count - 1, 1)
     Else
         Category = 0
         TestResult = 1
         TestName = 2
-        ReDim arr(col.Count - 1, 2)
+        ReDim arr(Col.Count - 1, 2)
     End If
     
-    For i = 1 To col.Count
-       temp = Split(col(i), "=")
+    For i = 1 To Col.Count
+       temp = Split(Col(i), "=")
        arr(i - 1, Category) = temp(Category)
        arr(i - 1, TestResult) = temp(TestResult)
         If temp(TestResult) = -1 Then
