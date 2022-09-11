@@ -95,34 +95,40 @@ Public Sub PrintToSheet()
     Dim testNameCol As ListColumn
     Dim categoryCol As ListColumn
     Dim arr() As Variant
+    Dim wb As Workbook
+    Dim ws As Worksheet
     
     arr = getArrayFromCollection(pTestCollection)
 
-    Set lo = getTableFromWorkbook
+    Set wb = getWorkbookWithTable
+    
+    Set ws = wb.ActiveSheet
+    
+    Set lo = ws.ListObjects(1)
     
     Set testResultCol = lo.ListColumns("Test result")
     
     Set testNameCol = lo.ListColumns("Test name")
     
-    Call addResultsIconSets(testResultCol)
-    
     If pCategory <> "" Then
         Set categoryCol = lo.ListColumns("Category")
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).Value = arr
-        Columns("C:C").EntireColumn.AutoFit
+        ws.Columns("C:C").EntireColumn.AutoFit
         Call addCategoryStyle(testResultCol, categoryCol)
     Else
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).Value = arr
-        Columns("B:B").EntireColumn.AutoFit
+        ws.Columns("B:B").EntireColumn.AutoFit
     End If
 
     Call addValueConditColorsNew(testResultCol, "-1", "0")
     
     Call addValueConditColorsNew(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*")
+    
+    Call addResultsIconSets(testResultCol)
 
 End Sub
 
-Private Function getTableFromWorkbook() As ListObject
+Private Function getWorkbookWithTable() As Workbook
     Dim xl As Excel.Application
     Dim wb As Workbook
     Dim ws As Worksheet
@@ -152,31 +158,33 @@ Private Function getTableFromWorkbook() As ListObject
     
     lo.Name = "Table1"
         
-    Set getTableFromWorkbook = lo
+    Set getWorkbookWithTable = wb
 End Function
 
 Private Sub addResultsIconSets(lc As ListColumn)
     lc.Range.Select
     
-    Selection.FormatConditions.AddIconSetCondition
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1)
-        .ReverseOrder = False
-        .ShowIconOnly = False
-        .IconSet = ActiveWorkbook.IconSets(xl3Symbols2)
-    End With
-    Selection.FormatConditions(1).IconCriteria(1).Icon = xlIconYellowExclamation
-    With Selection.FormatConditions(1).IconCriteria(2)
-        .Type = xlConditionValueNumber
-        .Value = -1
-        .Operator = 7
-        .Icon = xlIconGreenCheck
-    End With
-    With Selection.FormatConditions(1).IconCriteria(3)
-        .Type = xlConditionValueNumber
-        .Value = 0
-        .Operator = 7
-        .Icon = xlIconRedCross
+    With lc.DataBodyRange
+        .FormatConditions.AddIconSetCondition
+        .FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+        With .FormatConditions(1)
+            .ReverseOrder = False
+            .ShowIconOnly = False
+            .IconSet = ActiveWorkbook.IconSets(xl3Symbols2)
+        End With
+        .FormatConditions(1).IconCriteria(1).Icon = xlIconYellowExclamation
+        With .FormatConditions(1).IconCriteria(2)
+            .Type = xlConditionValueNumber
+            .Value = -1
+            .Operator = 7
+            .Icon = xlIconGreenCheck
+        End With
+        With .FormatConditions(1).IconCriteria(3)
+            .Type = xlConditionValueNumber
+            .Value = 0
+            .Operator = 7
+            .Icon = xlIconRedCross
+        End With
     End With
 End Sub
 
