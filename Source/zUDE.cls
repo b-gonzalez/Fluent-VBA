@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "Class1"
+Attribute VB_Name = "zUDE"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -21,6 +21,10 @@ Sub DoWork()
     fluent.TestValue = 10
     fluent.Should.Be.EqualTo (10)
     fluent.ShouldNot.Be.EqualTo (11)
+End Sub
+
+Private Sub TestResult_TestCompleted(TestDict As Object)
+    IterateTestResult TestDict
 End Sub
 
 Private Sub testResult_TestFailed(TestDict As Object)

@@ -15,13 +15,6 @@ Private pMeta As cMeta
 Private pExpressions As cExpressions
 Private pFluentVal As Variant
 
-Private Sub Class_Initialize()
-    Set pUnit = New cUnit
-    Set pUnitShould = pUnit
-    Set pExpressions = pUnit.Expressiongs
-    Set pMeta = pUnit.Meta
-End Sub
-
 Public Property Get Should() As IShould
     Set Should = pUnitShould.Should
 End Property
@@ -34,13 +27,13 @@ Public Property Get Meta() As cMeta
     Set Meta = pMeta
 End Property
 
-Public Property Set TestValue(value As Variant)
-    Set pFluentVal = value
+Public Property Set TestValue(Value As Variant)
+    Set pFluentVal = Value
     Set pUnit.TestValue = pFluentVal
 End Property
 
-Public Property Let TestValue(value As Variant)
-    pFluentVal = value
+Public Property Let TestValue(Value As Variant)
+    pFluentVal = Value
     pUnit.TestValue = pFluentVal
 End Property
 
@@ -51,3 +44,10 @@ Public Property Get TestValue() As Variant
         TestValue = pUnit.TestValue
     End If
 End Property
+
+Private Sub Class_Initialize()
+    Set pUnit = New cUnit
+    Set pUnitShould = pUnit
+    Set pExpressions = pUnit.Expressiongs
+    Set pMeta = pUnit.Meta
+End Sub

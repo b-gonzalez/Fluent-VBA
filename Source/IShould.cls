@@ -17,18 +17,18 @@ Public Property Get Have() As IHave
 
 End Property
 
-Public Function Contain(value As Variant) As Boolean
+Public Function Contain(Value As Variant) As Boolean
 
 End Function
 
-Public Function StartWith(value As Variant) As Boolean
+Public Function StartWith(Value As Variant) As Boolean
 
 End Function
 
-Public Function EndWith(value As Variant) As Boolean
+Public Function EndWith(Value As Variant) As Boolean
 
 End Function
 
-Public Function EvaluateTo(value As Variant) As Boolean
+Public Function EvaluateTo(Value As Variant) As Boolean
 
 End Function

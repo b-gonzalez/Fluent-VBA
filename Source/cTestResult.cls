@@ -11,9 +11,12 @@ Option Explicit
 
 Public Event TestPassed(TestDict As Object)
 Public Event TestFailed(TestDict As Object)
+Public Event TestCompleted(TestDict As Object)
 
-Public Sub CheckTest(result As Boolean, TestDict As Object)
-    If result Then
+Public Sub CheckTest(Result As Boolean, TestDict As Object)
+    RaiseEvent TestCompleted(TestDict)
+    
+    If Result Then
         RaiseEvent TestPassed(TestDict)
     Else
         RaiseEvent TestFailed(TestDict)

@@ -9,27 +9,27 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Function OneOf(ParamArray vals() As Variant)
+Public Function OneOf(ParamArray Vals() As Variant)
 
 End Function
 
-Public Function GreaterThan(value As Double) As Boolean
+Public Function GreaterThan(Value As Double) As Boolean
 
 End Function
 
-Public Function GreaterThanOrEqualTo(value As Double) As Boolean
+Public Function GreaterThanOrEqualTo(Value As Double) As Boolean
 
 End Function
 
-Public Function LessThan(value As Double) As Boolean
+Public Function LessThan(Value As Double) As Boolean
 
 End Function
 
-Public Function LessThanOrEqualTo(value As Double) As Boolean
+Public Function LessThanOrEqualTo(Value As Double) As Boolean
 
 End Function
 
-Public Function EqualTo(value As Variant) As Boolean
+Public Function EqualTo(Value As Variant) As Boolean
 
 End Function
 

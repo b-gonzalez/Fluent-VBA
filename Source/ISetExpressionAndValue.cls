@@ -9,15 +9,15 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Set setExpr(value As cExpressions)
+Public Property Set SetExpr(Value As cExpressions)
 
 End Property
 
-Public Property Let TestValue(value As Variant)
+Public Property Let TestValue(Value As Variant)
 
 End Property
 
-Public Property Set TestValue(value As Variant)
+Public Property Set TestValue(Value As Variant)
 
 End Property
 

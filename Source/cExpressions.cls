@@ -23,12 +23,12 @@ Enum flMethod
     flIterative
 End Enum
 
-Public Property Let TestValue(value As Variant)
-    pTestValue = value
+Public Property Let TestValue(Value As Variant)
+    pTestValue = Value
 End Property
 
-Public Property Set TestValue(value As Variant)
-    Set pTestValue = value
+Public Property Set TestValue(Value As Variant)
+    Set pTestValue = Value
 End Property
 
 Public Property Get TestValue() As Variant
@@ -39,17 +39,17 @@ Public Property Get TestValue() As Variant
     End If
 End Property
 
-Public Property Set setMeta(value As cMeta)
-    Set pMeta = value
+Public Property Set setMeta(Value As cMeta)
+    Set pMeta = Value
 End Property
 
-Public Property Set setTestResult(value As cTestResult)
-    Set pTestResult = value
+Public Property Set setTestResult(Value As cTestResult)
+    Set pTestResult = Value
 End Property
 
-Public Property Set setPrinting(value As IPrinting)
-    Set pPrinting = value
-    Set iPrint = value
+Public Property Set setPrinting(Value As IPrinting)
+    Set pPrinting = Value
+    Set iPrint = Value
 End Property
 
 Public Function InDataStructure(ExpectedVal As Variant, DataStructure As Variant, Optional Method As flMethod = flRecursive, Optional NegateValue As Boolean = False) As Boolean
@@ -415,10 +415,10 @@ Public Function EvaluateTo(ExpectedVal As Variant, ActualVal As Variant, Optiona
     
 End Function
 
-Private Sub addToDictAndFluentPath(FunctionName As String, result As Boolean, NegateValue As Boolean, Expected As Variant, Optional actual As Variant, Optional LowerVal As Variant, Optional HigherVal As Variant)
+Private Sub addToDictAndFluentPath(FunctionName As String, Result As Boolean, NegateValue As Boolean, Expected As Variant, Optional actual As Variant, Optional LowerVal As Variant, Optional HigherVal As Variant)
 
     pExprDict.Add "functionName", FunctionName
-    pExprDict.Add "result", result
+    pExprDict.Add "result", Result
     pExprDict.Add "negatevalue", NegateValue
     pExprDict.Add "expected", Expected
     

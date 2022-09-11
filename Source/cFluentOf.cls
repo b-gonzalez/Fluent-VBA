@@ -15,26 +15,24 @@ Private pMeta As cMeta
 Private pExpressions As cExpressions
 Private pFluentOfVal As Variant
 
+Public Property Get Meta() As cMeta
+    Set Meta = pMeta
+End Property
+
+Public Function Of(Value As Variant) As cUnit
+    If IsObject(Value) Then
+        Set pFluentOfVal = Value
+        Set pUnit.TestValue = Value
+    Else
+        pFluentOfVal = Value
+        pUnit.TestValue = Value
+    End If
+    Set Of = pUnit
+End Function
+
 Private Sub Class_Initialize()
     Set pUnit = New cUnit
     Set pUnitShould = pUnit
     Set pExpressions = pUnit.Expressiongs
     Set pMeta = pUnit.Meta
 End Sub
-
-Public Property Get Meta() As cMeta
-    Set Meta = pMeta
-End Property
-
-Public Function Of(value As Variant) As cUnit
-    If IsObject(value) Then
-        Set pFluentOfVal = value
-        Set pUnit.TestValue = value
-        'Set pExpressions.TestValue = value
-    Else
-        pFluentOfVal = value
-        pUnit.TestValue = value
-        'pExpressions.TestValue = value
-    End If
-    Set Of = pUnit
-End Function

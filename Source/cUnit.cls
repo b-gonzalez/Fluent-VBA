@@ -33,30 +33,30 @@ Public Property Get ShouldNot() As IShould
     Set ShouldNot = pShouldNot
 End Property
 
-Private Property Get IUnit_Meta() As cMeta
-    Set IUnit_Meta = pMeta
+Private Property Get IUnit_meta() As cMeta
+    Set IUnit_meta = pMeta
 End Property
 
-Private Property Get IUnit_Printing() As cPrinting
-    Set IUnit_Printing = pPrinting
+Private Property Get IUnit_printing() As cPrinting
+    Set IUnit_printing = pPrinting
 End Property
 
-Private Property Get IUnit_Expressiongs() As cExpressions
-    Set IUnit_Expressiongs = pExpressions
+Private Property Get IUnit_expressiongs() As cExpressions
+    Set IUnit_expressiongs = pExpressions
 End Property
 
-Private Property Let IUnit_TestValue(value As Variant)
-    pExpressions.TestValue = value
+Private Property Let IUnit_testValue(Value As Variant)
+    pExpressions.TestValue = Value
     pUnitVal = pExpressions.TestValue
 End Property
 
-Private Property Set IUnit_TestValue(value As Variant)
-    Set pExpressions.TestValue = value
+Private Property Set IUnit_testValue(Value As Variant)
+    Set pExpressions.TestValue = Value
     Set pUnitVal = pExpressions.TestValue
 End Property
 
-Private Property Get IUnit_TestValue() As Variant
-    IUnit_TestValue = pUnitVal
+Private Property Get IUnit_testValue() As Variant
+    IUnit_testValue = pUnitVal
 End Property
 
 Private Function getShould() As cShould
@@ -66,7 +66,7 @@ Private Function getShould() As cShould
         Set tempShould = New cShould
     End If
     
-    Set tempShould.setExpr = pExpressions
+    Set tempShould.SetExpr = pExpressions
     
     If IsObject(pUnitVal) Then
         Set tempShould.TestValue = pUnitVal
@@ -83,7 +83,7 @@ Private Function getShouldNot() As cShouldNot
         Set tempShouldNot = New cShouldNot
     End If
     
-    Set tempShouldNot.setExpr = pExpressions
+    Set tempShouldNot.SetExpr = pExpressions
     
     If IsObject(pUnitVal) Then
         Set tempShouldNot.TestValue = pUnitVal
