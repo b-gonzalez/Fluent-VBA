@@ -83,7 +83,7 @@ All of the tests are written in the mTests.bas module. There are over 150 tests 
 
 # External projects
 
-Fluent VBA supports being used in external projects with some limitations. You can read more about using Fluent VBA in external projects [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/External-projects)
+Fluent VBA supports being used in external projects. However, I'm still in the process of testing this. You can read more about using Fluent VBA in external projects [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/External-projects)
 
 # TODO: High level API design overview
 
