@@ -90,13 +90,13 @@ Public Sub PrintToImmediate()
 End Sub
 
 Public Sub PrintToSheet()
-    Dim lo As ListObject
-    Dim testResultCol As ListColumn
-    Dim testNameCol As ListColumn
-    Dim categoryCol As ListColumn
+    Dim lo As Excel.ListObject
+    Dim testResultCol As Excel.ListColumn
+    Dim testNameCol As Excel.ListColumn
+    Dim categoryCol As Excel.ListColumn
     Dim arr() As Variant
-    Dim wb As Workbook
-    Dim ws As Worksheet
+    Dim wb As Excel.Workbook
+    Dim ws As Excel.Worksheet
     
     arr = getArrayFromCollection(pTestCollection)
 
@@ -130,9 +130,9 @@ End Sub
 
 Private Function getWorkbookWithTable() As Workbook
     Dim xl As Excel.Application
-    Dim wb As Workbook
-    Dim ws As Worksheet
-    Dim lo As ListObject
+    Dim wb As Excel.Workbook
+    Dim ws As Excel.Worksheet
+    Dim lo As Excel.ListObject
     
     If Not TypeOf Application Is Excel.Application Then
         Set xl = New Excel.Application
@@ -161,12 +161,12 @@ Private Function getWorkbookWithTable() As Workbook
     Set getWorkbookWithTable = wb
 End Function
 
-Private Sub addResultsIconSets(lc As ListColumn)
+Private Sub addResultsIconSets(lc As Excel.ListColumn)
     lc.Range.Select
     
     With lc.DataBodyRange
         .FormatConditions.AddIconSetCondition
-        .FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+        .FormatConditions(.FormatConditions.Count).SetFirstPriority
         With .FormatConditions(1)
             .ReverseOrder = False
             .ShowIconOnly = False
@@ -221,7 +221,7 @@ Private Function getArrayFromCollection(Col As Collection) As Variant()
     getArrayFromCollection = arr
 End Function
 
-Private Sub addCategoryStyle(resultCol As ListColumn, categoryCol As ListColumn)
+Private Sub addCategoryStyle(resultCol As Excel.ListColumn, categoryCol As Excel.ListColumn)
     Dim i As Long
     
     For i = 1 To resultCol.Range.Rows.Count
@@ -233,8 +233,8 @@ Private Sub addCategoryStyle(resultCol As ListColumn, categoryCol As ListColumn)
     Next i
 End Sub
 
-Private Sub addValueConditColorsNew(lc As ListColumn, passedValue As String, failedValue As String)
-    Dim cell As Range
+Private Sub addValueConditColorsNew(lc As Excel.ListColumn, passedValue As String, failedValue As String)
+    Dim cell As Excel.Range
     
     For Each cell In lc.DataBodyRange
         If cell.Value Like passedValue Then
