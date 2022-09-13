@@ -114,15 +114,20 @@ Public Sub PrintToSheet()
         Set categoryCol = lo.ListColumns("Category")
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).Value = arr
         ws.Columns("C:C").EntireColumn.AutoFit
-        Call addCategoryStyle(testResultCol, categoryCol)
+        'Call addCategoryStyleOld(testResultCol, categoryCol)
+        Call addCategoryStyle(categoryCol, "-1", "0")
     Else
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).Value = arr
         ws.Columns("B:B").EntireColumn.AutoFit
     End If
 
-    Call addValueConditColorsNew(testResultCol, "-1", "0")
+'    Call addValueConditColorsNew(testResultCol, "-1", "0")
+'
+'    Call addValueConditColorsNew(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*")
+
+    Call addValueConditColors(testResultCol, "-1", "0")
     
-    Call addValueConditColorsNew(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*")
+    Call addValueConditColors(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*")
     
     Call addResultsIconSets(testResultCol)
 
@@ -221,7 +226,7 @@ Private Function getArrayFromCollection(Col As Collection) As Variant()
     getArrayFromCollection = arr
 End Function
 
-Private Sub addCategoryStyle(resultCol As Excel.ListColumn, categoryCol As Excel.ListColumn)
+Private Sub addCategoryStyleOld(resultCol As Excel.ListColumn, categoryCol As Excel.ListColumn)
     Dim i As Long
     
     For i = 1 To resultCol.Range.Rows.Count
@@ -231,6 +236,39 @@ Private Sub addCategoryStyle(resultCol As Excel.ListColumn, categoryCol As Excel
             Call setBad(categoryCol.Range.Cells(i, 1))
         End If
     Next i
+End Sub
+
+Sub addCategoryStyle(lc As Excel.ListColumn, passedMsg As String, failedMsg As String)
+    
+    With lc.Range
+        .FormatConditions.Add Type:=xlExpression, Formula1:= _
+            "=OFFSET(A1,0,1)=" & failedMsg
+        .FormatConditions(.FormatConditions.Count).SetFirstPriority
+        With .FormatConditions(1).Font
+            .Color = -16383844
+            .TintAndShade = 0
+        End With
+        With .FormatConditions(1).Interior
+            .PatternColorIndex = xlAutomatic
+            .Color = 13551615
+            .TintAndShade = 0
+        End With
+        .FormatConditions(1).StopIfTrue = False
+        
+            .FormatConditions.Add Type:=xlExpression, Formula1:= _
+            "=OFFSET(A1,0,1)=" & passedMsg
+        .FormatConditions(.FormatConditions.Count).SetFirstPriority
+        With .FormatConditions(1).Font
+            .Color = -16752384
+            .TintAndShade = 0
+        End With
+        With .FormatConditions(1).Interior
+            .PatternColorIndex = xlAutomatic
+            .Color = 13561798
+            .TintAndShade = 0
+        End With
+        .FormatConditions(1).StopIfTrue = False
+    End With
 End Sub
 
 Private Sub addValueConditColorsNew(lc As Excel.ListColumn, passedValue As String, failedValue As String)
@@ -244,6 +282,43 @@ Private Sub addValueConditColorsNew(lc As Excel.ListColumn, passedValue As Strin
         End If
     Next cell
 End Sub
+
+Private Sub addValueConditColors(lc As Excel.ListColumn, passedMsg As String, failedMsg As String)
+    lc.Range.Select
+    
+    With lc.DataBodyRange
+        .FormatConditions.Add Type:=xlTextString, String:=failedMsg, _
+            TextOperator:=xlContains
+        .FormatConditions(.FormatConditions.Count).SetFirstPriority
+        With .FormatConditions(1).Font
+            .Color = -16383844
+            .TintAndShade = 0
+        End With
+        With .FormatConditions(1).Interior
+            .PatternColorIndex = xlAutomatic
+            .Color = 13551615
+            .TintAndShade = 0
+        End With
+        .FormatConditions(1).StopIfTrue = False
+        
+        .FormatConditions.Add Type:=xlTextString, String:=passedMsg, _
+            TextOperator:=xlContains
+        .FormatConditions(.FormatConditions.Count).SetFirstPriority
+        With .FormatConditions(1).Font
+            .Color = -16752384
+            .TintAndShade = 0
+        End With
+        With .FormatConditions(1).Interior
+            .PatternColorIndex = xlAutomatic
+            .Color = 13561798
+            .TintAndShade = 0
+        End With
+        .FormatConditions(1).StopIfTrue = False
+    End With
+End Sub
+
+
+
 
 Private Sub setGood(cell As Variant)
     cell.Interior.Color = 13561798
