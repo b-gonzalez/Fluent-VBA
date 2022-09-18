@@ -5,11 +5,17 @@
 # Access does not have the ability to give trust this way. But this is a moot point since
 # Access imports VBA modules a different way.
 
+# NOTE: Get-ExcelGuid prompts Excel to save. I can't figure out how to prevent this.
+# Application.DisplayAlerts does not appear to disable it.
+
 try {
     $curDir = $PSScriptRoot
     $parentDir = (get-item $curDir).parent
     Set-Location $parentDir
     $outputPath = "$parentDir\Distribution\Fluent VBA"
+    $guidObj = Get-ExcelGuid
+    $GuidStr = Out-String -NoNewline -InputObject $guidObj
+    $xlGuid = $GuidStr.Replace("System.__ComObject","")
 
     $excel = New-Object -ComObject excel.application
     $word = New-Object -ComObject word.application
@@ -33,6 +39,9 @@ try {
     $acModule = 5
     $macros = Get-ChildItem -Path .\Source -File
 
+    $Major = 0
+    $Minor = 0
+
     foreach ($macro in $macros) {
         if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
             
@@ -43,9 +52,9 @@ try {
         }
     }
 
-    $workbook.Save()
-    $doc.Save()
-    $presentation.Save()
+    $doc.VBProject.References.AddFromGuid($xlGuid,$Major, $Minor)
+    $presentation.VBProject.References.AddFromGuid($xlGuid,$Major, $Minor)
+    $acc.VBE.ActiveVBProject.References.AddFromGuid($xlGuid,$Major, $Minor)
 
 }
 
@@ -55,10 +64,14 @@ Catch {
 }
 
 Finally {
-    $workbook.Close()
-    $doc.Close()
-    $presentation.Close()
-    $acc.CloseCurrentDatabase()
+    $workbook.Save()
+    $doc.Save()
+    $presentation.Save()
+
+    #$workbook.Close()
+    #$doc.Close()
+    #$presentation.Close()
+    #$acc.CloseCurrentDatabase()
     
     $excel.Quit()
     $word.Quit()
@@ -70,4 +83,50 @@ Finally {
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($powerpoint)
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($acc)
     [GC]::Collect()
+}
+
+function Get-ExcelGuid {
+    try {
+        #$curDir = $PSScriptRoot
+        #Set-Location $curDir
+
+        $excel = New-Object -ComObject excel.application
+
+        $workbook = $excel.Workbooks.Add()
+
+        $GUID = "{0002E157-0000-0000-C000-000000000046}"
+        #$Major = 5
+        #$Minor = 3
+        $Major = 0
+        $Minor = 0
+
+        $workbook.VBProject.References.AddFromGuid($GUID,$Major, $Minor)
+
+        $vbe = $excel.application.VBE
+
+        $vbProj = $vbe.ActiveVBProject
+
+        $references = $vbProj.References
+
+        foreach ($ref in $references) {
+            if ($ref.name -like "*Excel*") {
+                $guidObj = $ref.GUID
+                #Write-Output $refGuid
+                break
+            }
+        }
+
+        return $guidObj
+    }
+
+    Catch {
+        Write-Host "An error occurred:"
+        Write-Host $_
+    }
+
+    Finally {
+        $excel.Quit()
+        [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($Excel)
+        [GC]::Collect()
+    }
 }
