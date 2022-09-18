@@ -77,17 +77,9 @@ Or like this:
         Debug.Assert Result.Of(returnedResult).Should.Be.EqualTo(5)
     End Sub
 
-# Testing notes
+# Getting started
 
-All of the tests are written in the mTests.bas module. There are over 150 tests within this file. The tests use a combination of cFluent and cFluentOf objects to test the framework. You can see more information regarding the testing notes [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/Testing-notes)
-
-# External projects
-
-Fluent VBA supports being used in external projects. However, I'm still in the process of testing this. You can read more about using Fluent VBA in external projects [here](https://github.com/b-gonzalez/Fluent-VBA/wiki/External-projects)
-
-# TODO: High level API design overview
-
-I'd like to write a high-level overview of the API's design. This had been completed previously but is now outdated. You can find a post of mine describing an older version of the API's structure on CodeReview on StackExchange [here](https://codereview.stackexchange.com/questions/267836/a-fluent-unit-testing-framework-in-vba). I will likely be updating this within the coming weeks.
+To get started with Fluent VBA you can see the [getting started page](https://github.com/b-gonzalez/Fluent-VBA/wiki/Getting-started) on the wiki.
 
 # Contacting me
 
