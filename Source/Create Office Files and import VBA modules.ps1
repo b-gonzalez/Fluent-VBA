@@ -67,7 +67,7 @@ try {
     $excel = New-Object -ComObject excel.application
     $word = New-Object -ComObject word.application
     $powerpoint = New-Object -ComObject powerpoint.application
-    $acc = New-Object -ComObject Access.Application
+    #$acc = New-Object -ComObject Access.Application
 
     $workbook = $excel.Workbooks.Add()
     $doc = $word.documents.add()
@@ -76,14 +76,14 @@ try {
     $xlOpenXMLWorkbookMacroEnabled = 52
     $wdFormatFlatXMLMacroEnabled = 13
     $ppSaveAsOpenXMLPresentationMacroEnabled = 25
-    $acFileFormatAccess2007 = 12
+    #$acFileFormatAccess2007 = 12
 
     $workbook.SaveAs($outputPath, $xlOpenXMLWorkbookMacroEnabled)
     $doc.SaveAs($outputPath,$wdFormatFlatXMLMacroEnabled)
     $presentation.SaveAs($outputPath,$ppSaveAsOpenXMLPresentationMacroEnabled)
     $acc.NewCurrentDataBase($outputPath,$acFileFormatAccess2007)
     
-    $acModule = 5
+    #$acModule = 5
     $macros = Get-ChildItem -Path .\Source -File
 
     $Major = 0
@@ -95,18 +95,18 @@ try {
             $workbook.VBProject.VBComponents.Import($macro.FullName) | Out-Null
             $doc.VBProject.VBComponents.Import($macro.FullName)
             $presentation.VBProject.VBComponents.Import($macro.FullName)
-            $acc.Application.LoadFromText($acModule, $macro.BaseName,$macro)
+            #$acc.Application.LoadFromText($acModule, $macro.BaseName,$macro)
         }
     }
 
     $doc.VBProject.References.AddFromGuid($xlGuid,$Major, $Minor)
     $presentation.VBProject.References.AddFromGuid($xlGuid,$Major, $Minor)
-    $acc.VBE.ActiveVBProject.References.AddFromGuid($xlGuid,$Major, $Minor)
+    #$acc.VBE.ActiveVBProject.References.AddFromGuid($xlGuid,$Major, $Minor)
 
-    <#$workbook.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
+    $workbook.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
     $doc.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
     $presentation.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
-    $acc.VBE.ActiveVBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)#>
+    #$acc.VBE.ActiveVBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
 }
 
 Catch {
@@ -127,7 +127,7 @@ Finally {
     $excel.Quit()
     $word.Quit()
     $powerpoint.Quit()
-    $acc.Quit()
+    #$acc.Quit()
 
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($Excel)
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
