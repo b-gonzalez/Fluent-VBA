@@ -82,8 +82,8 @@ try {
     $doc.SaveAs($outputPath,$wdFormatFlatXMLMacroEnabled)
     $presentation.SaveAs($outputPath,$ppSaveAsOpenXMLPresentationMacroEnabled)
     $acc.NewCurrentDataBase($outputPath,$acFileFormatAccess2007)
-    
-    $acModule = 5
+
+    $acCmdCompileAndSaveAllModules = 126
     $macros = Get-ChildItem -Path .\Source -File
 
     $Major = 0
@@ -96,6 +96,7 @@ try {
             $doc.VBProject.VBComponents.Import($macro.FullName)
             $presentation.VBProject.VBComponents.Import($macro.FullName)
             $acc.VBE.ActiveVBProject.VBComponents.Import($macro.FullName)
+            
             #$acc.Application.LoadFromText($acModule, $macro.BaseName,$macro)
         }
     }
@@ -108,6 +109,13 @@ try {
     $doc.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
     $presentation.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
     $acc.VBE.ActiveVBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
+
+    
+    <#$db = $acc.Application.CurrentDb()
+    $acc.DoCmd.OpenModule($modules.documents(0).name)
+    $acc.DoCmd.RunCommand($acCmdCompileAndSaveAllModules)
+    $acc.DoCmd.Close($modules.documents(0).name)#>
+
 }
 
 Catch {
@@ -119,16 +127,17 @@ Finally {
     $workbook.Save()
     $doc.Save()
     $presentation.Save()
+    
 
-    #$workbook.Close()
-    #$doc.Close()
-    #$presentation.Close()
+    $workbook.Close()
+    $doc.Close()
+    $presentation.Close()
     #$acc.CloseCurrentDatabase()
     
     $excel.Quit()
     $word.Quit()
     $powerpoint.Quit()
-    #$acc.Quit()
+    $acc.Quit()
 
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($Excel)
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
