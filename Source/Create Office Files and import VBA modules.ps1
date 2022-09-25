@@ -128,6 +128,7 @@ Finally {
 
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($Excel)
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
+    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($presentation)
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($powerpoint)
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($acc)
     [GC]::Collect()
