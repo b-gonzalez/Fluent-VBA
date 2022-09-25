@@ -595,10 +595,11 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
     ' //Object and data structure tests
     
     Set Col = New Collection
-    Set d = CreateObject("Scripting.Dictionary")
+    Set d = New Dictionary
     fluent.TestValue = testFluent.Of(Col).Should.Be.OneOf(Col, d)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Set d = Nothing
     
     fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(Col, d, 10)
     Debug.Assert fluent.Should.Be.EqualTo(True)
@@ -661,28 +662,31 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     Set Col = Nothing
     
-    Set d = CreateObject("Scripting.Dictionary")
+    Set d = New Dictionary
     d.Add 1, 9
     d.Add 2, 10
     d.Add 3, 11
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Set d = Nothing
     
-    Set d = CreateObject("Scripting.Dictionary")
+    Set d = New Dictionary
     d.Add 1, 9
     d.Add 2, Array(10, Array(11))
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Set d = Nothing
     
-    Set d = CreateObject("Scripting.Dictionary")
+    Set d = New Dictionary
     d.Add 9, 1
     d.Add 10, 2
     d.Add 11, 3
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d.keys)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Set d = Nothing
     
     Set al = CreateObject("System.Collections.Arraylist")
     al.Add 9
@@ -923,10 +927,11 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
     ' //Object and data structure tests
     
     Set Col = New Collection
-    Set d = CreateObject("Scripting.Dictionary")
+    Set d = New Dictionary
     fluent.TestValue = testFluent.Of(Col).ShouldNot.Be.OneOf(Col, d)
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    Set d = Nothing
     
     fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(Col, d, 10)
     Debug.Assert fluent.Should.Be.EqualTo(False)
@@ -989,28 +994,31 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     Set Col = Nothing
     
-    Set d = CreateObject("Scripting.Dictionary")
+    Set d = New Dictionary
     d.Add 1, 9
     d.Add 2, 10
     d.Add 3, 11
     fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d)
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    Set d = Nothing
     
-    Set d = CreateObject("Scripting.Dictionary")
+    Set d = New Dictionary
     d.Add 1, 9
     d.Add 2, Array(10, Array(11))
     fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d)
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    Set d = Nothing
     
-    Set d = CreateObject("Scripting.Dictionary")
+    Set d = New Dictionary
     d.Add 9, 1
     d.Add 10, 2
     d.Add 11, 3
     fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d.keys)
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    Set d = Nothing
     
     Set al = CreateObject("System.Collections.Arraylist")
     al.Add 9

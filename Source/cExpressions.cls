@@ -13,7 +13,7 @@ Private pMeta As cMeta
 Private pTestResult As cTestResult
 Private pPrinting As cPrinting
 Private iPrint As IPrinting
-Private pExprDict As Object
+Private pExprDict As Scripting.Dictionary
 
 Private pTestValue As Variant
 Private pFluentPath As String
@@ -417,6 +417,8 @@ End Function
 
 Private Sub addToDictAndFluentPath(FunctionName As String, Result As Boolean, NegateValue As Boolean, Expected As Variant, Optional actual As Variant, Optional LowerVal As Variant, Optional HigherVal As Variant)
 
+    Set pExprDict = New Scripting.Dictionary
+
     pExprDict.Add "functionName", FunctionName
     pExprDict.Add "result", Result
     pExprDict.Add "negatevalue", NegateValue
@@ -438,7 +440,7 @@ Private Sub addToDictAndFluentPath(FunctionName As String, Result As Boolean, Ne
 
 End Sub
 
-Private Sub addFluentPathNew(dict As Object)
+Private Sub addFluentPathNew(dict As Scripting.Dictionary)
     Dim fluentPath As String
     Dim shouldStr As String
     Dim fluentBool As Boolean
@@ -539,7 +541,9 @@ Private Sub addFluentPathNew(dict As Object)
     
     Call pTestResult.CheckTest(fluentBool, pExprDict)
     
-    Set pExprDict = CreateObject("Scripting.Dictionary")
+    'Set pExprDict = CreateObject("Scripting.Dictionary")
+    
+    Set pExprDict = Nothing
 End Sub
 
 Private Sub Class_Initialize()

@@ -23,19 +23,19 @@ Sub DoWork()
     fluent.ShouldNot.Be.EqualTo (11)
 End Sub
 
-Private Sub TestResult_TestCompleted(TestDict As Object)
+Private Sub TestResult_TestCompleted(TestDict As Scripting.Dictionary)
     IterateTestResult TestDict
 End Sub
 
-Private Sub testResult_TestFailed(TestDict As Object)
+Private Sub testResult_TestFailed(TestDict As Scripting.Dictionary)
     IterateTestResult TestDict
 End Sub
 
-Private Sub testResult_TestPassed(TestDict As Object)
+Private Sub testResult_TestPassed(TestDict As Scripting.Dictionary)
     IterateTestResult TestDict
 End Sub
 
-Private Sub IterateTestResult(d As Object)
+Private Sub IterateTestResult(d As Scripting.Dictionary)
     Dim elem As Variant
     
     For Each elem In d
