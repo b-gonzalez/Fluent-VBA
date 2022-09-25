@@ -48,6 +48,7 @@ try {
     $curDir = $PSScriptRoot
     $parentDir = (get-item $curDir).parent
     Set-Location $parentDir
+    #$fileName = "Fluent VBA 1.65"
     $outputPath = "$parentDir\Distribution\Fluent VBA"
     $guidObj = Get-ExcelGuid
     $GuidStr = Out-String -NoNewline -InputObject $guidObj
@@ -111,6 +112,7 @@ Catch {
 }
 
 Finally {
+
     $workbook.Save()
     $doc.Save()
     $presentation.Save()
