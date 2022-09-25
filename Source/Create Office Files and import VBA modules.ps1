@@ -10,31 +10,21 @@
 
 function Get-ExcelGuid {
     try {
-        #$curDir = $PSScriptRoot
-        #Set-Location $curDir
 
         $excel = New-Object -ComObject excel.application
-
         $workbook = $excel.Workbooks.Add()
-
         $GUID = "{0002E157-0000-0000-C000-000000000046}"
-        #$Major = 5
-        #$Minor = 3
         $Major = 0
         $Minor = 0
 
         $workbook.VBProject.References.AddFromGuid($GUID,$Major, $Minor)
-
         $vbe = $excel.application.VBE
-
         $vbProj = $vbe.ActiveVBProject
-
         $references = $vbProj.References
 
         foreach ($ref in $references) {
             if ($ref.name -like "*Excel*") {
                 $guidObj = $ref.GUID
-                #Write-Output $refGuid
                 break
             }
         }
@@ -96,12 +86,11 @@ try {
             $workbook.VBProject.VBComponents.Import($macro.FullName) | Out-Null
             $doc.VBProject.VBComponents.Import($macro.FullName)
             $presentation.VBProject.VBComponents.Import($macro.FullName)
+
             $acc.VBE.ActiveVBProject.VBComponents.Import($macro.FullName)
             $acc.VBE.ActiveVBProject.VBComponents($acc.VBE.ActiveVBProject.VBComponents.Count).Name = $macro.BaseName
             $acc.DoCmd.RunCommand($acCmdCompileAndSaveAllModules)
             $acc.DoCmd.Save($acModule, $macro.BaseName)
-            
-            #$acc.Application.LoadFromText($acModule, $macro.BaseName,$macro)
         }
     }
 
@@ -113,12 +102,6 @@ try {
     $doc.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
     $presentation.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
     $acc.VBE.ActiveVBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
-
-    
-    <#$db = $acc.Application.CurrentDb()
-    $acc.DoCmd.OpenModule($modules.documents(0).name)
-    $acc.DoCmd.RunCommand($acCmdCompileAndSaveAllModules)
-    $acc.DoCmd.Close($modules.documents(0).name)#>
 
 }
 
