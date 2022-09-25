@@ -48,12 +48,18 @@ try {
     $curDir = $PSScriptRoot
     $parentDir = (get-item $curDir).parent
     Set-Location $parentDir
-    #$fileName = "Fluent VBA 1.65"
+    $fluentName = "Fluent VBA 1.65"
     $outputPath = "$parentDir\Distribution\Fluent VBA"
     $guidObj = Get-ExcelGuid
     $GuidStr = Out-String -NoNewline -InputObject $guidObj
     $xlGuid = $GuidStr.Replace("System.__ComObject","")
     $ScriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
+
+    $distFiles = $macros = Get-ChildItem -Path .\Distribution -File
+
+    foreach ($file in $distfiles) {
+        $file.delete()
+    }
 
     $excel = New-Object -ComObject excel.application
     $word = New-Object -ComObject word.application
@@ -134,4 +140,9 @@ Finally {
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($powerpoint)
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($acc)
     [GC]::Collect()
+
+    foreach ($file in $distfiles) {
+        Rename-Item $file.FullName -NewName "$($fluentName)$($file.Extension)"
+        #Write-Output "$($fluentName)$($file.Extension)"
+    }
 }
