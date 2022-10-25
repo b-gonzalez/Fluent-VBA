@@ -59,19 +59,8 @@ Or, arguably, even more naturally using cFluentOf objects like this:
             '//Assert
             Debug.Assert .Should.Be.EqualTo(5)
         End With
-    End Sub
-    
-Or like this:
-
-    Option Explicit
-
-    Sub FluentUnitTestExample3()
-        Dim Result As cFluentOf
-        Dim returnedResult As Variant
         
-        '//arrange
-        Set Result = New cFluentOf
-        returnedResult = returnVal(5)
+        '//Or like this
         
         '//Act & Assert
         Debug.Assert Result.Of(returnedResult).Should.Be.EqualTo(5)
