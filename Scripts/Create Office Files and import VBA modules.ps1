@@ -5,13 +5,17 @@
 # Access does not have the ability to give trust this way. But this is a moot point since
 # Access imports VBA modules a different way.
 
-# NOTE: Get-ExcelGuid prompts Excel to save. I can't figure out how to prevent this.
-# Application.DisplayAlerts does not appear to disable it.
+# NOTE: Get-ExcelGuid prompts Excel to save.  I may be able to get around it by passing 
+# an Excel object as a parameter. It is something I will try to test in the future.
+
+#Removing personal information prompts Excel and Word to display warnings related to this.
+# I currently don't know how to disable but I will see if I can do so in the future.
+
 
 function Get-ExcelGuid {
     try {
-
         $excel = New-Object -ComObject excel.application
+        # $excel.Application.DisplayAlerts = $false
         $workbook = $excel.Workbooks.Add()
         $GUID = "{0002E157-0000-0000-C000-000000000046}"
         $Major = 0
@@ -108,7 +112,6 @@ try {
     $doc.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
     $presentation.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
     $acc.VBE.ActiveVBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
-
 }
 
 Catch {
@@ -117,23 +120,27 @@ Catch {
 }
 
 Finally {
+    $workbook.RemovePersonalInformation = $true
+    $doc.Save()
+    $doc.RemovePersonalInformation = $true
+    $presentation.RemovePersonalInformation = $true
+    $acc.CurrentProject.RemovePersonalInformation = $true
 
     $workbook.Save()
-    $doc.Save()
     $presentation.Save()
     
 
     $workbook.Close()
     $doc.Close()
     $presentation.Close()
-    #$acc.CloseCurrentDatabase()
+    $acc.CloseCurrentDatabase()
     
     $excel.Quit()
     $word.Quit()
     $powerpoint.Quit()
     $acc.Quit()
 
-    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($Excel)
+    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($presentation)
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($powerpoint)
@@ -144,7 +151,10 @@ Finally {
     $distFiles = Get-ChildItem -Path .\Distribution -File
 
     foreach ($file in $distfiles) {
-        Rename-Item $file.FullName -NewName "$($fluentName)$($file.Extension)"
-        #Write-Output "$($fluentName)$($file.Extension)"
+        if ($file.FullName -like '*~$uent*') {
+            Remove-Item $file.FullName -Force
+        } else {
+            Rename-Item $file.FullName -NewName "$($fluentName)$($file.Extension)"
+        }
     }
 }
