@@ -1,5 +1,5 @@
 # Fluent-VBA
-Fluent VBA is a fluent unit testing framework for VBA. This project was inspired by [Fluent Assertions](https://fluentassertions.com/introduction).
+Fluent VBA is a fluent unit testing framework for VBA. This project was inspired by [Fluent Assertions](https://fluentassertions.com/introduction) in C#.
 
 Fluent frameworks are intended to be read like natural language. So instead of having something like:
 
