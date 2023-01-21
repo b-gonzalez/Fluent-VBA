@@ -11,7 +11,6 @@
 #Removing personal information prompts Excel and Word to display warnings related to this.
 # I currently don't know how to disable but I will see if I can do so in the future.
 
-
 function Get-ExcelGuid {
     try {
         $excel = New-Object -ComObject excel.application
