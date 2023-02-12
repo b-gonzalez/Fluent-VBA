@@ -85,6 +85,7 @@ try {
     $acCmdCompileAndSaveAllModules = 126
     $acModule = 5
     $macros = Get-ChildItem -Path .\Source -File
+    Write-Output $macros.GetType()
 
     $Major = 0
     $Minor = 0
