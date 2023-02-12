@@ -14,7 +14,7 @@ try {
 
     $ScriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
     $macros = Get-ChildItem -Path .\Source -File
-    # $distFiles = Get-ChildItem -Path .\Distribution -File
+    $distFiles = Get-ChildItem -Path .\Distribution -File
 
     foreach ($file in $distfiles) {
         $file.delete()
@@ -74,27 +74,33 @@ function get-excel {
         [string]$macros,
         [string]$ScriptingGuid
     )
-    $excel = New-Object -ComObject excel.application
-    $workbook = $excel.Workbooks.Add()
-    $xlOpenXMLWorkbookMacroEnabled = 52
-    $workbook.SaveAs($outputPath, $xlOpenXMLWorkbookMacroEnabled)
-    # $macros = Get-ChildItem -Path .\Source -File
-
-    $Major = 0
-    $Minor = 0
-
-    foreach ($macro in $macros) {
-        if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
-            $workbook.VBProject.VBComponents.Import($macro.FullName) | Out-Null
+    try {
+        $excel = New-Object -ComObject excel.application
+        $workbook = $excel.Workbooks.Add()
+        $xlOpenXMLWorkbookMacroEnabled = 52
+        $workbook.SaveAs($outputPath, $xlOpenXMLWorkbookMacroEnabled)
+        # $macros = Get-ChildItem -Path .\Source -File
+    
+        $Major = 0
+        $Minor = 0
+    
+        foreach ($macro in $macros) {
+            if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
+                $workbook.VBProject.VBComponents.Import($macro.FullName) | Out-Null
+            }
         }
+    
+        $workbook.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
+    } catch {
+        Write-Host "An error occurred:"
+        Write-Host $_
+    } finally {
+        $workbook.Save()
+        $workbook.Close()
+        $excel.Quit()
+        [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
+        [GC]::Collect()
     }
-
-    $workbook.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
-    $workbook.Save()
-    $workbook.Close()
-    $excel.Quit()
-    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
-    [GC]::Collect()
 }
 
 function get-word {
