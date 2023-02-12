@@ -1,33 +1,84 @@
 try {
     $curDir = $PSScriptRoot
-    $parentDir = (get-item $curDir).parent
+    $parentDir = (get-item $curDir).parent.FullName
     Set-Location $parentDir
     $outputPath = "$parentDir\Distribution\Fluent VBA"
-    $guidObj = Get-ExcelGuid
-    $GuidStr = Out-String -NoNewline -InputObject $guidObj
-    $xlGuid = $GuidStr.Replace("System.__ComObject","")
-    $ScriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
+    # Write-Output $parentDir
+    # $outputPath = "$parentDir\Distribution\"
+    # Write-Output $outputPath
+    
+    # $guidObj = Get-ExcelGuid
+    # $GuidStr = Out-String -NoNewline -InputObject $guidObj
+    # $xlGuid = $GuidStr.Replace("System.__ComObject","")
 
-    $distFiles = Get-ChildItem -Path .\Distribution -File
+
+    $ScriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
+    $macros = Get-ChildItem -Path .\Source -File
+    # $distFiles = Get-ChildItem -Path .\Distribution -File
 
     foreach ($file in $distfiles) {
         $file.delete()
     }
+
+    get-excel -outputPath $outputPath -macros $macros -ScriptingGuid $ScriptingGuid
 }
 
-function make-excel {
+Catch {
+    Write-Host "An error occurred:"
+    Write-Host $_
+}
+
+Finally {
+    # $workbook.RemovePersonalInformation = $true
+    # $doc.Save()
+    # $doc.RemovePersonalInformation = $true
+    # $presentation.RemovePersonalInformation = $true
+    # $acc.CurrentProject.RemovePersonalInformation = $true
+
+    # $workbook.Save()
+    # $presentation.Save()
+    
+
+    # $workbook.Close()
+    # $doc.Close()
+    # $presentation.Close()
+    # $acc.CloseCurrentDatabase()
+    
+    # $excel.Quit()
+    # $word.Quit()
+    # $powerpoint.Quit()
+    # $acc.Quit()
+
+    # [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
+    # [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
+    # [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($presentation)
+    # [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($powerpoint)
+    # [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($acc)
+    # [GC]::Collect()
+
+    # $fluentName = "Fluent VBA 1.65"
+    # $distFiles = Get-ChildItem -Path .\Distribution -File
+
+    # foreach ($file in $distfiles) {
+    #     if ($file.FullName -like '*~$uent*') {
+    #         Remove-Item $file.FullName -Force
+    #     } else {
+    #         Rename-Item $file.FullName -NewName "$($fluentName)$($file.Extension)"
+    #     }
+    # }
+}
+
+function get-excel {
     param (
         [string]$outputPath,
-        [string]$macroPath,
+        [string]$macros,
         [string]$ScriptingGuid
-        [string]$minorVersion,
-        [string]$majorVersion
     )
     $excel = New-Object -ComObject excel.application
     $workbook = $excel.Workbooks.Add()
     $xlOpenXMLWorkbookMacroEnabled = 52
     $workbook.SaveAs($outputPath, $xlOpenXMLWorkbookMacroEnabled)
-    $macros = Get-ChildItem -Path .\Source -File
+    # $macros = Get-ChildItem -Path .\Source -File
 
     $Major = 0
     $Minor = 0
@@ -39,13 +90,18 @@ function make-excel {
     }
 
     $workbook.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
+    $workbook.Save()
+    $workbook.Close()
+    $excel.Quit()
+    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
+    [GC]::Collect()
 }
 
-function make-word {
+function get-word {
     param (
         [string]$outputPath,
         [string]$ExcelGuid,
-        [string]$ScriptingGuid
+        [string]$ScriptingGuid,
         [string]$minorVersion,
         [string]$majorVersion,
         [string]$macros
@@ -72,7 +128,7 @@ function make-word {
     $doc.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
 }
 
-function make-powerpoint {
+function get-powerpoint {
     $powerpoint = New-Object -ComObject powerpoint.application
     $presentation = $powerpoint.Presentations.Add()
     $ppSaveAsOpenXMLPresentationMacroEnabled = 25
@@ -92,7 +148,7 @@ function make-powerpoint {
     $presentation.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
 }
 
-function make-access {
+function get-access {
     $acc = New-Object -ComObject Access.Application
     $acFileFormatAccess2007 = 12
     $acc.NewCurrentDataBase($outputPath,$acFileFormatAccess2007)
