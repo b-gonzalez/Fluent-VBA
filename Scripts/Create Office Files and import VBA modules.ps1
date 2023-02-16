@@ -1,15 +1,163 @@
-# NOTE: For this script to work, trust must be given to the VBA object model for this to work.
-# This will be in the options -> trust center settings -> Macro Settings  for the Office 
-# applications. If this is not enabled, the code will fail.
+function get-word {
+    param (
+        [string]$outputPath,
+        [Object[]]$macros,
+        [string]$scriptingGuid,
+        [string]$excelGuid
+    )
 
-# Access does not have the ability to give trust this way. But this is a moot point since
-# Access imports VBA modules a different way.
+    try {
+        $word = New-Object -ComObject word.application
+        $doc = $word.documents.add()
+        $wdFormatFlatXMLMacroEnabled = 13
+        $doc.SaveAs($outputPath,$wdFormatFlatXMLMacroEnabled)
+        $macros = Get-ChildItem -Path .\Source -File
+    
+        $Major = 0
+        $Minor = 0
+    
+        foreach ($macro in $macros) {
+            if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
+                $doc.VBProject.VBComponents.Import($macro.FullName)
+            }
+        }
+    
+        $doc.VBProject.References.AddFromGuid($excelGuid,$Major, $Minor)
+        $doc.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
+    }  catch {
+        Write-Host "An error occurred:"
+        Write-Host $_
+    } finally {
+    $doc.Save()
+    $doc.RemovePersonalInformation = $true
+    $doc.Close()
+    $word.Quit()
 
-# NOTE: Get-ExcelGuid prompts Excel to save.  I may be able to get around it by passing 
-# an Excel object as a parameter. It is something I will try to test in the future.
+    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
+    [GC]::Collect()
+    }
 
-#Removing personal information prompts Excel and Word to display warnings related to this.
-# I currently don't know how to disable but I will see if I can do so in the future.
+}
+
+function get-powerpoint {
+    param (
+        [string]$outputPath,
+        [Object[]]$macros,
+        [string]$ScriptingGuid,
+        [string]$excelGuid
+    )
+
+    try {
+        $powerpoint = New-Object -ComObject powerpoint.application
+        $presentation = $powerpoint.Presentations.Add()
+        $ppSaveAsOpenXMLPresentationMacroEnabled = 25
+        $presentation.SaveAs($outputPath,$ppSaveAsOpenXMLPresentationMacroEnabled)
+        $macros = Get-ChildItem -Path .\Source -File
+    
+        $Major = 0
+        $Minor = 0
+    
+        foreach ($macro in $macros) {
+            if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
+                $presentation.VBProject.VBComponents.Import($macro.FullName)
+            }
+        }
+    
+        $presentation.VBProject.References.AddFromGuid($excelGuid,$Major, $Minor)
+        $presentation.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
+    }  catch {
+        Write-Host "An error occurred:"
+        Write-Host $_
+    } finally {
+        $presentation.RemovePersonalInformation = $true
+        $presentation.Save()
+        $presentation.Close()
+        $powerpoint.Quit()
+        [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($presentation)
+        [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($powerpoint)
+        [GC]::Collect()
+    }
+}
+
+function get-access {
+    param (
+        [string]$outputPath,
+        [Object[]]$macros,
+        [string]$ScriptingGuid,
+        [string]$excelGuid
+    )
+
+    try {
+        $acc = New-Object -ComObject Access.Application
+        $acFileFormatAccess2007 = 12
+        $acc.NewCurrentDataBase($outputPath,$acFileFormatAccess2007)
+    
+        $acCmdCompileAndSaveAllModules = 126
+        $acModule = 5
+        $macros = Get-ChildItem -Path .\Source -File
+    
+        $Major = 0
+        $Minor = 0
+    
+        foreach ($macro in $macros) {
+            if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
+                $acc.VBE.ActiveVBProject.VBComponents.Import($macro.FullName)
+                $acc.VBE.ActiveVBProject.VBComponents($acc.VBE.ActiveVBProject.VBComponents.Count).Name = $macro.BaseName
+                $acc.DoCmd.RunCommand($acCmdCompileAndSaveAllModules)
+                $acc.DoCmd.Save($acModule, $macro.BaseName)
+            }
+        }
+    
+        $acc.VBE.ActiveVBProject.References.AddFromGuid($excelGuid,$Major, $Minor)
+        $acc.VBE.ActiveVBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
+    }   catch {
+        Write-Host "An error occurred:"
+        Write-Host $_
+    } finally {
+        $acc.CurrentProject.RemovePersonalInformation = $true
+        $acc.CloseCurrentDatabase()
+        $acc.Quit()
+        [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($acc)
+        [GC]::Collect()
+    }
+}
+
+function get-excel {
+    param (
+        [string]$outputPath,
+        [Object[]]$macros,
+        [string]$ScriptingGuid
+    )
+    try {
+        $excel = New-Object -ComObject excel.application
+        $workbook = $excel.Workbooks.Add()
+        $xlOpenXMLWorkbookMacroEnabled = 52
+        $workbook.SaveAs($outputPath, $xlOpenXMLWorkbookMacroEnabled)
+        # $macros = Get-ChildItem -Path .\Source -File
+    
+        $Major = 0
+        $Minor = 0
+    
+        foreach ($macro in $macros) {
+            if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
+                # $workbook.VBProject.VBComponents.Import($macro.FullName)
+                $workbook.VBProject.VBComponents.Import($macro.FullName) | Out-Null
+            }
+        }
+    
+        $workbook.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
+    } catch {
+        Write-Host "An error occurred:"
+        Write-Host $_
+    } finally {
+        $workbook.Save()
+        $workbook.Close()
+        $excel.Quit()
+        [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
+        [GC]::Collect()
+    }
+}
+
 
 function Get-ExcelGuid {
     try {
@@ -49,105 +197,27 @@ function Get-ExcelGuid {
 
 try {
     $curDir = $PSScriptRoot
-    $parentDir = (get-item $curDir).parent
-    Set-Location $parentDir
+    $parentDir = (get-item $curDir).parent.FullName
     $outputPath = "$parentDir\Distribution\Fluent VBA"
+    
+    Set-Location $parentDir
+    
     $guidObj = Get-ExcelGuid
     $GuidStr = Out-String -NoNewline -InputObject $guidObj
-    $xlGuid = $GuidStr.Replace("System.__ComObject ","")
-    $ScriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
+    $excelGuid = $GuidStr.Replace("System.__ComObject","")
 
+    $ScriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
+    $macros = Get-ChildItem -Path .\Source -File
     $distFiles = Get-ChildItem -Path .\Distribution -File
 
     foreach ($file in $distfiles) {
         $file.delete()
     }
 
-    $excel = New-Object -ComObject excel.application
-    $word = New-Object -ComObject word.application
-    $powerpoint = New-Object -ComObject powerpoint.application
-    $acc = New-Object -ComObject Access.Application
-
-    $workbook = $excel.Workbooks.Add()
-    $doc = $word.documents.add()
-    $presentation = $powerpoint.Presentations.Add()
-
-    $xlOpenXMLWorkbookMacroEnabled = 52
-    $wdFormatFlatXMLMacroEnabled = 13
-    $ppSaveAsOpenXMLPresentationMacroEnabled = 25
-    $acFileFormatAccess2007 = 12
-
-    $workbook.SaveAs($outputPath, $xlOpenXMLWorkbookMacroEnabled)
-    $doc.SaveAs($outputPath,$wdFormatFlatXMLMacroEnabled)
-    $presentation.SaveAs($outputPath,$ppSaveAsOpenXMLPresentationMacroEnabled)
-    $acc.NewCurrentDataBase($outputPath,$acFileFormatAccess2007)
-
-    $acCmdCompileAndSaveAllModules = 126
-    $acModule = 5
-    $macros = Get-ChildItem -Path .\Source -File
-
-    $Major = 0
-    $Minor = 0
-
-    foreach ($macro in $macros) {
-        if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
-            
-            $workbook.VBProject.VBComponents.Import($macro.FullName) | Out-Null
-            $doc.VBProject.VBComponents.Import($macro.FullName)
-            $presentation.VBProject.VBComponents.Import($macro.FullName)
-
-            $acc.VBE.ActiveVBProject.VBComponents.Import($macro.FullName)
-            $acc.VBE.ActiveVBProject.VBComponents($acc.VBE.ActiveVBProject.VBComponents.Count).Name = $macro.BaseName
-            $acc.DoCmd.RunCommand($acCmdCompileAndSaveAllModules)
-            $acc.DoCmd.Save($acModule, $macro.BaseName)
-        }
-    }
-
-    $doc.VBProject.References.AddFromGuid($xlGuid,$Major, $Minor)
-    $presentation.VBProject.References.AddFromGuid($xlGuid,$Major, $Minor)
-    $acc.VBE.ActiveVBProject.References.AddFromGuid($xlGuid,$Major, $Minor)
-
-    $workbook.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
-    $doc.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
-    $presentation.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
-    $acc.VBE.ActiveVBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
-}
-
-Catch {
-    Write-Host "An error occurred:"
-    Write-Host $_
-}
-
-Finally {
-    $workbook.RemovePersonalInformation = $true
-    $doc.Save()
-    $doc.RemovePersonalInformation = $true
-    $presentation.RemovePersonalInformation = $true
-    $acc.CurrentProject.RemovePersonalInformation = $true
-
-    $workbook.Save()
-    $presentation.Save()
-    
-
-    $workbook.Close()
-    $doc.Close()
-    $presentation.Close()
-    $acc.CloseCurrentDatabase()
-    
-    $excel.Quit()
-    $word.Quit()
-    $powerpoint.Quit()
-    $acc.Quit()
-
-    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
-    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
-    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($presentation)
-    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($powerpoint)
-    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($acc)
-    [GC]::Collect()
-
-    $fluentName = "Fluent VBA 1.65"
-    $distFiles = Get-ChildItem -Path .\Distribution -File
+    get-word -outputPath $outputPath -macros $macros -ScriptingGuid $ScriptingGuid -excelGuid $excelGuid
+    get-powerpoint -outputPath $outputPath -macros $macros -ScriptingGuid $ScriptingGuid -excelGuid $excelGuid
+    get-access -outputPath $outputPath -macros $macros -ScriptingGuid $ScriptingGuid -excelGuid $excelGuid
+    get-excel -outputPath $outputPath -macros $macros -ScriptingGuid $ScriptingGuid
 
     foreach ($file in $distfiles) {
         if ($file.FullName -like '*~$uent*') {
@@ -156,4 +226,9 @@ Finally {
             Rename-Item $file.FullName -NewName "$($fluentName)$($file.Extension)"
         }
     }
+}
+
+Catch {
+    Write-Host "An error occurred:"
+    Write-Host $_
 }
