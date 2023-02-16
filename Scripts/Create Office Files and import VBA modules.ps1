@@ -54,7 +54,7 @@ try {
     $outputPath = "$parentDir\Distribution\Fluent VBA"
     $guidObj = Get-ExcelGuid
     $GuidStr = Out-String -NoNewline -InputObject $guidObj
-    $xlGuid = $GuidStr.Replace("System.__ComObject","")
+    $xlGuid = $GuidStr.Replace("System.__ComObject ","")
     $ScriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
 
     $distFiles = Get-ChildItem -Path .\Distribution -File
