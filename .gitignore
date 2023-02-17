@@ -1,4 +1,5 @@
 Scripts/metadata.ps1
+Scripts/test.ps1
 Source/mTodo.bas
 *.doccls
 *.zip
