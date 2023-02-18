@@ -2,8 +2,7 @@ function get-word {
     param (
         [string]$outputPath,
         [Object[]]$macros,
-        [string]$scriptingGuid,
-        [string]$excelGuid
+        [string[]]$GUIDs
     )
 
     try {
@@ -21,9 +20,11 @@ function get-word {
                 $doc.VBProject.VBComponents.Import($macro.FullName)
             }
         }
-    
-        $doc.VBProject.References.AddFromGuid($excelGuid,$Major, $Minor)
-        $doc.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
+        
+        foreach ($GUID in $GUIDs) {
+            $doc.VBProject.References.AddFromGuid($GUID,$Major, $Minor)
+        }
+
     }  catch {
         Write-Host "An error occurred:"
         Write-Host $_
@@ -43,8 +44,7 @@ function get-powerpoint {
     param (
         [string]$outputPath,
         [Object[]]$macros,
-        [string]$ScriptingGuid,
-        [string]$excelGuid
+        [string[]]$GUIDs
     )
 
     try {
@@ -62,9 +62,11 @@ function get-powerpoint {
                 $presentation.VBProject.VBComponents.Import($macro.FullName)
             }
         }
+
+        foreach ($GUID in $GUIDs) {
+            $presentation.VBProject.References.AddFromGuid($GUID,$Major, $Minor) 
+        }
     
-        $presentation.VBProject.References.AddFromGuid($excelGuid,$Major, $Minor)
-        $presentation.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
     }  catch {
         Write-Host "An error occurred:"
         Write-Host $_
@@ -83,8 +85,7 @@ function get-access {
     param (
         [string]$outputPath,
         [Object[]]$macros,
-        [string]$ScriptingGuid,
-        [string]$excelGuid
+        [string[]]$GUIDs
     )
 
     try {
@@ -107,9 +108,11 @@ function get-access {
                 $acc.DoCmd.Save($acModule, $macro.BaseName)
             }
         }
+
+        foreach ($GUID in $GUIDs) {
+            $acc.VBE.ActiveVBProject.References.AddFromGuid($GUID,$Major, $Minor)
+        }
     
-        $acc.VBE.ActiveVBProject.References.AddFromGuid($excelGuid,$Major, $Minor)
-        $acc.VBE.ActiveVBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
     }   catch {
         Write-Host "An error occurred:"
         Write-Host $_
@@ -126,7 +129,7 @@ function get-excel {
     param (
         [string]$outputPath,
         [Object[]]$macros,
-        [string]$ScriptingGuid
+        [string[]]$GUIDs
     )
     try {
         $excel = New-Object -ComObject excel.application
@@ -144,8 +147,10 @@ function get-excel {
                 $workbook.VBProject.VBComponents.Import($macro.FullName) | Out-Null
             }
         }
-    
-        $workbook.VBProject.References.AddFromGuid($ScriptingGuid,$Major, $Minor)
+
+        foreach ($GUID in $GUIDs) {
+            $workbook.VBProject.References.AddFromGuid($GUID,$Major, $Minor)
+        }
     } catch {
         Write-Host "An error occurred:"
         Write-Host $_

@@ -1,6 +1,7 @@
 Scripts/metadata.ps1
-Scripts/test.ps1
-Source/mTodo.bas
+Scripts/*test*
+Scripts/notes.ps1
+Source/*Todo*
 *.doccls
 *.zip
 Distribution/~$uent*
