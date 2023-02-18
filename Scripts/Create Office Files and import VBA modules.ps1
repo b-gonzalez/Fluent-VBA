@@ -21,11 +21,11 @@ try {
 
     $GUIDs = @()
     $GUIDs += $scriptingGuid
-    get-excel -outputPath $outputPath -macros $macros -GUIDs $GUIDs
+    get-excel -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo $true
     $GUIDs += $excelGuid
-    get-word -outputPath $outputPath -macros $macros -GUIDs $GUIDs
-    get-powerpoint -outputPath $outputPath -macros $macros -GUIDs $GUIDs
-    get-access -outputPath $outputPath -macros $macros -GUIDs $GUIDs
+    get-word -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo $true
+    get-powerpoint -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo $true
+    get-access -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo $true
 
     foreach ($file in $distfiles) {
         if ($file.FullName -like '*~$uent*') {

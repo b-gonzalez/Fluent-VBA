@@ -2,7 +2,8 @@ function get-word {
     param (
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
-         [Parameter(Mandatory=$false)][string[]]$GUIDs
+        [Parameter(Mandatory=$false)][string[]]$GUIDs,
+        [Parameter(Mandatory=$false)][bool]$removePersonalInfo
     )
 
     try {
@@ -33,21 +34,24 @@ function get-word {
         Write-Host $_
     } finally {
     $doc.Save()
-    $doc.RemovePersonalInformation = $true
+    if ($removePersonalInfo) {
+        $doc.RemovePersonalInformation = $true
+    }
+
     $doc.Close()
     $word.Quit()
 
     [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
     [GC]::Collect()
     }
-
 }
 
 function get-powerpoint {
     param (
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
-         [Parameter(Mandatory=$false)][string[]]$GUIDs
+        [Parameter(Mandatory=$false)][string[]]$GUIDs,
+        [Parameter(Mandatory=$false)][bool]$removePersonalInfo
     )
 
     try {
@@ -75,7 +79,10 @@ function get-powerpoint {
         Write-Host "An error occurred:"
         Write-Host $_
     } finally {
-        $presentation.RemovePersonalInformation = $true
+        if ($removePersonalInfo) {
+            $presentation.RemovePersonalInformation = $true
+        }
+
         $presentation.Save()
         $presentation.Close()
         $powerpoint.Quit()
@@ -89,7 +96,8 @@ function get-access {
     param (
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
-         [Parameter(Mandatory=$false)][string[]]$GUIDs
+        [Parameter(Mandatory=$false)][string[]]$GUIDs,
+        [Parameter(Mandatory=$false)][bool]$removePersonalInfo
     )
 
     try {
@@ -123,7 +131,10 @@ function get-access {
         Write-Host "An error occurred:"
         Write-Host $_
     } finally {
-        $acc.CurrentProject.RemovePersonalInformation = $true
+        if ($removePersonalInfo) {
+            $acc.CurrentProject.RemovePersonalInformation = $true
+        }
+
         $acc.CloseCurrentDatabase()
         $acc.Quit()
         [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($acc)
@@ -135,7 +146,8 @@ function get-excel {
     param (
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
-         [Parameter(Mandatory=$false)][string[]]$GUIDs
+        [Parameter(Mandatory=$false)][string[]]$GUIDs,
+        [Parameter(Mandatory=$false)][bool]$removePersonalInfo
     )
     try {
         $excel = New-Object -ComObject excel.application
@@ -164,6 +176,10 @@ function get-excel {
         Write-Host "An error occurred:"
         Write-Host $_
     } finally {
+        if ($removePersonalInfo) {
+            $workbook.RemovePersonalInformation = $true
+        }
+        
         $workbook.Save()
         $workbook.Close()
         $excel.Quit()
