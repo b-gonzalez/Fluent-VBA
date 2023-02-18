@@ -13,23 +13,23 @@ Public Function OneOf(ParamArray Vals() As Variant)
 
 End Function
 
-Public Function GreaterThan(Value As Double) As Boolean
+Public Function GreaterThan(ByVal Value As Double) As Boolean
 
 End Function
 
-Public Function GreaterThanOrEqualTo(Value As Double) As Boolean
+Public Function GreaterThanOrEqualTo(ByVal Value As Double) As Boolean
 
 End Function
 
-Public Function LessThan(Value As Double) As Boolean
+Public Function LessThan(ByVal Value As Double) As Boolean
 
 End Function
 
-Public Function LessThanOrEqualTo(Value As Double) As Boolean
+Public Function LessThanOrEqualTo(ByVal Value As Double) As Boolean
 
 End Function
 
-Public Function EqualTo(Value As Variant) As Boolean
+Public Function EqualTo(ByVal Value As Variant) As Boolean
 
 End Function
 
@@ -37,11 +37,11 @@ Public Function Something() As Boolean
 
 End Function
 
-Public Function Between(LowerVal As Double, HigherVal As Double) As Boolean
+Public Function Between(ByVal LowerVal As Double, ByVal HigherVal As Double) As Boolean
 
 End Function
 
-Public Function InDataStructure(DataStructure As Variant, Optional Method As flMethod = flRecursive) As Boolean
+Public Function InDataStructure(ByVal DataStructure As Variant, Optional ByVal Method As flMethod = flRecursive) As Boolean
 
 End Function
 

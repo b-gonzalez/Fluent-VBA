@@ -32,7 +32,7 @@ Public Property Set TestValue(Value As Variant)
     Set pUnit.TestValue = pFluentVal
 End Property
 
-Public Property Let TestValue(Value As Variant)
+Public Property Let TestValue(ByVal Value As Variant)
     pFluentVal = Value
     pUnit.TestValue = pFluentVal
 End Property

@@ -23,11 +23,11 @@ Enum flMethod
     flIterative
 End Enum
 
-Public Property Let TestValue(Value As Variant)
+Public Property Let TestValue(ByVal Value As Variant)
     pTestValue = Value
 End Property
 
-Public Property Set TestValue(Value As Variant)
+Public Property Set TestValue(ByVal Value As Variant)
     Set pTestValue = Value
 End Property
 
@@ -39,20 +39,20 @@ Public Property Get TestValue() As Variant
     End If
 End Property
 
-Public Property Set setMeta(Value As cMeta)
+Public Property Set setMeta(ByVal Value As cMeta)
     Set pMeta = Value
 End Property
 
-Public Property Set setTestResult(Value As cTestResult)
+Public Property Set setTestResult(ByVal Value As cTestResult)
     Set pTestResult = Value
 End Property
 
-Public Property Set setPrinting(Value As IPrinting)
+Public Property Set setPrinting(ByVal Value As IPrinting)
     Set pPrinting = Value
     Set iPrint = Value
 End Property
 
-Public Function InDataStructure(ExpectedVal As Variant, DataStructure As Variant, Optional Method As flMethod = flRecursive, Optional NegateValue As Boolean = False) As Boolean
+Public Function InDataStructure(ByVal ExpectedVal As Variant, ByVal DataStructure As Variant, Optional ByVal Method As flMethod = flRecursive, Optional NegateValue As Boolean = False) As Boolean
     Dim elem As Variant
     Dim Col As Collection
     Dim tempBool As Boolean
@@ -101,7 +101,7 @@ Private Function isDataStructure(ByVal DataStructure As Variant)
     isDataStructure = tempBool
 End Function
 
-Private Function getNestedElementsRecur(DataStructure As Variant, Optional ByRef Col As Collection = Nothing) As Collection
+Private Function getNestedElementsRecur(ByVal DataStructure As Variant, Optional ByRef Col As Collection = Nothing) As Collection
     Dim elem As Variant
     Dim tempDataStructure As Variant
     
@@ -135,7 +135,7 @@ Private Function getNestedElementsRecur(DataStructure As Variant, Optional ByRef
     Set getNestedElementsRecur = Col
 End Function
 
-Private Function getNestedElementsIter(DataStructure As Variant) As Collection
+Private Function getNestedElementsIter(ByVal DataStructure As Variant) As Collection
     Dim elem As Variant
     Dim Col As Collection
     Dim tempCol As Collection
@@ -184,7 +184,7 @@ Private Function getNestedElementsIter(DataStructure As Variant) As Collection
     Set getNestedElementsIter = Col
 End Function
 
-Public Function GreaterThan(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
+Public Function GreaterThan(ByVal ExpectedVal As Double, ByVal ActualVal As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
@@ -195,7 +195,7 @@ Public Function GreaterThan(ExpectedVal As Double, ActualVal As Double, Optional
     
 End Function
 
-Public Function GreaterThanOrEqualTo(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
+Public Function GreaterThanOrEqualTo(ByVal ExpectedVal As Double, ByVal ActualVal As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
@@ -206,7 +206,7 @@ Public Function GreaterThanOrEqualTo(ExpectedVal As Double, ActualVal As Double,
         
 End Function
 
-Public Function LessThan(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
+Public Function LessThan(ByVal ExpectedVal As Double, ByVal ActualVal As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
@@ -217,7 +217,7 @@ Public Function LessThan(ExpectedVal As Double, ActualVal As Double, Optional Ne
 
 End Function
 
-Public Function LessThanOrEqualTo(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
+Public Function LessThanOrEqualTo(ByVal ExpectedVal As Double, ByVal ActualVal As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
@@ -228,7 +228,7 @@ Public Function LessThanOrEqualTo(ExpectedVal As Double, ActualVal As Double, Op
         
 End Function
 
-Public Function EqualTo(ExpectedVal As Variant, ActualVal As Variant, Optional NegateValue As Boolean = False) As Boolean
+Public Function EqualTo(ByVal ExpectedVal As Variant, ByVal ActualVal As Variant, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim tempBool As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
@@ -252,7 +252,7 @@ Public Function EqualTo(ExpectedVal As Variant, ActualVal As Variant, Optional N
         
 End Function
 
-Public Function Contain(ExpectedVal As Variant, ActualVal As Variant, Optional NegateValue As Boolean = False) As Boolean
+Public Function Contain(ByVal ExpectedVal As Variant, ByVal ActualVal As Variant, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
@@ -265,7 +265,7 @@ Public Function Contain(ExpectedVal As Variant, ActualVal As Variant, Optional N
         
 End Function
 
-Public Function StartWith(ExpectedVal As Variant, ActualVal As Variant, Optional NegateValue As Boolean = False) As Boolean
+Public Function StartWith(ByVal ExpectedVal As Variant, ByVal ActualVal As Variant, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim valLength As Long
     Dim fluentPath As String
     Dim fluentBool As Boolean
@@ -281,7 +281,7 @@ Public Function StartWith(ExpectedVal As Variant, ActualVal As Variant, Optional
         
 End Function
 
-Public Function EndWith(ExpectedVal As Variant, ActualVal As Variant, Optional NegateValue As Boolean = False) As Boolean
+Public Function EndWith(ByVal ExpectedVal As Variant, ByVal ActualVal As Variant, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim valLength As Long
     Dim fluentPath As String
     Dim fluentBool As Boolean
@@ -297,7 +297,7 @@ Public Function EndWith(ExpectedVal As Variant, ActualVal As Variant, Optional N
     
 End Function
 
-Public Function LengthOf(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
+Public Function LengthOf(ByVal ExpectedVal As Double, ByVal ActualVal As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
@@ -308,7 +308,7 @@ Public Function LengthOf(ExpectedVal As Double, ActualVal As Double, Optional Ne
             
 End Function
 
-Public Function MaxLengthOf(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
+Public Function MaxLengthOf(ByVal ExpectedVal As Double, ByVal ActualVal As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
@@ -319,7 +319,7 @@ Public Function MaxLengthOf(ExpectedVal As Double, ActualVal As Double, Optional
             
 End Function
 
-Public Function MinLengthOf(ExpectedVal As Double, ActualVal As Double, Optional NegateValue As Boolean = False) As Boolean
+Public Function MinLengthOf(ByVal ExpectedVal As Double, ByVal ActualVal As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
@@ -330,7 +330,7 @@ Public Function MinLengthOf(ExpectedVal As Double, ActualVal As Double, Optional
         
 End Function
 
-Public Function Something(ExpectedVal As Variant, Optional NegateValue As Boolean = False) As Boolean
+Public Function Something(ByVal ExpectedVal As Variant, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
@@ -341,7 +341,7 @@ Public Function Something(ExpectedVal As Variant, Optional NegateValue As Boolea
         
 End Function
 
-Public Function Between(ExpectedVal As Double, LowerVal As Double, HigherVal As Double, Optional NegateValue As Boolean = False) As Boolean
+Public Function Between(ByVal ExpectedVal As Double, ByVal LowerVal As Double, ByVal HigherVal As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
@@ -352,7 +352,7 @@ Public Function Between(ExpectedVal As Double, LowerVal As Double, HigherVal As 
         
 End Function
 
-Public Function OneOf(ExpectedVal As Variant, NegateValue As Boolean, ParamArray Args() As Variant)
+Public Function OneOf(ByVal ExpectedVal As Variant, ByVal NegateValue As Boolean, ParamArray Args() As Variant)
     Dim i As Long
     Dim j As Long
     Dim tempBool As Boolean
@@ -390,7 +390,7 @@ Public Function OneOf(ExpectedVal As Variant, NegateValue As Boolean, ParamArray
         
 End Function
 
-Public Function LengthBetween(ExpectedVal As Double, LowerVal As Double, HigherVal As Double, Optional NegateValue As Boolean = False) As Boolean
+Public Function LengthBetween(ByVal ExpectedVal As Double, ByVal LowerVal As Double, ByVal HigherVal As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim tempOrigVal As Double
     Dim fluentPath As String
     Dim fluentBool As Boolean
@@ -404,7 +404,7 @@ Public Function LengthBetween(ExpectedVal As Double, LowerVal As Double, HigherV
 
 End Function
 
-Public Function EvaluateTo(ExpectedVal As Variant, ActualVal As Variant, Optional NegateValue = False) As Variant
+Public Function EvaluateTo(ByVal ExpectedVal As Variant, ByVal ActualVal As Variant, Optional ByVal NegateValue = False) As Variant
     Dim fluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
@@ -415,7 +415,7 @@ Public Function EvaluateTo(ExpectedVal As Variant, ActualVal As Variant, Optiona
     
 End Function
 
-Private Sub addToDictAndFluentPath(FunctionName As String, Result As Boolean, NegateValue As Boolean, Expected As Variant, Optional actual As Variant, Optional LowerVal As Variant, Optional HigherVal As Variant)
+Private Sub addToDictAndFluentPath(ByVal FunctionName As String, ByVal Result As Boolean, ByVal NegateValue As Boolean, ByVal Expected As Variant, Optional ByVal actual As Variant, Optional LowerVal As Variant, Optional HigherVal As Variant)
 
     Set pExprDict = New Scripting.Dictionary
 
@@ -440,7 +440,7 @@ Private Sub addToDictAndFluentPath(FunctionName As String, Result As Boolean, Ne
 
 End Sub
 
-Private Sub addFluentPathNew(dict As Scripting.Dictionary)
+Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     Dim fluentPath As String
     Dim shouldStr As String
     Dim fluentBool As Boolean

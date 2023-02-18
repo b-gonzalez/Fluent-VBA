@@ -19,15 +19,15 @@ Private pNotHaveSet As ISetExpressionAndValue
 Private pExpressions As cExpressions
 Private pShouldNotVal As Variant
 
-Private Property Set ISetExpressionAndValue_setExpr(Value As cExpressions)
+Private Property Set ISetExpressionAndValue_setExpr(ByVal Value As cExpressions)
     Set pExpressions = Value
 End Property
 
-Private Property Let ISetExpressionAndValue_testValue(Value As Variant)
+Private Property Let ISetExpressionAndValue_testValue(ByVal Value As Variant)
     pShouldNotVal = pExpressions.TestValue
 End Property
 
-Private Property Set ISetExpressionAndValue_testValue(Value As Variant)
+Private Property Set ISetExpressionAndValue_testValue(ByVal Value As Variant)
     Set pShouldNotVal = pExpressions.TestValue
 End Property
 
@@ -57,18 +57,18 @@ Private Property Get IShould_be() As IBe
     Set IShould_be = pNotBeSet
 End Property
 
-Private Function IShould_contain(Value As Variant) As Boolean
+Private Function IShould_contain(ByVal Value As Variant) As Boolean
     IShould_contain = Not pExpressions.Contain(pShouldNotVal, Value, True)
 End Function
 
-Private Function IShould_startWith(Value As Variant) As Boolean
+Private Function IShould_startWith(ByVal Value As Variant) As Boolean
     IShould_startWith = Not pExpressions.StartWith(pShouldNotVal, Value, True)
 End Function
 
-Private Function IShould_endWith(Value As Variant) As Boolean
+Private Function IShould_endWith(ByVal Value As Variant) As Boolean
     IShould_endWith = Not pExpressions.EndWith(pShouldNotVal, Value, True)
 End Function
 
-Public Function IShould_evaluateTo(Value As Variant) As Boolean
+Public Function IShould_evaluateTo(ByVal Value As Variant) As Boolean
     IShould_evaluateTo = Not pExpressions.EvaluateTo(pShouldNotVal, Value)
 End Function

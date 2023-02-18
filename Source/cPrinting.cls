@@ -19,6 +19,8 @@ Private pCategory As String
 Private iPrint As IPrinting
 Private pPassedMessage As String
 Private pFailedMessage As String
+Private pExcel As Excel.Application
+Private pWorkbook As Excel.Workbook
 
 Private Property Get IPrinting_TestCollection() As Collection
     If pTestCollection Is Nothing Then
@@ -27,7 +29,7 @@ Private Property Get IPrinting_TestCollection() As Collection
     Set IPrinting_TestCollection = pTestCollection
 End Property
 
-Private Property Let IPrinting_testCount(Value As Long)
+Private Property Let IPrinting_testCount(ByVal Value As Long)
     pTestCount = Value
 End Property
 
@@ -35,7 +37,7 @@ Private Property Get IPrinting_testCount() As Long
     IPrinting_testCount = pTestCount
 End Property
 
-Public Property Let Category(Value As String)
+Public Property Let Category(ByVal Value As String)
     pCategory = Value
 End Property
 
@@ -43,7 +45,7 @@ Public Property Get Category() As String
     Category = pCategory
 End Property
 
-Public Property Let TestName(Value As String)
+Public Property Let TestName(ByVal Value As String)
     pTestName = Value
 End Property
 
@@ -51,7 +53,7 @@ Public Property Get TestName() As String
     TestName = pTestName
 End Property
 
-Public Property Let PassedMessage(Value As String)
+Public Property Let PassedMessage(ByVal Value As String)
     pPassedMessage = Value
 End Property
 
@@ -59,7 +61,7 @@ Public Property Get PassedMessage() As String
     PassedMessage = pPassedMessage
 End Property
 
-Public Property Let FailedMessage(Value As String)
+Public Property Let FailedMessage(ByVal Value As String)
     pFailedMessage = Value
 End Property
 
@@ -100,7 +102,9 @@ Public Sub PrintToSheet()
     
     arr = getArrayFromCollection(pTestCollection)
 
-    Set wb = getWorkbookWithTable
+    Set wb = getWorkbook
+    
+    Call addTableToWorkbook(wb)
     
     Set ws = wb.ActiveSheet
     
@@ -114,16 +118,11 @@ Public Sub PrintToSheet()
         Set categoryCol = lo.ListColumns("Category")
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).Value = arr
         ws.Columns("C:C").EntireColumn.AutoFit
-        'Call addCategoryStyleOld(testResultCol, categoryCol)
         Call addCategoryStyle(categoryCol, "-1", "0")
     Else
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).Value = arr
         ws.Columns("B:B").EntireColumn.AutoFit
     End If
-
-'    Call addValueConditColorsNew(testResultCol, "-1", "0")
-'
-'    Call addValueConditColorsNew(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*")
 
     Call addValueConditColors(testResultCol, "-1", "0")
     
@@ -133,21 +132,30 @@ Public Sub PrintToSheet()
 
 End Sub
 
-Private Function getWorkbookWithTable() As Workbook
+Private Function getWorkbook() As Workbook
     Dim xl As Excel.Application
-    Dim wb As Excel.Workbook
+    
+    If pExcel Is Nothing Then
+        If Not TypeOf Application Is Excel.Application Then
+            Set pExcel = New Excel.Application
+        Else
+            Set pExcel = Application
+        End If
+    End If
+    
+    pExcel.Visible = True
+    
+    If pWorkbook Is Nothing Then
+        Set pWorkbook = pExcel.Workbooks.Add
+    End If
+        
+    Set getWorkbook = pWorkbook
+End Function
+
+Private Sub addTableToWorkbook(wb As Workbook)
     Dim ws As Excel.Worksheet
     Dim lo As Excel.ListObject
     
-    If Not TypeOf Application Is Excel.Application Then
-        Set xl = New Excel.Application
-    Else
-        Set xl = Application
-    End If
-    
-    xl.Visible = True
-    
-    Set wb = xl.Workbooks.Add
     Set ws = wb.ActiveSheet
 
     If pCategory <> "" Then
@@ -162,12 +170,14 @@ Private Function getWorkbookWithTable() As Workbook
     End If
     
     lo.Name = "Table1"
-        
-    Set getWorkbookWithTable = wb
-End Function
+End Sub
 
-Private Sub addResultsIconSets(lc As Excel.ListColumn)
+Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
+    Dim wb As Workbook
+
     lc.Range.Select
+    
+    Set wb = getWorkbook()
     
     With lc.DataBodyRange
         .FormatConditions.AddIconSetCondition
@@ -175,7 +185,7 @@ Private Sub addResultsIconSets(lc As Excel.ListColumn)
         With .FormatConditions(1)
             .ReverseOrder = False
             .ShowIconOnly = False
-            .IconSet = ActiveWorkbook.IconSets(xl3Symbols2)
+            .IconSet = wb.IconSets(xl3Symbols2)
         End With
         .FormatConditions(1).IconCriteria(1).Icon = xlIconYellowExclamation
         With .FormatConditions(1).IconCriteria(2)
@@ -193,7 +203,7 @@ Private Sub addResultsIconSets(lc As Excel.ListColumn)
     End With
 End Sub
 
-Private Function getArrayFromCollection(Col As Collection) As Variant()
+Private Function getArrayFromCollection(ByVal Col As Collection) As Variant()
     Dim Category As Long
     Dim TestResult As Long
     Dim TestName As Long
@@ -226,7 +236,7 @@ Private Function getArrayFromCollection(Col As Collection) As Variant()
     getArrayFromCollection = arr
 End Function
 
-Private Sub addCategoryStyleOld(resultCol As Excel.ListColumn, categoryCol As Excel.ListColumn)
+Private Sub addCategoryStyleOld(ByVal resultCol As Excel.ListColumn, ByVal categoryCol As Excel.ListColumn)
     Dim i As Long
     
     For i = 1 To resultCol.Range.Rows.Count
@@ -238,7 +248,7 @@ Private Sub addCategoryStyleOld(resultCol As Excel.ListColumn, categoryCol As Ex
     Next i
 End Sub
 
-Sub addCategoryStyle(lc As Excel.ListColumn, passedMsg As String, failedMsg As String)
+Sub addCategoryStyle(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String)
     
     With lc.Range
         .FormatConditions.Add Type:=xlExpression, Formula1:= _
@@ -271,7 +281,7 @@ Sub addCategoryStyle(lc As Excel.ListColumn, passedMsg As String, failedMsg As S
     End With
 End Sub
 
-Private Sub addValueConditColorsNew(lc As Excel.ListColumn, passedValue As String, failedValue As String)
+Private Sub addValueConditColorsNew(ByVal lc As Excel.ListColumn, ByVal passedValue As String, ByVal failedValue As String)
     Dim cell As Excel.Range
     
     For Each cell In lc.DataBodyRange
@@ -283,7 +293,7 @@ Private Sub addValueConditColorsNew(lc As Excel.ListColumn, passedValue As Strin
     Next cell
 End Sub
 
-Private Sub addValueConditColors(lc As Excel.ListColumn, passedMsg As String, failedMsg As String)
+Private Sub addValueConditColors(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String)
     lc.Range.Select
     
     With lc.DataBodyRange
@@ -317,15 +327,12 @@ Private Sub addValueConditColors(lc As Excel.ListColumn, passedMsg As String, fa
     End With
 End Sub
 
-
-
-
-Private Sub setGood(cell As Variant)
+Private Sub setGood(ByVal cell As Variant)
     cell.Interior.Color = 13561798
     cell.Font.Color = 24832
 End Sub
 
-Private Sub setBad(cell As Variant)
+Private Sub setBad(ByVal cell As Variant)
     cell.Interior.Color = 13551615
     cell.Font.Color = 393372
 End Sub

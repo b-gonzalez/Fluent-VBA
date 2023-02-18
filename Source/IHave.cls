@@ -9,18 +9,18 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Function LengthOf(Value As Double) As Boolean
+Public Function LengthOf(ByVal Value As Double) As Boolean
 
 End Function
 
-Public Function MaxLengthOf(Value As Double) As Boolean
+Public Function MaxLengthOf(ByVal Value As Double) As Boolean
 
 End Function
 
-Public Function MinLengthOf(Value As Double) As Boolean
+Public Function MinLengthOf(ByVal Value As Double) As Boolean
 
 End Function
 
-Public Function LengthBetween(LowValue As Double, HighValue As Double) As Boolean
+Public Function LengthBetween(ByVal LowValue As Double, ByVal HighValue As Double) As Boolean
 
 End Function

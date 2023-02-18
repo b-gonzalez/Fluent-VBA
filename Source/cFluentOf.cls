@@ -19,7 +19,7 @@ Public Property Get Meta() As cMeta
     Set Meta = pMeta
 End Property
 
-Public Function Of(Value As Variant) As cUnit
+Public Function Of(ByVal Value As Variant) As cUnit
     If IsObject(Value) Then
         Set pFluentOfVal = Value
         Set pUnit.TestValue = Value

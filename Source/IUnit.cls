@@ -21,11 +21,11 @@ Public Property Get Expressiongs() As cExpressions
     
 End Property
 
-Public Property Let TestValue(Value As Variant)
+Public Property Let TestValue(ByVal Value As Variant)
 
 End Property
 
-Public Property Set TestValue(Value As Variant)
+Public Property Set TestValue(ByVal Value As Variant)
 
 End Property
 

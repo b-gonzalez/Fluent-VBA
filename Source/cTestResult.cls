@@ -9,11 +9,11 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Event TestPassed(TestDict As Scripting.Dictionary)
-Public Event TestFailed(TestDict As Scripting.Dictionary)
-Public Event TestCompleted(TestDict As Scripting.Dictionary)
+Public Event TestPassed(ByVal TestDict As Scripting.Dictionary)
+Public Event TestFailed(ByVal TestDict As Scripting.Dictionary)
+Public Event TestCompleted(ByVal TestDict As Scripting.Dictionary)
 
-Public Sub CheckTest(Result As Boolean, TestDict As Scripting.Dictionary)
+Public Sub CheckTest(ByVal Result As Boolean, ByVal TestDict As Scripting.Dictionary)
     RaiseEvent TestCompleted(TestDict)
     
     If Result Then

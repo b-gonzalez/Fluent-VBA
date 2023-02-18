@@ -13,7 +13,7 @@ Public Property Get TestCollection() As Collection
 
 End Property
 
-Public Property Let TestCount(Value As Long)
+Public Property Let TestCount(ByVal Value As Long)
     
 End Property
 
