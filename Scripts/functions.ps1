@@ -1,8 +1,8 @@
 function get-word {
     param (
-        [string]$outputPath,
-        [Object[]]$macros,
-        [string[]]$GUIDs
+        [Parameter(Mandatory=$true)][string]$outputPath,
+        [Parameter(Mandatory=$true)][Object[]]$macros,
+         [Parameter(Mandatory=$false)][string[]]$GUIDs
     )
 
     try {
@@ -21,9 +21,12 @@ function get-word {
             }
         }
         
-        foreach ($GUID in $GUIDs) {
-            $doc.VBProject.References.AddFromGuid($GUID,$Major, $Minor)
+        if ($PSBoundParameters.ContainsKey('GUIDs')) {
+            foreach ($GUID in $GUIDs) {
+                $doc.VBProject.References.AddFromGuid($GUID,$Major, $Minor)
+            }
         }
+
 
     }  catch {
         Write-Host "An error occurred:"
@@ -42,9 +45,9 @@ function get-word {
 
 function get-powerpoint {
     param (
-        [string]$outputPath,
-        [Object[]]$macros,
-        [string[]]$GUIDs
+        [Parameter(Mandatory=$true)][string]$outputPath,
+        [Parameter(Mandatory=$true)][Object[]]$macros,
+         [Parameter(Mandatory=$false)][string[]]$GUIDs
     )
 
     try {
@@ -62,9 +65,10 @@ function get-powerpoint {
                 $presentation.VBProject.VBComponents.Import($macro.FullName)
             }
         }
-
-        foreach ($GUID in $GUIDs) {
-            $presentation.VBProject.References.AddFromGuid($GUID,$Major, $Minor) 
+        if ($PSBoundParameters.ContainsKey('GUIDs')) {
+            foreach ($GUID in $GUIDs) {
+                $presentation.VBProject.References.AddFromGuid($GUID,$Major, $Minor) 
+            }
         }
     
     }  catch {
@@ -83,9 +87,9 @@ function get-powerpoint {
 
 function get-access {
     param (
-        [string]$outputPath,
-        [Object[]]$macros,
-        [string[]]$GUIDs
+        [Parameter(Mandatory=$true)][string]$outputPath,
+        [Parameter(Mandatory=$true)][Object[]]$macros,
+         [Parameter(Mandatory=$false)][string[]]$GUIDs
     )
 
     try {
@@ -109,8 +113,10 @@ function get-access {
             }
         }
 
-        foreach ($GUID in $GUIDs) {
-            $acc.VBE.ActiveVBProject.References.AddFromGuid($GUID,$Major, $Minor)
+        if ($PSBoundParameters.ContainsKey('GUIDs')) {
+            foreach ($GUID in $GUIDs) {
+                $acc.VBE.ActiveVBProject.References.AddFromGuid($GUID,$Major, $Minor)
+            }
         }
     
     }   catch {
@@ -127,9 +133,9 @@ function get-access {
 
 function get-excel {
     param (
-        [string]$outputPath,
-        [Object[]]$macros,
-        [string[]]$GUIDs
+        [Parameter(Mandatory=$true)][string]$outputPath,
+        [Parameter(Mandatory=$true)][Object[]]$macros,
+         [Parameter(Mandatory=$false)][string[]]$GUIDs
     )
     try {
         $excel = New-Object -ComObject excel.application
@@ -148,9 +154,12 @@ function get-excel {
             }
         }
 
-        foreach ($GUID in $GUIDs) {
-            $workbook.VBProject.References.AddFromGuid($GUID,$Major, $Minor)
+        if ($PSBoundParameters.ContainsKey('GUIDs')) {
+            foreach ($GUID in $GUIDs) {
+                $workbook.VBProject.References.AddFromGuid($GUID,$Major, $Minor)
+            }
         }
+        
     } catch {
         Write-Host "An error occurred:"
         Write-Host $_
