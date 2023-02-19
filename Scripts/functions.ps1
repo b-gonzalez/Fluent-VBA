@@ -3,7 +3,7 @@ function get-word {
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
         [Parameter(Mandatory=$false)][string[]]$GUIDs,
-        [Parameter(Mandatory=$false)][bool]$removePersonalInfo
+        [Parameter(Mandatory=$false)][switch]$removePersonalInfo
     )
 
     try {
@@ -51,7 +51,7 @@ function get-powerpoint {
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
         [Parameter(Mandatory=$false)][string[]]$GUIDs,
-        [Parameter(Mandatory=$false)][bool]$removePersonalInfo
+        [Parameter(Mandatory=$false)][switch]$removePersonalInfo
     )
 
     try {
@@ -97,7 +97,7 @@ function get-access {
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
         [Parameter(Mandatory=$false)][string[]]$GUIDs,
-        [Parameter(Mandatory=$false)][bool]$removePersonalInfo
+        [Parameter(Mandatory=$false)][switch]$removePersonalInfo
     )
 
     try {
@@ -147,7 +147,7 @@ function get-excel {
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
         [Parameter(Mandatory=$false)][string[]]$GUIDs,
-        [Parameter(Mandatory=$false)][bool]$removePersonalInfo
+        [Parameter(Mandatory=$false)][switch]$removePersonalInfo
     )
     try {
         $excel = New-Object -ComObject excel.application
