@@ -11,13 +11,12 @@ function get-word {
         $doc = $word.documents.add()
         $wdFormatFlatXMLMacroEnabled = 13
         $doc.SaveAs($outputPath,$wdFormatFlatXMLMacroEnabled)
-        $macros = Get-ChildItem -Path .\Source -File
     
         $Major = 0
         $Minor = 0
     
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
+            if ($macro.Extension -ne ".doccls") {
                 $doc.VBProject.VBComponents.Import($macro.FullName)
             }
         }
@@ -59,13 +58,12 @@ function get-powerpoint {
         $presentation = $powerpoint.Presentations.Add()
         $ppSaveAsOpenXMLPresentationMacroEnabled = 25
         $presentation.SaveAs($outputPath,$ppSaveAsOpenXMLPresentationMacroEnabled)
-        $macros = Get-ChildItem -Path .\Source -File
     
         $Major = 0
         $Minor = 0
     
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
+            if ($macro.Extension -ne ".doccls") {
                 $presentation.VBProject.VBComponents.Import($macro.FullName)
             }
         }
@@ -107,13 +105,12 @@ function get-access {
     
         $acCmdCompileAndSaveAllModules = 126
         $acModule = 5
-        $macros = Get-ChildItem -Path .\Source -File
     
         $Major = 0
         $Minor = 0
     
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
+            if ($macro.Extension -ne ".doccls") {
                 $acc.VBE.ActiveVBProject.VBComponents.Import($macro.FullName)
                 $acc.VBE.ActiveVBProject.VBComponents($acc.VBE.ActiveVBProject.VBComponents.Count).Name = $macro.BaseName
                 $acc.DoCmd.RunCommand($acCmdCompileAndSaveAllModules)
@@ -154,13 +151,12 @@ function get-excel {
         $workbook = $excel.Workbooks.Add()
         $xlOpenXMLWorkbookMacroEnabled = 52
         $workbook.SaveAs($outputPath, $xlOpenXMLWorkbookMacroEnabled)
-        # $macros = Get-ChildItem -Path .\Source -File
     
         $Major = 0
         $Minor = 0
     
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls" -and $macro.Extension -ne ".ps1" -and $macro.BaseName -ne "mTODO") {
+            if ($macro.Extension -ne ".doccls") {
                 # $workbook.VBProject.VBComponents.Import($macro.FullName)
                 $workbook.VBProject.VBComponents.Import($macro.FullName) | Out-Null
             }
