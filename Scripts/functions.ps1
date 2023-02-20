@@ -1,4 +1,57 @@
 function get-word {
+<#
+.SYNOPSIS
+    Create a Word Doc file from a 1 to n .bas or .cls files.
+
+.DESCRIPTION
+    This function create a Microsoft Word Doc file from a 1 to n .bas or .cls files.
+    It supports the ability to add libraries if provided a string array of GUIDs.
+    And it supports the ability to remove personal info from the filenames as well.
+
+
+.PARAMETER outputPath
+    The output path where the created output file will be saved. 
+
+.PARAMETER macros
+    The input path containing the .bas and .cls files
+
+.PARAMETER GUIDs
+    Optional - An array of GUIDs to be installed in the output file
+
+.PARAMETER removePersonalInfo
+    Optional - A parameter that will remove personal information from the output file.
+
+.EXAMPLE
+    $outputPath = "directory:\for\output\path"
+    $macros = "directory:\for\macros"
+    get-word -outputPath $outputPath -macros $macros
+
+.EXAMPLE
+    $outputPath = "directory:\for\output\path"
+    $macros = "directory:\for\macros"
+    get-word -outputPath $outputPath -macros $macros removePersonalInfo
+
+.EXAMPLE
+    $outputPath = "directory:\for\output\path"
+    $macros = "directory:\for\macros"
+    $scriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
+    $GUIDs = @()
+    $GUIDs += $scriptingGuid
+    get-word -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
+
+.INPUTS
+    [String]outputPath
+    [String]macros
+    [Object[]]GUIDs
+    [switch]removePersonalInfo
+
+.OUTPUTS
+    [void]
+
+.NOTES
+    Author: Brian Gonzalez
+    Email: b.gonzalez.programming@gmail.com
+#>
     param (
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
