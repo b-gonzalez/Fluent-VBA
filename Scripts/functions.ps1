@@ -52,6 +52,7 @@ function get-word {
     Author: Brian Gonzalez
     Email: b.gonzalez.programming@gmail.com
 #>
+    [OutputType([void])]
     param (
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
