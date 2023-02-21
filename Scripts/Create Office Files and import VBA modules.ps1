@@ -36,6 +36,4 @@ try {
 Catch {
     Write-Host "An error occurred:"
     Write-Host $_
-} finally {
-    [GC]::Collect()
 }
