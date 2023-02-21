@@ -86,16 +86,14 @@ function get-word {
         Write-Host "An error occurred:"
         Write-Host $_
     } finally {
-    $doc.Save()
-    if ($removePersonalInfo) {
-        $doc.RemovePersonalInformation = $true
-    }
+        $doc.Save()
+        if ($removePersonalInfo) {
+            $doc.RemovePersonalInformation = $true
+        }
 
-    $doc.Close()
-    $word.Quit()
-
-    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
-    [GC]::Collect()
+        $doc.Close()
+        $word.Quit()
+        [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
     }
 }
 
@@ -194,7 +192,6 @@ function get-powerpoint {
         $powerpoint.Quit()
         [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($presentation)
         [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($powerpoint)
-        [GC]::Collect()
     }
 }
 
@@ -297,7 +294,6 @@ function get-access {
         $acc.CloseCurrentDatabase()
         $acc.Quit()
         [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($acc)
-        [GC]::Collect()
     }
 }
 
@@ -396,7 +392,6 @@ function get-excel {
         $workbook.Close()
         $excel.Quit()
         [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
-        [GC]::Collect()
     }
 }
 
@@ -433,6 +428,6 @@ function Get-ExcelGuid {
     Finally {
         $excel.Quit()
         [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($Excel)
-        [GC]::Collect()
+        # [GC]::Collect()
     }
 }
