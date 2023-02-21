@@ -1,57 +1,57 @@
 function get-word {
-<#
-.SYNOPSIS
-    Create a Word Doc file from a 1 to n .bas or .cls files.
+    <#
+    .SYNOPSIS
+        Create a Word Doc file from a 1 to n .bas or .cls files.
 
-.DESCRIPTION
-    This function create a Microsoft Word Doc file from a 1 to n .bas or .cls files.
-    It supports the ability to add libraries if provided a string array of GUIDs.
-    And it supports the ability to remove personal info from the filenames as well.
+    .DESCRIPTION
+        This function create a Microsoft Word Doc file from a 1 to n .bas or .cls files.
+        It supports the ability to add libraries if provided a string array of GUIDs.
+        And it supports the ability to remove personal info from the filenames as well.
 
 
-.PARAMETER outputPath
-    The output path where the created output file will be saved. 
+    .PARAMETER outputPath
+        The output path where the created output file will be saved. 
 
-.PARAMETER macros
-    The input path containing the .bas and .cls files
+    .PARAMETER macros
+        The input path containing the .bas and .cls files
 
-.PARAMETER GUIDs
-    Optional - An array of GUIDs to be installed in the output file
+    .PARAMETER GUIDs
+        Optional - An array of GUIDs to be installed in the output file
 
-.PARAMETER removePersonalInfo
-    Optional - A parameter that will remove personal information from the output file.
+    .PARAMETER removePersonalInfo
+        Optional - A parameter that will remove personal information from the output file.
 
-.EXAMPLE
-    $outputPath = "directory:\for\output\path"
-    $macros = "directory:\for\macros"
-    get-word -outputPath $outputPath -macros $macros
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        get-word -outputPath $outputPath -macros $macros
 
-.EXAMPLE
-    $outputPath = "directory:\for\output\path"
-    $macros = "directory:\for\macros"
-    get-word -outputPath $outputPath -macros $macros removePersonalInfo
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        get-word -outputPath $outputPath -macros $macros removePersonalInfo
 
-.EXAMPLE
-    $outputPath = "directory:\for\output\path"
-    $macros = "directory:\for\macros"
-    $scriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
-    $GUIDs = @()
-    $GUIDs += $scriptingGuid
-    get-word -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        $scriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
+        $GUIDs = @()
+        $GUIDs += $scriptingGuid
+        get-word -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
 
-.INPUTS
-    [String]outputPath
-    [String]macros
-    [Object[]]GUIDs
-    [switch]removePersonalInfo
+    .INPUTS
+        [String]outputPath
+        [String]macros
+        [Object[]]GUIDs
+        [switch]removePersonalInfo
 
-.OUTPUTS
-    [void]
+    .OUTPUTS
+        [void]
 
-.NOTES
-    Author: Brian Gonzalez
-    Email: b.gonzalez.programming@gmail.com
-#>
+    .NOTES
+        Author: Brian Gonzalez
+        Email: b.gonzalez.programming@gmail.com
+    #>
     [OutputType([void])]
     param (
         [Parameter(Mandatory=$true)][string]$outputPath,
@@ -100,6 +100,60 @@ function get-word {
 }
 
 function get-powerpoint {
+    <#
+    .SYNOPSIS
+        Create a PowerPoint Presentation file from a 1 to n .bas or .cls files.
+
+    .DESCRIPTION
+        This function create a Microsoft PowerPoint Presentation file from a 1 to n .bas or .cls files.
+        It supports the ability to add libraries if provided a string array of GUIDs.
+        And it supports the ability to remove personal info from the filenames as well.
+
+
+    .PARAMETER outputPath
+        The output path where the created output file will be saved. 
+
+    .PARAMETER macros
+        The input path containing the .bas and .cls files
+
+    .PARAMETER GUIDs
+        Optional - An array of GUIDs to be installed in the output file
+
+    .PARAMETER removePersonalInfo
+        Optional - A parameter that will remove personal information from the output file.
+
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        get-powerpoint -outputPath $outputPath -macros $macros
+
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        get-powerpoint -outputPath $outputPath -macros $macros removePersonalInfo
+
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        $scriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
+        $GUIDs = @()
+        $GUIDs += $scriptingGuid
+        get-powerpoint -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
+
+    .INPUTS
+        [String]outputPath
+        [String]macros
+        [Object[]]GUIDs
+        [switch]removePersonalInfo
+
+    .OUTPUTS
+        [void]
+
+    .NOTES
+        Author: Brian Gonzalez
+        Email: b.gonzalez.programming@gmail.com
+    #>
+    [OutputType([void])]
     param (
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
@@ -145,6 +199,60 @@ function get-powerpoint {
 }
 
 function get-access {
+    <#
+    .SYNOPSIS
+        Create an Access database file from a 1 to n .bas or .cls files.
+
+    .DESCRIPTION
+        This function create a Microsoft Access database file from a 1 to n .bas or .cls files.
+        It supports the ability to add libraries if provided a string array of GUIDs.
+        And it supports the ability to remove personal info from the filenames as well.
+
+
+    .PARAMETER outputPath
+        The output path where the created output file will be saved. 
+
+    .PARAMETER macros
+        The input path containing the .bas and .cls files
+
+    .PARAMETER GUIDs
+        Optional - An array of GUIDs to be installed in the output file
+
+    .PARAMETER removePersonalInfo
+        Optional - A parameter that will remove personal information from the output file.
+
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        get-access -outputPath $outputPath -macros $macros
+
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        get-access -outputPath $outputPath -macros $macros removePersonalInfo
+
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        $scriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
+        $GUIDs = @()
+        $GUIDs += $scriptingGuid
+        get-access -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
+
+    .INPUTS
+        [String]outputPath
+        [String]macros
+        [Object[]]GUIDs
+        [switch]removePersonalInfo
+
+    .OUTPUTS
+        [void]
+
+    .NOTES
+        Author: Brian Gonzalez
+        Email: b.gonzalez.programming@gmail.com
+    #>
+    [OutputType([void])]
     param (
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
@@ -194,6 +302,60 @@ function get-access {
 }
 
 function get-excel {
+    <#
+    .SYNOPSIS
+        Create an Excel workbook file from a 1 to n .bas or .cls files.
+
+    .DESCRIPTION
+        This function create a Microsoft Excel workbook file from a 1 to n .bas or .cls files.
+        It supports the ability to add libraries if provided a string array of GUIDs.
+        And it supports the ability to remove personal info from the filenames as well.
+
+
+    .PARAMETER outputPath
+        The output path where the created output file will be saved. 
+
+    .PARAMETER macros
+        The input path containing the .bas and .cls files
+
+    .PARAMETER GUIDs
+        Optional - An array of GUIDs to be installed in the output file
+
+    .PARAMETER removePersonalInfo
+        Optional - A parameter that will remove personal information from the output file.
+
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        get-excel -outputPath $outputPath -macros $macros
+
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        get-excel -outputPath $outputPath -macros $macros removePersonalInfo
+
+    .EXAMPLE
+        $outputPath = "directory:\for\output\path"
+        $macros = "directory:\for\macros"
+        $scriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
+        $GUIDs = @()
+        $GUIDs += $scriptingGuid
+        get-excel -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
+
+    .INPUTS
+        [String]outputPath
+        [String]macros
+        [Object[]]GUIDs
+        [switch]removePersonalInfo
+
+    .OUTPUTS
+        [void]
+
+    .NOTES
+        Author: Brian Gonzalez
+        Email: b.gonzalez.programming@gmail.com
+    #>
+    [OutputType([void])]
     param (
         [Parameter(Mandatory=$true)][string]$outputPath,
         [Parameter(Mandatory=$true)][Object[]]$macros,
