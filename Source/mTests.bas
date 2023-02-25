@@ -1,12 +1,20 @@
 Attribute VB_Name = "mTests"
 Option Explicit
 
+'Public fluent As cFluent
+'Public testFluent As cFluentOf
+
 Public Sub runMainTests()
     Dim fluent As cFluent
     Dim testFluent As cFluentOf
+    Dim events As zUdeTests
     
     Set fluent = New cFluent
     Set testFluent = New cFluentOf
+    Set events = New zUdeTests
+    
+    Set events.setFluent = fluent
+    Set events.setFluentOf = testFluent
     
     With fluent.Meta.Printing
         .TestName = "Result"
@@ -36,10 +44,10 @@ Public Sub runMainTests()
     Call negativeDocumentationTests(fluent, testFluent)
 
     Debug.Print "All tests Finished!"
-    Call printTestCount(testFluent.Meta.TestCount)
+    Call printTestCount(testFluent.Meta.testCount)
     
-    fluent.Meta.Printing.PrintToSheet
-    testFluent.Meta.Printing.PrintToSheet
+'    fluent.Meta.Printing.PrintToSheet
+'    testFluent.Meta.Printing.PrintToSheet
     'fluent.Meta.Printing.PrintToImmediate
 End Sub
 
@@ -54,18 +62,10 @@ Public Sub runExamples()
     'Call fluent.Meta.Printing.PrintToImmediate
 End Sub
 
-Private Sub UserDefinedEventExample()
-    Dim UDE As zUDE
-    
-    Set UDE = New zUDE
-    
-    UDE.DoWork
-End Sub
-
-Private Sub printTestCount(TestCount As Long)
-    If TestCount > 1 Then
-        Debug.Print TestCount & " tests finished!"
-    ElseIf TestCount = 1 Then
+Private Sub printTestCount(testCount As Long)
+    If testCount > 1 Then
+        Debug.Print testCount & " tests finished!"
+    ElseIf testCount = 1 Then
         Debug.Print "Test finished!"
     End If
 End Sub
@@ -95,7 +95,7 @@ Private Sub Example1(Result As cFluent)
     Result.Should.Have.MaxLengthOf (1) 'false
     Result.Should.Have.MinLengthOf (3) 'false
     
-    Debug.Print Result.Meta.TestCount & " tests finished"
+    Debug.Print Result.Meta.testCount & " tests finished"
     
 End Sub
 
@@ -378,21 +378,22 @@ Private Sub MetaTests(fluent As cFluent, testFluent As cFluentOf)
     Call checkTestCount(fluent, testFluent)
 End Sub
 
-Private Sub checkTestCount(testFluent As cFluent, fluent As cFluentOf)
-    Dim Result As Variant
+Private Sub checkTestCount(fluent As cFluent, testFluent As cFluentOf)
+    Dim Result As Long
     
-    Result = testFluent.Meta.TestCount
-    Debug.Assert fluent.Of(Result).Should.Be.EqualTo(0)
+    Result = testFluent.Meta.testCount
+    fluent.TestValue = testFluent.Of(Result).Should.Be.EqualTo(0)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    testFluent.TestValue = "Test"
-    Debug.Assert testFluent.Should.Be.EqualTo("Test")
-    Result = testFluent.Meta.TestCount
-    Debug.Assert fluent.Of(Result).Should.Be.EqualTo(1)
+    fluent.TestValue = testFluent.Of("Test").Should.Be.EqualTo("Test")
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
     
-    testFluent.TestValue = "Test"
-    Debug.Assert testFluent.Should.Be.EqualTo("Test")
-    Result = testFluent.Meta.TestCount
-    Debug.Assert fluent.Of(Result).Should.Be.EqualTo(2)
+    Result = testFluent.Meta.testCount
+    fluent.TestValue = testFluent.Of(Result).Should.Be.EqualTo(2)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
 End Sub
 
 Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf)
@@ -1347,6 +1348,6 @@ Private Sub FluentAAAExamples()
     Result2.Meta.Printing.PrintToImmediate
 End Sub
 
-Private Function returnVal(Value As Variant)
-    returnVal = Value
+Private Function returnVal(value As Variant)
+    returnVal = value
 End Function

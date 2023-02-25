@@ -19,15 +19,15 @@ Private pHave As cHave
 Private pHaveSet As ISetExpressionAndValue
 Private pExpressions As cExpressions
 
-Private Property Set ISetExpressionAndValue_setExpr(ByVal Value As cExpressions)
-    Set pExpressions = Value
+Private Property Set ISetExpressionAndValue_setExpr(ByVal value As cExpressions)
+    Set pExpressions = value
 End Property
 
-Private Property Let ISetExpressionAndValue_testValue(ByVal Value As Variant)
+Private Property Let ISetExpressionAndValue_testValue(ByVal value As Variant)
     pShouldVal = pExpressions.TestValue
 End Property
 
-Private Property Set ISetExpressionAndValue_testValue(ByVal Value As Variant)
+Private Property Set ISetExpressionAndValue_testValue(ByVal value As Variant)
     Set pShouldVal = pExpressions.TestValue
 End Property
 
@@ -59,18 +59,18 @@ Private Property Get IShould_be() As IBe
     Set IShould_be = pBeSet
 End Property
 
-Private Function IShould_contain(ByVal Value As Variant) As Boolean
-    IShould_contain = pExpressions.Contain(pShouldVal, Value)
+Private Function IShould_contain(ByVal value As Variant) As Boolean
+    IShould_contain = pExpressions.Contain(pShouldVal, value)
 End Function
 
-Private Function IShould_startWith(ByVal Value As Variant) As Boolean
-    IShould_startWith = pExpressions.StartWith(pShouldVal, Value)
+Private Function IShould_startWith(ByVal value As Variant) As Boolean
+    IShould_startWith = pExpressions.StartWith(pShouldVal, value)
 End Function
 
-Private Function IShould_endWith(ByVal Value As Variant) As Boolean
-    IShould_endWith = pExpressions.EndWith(pShouldVal, Value)
+Private Function IShould_endWith(ByVal value As Variant) As Boolean
+    IShould_endWith = pExpressions.EndWith(pShouldVal, value)
 End Function
 
-Private Function IShould_evaluateTo(ByVal Value As Variant) As Boolean
-    IShould_evaluateTo = pExpressions.EvaluateTo(pShouldVal, Value)
+Private Function IShould_evaluateTo(ByVal value As Variant) As Boolean
+    IShould_evaluateTo = pExpressions.EvaluateTo(pShouldVal, value)
 End Function

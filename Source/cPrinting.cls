@@ -19,6 +19,7 @@ Private pCategory As String
 Private iPrint As IPrinting
 Private pPassedMessage As String
 Private pFailedMessage As String
+Private pFluentPath As String
 Private pExcel As Excel.Application
 Private pWorkbook As Excel.Workbook
 
@@ -29,44 +30,52 @@ Private Property Get IPrinting_TestCollection() As Collection
     Set IPrinting_TestCollection = pTestCollection
 End Property
 
-Private Property Let IPrinting_testCount(ByVal Value As Long)
-    pTestCount = Value
+Private Property Let IPrinting_testCount(ByVal value As Long)
+    pTestCount = value
 End Property
 
 Private Property Get IPrinting_testCount() As Long
     IPrinting_testCount = pTestCount
 End Property
 
-Public Property Let Category(ByVal Value As String)
-    pCategory = Value
+Public Property Let IPrinting_FluentPath(value As String)
+    pFluentPath = value
+End Property
+
+Public Property Let Category(ByVal value As String)
+    pCategory = value
 End Property
 
 Public Property Get Category() As String
     Category = pCategory
 End Property
 
-Public Property Let TestName(ByVal Value As String)
-    pTestName = Value
+Public Property Let TestName(ByVal value As String)
+    pTestName = value
 End Property
 
 Public Property Get TestName() As String
     TestName = pTestName
 End Property
 
-Public Property Let PassedMessage(ByVal Value As String)
-    pPassedMessage = Value
+Public Property Let PassedMessage(ByVal value As String)
+    pPassedMessage = value
 End Property
 
 Public Property Get PassedMessage() As String
     PassedMessage = pPassedMessage
 End Property
 
-Public Property Let FailedMessage(ByVal Value As String)
-    pFailedMessage = Value
+Public Property Let FailedMessage(ByVal value As String)
+    pFailedMessage = value
 End Property
 
 Public Property Get FailedMessage() As String
     FailedMessage = pFailedMessage
+End Property
+
+Public Property Get FluentPath() As String
+    FluentPath = pFluentPath
 End Property
 
 Public Sub PrintToImmediate()
@@ -116,11 +125,11 @@ Public Sub PrintToSheet()
     
     If pCategory <> "" Then
         Set categoryCol = lo.ListColumns("Category")
-        lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).Value = arr
+        lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
         ws.Columns("C:C").EntireColumn.AutoFit
         Call addCategoryStyle(categoryCol, "-1", "0")
     Else
-        lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).Value = arr
+        lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
         ws.Columns("B:B").EntireColumn.AutoFit
     End If
 
@@ -159,13 +168,13 @@ Private Sub addTableToWorkbook(wb As Workbook)
     Set ws = wb.ActiveSheet
 
     If pCategory <> "" Then
-        ws.Range("A1").Value = "Category"
-        ws.Range("B1").Value = "Test result"
-        ws.Range("C1").Value = "Test name"
+        ws.Range("A1").value = "Category"
+        ws.Range("B1").value = "Test result"
+        ws.Range("C1").value = "Test name"
         Set lo = ws.ListObjects.Add(xlSrcRange, ws.Range("$A$1:$C$1"), , xlYes)
     Else
-        ws.Range("A1").Value = "Test result"
-        ws.Range("B1").Value = "Test name"
+        ws.Range("A1").value = "Test result"
+        ws.Range("B1").value = "Test name"
         Set lo = ws.ListObjects.Add(xlSrcRange, ws.Range("$A$1:$B$1"), , xlYes)
     End If
     
@@ -190,13 +199,13 @@ Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
         .FormatConditions(1).IconCriteria(1).Icon = xlIconYellowExclamation
         With .FormatConditions(1).IconCriteria(2)
             .Type = xlConditionValueNumber
-            .Value = -1
+            .value = -1
             .Operator = 7
             .Icon = xlIconGreenCheck
         End With
         With .FormatConditions(1).IconCriteria(3)
             .Type = xlConditionValueNumber
-            .Value = 0
+            .value = 0
             .Operator = 7
             .Icon = xlIconRedCross
         End With
@@ -240,9 +249,9 @@ Private Sub addCategoryStyleOld(ByVal resultCol As Excel.ListColumn, ByVal categ
     Dim i As Long
     
     For i = 1 To resultCol.Range.Rows.Count
-        If resultCol.Range.Cells(i, 1).Value = -1 Then
+        If resultCol.Range.Cells(i, 1).value = -1 Then
             Call setGood(categoryCol.Range.Cells(i, 1))
-        ElseIf resultCol.Range.Cells(i, 1).Value = 0 Then
+        ElseIf resultCol.Range.Cells(i, 1).value = 0 Then
             Call setBad(categoryCol.Range.Cells(i, 1))
         End If
     Next i
@@ -285,9 +294,9 @@ Private Sub addValueConditColorsNew(ByVal lc As Excel.ListColumn, ByVal passedVa
     Dim cell As Excel.Range
     
     For Each cell In lc.DataBodyRange
-        If cell.Value Like passedValue Then
+        If cell.value Like passedValue Then
             Call setGood(cell)
-        ElseIf cell.Value Like failedValue Then
+        ElseIf cell.value Like failedValue Then
             Call setBad(cell)
         End If
     Next cell

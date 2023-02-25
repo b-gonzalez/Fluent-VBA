@@ -13,23 +13,23 @@ Public Function OneOf(ParamArray Vals() As Variant)
 
 End Function
 
-Public Function GreaterThan(ByVal Value As Double) As Boolean
+Public Function GreaterThan(ByVal value As Double) As Boolean
 
 End Function
 
-Public Function GreaterThanOrEqualTo(ByVal Value As Double) As Boolean
+Public Function GreaterThanOrEqualTo(ByVal value As Double) As Boolean
 
 End Function
 
-Public Function LessThan(ByVal Value As Double) As Boolean
+Public Function LessThan(ByVal value As Double) As Boolean
 
 End Function
 
-Public Function LessThanOrEqualTo(ByVal Value As Double) As Boolean
+Public Function LessThanOrEqualTo(ByVal value As Double) As Boolean
 
 End Function
 
-Public Function EqualTo(ByVal Value As Variant) As Boolean
+Public Function EqualTo(ByVal value As Variant) As Boolean
 
 End Function
 

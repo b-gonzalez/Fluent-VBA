@@ -20,29 +20,29 @@ Private pTestResult As cTestResult
 
 Private Const defaultEpsilon As Double = 0.000001
 
-Public Property Let ApproximateEqual(ByVal Value As Boolean)
-    pApproximateEqual = Value
+Public Property Let ApproximateEqual(ByVal value As Boolean)
+    pApproximateEqual = value
 End Property
 
 Public Property Get ApproximateEqual() As Boolean
     ApproximateEqual = pApproximateEqual
 End Property
 
-Public Property Let Epsilon(ByVal Value As Double)
-    pEpsilon = Value
+Public Property Let Epsilon(ByVal value As Double)
+    pEpsilon = value
 End Property
 
 Public Property Get Epsilon() As Double
     Epsilon = pEpsilon
 End Property
 
-Public Property Let TestCount(ByVal Value As Long)
-    pTestCount = Value
-    pPrinting.TestCount = pTestCount
+Public Property Let testCount(ByVal value As Long)
+    pTestCount = value
+    pPrinting.testCount = pTestCount
 End Property
 
-Public Property Get TestCount() As Long
-    TestCount = pPrinting.TestCount
+Public Property Get testCount() As Long
+    testCount = pPrinting.testCount
 End Property
 
 Public Property Get Printing() As cPrinting

@@ -27,13 +27,13 @@ Public Property Get Meta() As cMeta
     Set Meta = pMeta
 End Property
 
-Public Property Set TestValue(Value As Variant)
-    Set pFluentVal = Value
+Public Property Set TestValue(value As Variant)
+    Set pFluentVal = value
     Set pUnit.TestValue = pFluentVal
 End Property
 
-Public Property Let TestValue(ByVal Value As Variant)
-    pFluentVal = Value
+Public Property Let TestValue(ByVal value As Variant)
+    pFluentVal = value
     pUnit.TestValue = pFluentVal
 End Property
 

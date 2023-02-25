@@ -19,13 +19,13 @@ Public Property Get Meta() As cMeta
     Set Meta = pMeta
 End Property
 
-Public Function Of(ByVal Value As Variant) As cUnit
-    If IsObject(Value) Then
-        Set pFluentOfVal = Value
-        Set pUnit.TestValue = Value
+Public Function Of(ByVal value As Variant) As cUnit
+    If IsObject(value) Then
+        Set pFluentOfVal = value
+        Set pUnit.TestValue = value
     Else
-        pFluentOfVal = Value
-        pUnit.TestValue = Value
+        pFluentOfVal = value
+        pUnit.TestValue = value
     End If
     Set Of = pUnit
 End Function

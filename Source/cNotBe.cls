@@ -16,36 +16,36 @@ Private pNotBeValue As Variant
 Private pBe As IBe
 Private pExpressions As cExpressions
 
-Private Property Set ISetExpressionAndValue_setExpr(ByVal Value As cExpressions)
-    Set pExpressions = Value
+Private Property Set ISetExpressionAndValue_setExpr(ByVal value As cExpressions)
+    Set pExpressions = value
 End Property
 
-Private Property Set ISetExpressionAndValue_testValue(ByVal Value As Variant)
-    Set pNotBeValue = Value
+Private Property Set ISetExpressionAndValue_testValue(ByVal value As Variant)
+    Set pNotBeValue = value
 End Property
 
-Private Property Let ISetExpressionAndValue_testValue(ByVal Value As Variant)
-    pNotBeValue = Value
+Private Property Let ISetExpressionAndValue_testValue(ByVal value As Variant)
+    pNotBeValue = value
 End Property
 
-Private Function IBe_GreaterThan(ByVal Value As Double) As Boolean
-    IBe_GreaterThan = Not pExpressions.GreaterThan(CDbl(pNotBeValue), Value, True)
+Private Function IBe_GreaterThan(ByVal value As Double) As Boolean
+    IBe_GreaterThan = Not pExpressions.GreaterThan(CDbl(pNotBeValue), value, True)
 End Function
 
-Private Function IBe_LessThan(ByVal Value As Double) As Boolean
-    IBe_LessThan = Not pExpressions.LessThan(CDbl(pNotBeValue), Value, True)
+Private Function IBe_LessThan(ByVal value As Double) As Boolean
+    IBe_LessThan = Not pExpressions.LessThan(CDbl(pNotBeValue), value, True)
 End Function
 
-Private Function IBe_EqualTo(ByVal Value As Variant) As Boolean
-    IBe_EqualTo = Not pExpressions.EqualTo(pNotBeValue, Value, True)
+Private Function IBe_EqualTo(ByVal value As Variant) As Boolean
+    IBe_EqualTo = Not pExpressions.EqualTo(pNotBeValue, value, True)
 End Function
 
-Private Function IBe_GreaterThanOrEqualTo(ByVal Value As Double) As Boolean
-    IBe_GreaterThanOrEqualTo = Not pExpressions.GreaterThanOrEqualTo(CDbl(pNotBeValue), Value, True)
+Private Function IBe_GreaterThanOrEqualTo(ByVal value As Double) As Boolean
+    IBe_GreaterThanOrEqualTo = Not pExpressions.GreaterThanOrEqualTo(CDbl(pNotBeValue), value, True)
 End Function
 
-Private Function IBe_LessThanOrEqualTo(ByVal Value As Double) As Boolean
-    IBe_LessThanOrEqualTo = Not pExpressions.LessThanOrEqualTo(CDbl(pNotBeValue), Value, True)
+Private Function IBe_LessThanOrEqualTo(ByVal value As Double) As Boolean
+    IBe_LessThanOrEqualTo = Not pExpressions.LessThanOrEqualTo(CDbl(pNotBeValue), value, True)
 End Function
 
 Private Function IBe_Something() As Boolean

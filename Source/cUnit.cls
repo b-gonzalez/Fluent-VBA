@@ -45,13 +45,13 @@ Private Property Get IUnit_expressiongs() As cExpressions
     Set IUnit_expressiongs = pExpressions
 End Property
 
-Private Property Let IUnit_testValue(ByVal Value As Variant)
-    pExpressions.TestValue = Value
+Private Property Let IUnit_testValue(ByVal value As Variant)
+    pExpressions.TestValue = value
     pUnitVal = pExpressions.TestValue
 End Property
 
-Private Property Set IUnit_testValue(ByVal Value As Variant)
-    Set pExpressions.TestValue = Value
+Private Property Set IUnit_testValue(ByVal value As Variant)
+    Set pExpressions.TestValue = value
     Set pUnitVal = pExpressions.TestValue
 End Property
 

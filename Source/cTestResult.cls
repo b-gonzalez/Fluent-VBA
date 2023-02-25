@@ -13,10 +13,18 @@ Public Event TestPassed(ByVal TestDict As Scripting.Dictionary)
 Public Event TestFailed(ByVal TestDict As Scripting.Dictionary)
 Public Event TestCompleted(ByVal TestDict As Scripting.Dictionary)
 
-Public Sub CheckTest(ByVal Result As Boolean, ByVal TestDict As Scripting.Dictionary)
+Private pResult As Boolean
+
+Public Property Get Result() As Boolean
+    Result = pResult
+End Property
+
+Public Sub CheckTest(ByVal TestResult As Boolean, ByVal TestDict As Scripting.Dictionary)
+    pResult = TestResult
+    
     RaiseEvent TestCompleted(TestDict)
     
-    If Result Then
+    If TestResult Then
         RaiseEvent TestPassed(TestDict)
     Else
         RaiseEvent TestFailed(TestDict)

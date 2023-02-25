@@ -15,28 +15,28 @@ Implements ISetExpressionAndValue
 Private pExpressions As cExpressions
 Private pHaveVal As Variant
 
-Private Property Set ISetExpressionAndValue_setExpr(ByVal Value As cExpressions)
-    Set pExpressions = Value
+Private Property Set ISetExpressionAndValue_setExpr(ByVal value As cExpressions)
+    Set pExpressions = value
 End Property
 
-Private Property Let ISetExpressionAndValue_testValue(ByVal Value As Variant)
+Private Property Let ISetExpressionAndValue_testValue(ByVal value As Variant)
     pHaveVal = pExpressions.TestValue
 End Property
 
-Private Property Set ISetExpressionAndValue_testValue(ByVal Value As Variant)
+Private Property Set ISetExpressionAndValue_testValue(ByVal value As Variant)
     'intentionally left blank
 End Property
 
-Private Function IHave_LengthOf(ByVal Value As Double) As Boolean
-    IHave_LengthOf = pExpressions.LengthOf(CDbl(pHaveVal), Value)
+Private Function IHave_LengthOf(ByVal value As Double) As Boolean
+    IHave_LengthOf = pExpressions.LengthOf(CDbl(pHaveVal), value)
 End Function
 
-Private Function IHave_MaxLengthOf(ByVal Value As Double) As Boolean
-    IHave_MaxLengthOf = pExpressions.MaxLengthOf(CDbl(pHaveVal), Value)
+Private Function IHave_MaxLengthOf(ByVal value As Double) As Boolean
+    IHave_MaxLengthOf = pExpressions.MaxLengthOf(CDbl(pHaveVal), value)
 End Function
 
-Private Function IHave_MinLengthOf(ByVal Value As Double) As Boolean
-    IHave_MinLengthOf = pExpressions.MinLengthOf(CDbl(pHaveVal), Value)
+Private Function IHave_MinLengthOf(ByVal value As Double) As Boolean
+    IHave_MinLengthOf = pExpressions.MinLengthOf(CDbl(pHaveVal), value)
 End Function
 
 Private Function IHave_LengthBetween(ByVal lowVal As Double, ByVal highVal As Double) As Boolean
