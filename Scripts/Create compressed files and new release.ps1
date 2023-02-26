@@ -13,6 +13,10 @@ if ($newTagNumber - $oldTagNumber -eq $increm) {
   if (Test-Path $OldDestination) {
     Remove-Item $OldDestination
   }
+
+  # if (Test-Path $NewDestination) {
+  #   Remove-Item $NewDestination
+  # }
   
   $compress = @{
     Path = "$parentDir\Source", "$parentDir\Distribution"
