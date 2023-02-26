@@ -13,8 +13,14 @@ function get-officeFiles {
         $excelGuid = $GuidStr.Replace("System.__ComObject","")
     
         $scriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
-        $macros = Get-ChildItem -Path .\Source -File | Where-Object {$_.BaseName -notcontains "mTodo"}
+        $macros = Get-ChildItem -Path .\Source -File
         $distFiles = Get-ChildItem -Path .\Distribution -File
+
+        foreach ($file in $macros) {
+            if ($file.Extension -eq ".doccls" -or $file.Extension -eq ".doccls" -or $file.Name -like "mTodo.bas") {
+                $file.Delete()
+            }
+        }
     
         foreach ($file in $distfiles) {
             $file.delete()
