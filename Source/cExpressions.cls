@@ -421,7 +421,7 @@ Private Sub addToDictAndFluentPath(ByVal FunctionName As String, ByVal Result As
 
     pExprDict.Add "functionName", FunctionName
     pExprDict.Add "result", Result
-    pExprDict.Add "negatevalue", NegateValue
+    pExprDict.Add "negateValue", NegateValue
     pExprDict.Add "expected", Expected
     
     If Not IsMissing(actual) Then
@@ -452,11 +452,16 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     Dim HigherVal As Variant
     Dim FunctionName As String
     Dim finalFluentPath
+    Dim fluentElement As Long
+    
     
     FunctionName = dict("functionName")
     
     If dict("negateValue") Then
-        fluentBool = Not dict("result")
+        dict("result") = Not dict("result")
+'        dict("expected") = Not dict("expected")
+        dict("actual") = Not dict("actual")
+        fluentBool = dict("result")
         shouldStr = "should not"
     Else
         fluentBool = dict("result")
@@ -465,7 +470,12 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     
     FluentPath = ""
     
-    If pPrinting.Category <> "" Then FluentPath = FluentPath & pPrinting.Category & "="
+    If pPrinting.Category <> "" Then
+        FluentPath = FluentPath & pPrinting.Category & "="
+        fluentElement = 2
+    Else
+        fluentElement = 1
+    End If
     
     FluentPath = FluentPath & CLng(fluentBool) & "="
     
@@ -534,7 +544,7 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
             FluentPath = FluentPath & newVal & ". Actual: " & ExpectedVal
     End Select
     
-    finalFluentPath = Split(FluentPath, "=")(2)
+    finalFluentPath = Split(FluentPath, "=")(fluentElement)
     
     iPrint.testCount = iPrint.testCount + 1
     

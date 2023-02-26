@@ -24,8 +24,11 @@ Option Explicit
 
 Private pFluentEvent As cFluent
 Private pFluentEventOf As cFluentOf
+Private pFluentEventOfResult As cFluentOf
 Private WithEvents pTestResult As cTestResult
 Private WithEvents pTestResultOf As cTestResult
+Private WithEvents pTestResultOfResult As cTestResult
+Attribute pTestResultOfResult.VB_VarHelpID = -1
 Private testCount As Long
 Private testCountOf As Long
 Private i As Long
@@ -43,6 +46,11 @@ End Property
 Public Property Set setFluentOf(value As cFluentOf)
     Set pFluentEventOf = value
     Set pTestResultOf = pFluentEventOf.Meta.TestResult
+End Property
+
+Public Property Set setFluentEventOfResult(value As cFluentOf)
+    Set pFluentEventOfResult = value
+    Set pTestResultOfResult = pFluentEventOfResult.Meta.TestResult
 End Property
 
 Private Sub pTestResultOf_TestPassed(ByVal TestDict As Scripting.Dictionary)
@@ -75,4 +83,12 @@ End Sub
 Private Sub pTestResult_TestCompleted(ByVal TestDict As Scripting.Dictionary)
     testCount = testCount + 1
     Debug.Assert pFluentEvent.Meta.testCount = testCount
+End Sub
+
+Private Sub pTestResultOfResult_TestPassed(ByVal TestDict As Scripting.Dictionary)
+    Debug.Assert TestDict("expected") = TestDict("actual")
+End Sub
+
+Private Sub pTestResultOfResult_TestFailed(ByVal TestDict As Scripting.Dictionary)
+    Debug.Assert TestDict("expected") <> TestDict("actual")
 End Sub
