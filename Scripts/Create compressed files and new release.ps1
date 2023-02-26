@@ -1,5 +1,8 @@
 git pull
 
+$COF = "$parentDir\Scripts\Create Office Files.ps1"
+Import-Module $COF
+
 [string]$tag = git describe --tags
 [decimal]$oldTagNumber= ([regex]"[\d|\.]+").match($tag).groups[0].Value
 [decimal]$increm = .01
@@ -17,6 +20,8 @@ if ($newTagNumber - $oldTagNumber -eq $increm) {
   # if (Test-Path $NewDestination) {
   #   Remove-Item $NewDestination
   # }
+
+  get-officeFiles
   
   $compress = @{
     Path = "$parentDir\Source", "$parentDir\Distribution"
