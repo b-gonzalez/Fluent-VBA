@@ -40,6 +40,7 @@ You can have code that reads more naturally like so:
         
         '//Assert
         Debug.Assert Result.Should.Be.EqualTo(5)
+        Debug.Assert Result.Should.Be.GreaterThan(4)
     End Sub
 
 Or, arguably, even more naturally using cFluentOf objects like this:
@@ -58,12 +59,14 @@ Or, arguably, even more naturally using cFluentOf objects like this:
         With Result.Of(returnedResult)
             '//Assert
             Debug.Assert .Should.Be.EqualTo(5)
+            Debug.Assert .Should.Be.GreaterThan(4)
         End With
         
         '//Or like this
         
         '//Act & Assert
         Debug.Assert Result.Of(returnedResult).Should.Be.EqualTo(5)
+        Debug.Assert Result.Of(returnedResult).Should.Be.GreaterThan(4)
     End Sub
 
 # Getting started
