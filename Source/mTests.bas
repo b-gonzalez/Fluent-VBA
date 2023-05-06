@@ -27,26 +27,24 @@ Public Sub runMainTests()
 '        .FailedMessage = "Failure"
 '    End With
 
-'    Call aTest(fluent, testFluent, testFluentResult)
-'
-    fluent.Meta.Printing.Category = "EqualityTests"
-    testFluent.Meta.Printing.Category = "EqualityTests"
+    fluent.Meta.Printing.Category = "Fluent - EqualityTests"
+    testFluent.Meta.Printing.Category = "Test Fluent - EqualityTests"
     Call EqualityTests(fluent, testFluent, testFluentResult)
 '
-    fluent.Meta.Printing.Category = "positiveDocumentationTests"
-    testFluent.Meta.Printing.Category = "positiveDocumentationTests"
+    fluent.Meta.Printing.Category = "Fluent - positiveDocumentationTests"
+    testFluent.Meta.Printing.Category = "Test Fluent - positiveDocumentationTests"
     Call positiveDocumentationTests(fluent, testFluent, testFluentResult)
 
-    fluent.Meta.Printing.Category = "negativeDocumentationTests"
-    testFluent.Meta.Printing.Category = "negativeDocumentationTests"
+    fluent.Meta.Printing.Category = "Fluent - negativeDocumentationTests"
+    testFluent.Meta.Printing.Category = "Test Fluent - negativeDocumentationTests"
     Call negativeDocumentationTests(fluent, testFluent, testFluentResult)
 '
 '    Debug.Print "All tests Finished!"
-    Call printTestCount(testFluent.Meta.testCount)
+    Call printTestCount(testFluent.Meta.TestCount)
     
 '    fluent.Meta.Printing.PrintToSheet
 '    testFluent.Meta.Printing.PrintToSheet
-    'fluent.Meta.Printing.PrintToImmediate
+'    fluent.Meta.Printing.PrintToImmediate
 End Sub
 
 Public Sub runExamples()
@@ -60,10 +58,10 @@ Public Sub runExamples()
     'Call fluent.Meta.Printing.PrintToImmediate
 End Sub
 
-Private Sub printTestCount(testCount As Long)
-    If testCount > 1 Then
-        Debug.Print testCount & " tests finished!"
-    ElseIf testCount = 1 Then
+Private Sub printTestCount(TestCount As Long)
+    If TestCount > 1 Then
+        Debug.Print TestCount & " tests finished!"
+    ElseIf TestCount = 1 Then
         Debug.Print "Test finished!"
     End If
 End Sub
@@ -93,7 +91,7 @@ Private Sub Example1(Result As cFluent)
     Result.Should.Have.MaxLengthOf (1) 'false
     Result.Should.Have.MinLengthOf (3) 'false
     
-    Debug.Print Result.Meta.testCount & " tests finished"
+    Debug.Print Result.Meta.TestCount & " tests finished"
     
 End Sub
 
@@ -1459,6 +1457,47 @@ With fluent.Meta.TestResult
     testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     
+    
+    fluent.TestValue = testFluent.Of("1 / 0").Should.EvaluateTo(CVErr(xlErrDiv0))
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+    Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+    testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    
+    fluent.TestValue = testFluent.Of("abc").Should.Be.Alphabetic
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+    Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+    testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    
+    fluent.TestValue = testFluent.Of(123).Should.Be.Numeric
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+    Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+    testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    
+    fluent.TestValue = testFluent.Of("abc123").Should.Be.Alphanumeric
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Debug.Assert fluent.Should.Be.EqualTo(True)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+    Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+    Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+    testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    
 End With
     
 End Sub
@@ -1975,6 +2014,30 @@ With fluent.Meta.TestResult
     
     '//Testing errors is possible if they're put in strings
     fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.EvaluateTo(CVErr(xlErrDiv0))
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+    Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+    testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    
+    fluent.TestValue = testFluent.Of("abc123").ShouldNot.Be.Alphanumeric
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+    Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+    testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    
+    fluent.TestValue = testFluent.Of(123).ShouldNot.Be.Numeric
+    Debug.Assert fluent.Should.Be.EqualTo(False)
+    Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+    Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+    Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+    testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+    
+    fluent.TestValue = testFluent.Of("abc123").ShouldNot.Be.Alphanumeric
     Debug.Assert fluent.Should.Be.EqualTo(False)
     Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
     Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)

@@ -27,7 +27,6 @@ try {
     get-officeFiles
     
     $compress = @{
-      # Path = "$parentDir\Source", "$parentDir\Distribution"
       Path = "$parentDir\Distribution"
       CompressionLevel = "Fastest"
       DestinationPath = $NewDestination

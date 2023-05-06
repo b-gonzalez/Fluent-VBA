@@ -38,7 +38,7 @@ Private Property Get IPrinting_testCount() As Long
     IPrinting_testCount = pTestCount
 End Property
 
-Public Property Let IPrinting_FluentPath(value As String)
+Private Property Let IPrinting_FluentPath(value As String)
     pFluentPath = value
 End Property
 

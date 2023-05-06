@@ -62,3 +62,15 @@ End Function
 Private Function IBe_InDataStructure(ByVal DataStructure As Variant, Optional ByVal Method As flMethod = flRecursive) As Boolean
     IBe_InDataStructure = pExpressions.InDataStructure(pBeValue, DataStructure, Method)
 End Function
+
+Private Function IBe_Alphabetic() As Boolean
+    IBe_Alphabetic = pExpressions.Alphabetic(pBeValue)
+End Function
+
+Private Function IBe_Alphanumeric() As Boolean
+    IBe_Alphanumeric = pExpressions.Alphanumeric(pBeValue)
+End Function
+
+Private Function IBe_Numeric() As Boolean
+    IBe_Numeric = pExpressions.Numeric(pBeValue)
+End Function

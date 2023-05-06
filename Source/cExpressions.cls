@@ -415,6 +415,70 @@ Public Function EvaluateTo(ByVal ExpectedVal As Variant, ByVal ActualVal As Vari
     
 End Function
 
+Public Function Alphabetic(ByVal ExpectedVal As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
+    Dim i As Long
+    Dim tempChar As String
+    Dim tempAlph As String
+    
+    For i = 1 To Len(ExpectedVal)
+        tempChar = Mid(ExpectedVal, i, 1)
+        If tempChar Like "[A-Za-z]" Then
+            tempAlph = tempAlph & tempChar
+        End If
+    Next i
+    
+    Alphabetic = (ExpectedVal = tempAlph)
+    
+    Call addToDictAndFluentPath("Alphabetic", CBool(Alphabetic), CBool(NegateValue), TypeName(ExpectedVal))
+End Function
+
+Public Function Numeric(ByVal ExpectedVal As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
+    Dim i As Long
+    Dim tempChar As String
+    Dim tempNum As String
+    
+    For i = 1 To Len(ExpectedVal)
+        tempChar = Mid(ExpectedVal, i, 1)
+        If tempChar Like "[0-9]" Then
+            tempNum = tempNum & tempChar
+        End If
+    Next i
+    
+    Numeric = (ExpectedVal = tempNum)
+     
+    Call addToDictAndFluentPath("Numeric", CBool(Numeric), CBool(NegateValue), TypeName(ExpectedVal))
+End Function
+
+Public Function Alphanumeric(ByVal ExpectedVal As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
+    Dim i As Long
+    Dim tempChar As String
+    Dim tempAlph As String
+    Dim tempNum As String
+    Dim b As Boolean
+    
+    b = False
+    
+    For i = 1 To Len(ExpectedVal)
+        tempChar = Mid(ExpectedVal, i, 1)
+        If tempChar Like "[A-Za-z]" Then
+            tempAlph = tempAlph & tempChar
+        ElseIf tempChar Like "[0-9]" Then
+            tempNum = tempNum & tempChar
+        End If
+    Next i
+    
+    If Len(tempAlph) > 1 And Len(tempNum) > 1 Then
+        If Len(tempAlph) + Len(tempNum) = Len(ExpectedVal) Then
+            b = True
+        End If
+    End If
+    
+    Alphanumeric = b
+    
+    Call addToDictAndFluentPath("Alphanumeric", CBool(Alphanumeric), CBool(NegateValue), TypeName(ExpectedVal))
+End Function
+
+
 Private Sub addToDictAndFluentPath(ByVal FunctionName As String, ByVal Result As Boolean, ByVal NegateValue As Boolean, ByVal Expected As Variant, Optional ByVal actual As Variant, Optional LowerVal As Variant, Optional HigherVal As Variant)
 
     Set pExprDict = New Scripting.Dictionary
@@ -490,6 +554,12 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     newVal = dict("actual")
         
     Select Case FunctionName
+        Case "Alphabetical"
+            FluentPath = FluentPath & shouldStr & " be alphabetical "
+            FluentPath = FluentPath & newVal & ". Actual: " & ExpectedVal
+        Case "Alphanumeric"
+            FluentPath = FluentPath & shouldStr & " be alphanumeric "
+            FluentPath = FluentPath & newVal & ". Actual: " & ExpectedVal
         Case "Between"
             LowerVal = dict("lowerVal")
             HigherVal = dict("higherVal")
@@ -535,6 +605,9 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
         Case "MinLengthOf"
             FluentPath = FluentPath & shouldStr & " have min length of "
             FluentPath = FluentPath & newVal & ". Actual: " & Len(ExpectedVal)
+        Case "Numeric"
+            FluentPath = FluentPath & shouldStr & " be numeric "
+            FluentPath = FluentPath & newVal & ". Actual: " & ExpectedVal
         Case "OneOf"
             FluentPath = FluentPath & shouldStr & " be one of: " & dict("expected")
         Case "Something"
@@ -546,7 +619,7 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     
     finalFluentPath = Split(FluentPath, "=")(fluentElement)
     
-    iPrint.testCount = iPrint.testCount + 1
+    iPrint.TestCount = iPrint.TestCount + 1
     
     iPrint.FluentPath = finalFluentPath
     

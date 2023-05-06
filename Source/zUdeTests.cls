@@ -9,32 +9,23 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 'This class module is used to test user-defined events
 
-'NOTE: pTestResult implements a check to see that the
-'expected and actual values are equal to or not equal
-'to each other when a test passes or fails respectively.
-'This check is not implemented in the testResultOf events
-'This is because this is not possible to do as the tests
-'are currently written. The tests as written in mTests use
-'cFluentOf objects for the initial tests. The result of those
-'initial tests are then valided by cFluent objects. So cFluent
-'objects have access to cFluentOf objects tests results when
-'their event is raised, but not vice versa.
-
 Option Explicit
 
 Private pFluentEvent As cFluent
 Private pFluentEventOf As cFluentOf
 Private pFluentEventOfResult As cFluentOf
 Private WithEvents pTestResult As cTestResult
+Attribute pTestResult.VB_VarHelpID = -1
 Private WithEvents pTestResultOf As cTestResult
+Attribute pTestResultOf.VB_VarHelpID = -1
 Private WithEvents pTestResultOfResult As cTestResult
 Attribute pTestResultOfResult.VB_VarHelpID = -1
-Private testCount As Long
+Private TestCount As Long
 Private testCountOf As Long
 Private i As Long
 
 Private Sub Class_Initialize()
-    testCount = 0
+    TestCount = 0
     testCountOf = 0
 End Sub
 
@@ -65,7 +56,7 @@ End Sub
 
 Private Sub pTestResultOf_TestCompleted(ByVal TestDict As Scripting.Dictionary)
     testCountOf = testCountOf + 1
-    Debug.Assert pFluentEventOf.Meta.testCount = testCountOf
+    Debug.Assert pFluentEventOf.Meta.TestCount = testCountOf
 End Sub
 
 Private Sub pTestResult_TestPassed(ByVal TestDict As Scripting.Dictionary)
@@ -81,8 +72,8 @@ Private Sub pTestResult_TestFailed(ByVal TestDict As Scripting.Dictionary)
 End Sub
 
 Private Sub pTestResult_TestCompleted(ByVal TestDict As Scripting.Dictionary)
-    testCount = testCount + 1
-    Debug.Assert pFluentEvent.Meta.testCount = testCount
+    TestCount = TestCount + 1
+    Debug.Assert pFluentEvent.Meta.TestCount = TestCount
 End Sub
 
 Private Sub pTestResultOfResult_TestPassed(ByVal TestDict As Scripting.Dictionary)

@@ -12,11 +12,12 @@ function get-officeFiles {
         $guidStr = Out-String -NoNewline -InputObject $guidObj
         $excelGuid = $GuidStr.Replace("System.__ComObject","")
     
-        $scriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"
-        $macros = Get-ChildItem -Path .\Source -File
+        $scriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"        
+        $srcFiles = Get-ChildItem -Path .\Source -File
+        $macros = Get-ChildItem -Path .\Source -File | Where-Object {$_.Name -ne "mTodo.bas"}
         $distFiles = Get-ChildItem -Path .\Distribution -File
 
-        foreach ($file in $macros) {
+        foreach ($file in $srcFiles) {
             if ($file.Extension -eq ".doccls" -or $file.Extension -eq ".doccls" -or $file.Name -like "mTodo.bas") {
                 $file.Delete()
             }
@@ -28,6 +29,7 @@ function get-officeFiles {
     
         $GUIDs = @()
         $GUIDs += $scriptingGuid
+        $GUIDs += $regexGuid
         get-excel -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
         $GUIDs += $excelGuid
         get-word -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
@@ -45,3 +47,5 @@ function get-officeFiles {
         Write-Host $_
     }
 }
+
+get-officeFiles

@@ -45,3 +45,14 @@ Public Function InDataStructure(ByVal DataStructure As Variant, Optional ByVal M
 
 End Function
 
+Public Function Alphabetic() As Boolean
+
+End Function
+
+Public Function Alphanumeric() As Boolean
+
+End Function
+
+Public Function Numeric() As Boolean
+
+End Function
