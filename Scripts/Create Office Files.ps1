@@ -14,7 +14,7 @@ function get-officeFiles {
     
         $scriptingGuid = "{420B2830-E718-11CF-893D-00A0C9054228}"        
         $srcFiles = Get-ChildItem -Path .\Source -File
-        $macros = Get-ChildItem -Path .\Source -File | Where-Object {$_.Name -ne "mTodo.bas"}
+        $macros = $srcFiles | Where-Object {$_.Name -ne "mTodo.bas"}
         $distFiles = Get-ChildItem -Path .\Distribution -File
 
         foreach ($file in $srcFiles) {
