@@ -33,6 +33,6 @@ End Function
 Private Sub Class_Initialize()
     Set pUnit = New cUnit
     Set pUnitShould = pUnit
-    Set pExpressions = pUnit.Expressiongs
+    Set pExpressions = pUnit.Expressions
     Set pMeta = pUnit.Meta
 End Sub
