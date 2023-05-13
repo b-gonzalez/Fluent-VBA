@@ -26,58 +26,62 @@ function Export-ExcelModules {
         [Parameter(Mandatory=$false)][VbaType[]]$TypesArr
 
     )
-    try {
-        $excel = New-Object -ComObject excel.application
-        $excel.Visible = $true
-        $workbook = $excel.Workbooks.Add($ExcelFilePath)
-        $GUID = "{0002E157-0000-0000-C000-000000000046}"
-        $Major = 0
-        $Minor = 0
 
-        if ($TypesArr.Length -eq 0) {
-            $TypesArr += [VbaType]::bas
-            $TypesArr += [VbaType]::cls
-            $TypesArr += [VbaType]::doccls
-            $TypesArr += [VbaType]::userform
-        }
+    [string]$fileExt = $ExcelFilePath.Split(".")[1]
 
-        if ($deleteOutputContents) {
-            Remove-Item -Path "$outputPath\*" -Recurse
-        }
+    if ($fileExt -eq "xlsm" -or $fileExt -eq "xlsb") {
+        try {
+            $excel = New-Object -ComObject excel.application
+            $excel.Visible = $true
+            $workbook = $excel.Workbooks.Add($ExcelFilePath)
+            $GUID = "{0002E157-0000-0000-C000-000000000046}"
+            $Major = 0
+            $Minor = 0
     
-        $vbe = $excel.application.VBE
-        $vbProj = $vbe.ActiveVBProject
-        $vbComps = $vbProj.VBComponents
-        $extension = ""
+            if ($TypesArr.Length -eq 0) {
+                $TypesArr += [VbaType]::bas
+                $TypesArr += [VbaType]::cls
+                $TypesArr += [VbaType]::doccls
+                $TypesArr += [VbaType]::userform
+            }
     
-        foreach($comp in $vbComps) {
-            if ($comp.Type -eq [VbaType]::bas) {
-                $extension = ".bas"
-            } elseif ($comp.Type -eq [VbaType]::cls) {
-                $extension = ".cls"
-            } elseif ($comp.Type -eq [VbaType]::userform) {
-                $extension = ".frm"
-            } elseif ($comp.Type -eq [VbaType]::doccls) {
-                $extension = ".doccls"
-            } else {
-                Write-Output "Comp name is $($comp.name) and ext is $($comp.Type)"
+            if ($deleteOutputContents) {
+                Remove-Item -Path "$outputPath\*" -Recurse
             }
-
-            if ($TypesArr -contains $comp.Type) {
-                $comp.export("$OutputPath\$($comp.Name)$($extension)")
-            }
-        }
         
-    }
-    catch {
-        Write-Host "An error occurred:"
-        Write-Host $_
-    }
-    finally {
-        $workbook.Save()
-        $workbook.Close()
-        $excel.Quit()
-        [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
-        [GC]::Collect()
+            $vbe = $excel.application.VBE
+            $vbProj = $vbe.ActiveVBProject
+            $vbComps = $vbProj.VBComponents
+            $extension = ""
+        
+            foreach($comp in $vbComps) {
+                if ($comp.Type -eq [VbaType]::bas) {
+                    $extension = ".bas"
+                } elseif ($comp.Type -eq [VbaType]::cls) {
+                    $extension = ".cls"
+                } elseif ($comp.Type -eq [VbaType]::userform) {
+                    $extension = ".frm"
+                } elseif ($comp.Type -eq [VbaType]::doccls) {
+                    $extension = ".doccls"
+                } else {
+                    Write-Output "Comp name is $($comp.name) and ext is $($comp.Type)"
+                }
+    
+                if ($TypesArr -contains $comp.Type) {
+                    $comp.export("$OutputPath\$($comp.Name)$($extension)")
+                }
+            }
+        }
+        catch {
+            Write-Host "An error occurred:"
+            Write-Host $_
+        }
+        finally {
+            $workbook.Save()
+            $workbook.Close()
+            $excel.Quit()
+            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
+            [GC]::Collect()
+        }
     }
 }
