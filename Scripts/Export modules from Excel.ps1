@@ -29,7 +29,7 @@ function Export-ExcelModules {
     try {
         $excel = New-Object -ComObject excel.application
         $excel.Visible = $true
-        $workbook = $excel.Workbooks.Open($ExcelFilePath)
+        $workbook = $excel.Workbooks.Add($ExcelFilePath)
         $GUID = "{0002E157-0000-0000-C000-000000000046}"
         $Major = 0
         $Minor = 0
