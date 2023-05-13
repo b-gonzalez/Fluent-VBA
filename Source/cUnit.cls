@@ -41,8 +41,8 @@ Private Property Get IUnit_printing() As cPrinting
     Set IUnit_printing = pPrinting
 End Property
 
-Private Property Get IUnit_expressiongs() As cExpressions
-    Set IUnit_expressiongs = pExpressions
+Private Property Get IUnit_expressions() As cExpressions
+    Set IUnit_expressions = pExpressions
 End Property
 
 Private Property Let IUnit_testValue(ByVal value As Variant)

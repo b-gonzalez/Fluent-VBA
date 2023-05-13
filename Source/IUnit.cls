@@ -17,7 +17,7 @@ Public Property Get Printing() As cPrinting
 
 End Property
 
-Public Property Get Expressiongs() As cExpressions
+Public Property Get Expressions() As cExpressions
     
 End Property
 
