@@ -5,3 +5,5 @@ Source/*Todo*
 *.doccls
 *.zip
 Distribution/
+Scripts/Input/
+Scripts/Output/

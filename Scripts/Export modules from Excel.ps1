@@ -1,10 +1,6 @@
-#Need to update file to deal with userforms
-
 #This code requires a reference to the VB extensibility library. Consider adding a check to see if that library is available and if not add it dynamically.
 
 #Write code to call this script from VBA. This should be possible by opening a copy of the workbook as read-only and then executing the script.
-
-#Add functionality to Export-ExcelModules to optionally delete all files in the folder
 
 function Get-LastModifiedExcel {
     param (
@@ -18,6 +14,7 @@ function Get-LastModifiedExcel {
 enum VbaType {
     bas = 1
     cls = 2
+    userform = 3
     doccls = 100
 }
 
@@ -25,6 +22,7 @@ function Export-ExcelModules {
     param (
         [Parameter(Mandatory=$true)][string]$ExcelFilePath,
         [Parameter(Mandatory=$true)][string]$OutputPath,
+        [Parameter(Mandatory=$true)][switch]$DeleteOutputContents,
         [Parameter(Mandatory=$false)][VbaType[]]$TypesArr
 
     )
@@ -40,6 +38,11 @@ function Export-ExcelModules {
             $TypesArr += [VbaType]::bas
             $TypesArr += [VbaType]::cls
             $TypesArr += [VbaType]::doccls
+            $TypesArr += [VbaType]::userform
+        }
+
+        if ($deleteOutputContents) {
+            Remove-Item -Path "$outputPath\*" -Recurse
         }
     
         $vbe = $excel.application.VBE
@@ -51,10 +54,10 @@ function Export-ExcelModules {
             if ($comp.Type -eq [VbaType]::bas) {
                 $extension = ".bas"
             } elseif ($comp.Type -eq [VbaType]::cls) {
-                $extension = ".cls"}
-            #  elseif ($comp.Type -eq 3) {
-            #     $extension = ".frm"}
-             elseif ($comp.Type -eq [VbaType]::doccls) {
+                $extension = ".cls"
+            } elseif ($comp.Type -eq [VbaType]::userform) {
+                $extension = ".frm"
+            } elseif ($comp.Type -eq [VbaType]::doccls) {
                 $extension = ".doccls"
             } else {
                 Write-Output "Comp name is $($comp.name) and ext is $($comp.Type)"
