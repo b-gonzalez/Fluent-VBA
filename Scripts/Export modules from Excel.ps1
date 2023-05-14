@@ -22,21 +22,33 @@ function Export-ExcelModules {
     param (
         [Parameter(Mandatory=$true)][string]$ExcelFilePath,
         [Parameter(Mandatory=$true)][string]$OutputPath,
-        [Parameter(Mandatory=$true)][switch]$DeleteOutputContents,
+        [Parameter(Mandatory=$false)][switch]$DeleteOutputContents,
+        [Parameter(Mandatory=$false)][switch]$ExcelVisible,
         [Parameter(Mandatory=$false)][VbaType[]]$TypesArr
 
     )
 
-    [string]$fileExt = $ExcelFilePath.Split(".")[1]
+    [string[]]$fileArr = $ExcelFilePath.Split(".")
+    $fileExt = $fileArr[1]
 
     if ($fileExt -eq "xlsm" -or $fileExt -eq "xlsb") {
         try {
+
+            $wbCopy = "$($fileArr[0]) - Copy.$fileExt"
+
+            Copy-Item $wbPath -Destination $wbCopy
+
             $excel = New-Object -ComObject excel.application
-            $excel.Visible = $true
-            $workbook = $excel.Workbooks.Add($ExcelFilePath)
+            
+            $workbook = $excel.Workbooks.Open($wbCopy)
             $GUID = "{0002E157-0000-0000-C000-000000000046}"
             $Major = 0
             $Minor = 0
+
+            if ($ExcelVisible) {
+                $excel.Visible = $true
+            }
+            
     
             if ($TypesArr.Length -eq 0) {
                 $TypesArr += [VbaType]::bas
@@ -77,11 +89,11 @@ function Export-ExcelModules {
             Write-Host $_
         }
         finally {
-            $workbook.Save()
             $workbook.Close()
             $excel.Quit()
             [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
             [GC]::Collect()
+            Remove-Item $wbCopy
         }
     }
 }
