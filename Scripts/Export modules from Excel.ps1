@@ -1,5 +1,3 @@
-#This code requires a reference to the VB extensibility library. Consider adding a check to see if that library is available and if not add it dynamically.
-
 #Write code to call this script from VBA. This should be possible by opening a copy of the workbook as read-only and then executing the script.
 
 function Get-LastModifiedExcel {
@@ -41,9 +39,6 @@ function Export-ExcelModules {
             $excel = New-Object -ComObject excel.application
             
             $workbook = $excel.Workbooks.Open($wbCopy)
-            $GUID = "{0002E157-0000-0000-C000-000000000046}"
-            $Major = 0
-            $Minor = 0
 
             if ($ExcelVisible) {
                 $excel.Visible = $true
