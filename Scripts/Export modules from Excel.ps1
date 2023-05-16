@@ -52,7 +52,7 @@ function Export-ExcelModules {
                 $TypesArr += [VbaType]::userform
             }
     
-            if ($deleteOutputContents) {
+            if ($deleteOutputContents -and (Test-Path -Path $outputPath)) {
                 Remove-Item -Path "$outputPath\*" -Recurse
             }
         
