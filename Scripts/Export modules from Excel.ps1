@@ -1,7 +1,3 @@
-#Write code to call this script from VBA. This should be possible by opening a copy of the workbook as read-only and then executing the script.
-
-#Update logic related to the file extension so that instead of referencing $fileArr[1] you reference the last element of the array.
-
 function Get-LastModifiedExcel {
     param (
         [Parameter(Mandatory=$true)][string]$ExcelDir
