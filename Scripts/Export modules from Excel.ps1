@@ -1,5 +1,7 @@
 #Write code to call this script from VBA. This should be possible by opening a copy of the workbook as read-only and then executing the script.
 
+#Update logic related to the file extension so that instead of referencing $fileArr[1] you reference the last element of the array.
+
 function Get-LastModifiedExcel {
     param (
         [Parameter(Mandatory=$true)][string]$ExcelDir
@@ -27,7 +29,7 @@ function Export-ExcelModules {
     )
 
     [string[]]$fileArr = $ExcelFilePath.Split(".")
-    $fileExt = $fileArr[1]
+    $fileExt = $fileArr[$fileArr.GetUpperBound(0)]
 
     if ($fileExt -eq "xlsm" -or $fileExt -eq "xlsb") {
         try {
@@ -43,7 +45,6 @@ function Export-ExcelModules {
             if ($ExcelVisible) {
                 $excel.Visible = $true
             }
-            
     
             if ($TypesArr.Length -eq 0) {
                 $TypesArr += [VbaType]::bas
