@@ -14,6 +14,12 @@ enum VbaType {
     doccls = 100
 }
 
+$dups_arr = @(".htm, .html", ".pdf", ".txt", ".xml", ".xps", ".rtf")
+$excel_arr = @(".csv", ".dbf", ".dif", ".mht, .mhtml", ".ods", ".prn", ".slk", ".xla", ".xlam", ".xls", ".xlsb", ".xlsm", ".xlsx", ".xlt", ".xltm", ".xltx", ".xlw")
+$powerpoint_arr = @(".bmp", ".emf", ".gif", ".jpg", ".mp4", ".odp", ".png", ".pot", ".potm", ".potx", ".ppa", ".ppam", ".pps", ".ppsm", ".ppsx", ".ppt", ".pptm", ".pptx", ".thmx", ".tif", ".wmf", ".wmv")
+$word_arr = @(".doc", ".docm", ".docx", ".dot", ".dotm", ".dotx", ".mht; .mhtml", ".odt", ".wps")
+$access_arr = @(".adn", ".accdb", ".accdr", ".accdt", ".accda", ".mdw", ".accde", ".mam", ".maq", ".mar", ".mat", ".maf", ".laccdb", ".ade", ".adp", ".mdb", ".cdb", ".mda", ".mdn", ".mdf", ".mde", ".ldb")
+
 function Export-ExcelModules {
     param (
         [Parameter(Mandatory=$true)][string]$ExcelFilePath,
@@ -129,14 +135,15 @@ function Export-WordModules {
         }
     
         $vbe = $word.application.VBE
+         #Needed to account for the normal.docm project in Word files
         if ($vbe.VBProjects.Count -gt 1) {
             $vbProj = $vbe.VBProjects(1)
         } else {
             $vbProj = $vbe.ActiveVBProject
         }
         $vbComps = $vbProj.VBComponents
-        # $vbProj = $vbe.ActiveVBProject
-        # $vbComps = $vbProj.VBComponents
+        $vbProj = $vbe.ActiveVBProject
+        $vbComps = $vbProj.VBComponents
 
         $extension = ""
     
