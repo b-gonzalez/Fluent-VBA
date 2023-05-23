@@ -1,14 +1,3 @@
-#Look into memory bug issue with Excel
-
-function Get-LastModifiedExcel {
-    param (
-        [Parameter(Mandatory = $true)][string]$ExcelDir
-    )
-
-    [string]$mostRecentFile = Get-ChildItem -Path $ExcelDir | Sort-Object LastWriteTime | Select-Object -last 1
-    return $mostRecentFile
-}
-
 enum VbaType {
     bas = 1
     cls = 2
@@ -21,6 +10,15 @@ enum OfficeApplication {
     Word = 2
     PowerPoint = 3
     Access = 4
+}
+
+function Get-LastModifiedExcel {
+    param (
+        [Parameter(Mandatory = $true)][string]$ExcelDir
+    )
+
+    [string]$mostRecentFile = Get-ChildItem -Path $ExcelDir | Sort-Object LastWriteTime | Select-Object -last 1
+    return $mostRecentFile
 }
 
 function get-OfficeApplication {
@@ -42,6 +40,8 @@ function get-OfficeApplication {
     }
 
     return $app
+
+    Write-Output "Hello world!"
 }
 
 function Get-FileExnteionValid {
@@ -131,6 +131,8 @@ function Export-ExcelModules {
             if ($ExcelVisible) {
                 $excel.Visible = $true
             }
+
+
     
             if ($TypesArr.Length -eq 0) {
                 $TypesArr += [VbaType]::bas
@@ -181,9 +183,8 @@ function Export-ExcelModules {
             [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($workbook)
             [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($vbe)
             [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($vbProj)
-            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($vbComps)
-            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($comp)
             [GC]::Collect()
+            Remove-Variable excel
             Remove-Item $wbCopy
         }
     }
@@ -433,7 +434,6 @@ function Export-AccessModules {
     }
 }
 
-
 function Export-Modules {
     param (
         [Parameter(Mandatory = $true)][string]$FilePath,
@@ -449,66 +449,80 @@ function Export-Modules {
 
     if (Get-FileExnteionValid -OfficeApp $OfficeApp -Extension $fileExt) {
         try {
-            $fileCopy = "$($fileArr[0]) - Copy.$fileExt"
+            & {
+                $fileCopy = "$($fileArr[0]) - Copy.$fileExt"
 
-            Copy-Item $FilePath -Destination $fileCopy
+                Copy-Item $FilePath -Destination $fileCopy
 
-            $app = get-OfficeApplication -OfficeApp $OfficeApp
+                $app = get-OfficeApplication -OfficeApp $OfficeApp
 
-            $file = get-OfficeFile -OfficeApp $OfficeApp -app $app -fileCopyPath $fileCopy
+                $file = get-OfficeFile -OfficeApp $OfficeApp -app $app -fileCopyPath $fileCopy
 
-            if ($appVisible) {
-                $app.Visible = $true
-            }
-
-            if ($TypesArr.Length -eq 0) {
-                $TypesArr += [VbaType]::bas
-                $TypesArr += [VbaType]::cls
-                $TypesArr += [VbaType]::doccls
-                $TypesArr += [VbaType]::userform
-            }
-
-            if ($deleteOutputContents -and (Test-Path -Path $outputPath)) {
-                Remove-Item -Path "$outputPath\*" -Recurse
-            }
-
-            if ($OfficeApp -eq [OfficeApplication]::PowerPoint) {
-                $vbe = $app.VBE
-            }
-            else {
-                $vbe = $app.application.VBE
-            }
-            #Needed to account for the normal.docm project in Word files
-            if ($OfficeApp -eq [OfficeApplication]::Word) {
-                $vbProj = $vbe.VBProjects(1)
-            }
-            else {
-                $vbProj = $vbe.ActiveVBProject
-            }
-
-            $vbComps = $vbProj.VBComponents
-            $extension = ""
-        
-            foreach ($comp in $vbComps) {
-                if ($comp.Type -eq [VbaType]::bas) {
-                    $extension = ".bas"
+                if ($appVisible) {
+                    $app.Visible = $true
                 }
-                elseif ($comp.Type -eq [VbaType]::cls) {
-                    $extension = ".cls"
+
+                if ($TypesArr.Length -eq 0) {
+                    $TypesArr = @()
+                    $TypesArr += [VbaType]::bas
+                    $TypesArr += [VbaType]::cls
+                    $TypesArr += [VbaType]::doccls
+                    $TypesArr += [VbaType]::userform
                 }
-                elseif ($comp.Type -eq [VbaType]::userform) {
-                    $extension = ".frm"
+
+                if ($deleteOutputContents -and (Test-Path -Path $outputPath)) {
+                    Remove-Item -Path "$outputPath\*" -Recurse
                 }
-                elseif ($comp.Type -eq [VbaType]::doccls) {
-                    $extension = ".doccls"
+
+                if ($OfficeApp -eq [OfficeApplication]::PowerPoint) {
+                    $vbe = $app.VBE
                 }
                 else {
-                    Write-Output "Comp name is $($comp.name) and ext is $($comp.Type)"
+                    $vbe = $app.application.VBE
+                }
+                #Needed to account for the normal.docm project in Word files
+                if ($OfficeApp -eq [OfficeApplication]::Word) {
+                    $vbProj = $vbe.VBProjects(1)
+                }
+                else {
+                    $vbProj = $vbe.ActiveVBProject
                 }
 
-                if ($TypesArr -contains $comp.Type) {
-                    $comp.export("$OutputPath\$($comp.Name)$($extension)")
+                $vbComps = $vbProj.VBComponents
+                $extension = ""
+            
+                foreach ($comp in $vbComps) {
+                    if ($comp.Type -eq [VbaType]::bas) {
+                        $extension = ".bas"
+                    }
+                    elseif ($comp.Type -eq [VbaType]::cls) {
+                        $extension = ".cls"
+                    }
+                    elseif ($comp.Type -eq [VbaType]::userform) {
+                        $extension = ".frm"
+                    }
+                    elseif ($comp.Type -eq [VbaType]::doccls) {
+                        $extension = ".doccls"
+                    }
+                    else {
+                        Write-Output "Comp name is $($comp.name) and ext is $($comp.Type)"
+                    }
+
+                    if ($TypesArr -contains $comp.Type) {
+                        $comp.export("$OutputPath\$($comp.Name)$($extension)")
+                    }
                 }
+
+                if ($OfficeApp -eq [OfficeApplication]::Access) {
+                    $app.CloseCurrentDatabase()
+                    $app.Quit()
+                }
+                else {
+                    $file.Close()
+                    $app.Quit()
+                }
+
+                Remove-Item $fileCopy
             }
         }
         catch {
@@ -516,27 +530,7 @@ function Export-Modules {
             Write-Host $_
         }
         finally {
-            if ($OfficeApp -eq [OfficeApplication]::Access) {
-                $app.CloseCurrentDatabase()
-                $app.Quit()
-            }
-            else {
-                $file.Close()
-                $app.Quit()
-            }
-
-            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($comp)
-            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($vbComps)
-            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($vbProj)
-            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($vbe)
-
-            if ($OfficeApp -ne [OfficeApplication]::Access) { 
-                [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($file)
-            }
-            
-            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($app)
             [GC]::Collect()
-            Remove-Item $fileCopy
         }
     }
 }
