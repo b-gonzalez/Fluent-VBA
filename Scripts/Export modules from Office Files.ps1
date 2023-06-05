@@ -16,10 +16,10 @@ enum OfficeApplication {
 
 function Get-LastModifiedFile {
     param (
-        [Parameter(Mandatory = $true)][string]$ExcelDir
+        [Parameter(Mandatory = $true)][string]$FileDir
     )
 
-    [string]$mostRecentFile = Get-ChildItem -Path $ExcelDir | Sort-Object LastWriteTime | Select-Object -last 1
+    [string]$mostRecentFile = Get-ChildItem -Path $FileDir | Sort-Object LastWriteTime | Select-Object -last 1
     return $mostRecentFile
 }
 
