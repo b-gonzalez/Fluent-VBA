@@ -53,13 +53,13 @@ function Get-FileExnteionValid {
     [bool]$validFileExtension = $false
 
     $OfficeApplicationExtensionsDict = @{
-        [OfficeApplication]::Excel = ".xlsm,.xlsb"
-        [OfficeApplication]::Word = ".docm,.docb"
-        [OfficeApplication]::PowerPoint = ".pptm,.pptb"
-        [OfficeApplication]::Access = ".accdb,.accde"
+        [OfficeApplication]::Excel      = "xlsm,xlsb"
+        [OfficeApplication]::Word       = "docm,dotm"
+        [OfficeApplication]::PowerPoint = "pptm,potm,ppsm"
+        [OfficeApplication]::Access     = "accdb,accdt"
     }
     
-    $validFileExtension = $d[$OfficeApp].split(",").Contains($ext)
+    $validFileExtension = $OfficeApplicationExtensionsDict[$OfficeApp].split(",").Contains($Extension)
 
     return $validFileExtension
 }
