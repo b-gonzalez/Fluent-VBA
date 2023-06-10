@@ -48,7 +48,7 @@ function Get-FileExnteionValid {
     param (
         [Parameter(Mandatory = $true)][OfficeApplication]$OfficeApp,
         [Parameter(Mandatory = $true)][string]$Extension
-    )
+    )g
 
     [bool]$validFileExtension = $false
 
