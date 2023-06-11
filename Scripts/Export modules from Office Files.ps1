@@ -1,5 +1,3 @@
-#Excel memory bug issue fixed. Do testing on other office apps to make sure that they're working as expected and with no memory leaks.
-
 enum VbaType {
     bas = 1
     cls = 2
@@ -54,31 +52,14 @@ function Get-FileExnteionValid {
 
     [bool]$validFileExtension = $false
 
-    $dups_arr = @(".htm, .html", ".pdf", ".txt", ".xml", ".xps", ".rtf")
-
-    $excel_arr = @(".csv", ".dbf", ".dif", ".mht, .mhtml", ".ods", ".prn", ".slk", ".xla", ".xlam", ".xls", ".xlsb", ".xlsm", ".xlsx", ".xlt", ".xltm", ".xltx", ".xlw")
-    $excel_arr += $dups_arr
-
-    $word_arr = @(".doc", ".docm", ".docx", ".dot", ".dotm", ".dotx", ".mht; .mhtml", ".odt", ".wps")
-    $word_arr += $dups_arr
-
-    $powerpoint_arr = @(".bmp", ".emf", ".gif", ".jpg", ".mp4", ".odp", ".png", ".pot", ".potm", ".potx", ".ppa", ".ppam", ".pps", ".ppsm", ".ppsx", ".ppt", ".pptm", ".pptx", ".thmx", ".tif", ".wmf", ".wmv")
-    $powerpoint_arr += $dups_arr
-
-    $access_arr = @(".adn", ".accdb", ".accdr", ".accdt", ".accda", ".mdw", ".accde", ".mam", ".maq", ".mar", ".mat", ".maf", ".laccdb", ".ade", ".adp", ".mdb", ".cdb", ".mda", ".mdn", ".mdf", ".mde", ".ldb")
-
-    if ($OfficeApp -eq [OfficeApplication]::Excel) {
-        $validFileExtension = $excel_arr.Contains(".$Extension")
+    $OfficeApplicationExtensionsDict = @{
+        [OfficeApplication]::Excel      = "xlsm, xlsb"
+        [OfficeApplication]::Word       = "docm, dotm"
+        [OfficeApplication]::PowerPoint = "pptm, potm, ppsm"
+        [OfficeApplication]::Access     = "accdb, accdt"
     }
-    elseif ($OfficeApp -eq [OfficeApplication]::Word) {
-        $validFileExtension = $word_arr.Contains(".$Extension")
-    }
-    elseif ($OfficeApp -eq [OfficeApplication]::PowerPoint) {
-        $validFileExtension = $powerpoint_arr.Contains(".$Extension")
-    }
-    elseif ($OfficeApp -eq [OfficeApplication]::Access) {
-        $validFileExtension = $access_arr.Contains(".$Extension")
-    }
+    
+    $validFileExtension = $OfficeApplicationExtensionsDict[$OfficeApp].split(",").Trim().Contains($Extension)
 
     return $validFileExtension
 }
