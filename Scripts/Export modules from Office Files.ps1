@@ -1,5 +1,3 @@
-#Test
-
 enum VbaType {
     bas = 1
     cls = 2
