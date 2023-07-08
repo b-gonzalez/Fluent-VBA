@@ -54,17 +54,17 @@ function get-word {
     #>
     [OutputType([void])]
     param (
-        [Parameter(Mandatory=$true)][string]$outputPath,
-        [Parameter(Mandatory=$true)][Object[]]$macros,
-        [Parameter(Mandatory=$false)][string[]]$GUIDs,
-        [Parameter(Mandatory=$false)][switch]$removePersonalInfo
+        [Parameter(Mandatory = $true)][string]$outputPath,
+        [Parameter(Mandatory = $true)][Object[]]$macros,
+        [Parameter(Mandatory = $false)][string[]]$GUIDs,
+        [Parameter(Mandatory = $false)][switch]$removePersonalInfo
     )
 
     try {
         $word = New-Object -ComObject word.application
         $doc = $word.documents.add()
         $wdFormatFlatXMLMacroEnabled = 13
-        $doc.SaveAs($outputPath,$wdFormatFlatXMLMacroEnabled)
+        $doc.SaveAs($outputPath, $wdFormatFlatXMLMacroEnabled)
     
         $Major = 0
         $Minor = 0
@@ -77,25 +77,27 @@ function get-word {
         
         if ($PSBoundParameters.ContainsKey('GUIDs')) {
             foreach ($GUID in $GUIDs) {
-                $doc.VBProject.References.AddFromGuid($GUID,$Major, $Minor)
+                $doc.VBProject.References.AddFromGuid($GUID, $Major, $Minor)
             }
         }
 
 
-    }  catch {
+    }
+    catch {
         Write-Host "An error occurred:"
         Write-Host $_
-    } finally {
-    $doc.Save()
-    if ($removePersonalInfo) {
-        $doc.RemovePersonalInformation = $true
     }
+    finally {
+        $doc.Save()
+        if ($removePersonalInfo) {
+            $doc.RemovePersonalInformation = $true
+        }
 
-    $doc.Close()
-    $word.Quit()
+        $doc.Close()
+        $word.Quit()
 
-    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
-    [GC]::Collect()
+        [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
+        [GC]::Collect()
     }
 }
 
@@ -155,17 +157,17 @@ function get-powerpoint {
     #>
     [OutputType([void])]
     param (
-        [Parameter(Mandatory=$true)][string]$outputPath,
-        [Parameter(Mandatory=$true)][Object[]]$macros,
-        [Parameter(Mandatory=$false)][string[]]$GUIDs,
-        [Parameter(Mandatory=$false)][switch]$removePersonalInfo
+        [Parameter(Mandatory = $true)][string]$outputPath,
+        [Parameter(Mandatory = $true)][Object[]]$macros,
+        [Parameter(Mandatory = $false)][string[]]$GUIDs,
+        [Parameter(Mandatory = $false)][switch]$removePersonalInfo
     )
 
     try {
         $powerpoint = New-Object -ComObject powerpoint.application
         $presentation = $powerpoint.Presentations.Add()
         $ppSaveAsOpenXMLPresentationMacroEnabled = 25
-        $presentation.SaveAs($outputPath,$ppSaveAsOpenXMLPresentationMacroEnabled)
+        $presentation.SaveAs($outputPath, $ppSaveAsOpenXMLPresentationMacroEnabled)
     
         $Major = 0
         $Minor = 0
@@ -177,14 +179,16 @@ function get-powerpoint {
         }
         if ($PSBoundParameters.ContainsKey('GUIDs')) {
             foreach ($GUID in $GUIDs) {
-                $presentation.VBProject.References.AddFromGuid($GUID,$Major, $Minor) 
+                $presentation.VBProject.References.AddFromGuid($GUID, $Major, $Minor) 
             }
         }
     
-    }  catch {
+    }
+    catch {
         Write-Host "An error occurred:"
         Write-Host $_
-    } finally {
+    }
+    finally {
         if ($removePersonalInfo) {
             $presentation.RemovePersonalInformation = $true
         }
@@ -254,16 +258,16 @@ function get-access {
     #>
     [OutputType([void])]
     param (
-        [Parameter(Mandatory=$true)][string]$outputPath,
-        [Parameter(Mandatory=$true)][Object[]]$macros,
-        [Parameter(Mandatory=$false)][string[]]$GUIDs,
-        [Parameter(Mandatory=$false)][switch]$removePersonalInfo
+        [Parameter(Mandatory = $true)][string]$outputPath,
+        [Parameter(Mandatory = $true)][Object[]]$macros,
+        [Parameter(Mandatory = $false)][string[]]$GUIDs,
+        [Parameter(Mandatory = $false)][switch]$removePersonalInfo
     )
 
     try {
         $acc = New-Object -ComObject Access.Application
         $acFileFormatAccess2007 = 12
-        $acc.NewCurrentDataBase($outputPath,$acFileFormatAccess2007)
+        $acc.NewCurrentDataBase($outputPath, $acFileFormatAccess2007)
     
         $acCmdCompileAndSaveAllModules = 126
         $acModule = 5
@@ -282,14 +286,16 @@ function get-access {
 
         if ($PSBoundParameters.ContainsKey('GUIDs')) {
             foreach ($GUID in $GUIDs) {
-                $acc.VBE.ActiveVBProject.References.AddFromGuid($GUID,$Major, $Minor)
+                $acc.VBE.ActiveVBProject.References.AddFromGuid($GUID, $Major, $Minor)
             }
         }
     
-    }   catch {
+    }
+    catch {
         Write-Host "An error occurred:"
         Write-Host $_
-    } finally {
+    }
+    finally {
         if ($removePersonalInfo) {
             $acc.CurrentProject.RemovePersonalInformation = $true
         }
@@ -357,10 +363,10 @@ function get-excel {
     #>
     [OutputType([void])]
     param (
-        [Parameter(Mandatory=$true)][string]$outputPath,
-        [Parameter(Mandatory=$true)][Object[]]$macros,
-        [Parameter(Mandatory=$false)][string[]]$GUIDs,
-        [Parameter(Mandatory=$false)][switch]$removePersonalInfo
+        [Parameter(Mandatory = $true)][string]$outputPath,
+        [Parameter(Mandatory = $true)][Object[]]$macros,
+        [Parameter(Mandatory = $false)][string[]]$GUIDs,
+        [Parameter(Mandatory = $false)][switch]$removePersonalInfo
     )
     try {
         $excel = New-Object -ComObject excel.application
@@ -380,14 +386,16 @@ function get-excel {
 
         if ($PSBoundParameters.ContainsKey('GUIDs')) {
             foreach ($GUID in $GUIDs) {
-                $workbook.VBProject.References.AddFromGuid($GUID,$Major, $Minor)
+                $workbook.VBProject.References.AddFromGuid($GUID, $Major, $Minor)
             }
         }
         
-    } catch {
+    }
+    catch {
         Write-Host "An error occurred:"
         Write-Host $_
-    } finally {
+    }
+    finally {
         if ($removePersonalInfo) {
             $workbook.RemovePersonalInformation = $true
         }
@@ -399,8 +407,6 @@ function get-excel {
         [GC]::Collect()
     }
 }
-
-
 function Get-ExcelGuid {
     try {
         $excel = New-Object -ComObject excel.application
@@ -410,7 +416,7 @@ function Get-ExcelGuid {
         $Major = 0
         $Minor = 0
 
-        $workbook.VBProject.References.AddFromGuid($GUID,$Major, $Minor)
+        $workbook.VBProject.References.AddFromGuid($GUID, $Major, $Minor)
         $vbe = $excel.application.VBE
         $vbProj = $vbe.ActiveVBProject
         $references = $vbProj.References
