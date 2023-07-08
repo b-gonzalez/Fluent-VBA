@@ -3,71 +3,77 @@ Fluent VBA is a fluent unit testing library for VBA. This project was inspired b
 
 Fluent APIs are intended to be read like natural language. So instead of having something like:
 
-    Option Explicit
+```vba
+Option Explicit
 
-    Sub NormalUnitTestExample
-        Dim result as long
-        Dim Assert as cUnitTester
-        
-        '//Arrange
-        Set Assert = New cUnitTester
-        
-        '//Act
-        result = returnVal(5) ‘returns the value provided as an argument
-        
-        '//Assert
-        Assert.Equal(Result,5)
-    End Sub
+Sub NormalUnitTestExample
+    Dim result as long
+    Dim Assert as cUnitTester
     
-    Public Function returnVal(value As Variant) As Variant
-        returnVal = value
-    End Function
+    '//Arrange
+    Set Assert = New cUnitTester
+    
+    '//Act
+    result = returnVal(5) 'returns the value provided as an argument
+    
+    '//Assert
+    Assert.Equal(Result,5)
+End Sub
+
+Public Function returnVal(value As Variant) As Variant
+    returnVal = value
+End Function
+```
  
 You can have code that reads more naturally like so:
 
-    Option Explicit
+```vba
+Option Explicit
 
-    Sub FluentUnitTestExample1
-        Dim Result As cFluent
-        Dim returnedResult As Variant
-        
-        '//Arrange
-        Set Result = New cFluent
-        returnedResult = returnVal(5)
-        
-        '//Act
-        Result.TestValue = returnedResult
-        
-        '//Assert
-        Debug.Assert Result.Should.Be.EqualTo(5)
-        Debug.Assert Result.Should.Be.GreaterThan(4)
-    End Sub
+Sub FluentUnitTestExample1
+    Dim Result As cFluent
+    Dim returnedResult As Variant
+    
+    '//Arrange
+    Set Result = New cFluent
+    returnedResult = returnVal(5)
+    
+    '//Act
+    Result.TestValue = returnedResult
+    
+    '//Assert
+    Debug.Assert Result.Should.Be.EqualTo(5)
+    Debug.Assert Result.Should.Be.GreaterThan(4)
+End Sub
+```
 
 Or, arguably, even more naturally using cFluentOf objects like this:
 
-    Option Explicit
+```vba
+Option Explicit
 
-    Sub FluentUnitTestExample2()
-        Dim Result As cFluentOf
-        Dim returnedResult As Variant
-        
-        '//arrange
-        Set Result = New cFluentOf
-        returnedResult = returnVal(5)
-        
-        '//Act
-        With Result.Of(returnedResult)
-            '//Assert
-            Debug.Assert .Should.Be.EqualTo(5)
-            Debug.Assert .Should.Be.GreaterThan(4)
-        End With
-        
-        '//Or like this
-        
-        '//Act & Assert
-        Debug.Assert Result.Of(returnedResult).Should.Be.EqualTo(5)
-        Debug.Assert Result.Of(returnedResult).Should.Be.GreaterThan(4)
-    End Sub
+Sub FluentUnitTestExample2()
+    Dim Result As cFluentOf
+    Dim returnedResult As Variant
+    
+    '//arrange
+    Set Result = New cFluentOf
+    returnedResult = returnVal(5)
+    
+    '//Act
+    With Result.Of(returnedResult)
+        '//Assert
+        Debug.Assert .Should.Be.EqualTo(5)
+        Debug.Assert .Should.Be.GreaterThan(4)
+    End With
+    
+    '//Or like this
+    
+    '//Act & Assert
+    Debug.Assert Result.Of(returnedResult).Should.Be.EqualTo(5)
+    Debug.Assert Result.Of(returnedResult).Should.Be.GreaterThan(4)
+End Sub
+```
 
 # Getting started
 
