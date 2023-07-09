@@ -7,7 +7,7 @@ try {
   Import-Module $COF
 
   [string]$tag = git describe --tags
-  [decimal]$oldTagNumber= ([regex]"[\d|\.]+").match($tag).groups[0].Value
+  [decimal]$oldTagNumber = ([regex]"[\d|\.]+").match($tag).groups[0].Value
   [decimal]$increm = .01
   [decimal]$newTagNumber = $oldTagNumber + $increm
   [string]$curDir = $PSScriptRoot
@@ -27,15 +27,16 @@ try {
     get-officeFiles
     
     $compress = @{
-      Path = "$parentDir\Distribution"
+      Path             = "$parentDir\Distribution"
       CompressionLevel = "Fastest"
-      DestinationPath = $NewDestination
+      DestinationPath  = $NewDestination
     }
     
     Compress-Archive @compress
     
     gh release create "v${newTagNumber}" $NewDestination
-  } else {
+  }
+  else {
     Write-Output "Tag number discrepancy"
   }
 }
