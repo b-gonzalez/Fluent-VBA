@@ -41,10 +41,9 @@ function get-OfficeApplication {
 
     return $app
 
-    Write-Output "Hello world!"
 }
 
-function Get-FileExnteionValid {
+function Get-FileExtensionValid {
     param (
         [Parameter(Mandatory = $true)][OfficeApplication]$OfficeApp,
         [Parameter(Mandatory = $true)][string]$Extension
@@ -100,7 +99,7 @@ function Export-Modules {
     [string[]]$fileArr = $filePath.Split(".")
     $fileExt = $fileArr[$fileArr.GetUpperBound(0)]
 
-    if (Get-FileExnteionValid -OfficeApp $OfficeApp -Extension $fileExt) {
+    if (Get-FileExtensionValid -OfficeApp $OfficeApp -Extension $fileExt) {
         try {
             & {
                 $fileCopy = "$($fileArr[0]) - Copy.$fileExt"
