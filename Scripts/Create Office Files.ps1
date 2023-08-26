@@ -46,5 +46,3 @@ function get-officeFiles {
         Write-Host $_
     }
 }
-
-get-officeFiles

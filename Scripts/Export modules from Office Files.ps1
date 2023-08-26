@@ -17,7 +17,7 @@ function Get-LastModifiedFile {
         [Parameter(Mandatory = $true)][string]$FileDir
     )
 
-    [string]$mostRecentFile = Get-ChildItem -Path $FileDir | Sort-Object LastWriteTime | Select-Object -last 1
+    [System.IO.FileSystemInfo]$mostRecentFile = Get-ChildItem -Path $FileDir | Sort-Object LastWriteTime | Select-Object -last 1
     return $mostRecentFile
 }
 
@@ -52,10 +52,10 @@ function Get-FileExtensionValid {
     [bool]$validFileExtension = $false
 
     $OfficeApplicationExtensionsDict = @{
-        [OfficeApplication]::Excel      = "xlsm, xlsb"
-        [OfficeApplication]::Word       = "docm, dotm"
-        [OfficeApplication]::PowerPoint = "pptm, potm, ppsm"
-        [OfficeApplication]::Access     = "accdb, accdt"
+        [OfficeApplication]::Excel      = ".xlsm, .xlsb"
+        [OfficeApplication]::Word       = ".docm, .dotm"
+        [OfficeApplication]::PowerPoint = ".pptm, .potm, .ppsm"
+        [OfficeApplication]::Access     = ".accdb, .accdt"
     }
     
     $validFileExtension = $OfficeApplicationExtensionsDict[$OfficeApp].split(",").Trim().Contains($Extension)
@@ -88,21 +88,27 @@ function get-OfficeFile {
 
 function Export-Modules {
     param (
-        [Parameter(Mandatory = $true)][string]$FilePath,
+        [Parameter(Mandatory = $true)][System.IO.FileSystemInfo]$FilePath,
         [Parameter(Mandatory = $true)][string]$OutputPath,
         [Parameter(Mandatory = $true)][OfficeApplication]$OfficeApp,
         [Parameter(Mandatory = $false)][switch]$DeleteOutputContents,
         [Parameter(Mandatory = $false)][switch]$AppVisible,
-        [Parameter(Mandatory = $false)][VbaType[]]$TypesArr
+        [Parameter(Mandatory = $false)][VbaType[]]$TypesArr,
+        [Parameter(Mandatory = $false)][string]$CopyDir
     )
 
-    [string[]]$fileArr = $filePath.Split(".")
-    $fileExt = $fileArr[$fileArr.GetUpperBound(0)]
+    # $fileExt = $fileArr[$fileArr.GetUpperBound(0)]
+    $fileExt = $FilePath.Extension
 
     if (Get-FileExtensionValid -OfficeApp $OfficeApp -Extension $fileExt) {
         try {
             & {
-                $fileCopy = "$($fileArr[0]) - Copy.$fileExt"
+                if ($CopyDir -ne "") {
+                    $fileCopy = "$($CopyDir)$($FilePath.BaseName) - Copy$($fileExt)"
+                }
+                else {
+                    $fileCopy = "$($FilePath.BaseName) - Copy$($fileExt)"
+                }    
 
                 Copy-Item $FilePath -Destination $fileCopy
 
