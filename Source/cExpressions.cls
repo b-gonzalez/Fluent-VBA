@@ -138,13 +138,12 @@ End Function
 Private Function getNestedElementsIter(ByVal DataStructure As Variant) As Collection
     Dim elem As Variant
     Dim Col As Collection
-    Dim tempCol As Collection
     Dim tempDataStructure As Variant
     Dim i As Long
+    Dim hasDataStructures As Boolean
 
     If Col Is Nothing Then
         Set Col = New Collection
-        Set tempCol = New Collection
     End If
 
     If TypeName(DataStructure) = "Dictionary" Then
@@ -158,28 +157,22 @@ Private Function getNestedElementsIter(ByVal DataStructure As Variant) As Collec
     End If
 
     For Each elem In tempDataStructure
-        If isDataStructure(elem) Then
-            tempCol.Add elem
-        Else
-            Col.Add elem
-        End If
+        Col.Add elem
     Next elem
-
-    Do While tempCol.Count > 0
-        For i = 1 To tempCol.Count
-            If isDataStructure(tempCol(i)) Then
-                For Each elem In tempCol(i)
-                    tempCol.Add elem
+    
+    Do
+        hasDataStructures = False
+        For i = 1 To Col.Count
+            If isDataStructure(Col(i)) Then
+                hasDataStructures = True
+                For Each elem In Col(i)
+                    Col.Add elem
                 Next elem
-                tempCol.Remove i
-                Exit For
-            Else
-                Col.Add tempCol(i)
-                tempCol.Remove i
+                Col.Remove i
                 Exit For
             End If
         Next i
-    Loop
+    Loop While hasDataStructures = True
 
     Set getNestedElementsIter = Col
 End Function
