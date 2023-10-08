@@ -68,14 +68,15 @@ Public Function InDataStructure(ByVal TestingValue As Variant, ByVal DataStructu
         ElseIf Method = flIterative Then
             Set Col = getNestedElementsIter(DataStructure)
         End If
+        
+            
+        For Each elem In Col
+            If TestingValue = elem Then
+                tempBool = True
+                Exit For
+            End If
+        Next elem
     End If
-    
-    For Each elem In Col
-        If TestingValue = elem Then
-            tempBool = True
-            Exit For
-        End If
-    Next elem
     
     InDataStructure = tempBool
     
@@ -142,9 +143,7 @@ Private Function getNestedElementsIter(ByVal DataStructure As Variant) As Collec
     Dim i As Long
     Dim hasDataStructures As Boolean
 
-    If Col Is Nothing Then
-        Set Col = New Collection
-    End If
+    Set Col = New Collection
 
     If TypeName(DataStructure) = "Dictionary" Then
         tempDataStructure = DataStructure.Items
