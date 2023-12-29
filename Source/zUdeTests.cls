@@ -14,12 +14,12 @@ Option Explicit
 Private pFluentEvent As cFluent
 Private pFluentEventOf As cFluentOf
 Private pFluentEventOfResult As cFluentOf
-Private WithEvents pTestResult As cTestResult
-Attribute pTestResult.VB_VarHelpID = -1
-Private WithEvents pTestResultOf As cTestResult
+Private WithEvents pTestResults As cTestResults
+Attribute pTestResults.VB_VarHelpID = -1
+Private WithEvents pTestResultOf As cTestResults
 Attribute pTestResultOf.VB_VarHelpID = -1
-Private WithEvents pTestResultOfResult As cTestResult
-Attribute pTestResultOfResult.VB_VarHelpID = -1
+Private WithEvents pTestResultOfResults As cTestResults
+Attribute pTestResultOfResults.VB_VarHelpID = -1
 Private TestCount As Long
 Private testCountOf As Long
 Private i As Long
@@ -31,55 +31,55 @@ End Sub
 
 Public Property Set setFluent(value As cFluent)
     Set pFluentEvent = value
-    Set pTestResult = pFluentEvent.Meta.TestResult
+    Set pTestResults = pFluentEvent.Meta.TestResults
 End Property
 
 Public Property Set setFluentOf(value As cFluentOf)
     Set pFluentEventOf = value
-    Set pTestResultOf = pFluentEventOf.Meta.TestResult
+    Set pTestResultOf = pFluentEventOf.Meta.TestResults
 End Property
 
 Public Property Set setFluentEventOfResult(value As cFluentOf)
     Set pFluentEventOfResult = value
-    Set pTestResultOfResult = pFluentEventOfResult.Meta.TestResult
+    Set pTestResultOfResults = pFluentEventOfResult.Meta.TestResults
 End Property
 
-Private Sub pTestResultOf_TestPassed(ByVal TestDict As Scripting.Dictionary)
-    Debug.Assert pFluentEventOf.Meta.TestResult.Result = TestDict("result")
-    Debug.Assert pFluentEventOf.Meta.Printing.FluentPath = TestDict("fluentPath")
+Private Sub pTestResultOf_TestPassed(ByVal TestResult As cTestResult)
+    Debug.Assert pFluentEventOf.Meta.TestResults.Result = TestResult.Result
+    Debug.Assert pFluentEventOf.Meta.Printing.FluentPath = TestResult.FluentPath
 End Sub
 
-Private Sub pTestResultOf_TestFailed(ByVal TestDict As Scripting.Dictionary)
-    Debug.Assert pFluentEventOf.Meta.TestResult.Result = TestDict("result")
-    Debug.Assert pFluentEventOf.Meta.Printing.FluentPath = TestDict("fluentPath")
+Private Sub pTestResultOf_TestFailed(ByVal TestResult As cTestResult)
+    Debug.Assert pFluentEventOf.Meta.TestResults.Result = TestResult.Result
+    Debug.Assert pFluentEventOf.Meta.Printing.FluentPath = TestResult.FluentPath
 End Sub
 
-Private Sub pTestResultOf_TestCompleted(ByVal TestDict As Scripting.Dictionary)
+Private Sub pTestResultOf_TestCompleted(ByVal TestResult As cTestResult)
     testCountOf = testCountOf + 1
     Debug.Assert pFluentEventOf.Meta.TestCount = testCountOf
 End Sub
 
-Private Sub pTestResult_TestPassed(ByVal TestDict As Scripting.Dictionary)
-    Debug.Assert pFluentEvent.Meta.TestResult.Result = TestDict("result")
-    Debug.Assert TestDict("expected") = TestDict("actual")
-    Debug.Assert pFluentEvent.Meta.Printing.FluentPath = TestDict("fluentPath")
+Private Sub pTestResult_TestPassed(ByVal TestResult As cTestResult)
+    Debug.Assert pFluentEvent.Meta.TestResults.Result = TestResult.Result
+    Debug.Assert TestResult.ExpectedValue = TestResult.ActualValue
+    Debug.Assert pFluentEvent.Meta.Printing.FluentPath = TestResult.FluentPath
 End Sub
 
-Private Sub pTestResult_TestFailed(ByVal TestDict As Scripting.Dictionary)
-    Debug.Assert pFluentEvent.Meta.TestResult.Result = TestDict("result")
-    Debug.Assert TestDict("expected") <> TestDict("actual")
-    Debug.Assert pFluentEvent.Meta.Printing.FluentPath = TestDict("fluentPath")
+Private Sub pTestResult_TestFailed(ByVal TestResult As cTestResult)
+    Debug.Assert pFluentEvent.Meta.TestResults.Result = TestResult.Result
+    Debug.Assert TestResult.ExpectedValue <> TestResult.ActualValue
+    Debug.Assert pFluentEvent.Meta.Printing.FluentPath = TestResult.FluentPath
 End Sub
 
-Private Sub pTestResult_TestCompleted(ByVal TestDict As Scripting.Dictionary)
+Private Sub pTestResult_TestCompleted(ByVal TestResult As cTestResult)
     TestCount = TestCount + 1
     Debug.Assert pFluentEvent.Meta.TestCount = TestCount
 End Sub
 
-Private Sub pTestResultOfResult_TestPassed(ByVal TestDict As Scripting.Dictionary)
-    Debug.Assert TestDict("expected") = TestDict("actual")
+Private Sub pTestResultOfResult_TestPassed(ByVal TestResult As cTestResult)
+    Debug.Assert TestResult.ExpectedValue = TestResult.ActualValue
 End Sub
 
-Private Sub pTestResultOfResult_TestFailed(ByVal TestDict As Scripting.Dictionary)
-    Debug.Assert TestDict("expected") <> TestDict("actual")
+Private Sub pTestResultOfResult_TestFailed(ByVal TestResult As cTestResult)
+    Debug.Assert TestResult.ExpectedValue <> TestResult.ActualValue
 End Sub

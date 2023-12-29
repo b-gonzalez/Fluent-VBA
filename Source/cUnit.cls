@@ -100,6 +100,6 @@ Private Sub Class_Initialize()
     
     Set pExpressions.setMeta = pMeta
     Set pExpressions.setPrinting = pMeta.Printing
-    Set pExpressions.setTestResult = pMeta.TestResult
+    Set pExpressions.setTestResults = pMeta.TestResults
 End Sub
 

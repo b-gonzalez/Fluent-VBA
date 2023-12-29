@@ -9,24 +9,39 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Event TestPassed(ByVal TestDict As Scripting.Dictionary)
-Public Event TestFailed(ByVal TestDict As Scripting.Dictionary)
-Public Event TestCompleted(ByVal TestDict As Scripting.Dictionary)
-
 Private pResult As Boolean
+Private pFluentPath As String
+Private pExpectedValue As Variant
+Private pActualValue As Variant
+
+Public Property Let Result(value As Boolean)
+    pResult = value
+End Property
 
 Public Property Get Result() As Boolean
     Result = pResult
 End Property
 
-Public Sub CheckTest(ByVal TestResult As Boolean, ByVal TestDict As Scripting.Dictionary)
-    pResult = TestResult
-    
-    RaiseEvent TestCompleted(TestDict)
-    
-    If TestResult Then
-        RaiseEvent TestPassed(TestDict)
-    Else
-        RaiseEvent TestFailed(TestDict)
-    End If
-End Sub
+Public Property Let FluentPath(value As String)
+    pFluentPath = value
+End Property
+
+Public Property Get FluentPath() As String
+    FluentPath = pFluentPath
+End Property
+
+Public Property Let ExpectedValue(value As Variant)
+    pExpectedValue = value
+End Property
+
+Public Property Get ExpectedValue() As Variant
+    ExpectedValue = pExpectedValue
+End Property
+
+Public Property Let ActualValue(value As Variant)
+    pActualValue = value
+End Property
+
+Public Property Get ActualValue() As Variant
+    ActualValue = pActualValue
+End Property
