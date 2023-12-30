@@ -30,14 +30,6 @@ Private Property Get IPrinting_TestCollection() As Collection
     Set IPrinting_TestCollection = pTestCollection
 End Property
 
-Private Property Let IPrinting_testCount(ByVal value As Long)
-    pTestCount = value
-End Property
-
-Private Property Get IPrinting_testCount() As Long
-    IPrinting_testCount = pTestCount
-End Property
-
 Private Property Let IPrinting_FluentPath(value As String)
     pFluentPath = value
 End Property

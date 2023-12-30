@@ -36,15 +36,6 @@ Public Property Get Epsilon() As Double
     Epsilon = pEpsilon
 End Property
 
-Public Property Let TestCount(ByVal value As Long)
-    pTestCount = value
-    pPrinting.TestCount = pTestCount
-End Property
-
-Public Property Get TestCount() As Long
-    TestCount = pPrinting.TestCount
-End Property
-
 Public Property Get Printing() As cPrinting
     Set Printing = pPrinting
 End Property

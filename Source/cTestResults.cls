@@ -24,9 +24,18 @@ Public Property Get Result() As Boolean
     Result = pResult
 End Property
 
+Public Property Get Item(value As Long) As cTestResult
+Attribute Item.VB_UserMemId = 0
+    Set Item = pCol(value)
+End Property
+
 Public Property Get NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = pCol.[_NewEnum]
+End Property
+
+Public Property Get Count() As Long
+    Count = pCol.Count
 End Property
 
 Public Sub CheckTest(TestResult As cTestResult)

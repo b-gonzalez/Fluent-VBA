@@ -13,14 +13,6 @@ Public Property Get TestCollection() As Collection
 
 End Property
 
-Public Property Let TestCount(ByVal value As Long)
-    
-End Property
-
-Public Property Get TestCount() As Long
-    
-End Property
-
 Public Property Let FluentPath(value As String)
 
 End Property

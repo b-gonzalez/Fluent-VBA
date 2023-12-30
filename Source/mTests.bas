@@ -40,7 +40,7 @@ Public Sub runMainTests()
     Call negativeDocumentationTests(fluent, testFluent, testFluentResult)
 '
 '    Debug.Print "All tests Finished!"
-    Call printTestCount(testFluent.Meta.TestCount)
+    Call printTestCount(testFluent.Meta.TestResults.Count)
     
 '    fluent.Meta.Printing.PrintToSheet
 '    testFluent.Meta.Printing.PrintToSheet

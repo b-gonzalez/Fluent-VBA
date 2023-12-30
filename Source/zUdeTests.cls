@@ -56,7 +56,7 @@ End Sub
 
 Private Sub pTestResultOf_TestCompleted(ByVal TestResult As cTestResult)
     testCountOf = testCountOf + 1
-    Debug.Assert pFluentEventOf.Meta.TestCount = testCountOf
+    Debug.Assert pFluentEventOf.Meta.TestResults.Count = testCountOf
 End Sub
 
 Private Sub pTestResult_TestPassed(ByVal TestResult As cTestResult)

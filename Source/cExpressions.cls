@@ -471,11 +471,11 @@ Public Function Alphanumeric(ByVal TestingValue As Variant, Optional ByVal Negat
 End Function
 
 
-Private Sub addToDictAndFluentPath(ByVal FunctionName As String, ByVal Result As Boolean, ByVal NegateValue As Boolean, ByVal Expected As Variant, Optional ByVal actual As Variant, Optional LowerVal As Variant, Optional HigherVal As Variant)
+Private Sub addToDictAndFluentPath(ByVal functionName As String, ByVal Result As Boolean, ByVal NegateValue As Boolean, ByVal Expected As Variant, Optional ByVal actual As Variant, Optional LowerVal As Variant, Optional HigherVal As Variant)
 
     Set pExprDict = New Scripting.Dictionary
 
-    pExprDict.Add "functionName", FunctionName
+    pExprDict.Add "functionName", functionName
     pExprDict.Add "result", Result
     pExprDict.Add "negateValue", NegateValue
     pExprDict.Add "expected", Expected
@@ -496,58 +496,11 @@ Private Sub addToDictAndFluentPath(ByVal FunctionName As String, ByVal Result As
 
 End Sub
 
-Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
-    Dim FluentPath As String
-    Dim shouldStr As String
-    Dim fluentBool As Boolean
-    Dim fluentTestName As String
-    Dim fluentCategory As String
-    Dim newVal As Variant
-    Dim TestingValue As Variant
+Private Function getFluentPath(FluentPath As String, functionName As String, shouldStr As String, newVal As Variant, TestingValue As Variant, dict As Scripting.Dictionary)
     Dim LowerVal As Variant
     Dim HigherVal As Variant
-    Dim FunctionName As String
-    Dim finalFluentPath
-    Dim fluentElement As Long
-    Dim TestResult As cTestResult
-    
-    Set TestResult = New cTestResult
-    
-    FunctionName = dict("functionName")
-    
-    If dict("negateValue") Then
-        dict("result") = Not dict("result")
-'        dict("expected") = Not dict("expected")
-        dict("actual") = Not dict("actual")
-        fluentBool = dict("result")
-        shouldStr = "should not"
-    Else
-        fluentBool = dict("result")
-        shouldStr = "should"
-    End If
-    
-    FluentPath = ""
-    
-    If pPrinting.Category <> "" Then
-        FluentPath = FluentPath & pPrinting.Category & "="
-        fluentElement = 2
-    Else
-        fluentElement = 1
-    End If
-    
-    FluentPath = FluentPath & CLng(fluentBool) & "="
-    
-    If pPrinting.TestName <> "" Then FluentPath = FluentPath & pPrinting.TestName & " "
-    
-    TestingValue = dict("expected")
-    
-    If Not dict.exists("actual") Then
-        dict.Add "actual", ""
-    End If
-    
-    newVal = dict("actual")
-        
-    Select Case FunctionName
+
+    Select Case functionName
         Case "Alphabetical"
             FluentPath = FluentPath & shouldStr & " be alphabetical "
             FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
@@ -611,9 +564,61 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
             FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
     End Select
     
-    finalFluentPath = Split(FluentPath, "=")(fluentElement)
+    getFluentPath = FluentPath
+End Function
+
+Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
+    Dim FluentPath As String
+    Dim shouldStr As String
+    Dim fluentBool As Boolean
+    Dim fluentTestName As String
+    Dim fluentCategory As String
+    Dim newVal As Variant
+    Dim TestingValue As Variant
+    Dim functionName As String
+    Dim finalFluentPath
+    Dim fluentElement As Long
+    Dim TestResult As cTestResult
     
-    iPrint.TestCount = iPrint.TestCount + 1
+    Set TestResult = New cTestResult
+    
+    functionName = dict("functionName")
+    
+    If dict("negateValue") Then
+        dict("result") = Not dict("result")
+'        dict("expected") = Not dict("expected")
+        dict("actual") = Not dict("actual")
+        fluentBool = dict("result")
+        shouldStr = "should not"
+    Else
+        fluentBool = dict("result")
+        shouldStr = "should"
+    End If
+    
+    FluentPath = ""
+    
+    If pPrinting.Category <> "" Then
+        FluentPath = FluentPath & pPrinting.Category & "="
+        fluentElement = 2
+    Else
+        fluentElement = 1
+    End If
+    
+    FluentPath = FluentPath & CLng(fluentBool) & "="
+    
+    If pPrinting.TestName <> "" Then FluentPath = FluentPath & pPrinting.TestName & " "
+    
+    TestingValue = dict("expected")
+    
+    If Not dict.exists("actual") Then
+        dict.Add "actual", ""
+    End If
+    
+    newVal = dict("actual")
+    
+    FluentPath = getFluentPath(FluentPath, functionName, shouldStr, newVal, TestingValue, dict)
+    
+    finalFluentPath = Split(FluentPath, "=")(fluentElement)
     
     iPrint.FluentPath = finalFluentPath
     
@@ -633,5 +638,5 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
 End Sub
 
 Private Sub Class_Initialize()
-    Set pExprDict = CreateObject("Scripting.Dictionary")
+    Set pExprDict = New Scripting.Dictionary
 End Sub

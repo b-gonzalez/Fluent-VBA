@@ -9,25 +9,17 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Private pResult As Boolean
-Private pFluentPath As String
-Private pExpectedValue As Variant
 Private pActualValue As Variant
+Private pExpectedValue As Variant
+Private pFluentPath As String
+Private pResult As Boolean
 
-Public Property Let Result(value As Boolean)
-    pResult = value
+Public Property Let ActualValue(value As Variant)
+    pActualValue = value
 End Property
 
-Public Property Get Result() As Boolean
-    Result = pResult
-End Property
-
-Public Property Let FluentPath(value As String)
-    pFluentPath = value
-End Property
-
-Public Property Get FluentPath() As String
-    FluentPath = pFluentPath
+Public Property Get ActualValue() As Variant
+    ActualValue = pActualValue
 End Property
 
 Public Property Let ExpectedValue(value As Variant)
@@ -38,10 +30,18 @@ Public Property Get ExpectedValue() As Variant
     ExpectedValue = pExpectedValue
 End Property
 
-Public Property Let ActualValue(value As Variant)
-    pActualValue = value
+Public Property Let FluentPath(value As String)
+    pFluentPath = value
 End Property
 
-Public Property Get ActualValue() As Variant
-    ActualValue = pActualValue
+Public Property Get FluentPath() As String
+    FluentPath = pFluentPath
+End Property
+
+Public Property Let Result(value As Boolean)
+    pResult = value
+End Property
+
+Public Property Get Result() As Boolean
+    Result = pResult
 End Property
