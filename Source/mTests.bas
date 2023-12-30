@@ -576,8 +576,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -588,8 +586,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         d.Add 1, 9
         d.Add 2, Array(10, Array(11))
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -605,8 +601,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d.keys)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -620,8 +614,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(al)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -632,8 +624,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(al)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -647,8 +637,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr, flRecursive)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -660,8 +648,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         arr(1, 0) = 11
         arr(1, 1) = 12
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr, flRecursive)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -681,8 +667,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr, flRecursive)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -690,8 +674,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         
         arr = Array(9, Array(10, Array(11)))
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr, flRecursive)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -706,8 +688,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(Col, flRecursive)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -717,8 +697,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         Col.Add 9
         Col.Add Array(10, Array(11))
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(Col, flRecursive)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -734,8 +712,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d, flRecursive)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -746,8 +722,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         d.Add 1, 9
         d.Add 2, Array(10, Array(11))
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d, flRecursive)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -763,8 +737,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d.keys, flRecursive)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -778,8 +750,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(al, flRecursive)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -789,8 +759,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         
         arr = Array(9, 10, 11)
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr, flIterative)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -804,8 +772,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         arr(1, 0) = 11
         arr(1, 1) = 12
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr, flIterative)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -825,8 +791,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr, flIterative)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -834,8 +798,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         
         arr = Array(9, Array(10, Array(11)))
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr, flIterative)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -850,8 +812,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(Col, flIterative)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -861,8 +821,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         Col.Add 9
         Col.Add Array(10, Array(11))
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(Col, flIterative)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -878,8 +836,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d, flIterative)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -890,8 +846,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         d.Add 1, 9
         d.Add 2, Array(10, Array(11))
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d, flIterative)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -907,8 +861,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d.keys, flIterative)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -922,8 +874,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(al, flIterative)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -935,8 +885,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of("10").Should.Be.EqualTo(10)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -944,8 +892,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         
         testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("True").Should.Be.EqualTo(True)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -961,8 +907,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(5.0000001).Should.Be.EqualTo(5)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -972,8 +916,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         '//Evaluation tests
         
         fluent.TestValue = testFluent.Of(True).Should.EvaluateTo(True)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -1000,16 +942,12 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(False).Should.EvaluateTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         
         fluent.TestValue = testFluent.Of("true").Should.EvaluateTo(True)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -1020,16 +958,12 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of("false").Should.EvaluateTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         
         fluent.TestValue = testFluent.Of("TRUE").Should.EvaluateTo(True)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -1040,16 +974,12 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of("FALSE").Should.EvaluateTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         
         fluent.TestValue = testFluent.Of(-1).Should.EvaluateTo(True)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -1068,8 +998,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(0).Should.EvaluateTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -1084,8 +1012,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         
         fluent.TestValue = testFluent.Of("-1").Should.EvaluateTo(True)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -1104,8 +1030,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of("0").Should.EvaluateTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -1122,16 +1046,12 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(5 + 5).Should.EvaluateTo(10)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         
         fluent.TestValue = testFluent.Of("5 + 5").Should.EvaluateTo(10)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -1142,16 +1062,12 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of("5 + 5 = 10").Should.EvaluateTo(True)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         
         fluent.TestValue = testFluent.Of("5 + 5 > 9").Should.EvaluateTo(True)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -1163,8 +1079,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of("1 / 0").Should.EvaluateTo(CVErr(xlErrDiv0))
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -1172,8 +1086,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         
         
         fluent.TestValue = testFluent.Of("1 / 0").Should.EvaluateTo(CVErr(xlErrDiv0))
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -1184,8 +1096,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of("abc").Should.Be.Alphabetic
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
@@ -1194,16 +1104,12 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(123).Should.Be.Numeric
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         
         fluent.TestValue = testFluent.Of("abc123").Should.Be.Alphanumeric
-        Debug.Assert fluent.Should.Be.EqualTo(True)
-        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
