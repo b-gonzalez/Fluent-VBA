@@ -2,16 +2,16 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "cTestResults"
+Attribute VB_Name = "cTests"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Event TestPassed(ByVal TestResult As cTestResult)
-Public Event TestFailed(ByVal TestResult As cTestResult)
-Public Event TestCompleted(ByVal TestResult As cTestResult)
+Public Event TestPassed(ByVal test As cTest)
+Public Event TestFailed(ByVal test As cTest)
+Public Event TestCompleted(ByVal test As cTest)
 
 Private pResult As Boolean
 Private pCol As Collection
@@ -24,7 +24,7 @@ Public Property Get Result() As Boolean
     Result = pResult
 End Property
 
-Public Property Get Item(value As Long) As cTestResult
+Public Property Get Item(value As Long) As cTest
 Attribute Item.VB_UserMemId = 0
     Set Item = pCol(value)
 End Property
@@ -38,17 +38,17 @@ Public Property Get Count() As Long
     Count = pCol.Count
 End Property
 
-Public Sub CheckTest(TestResult As cTestResult)
-    pResult = TestResult.Result
+Public Sub CheckTest(test As cTest)
+    pResult = test.Result
     
-    pCol.Add TestResult
+    pCol.Add test
     
-    RaiseEvent TestCompleted(TestResult)
+    RaiseEvent TestCompleted(test)
     
-    If TestResult.Result Then
-        RaiseEvent TestPassed(TestResult)
+    If test.Result Then
+        RaiseEvent TestPassed(test)
     Else
-        RaiseEvent TestFailed(TestResult)
+        RaiseEvent TestFailed(test)
     End If
 End Sub
 

@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Private pMeta As cMeta
-Private pTestResults As cTestResults
+Private pTests As cTests
 Private pPrinting As cPrinting
 Private iPrint As IPrinting
 Private pExprDict As Scripting.Dictionary
@@ -43,8 +43,8 @@ Public Property Set setMeta(ByVal value As cMeta)
     Set pMeta = value
 End Property
 
-Public Property Set setTestResults(ByVal value As cTestResults)
-    Set pTestResults = value
+Public Property Set setTests(ByVal value As cTests)
+    Set pTests = value
 End Property
 
 Public Property Set setPrinting(ByVal value As IPrinting)
@@ -578,9 +578,9 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     Dim functionName As String
     Dim finalFluentPath
     Dim fluentElement As Long
-    Dim TestResult As cTestResult
+    Dim test As cTest
     
-    Set TestResult = New cTestResult
+    Set test = New cTest
     
     functionName = dict("functionName")
     
@@ -624,15 +624,15 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     
     iPrint.TestCollection.Add FluentPath
     
-    TestResult.FluentPath = finalFluentPath
+    test.FluentPath = finalFluentPath
     
-    TestResult.Result = fluentBool
+    test.Result = fluentBool
     
-    TestResult.ExpectedValue = newVal
+    test.ExpectedValue = newVal
     
-    TestResult.ActualValue = TestingValue
+    test.ActualValue = TestingValue
     
-    Call pTestResults.CheckTest(TestResult)
+    Call pTests.CheckTest(test)
     
     Set pExprDict = Nothing
 End Sub

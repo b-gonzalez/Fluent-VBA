@@ -40,7 +40,7 @@ Public Sub runMainTests()
     Call negativeDocumentationTests(fluent, testFluent, testFluentResult)
 '
 '    Debug.Print "All tests Finished!"
-    Call printTestCount(testFluent.Meta.TestResults.Count)
+    Call printTestCount(testFluent.Meta.Tests.Count)
     
 '    fluent.Meta.Printing.PrintToSheet
 '    testFluent.Meta.Printing.PrintToSheet
@@ -56,9 +56,10 @@ Private Sub printTestCount(TestCount As Long)
 End Sub
 
 Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
-    Dim tr As cTestResult
+    Dim test As cTest
+    Dim i As Long
 
-    With fluent.Meta.TestResults
+    With fluent.Meta.Tests
         fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(True)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
@@ -198,21 +199,26 @@ Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluent
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
     
-    For Each tr In fluent.Meta.TestResults
-        Debug.Assert tr.Result
-    Next tr
+    For Each test In fluent.Meta.Tests
+        Debug.Assert test.Result
+    Next test
+    
+    For i = 1 To fluent.Meta.Tests.Count
+        Debug.Assert fluent.Meta.Tests(i).Result
+    Next i
 End Sub
 
 Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
     'Dim testFluent As cFluentOf
-    Dim tr As cTestResult
+    Dim test As cTest
     Dim Col As Collection
     Dim arr As Variant
     Dim d As Object
     Dim al As Object
+    Dim i As Long
     
     'Set testFluent = New cFluentOf
-    With fluent.Meta.TestResults
+    With fluent.Meta.Tests
         fluent.TestValue = testFluent.Of(10).Should.Be.EqualTo(10)
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
@@ -1119,22 +1125,27 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         
     End With
     
-    For Each tr In fluent.Meta.TestResults
-        Debug.Assert tr.Result
-    Next tr
+    For Each test In fluent.Meta.Tests
+        Debug.Assert test.Result
+    Next test
+    
+    For i = 1 To fluent.Meta.Tests.Count
+        Debug.Assert fluent.Meta.Tests(i).Result
+    Next i
     
 End Sub
 
 Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
     'Dim testFluent As cFluentOf
-    Dim tr As cTestResult
+    Dim test As cTest
     Dim Col As Collection
     Dim arr As Variant
     Dim d As Object
     Dim al As Object
+    Dim i As Long
     
     'Set testFluent = New cFluentOf
-    With fluent.Meta.TestResults
+    With fluent.Meta.Tests
     
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.EqualTo(10)
         Debug.Assert fluent.Should.Be.EqualTo(False)
@@ -1699,7 +1710,11 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
     
-    For Each tr In fluent.Meta.TestResults
-        Debug.Assert tr.Result
-    Next tr
+    For Each test In fluent.Meta.Tests
+        Debug.Assert test.Result
+    Next test
+    
+    For i = 1 To fluent.Meta.Tests.Count
+        Debug.Assert fluent.Meta.Tests(i).Result
+    Next i
 End Sub

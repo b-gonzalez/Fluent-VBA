@@ -16,7 +16,7 @@ Private pTestCount As Long
 Private pCategory As String
 Private pPrinting As IPrinting
 Private pFluentPath As String
-Private pTestResults As cTestResults
+Private pTests As cTests
 
 Private Const defaultEpsilon As Double = 0.000001
 
@@ -40,12 +40,12 @@ Public Property Get Printing() As cPrinting
     Set Printing = pPrinting
 End Property
 
-Public Property Get TestResults() As cTestResults
-    Set TestResults = pTestResults
+Public Property Get Tests() As cTests
+    Set Tests = pTests
 End Property
 
 Private Sub Class_Initialize()
     Me.Epsilon = defaultEpsilon
     Set pPrinting = New cPrinting
-    Set pTestResults = New cTestResults
+    Set pTests = New cTests
 End Sub
