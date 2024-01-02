@@ -24,3 +24,11 @@ End Function
 Public Function LengthBetween(ByVal LowValue As Double, ByVal HighValue As Double) As Boolean
 
 End Function
+
+Public Function ErrorNumberOf(ByVal value As Long) As Boolean
+
+End Function
+
+Public Function ErrorDescriptionOf(ByVal value As String) As Boolean
+
+End Function

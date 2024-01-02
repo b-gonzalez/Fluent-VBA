@@ -1123,6 +1123,46 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         
+        fluent.TestValue = testFluent.Of(CStr(Application.Evaluate("1 / 0"))).Should.Be.EqualTo("Error 2007")
+        Debug.Assert fluent.Should.Be.EqualTo(True)
+        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+
+        fluent.TestValue = testFluent.Of(CStr(Application.Evaluate("1 / 0"))).Should.Be.EqualTo("Error 2007")
+        Debug.Assert fluent.Should.Be.EqualTo(True)
+        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        
+        fluent.TestValue = testFluent.Of("1 / 0").Should.Be.Erroneous
+        Debug.Assert fluent.Should.Be.EqualTo(True)
+        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        
+        fluent.TestValue = testFluent.Of("1 / 0").Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        Debug.Assert fluent.Should.Be.EqualTo(True)
+        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        
+        fluent.TestValue = testFluent.Of("1 / 0").Should.Have.ErrorNumberOf(2007)
+        Debug.Assert fluent.Should.Be.EqualTo(True)
+        Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        
     End With
     
     For Each test In fluent.Meta.Tests
@@ -1702,6 +1742,38 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         
         fluent.TestValue = testFluent.Of("abc123").ShouldNot.Be.Alphanumeric
+        Debug.Assert fluent.Should.Be.EqualTo(False)
+        Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        
+        fluent.TestValue = testFluent.Of(CStr(Application.Evaluate("1 / 0"))).ShouldNot.Be.EqualTo("Error 2007")
+        Debug.Assert fluent.Should.Be.EqualTo(False)
+        Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        
+        fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Be.Erroneous
+        Debug.Assert fluent.Should.Be.EqualTo(False)
+        Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        
+        fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        Debug.Assert fluent.Should.Be.EqualTo(False)
+        Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        
+        fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorNumberOf(2007)
         Debug.Assert fluent.Should.Be.EqualTo(False)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)

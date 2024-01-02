@@ -74,3 +74,7 @@ End Function
 Private Function IBe_Numeric() As Boolean
     IBe_Numeric = pExpressions.Numeric(pBeValue)
 End Function
+
+Private Function IBe_Erroneous() As Boolean
+    IBe_Erroneous = pExpressions.Erroneous(pBeValue)
+End Function

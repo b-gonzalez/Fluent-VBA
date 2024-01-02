@@ -56,3 +56,7 @@ End Function
 Public Function Numeric() As Boolean
 
 End Function
+
+Public Function Erroneous() As Boolean
+
+End Function

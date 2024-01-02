@@ -51,4 +51,3 @@ Public Sub CheckTest(test As cTest)
         RaiseEvent TestFailed(test)
     End If
 End Sub
-

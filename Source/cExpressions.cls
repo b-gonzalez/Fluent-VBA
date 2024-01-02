@@ -344,7 +344,7 @@ Public Function Between(ByVal TestingValue As Double, ByVal LowerVal As Double, 
         
 End Function
 
-Public Function OneOf(ByVal TestingValue As Variant, ByVal NegateValue As Boolean, ParamArray Args() As Variant)
+Public Function OneOf(ByVal TestingValue As Variant, ByVal NegateValue As Boolean, ParamArray Args() As Variant) As Boolean
     Dim i As Long
     Dim j As Long
     Dim tempBool As Boolean
@@ -407,7 +407,7 @@ Public Function EvaluateTo(ByVal TestingValue As Variant, ByVal TestingInput As 
     
 End Function
 
-Public Function Alphabetic(ByVal TestingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
+Public Function Alphabetic(ByVal TestingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim i As Long
     Dim tempChar As String
     Dim tempAlph As String
@@ -424,7 +424,7 @@ Public Function Alphabetic(ByVal TestingValue As Variant, Optional ByVal NegateV
     Call addToDictAndFluentPath("Alphabetic", CBool(Alphabetic), CBool(NegateValue), TypeName(TestingValue))
 End Function
 
-Public Function Numeric(ByVal TestingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
+Public Function Numeric(ByVal TestingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim i As Long
     Dim tempChar As String
     Dim tempNum As String
@@ -441,7 +441,7 @@ Public Function Numeric(ByVal TestingValue As Variant, Optional ByVal NegateValu
     Call addToDictAndFluentPath("Numeric", CBool(Numeric), CBool(NegateValue), TypeName(TestingValue))
 End Function
 
-Public Function Alphanumeric(ByVal TestingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
+Public Function Alphanumeric(ByVal TestingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Boolean
     Dim i As Long
     Dim tempChar As String
     Dim tempAlph As String
@@ -470,6 +470,44 @@ Public Function Alphanumeric(ByVal TestingValue As Variant, Optional ByVal Negat
     Call addToDictAndFluentPath("Alphanumeric", CBool(Alphanumeric), CBool(NegateValue), TypeName(TestingValue))
 End Function
 
+Public Function Erroneous(ByVal TestingValue As Variant, Optional ByVal NegateValue = False) As Boolean
+    Dim temp As Variant
+    
+    On Error Resume Next
+        temp = Application.Evaluate(TestingValue)
+        Erroneous = TypeName(temp) = "Error"
+    On Error GoTo 0
+    
+    Call addToDictAndFluentPath("Erroneous", CBool(Erroneous), CBool(NegateValue), TypeName(temp), "Error")
+End Function
+
+Public Function ErrorNumberOf(ByVal TestingValue As Variant, ByVal TestingInput As Variant, Optional ByVal NegateValue = False) As Boolean
+    Dim temp As Variant
+    Dim e1 As Variant
+    
+    On Error Resume Next
+        temp = Application.Evaluate(TestingValue)
+        Err.Raise (TestingInput)
+        temp = Err.Number
+        ErrorNumberOf = (temp = TestingInput)
+    On Error GoTo 0
+    
+    Call addToDictAndFluentPath("ErrorNumberOf", CBool(ErrorNumberOf), CBool(NegateValue), TestingInput, temp)
+End Function
+
+Public Function ErrorDescriptionOf(ByVal TestingValue As Variant, ByVal TestingInput As Variant, Optional ByVal NegateValue = False) As Boolean
+    Dim temp As Variant
+    
+    On Error Resume Next
+        temp = CStr(Application.Evaluate(TestingValue))
+        temp = Replace(temp, "Error ", "")
+        Err.Raise temp
+        temp = Err.Description
+        ErrorDescriptionOf = (Err.Description = TestingInput)
+    On Error GoTo 0
+    
+    Call addToDictAndFluentPath("ErrorDescriptionOf", CBool(ErrorDescriptionOf), CBool(NegateValue), TestingInput, temp)
+End Function
 
 Private Sub addToDictAndFluentPath(ByVal functionName As String, ByVal Result As Boolean, ByVal NegateValue As Boolean, ByVal Expected As Variant, Optional ByVal actual As Variant, Optional LowerVal As Variant, Optional HigherVal As Variant)
 
@@ -514,6 +552,15 @@ Private Function getFluentPath(FluentPath As String, functionName As String, sho
             FluentPath = FluentPath & LowerVal & " and " & HigherVal & ". Actual: " & TestingValue
         Case "Contain"
             FluentPath = FluentPath & shouldStr & " contain "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "Erroneous"
+            FluentPath = FluentPath & shouldStr & " be "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "ErrorNumberOf"
+            FluentPath = FluentPath & shouldStr & " have error number of "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "ErrorDescriptionOf"
+            FluentPath = FluentPath & shouldStr & " have error description of "
             FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
         Case "EqualTo"
             FluentPath = FluentPath & shouldStr & " be equal to "
@@ -587,7 +634,7 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     If dict("negateValue") Then
         dict("result") = Not dict("result")
 '        dict("expected") = Not dict("expected")
-        dict("actual") = Not dict("actual")
+'        dict("actual") = Not dict("actual")
         fluentBool = dict("result")
         shouldStr = "should not"
     Else

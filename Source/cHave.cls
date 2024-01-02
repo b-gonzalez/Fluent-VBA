@@ -42,3 +42,12 @@ End Function
 Private Function IHave_LengthBetween(ByVal lowVal As Double, ByVal highVal As Double) As Boolean
     IHave_LengthBetween = pExpressions.LengthBetween(CDbl(pHaveVal), lowVal, highVal)
 End Function
+
+Public Function IHave_ErrorNumberOf(ByVal value As Long) As Boolean
+    IHave_ErrorNumberOf = pExpressions.ErrorNumberOf(pHaveVal, value)
+End Function
+
+Public Function IHave_ErrorDescriptionOf(ByVal value As String) As Boolean
+    IHave_ErrorDescriptionOf = pExpressions.ErrorDescriptionOf(pHaveVal, value)
+End Function
+
