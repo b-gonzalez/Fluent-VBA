@@ -88,16 +88,29 @@ Private Function isDataStructure(ByVal DataStructure As Variant)
     Dim dsTypeName As String
     Dim tempBool As Boolean
     Dim fluentBool As Boolean
+    Dim elem As Variant
+    Dim tempErr As Long
     
     dsTypeName = TypeName(DataStructure)
     tempBool = False
     
-    Select Case True
-        Case IsArray(DataStructure)
-            tempBool = True
-        Case TypeName(DataStructure) = "Collection", TypeName(DataStructure) = "Dictionary", TypeName(DataStructure) = "ArrayList"
-            tempBool = True
-    End Select
+'    Select Case True
+'        Case IsArray(DataStructure)
+'            tempBool = True
+'        Case TypeName(DataStructure) = "Collection", TypeName(DataStructure) = "Dictionary", TypeName(DataStructure) = "ArrayList"
+'            tempBool = True
+'    End Select
+
+    On Error Resume Next
+        For Each elem In DataStructure
+            Exit For
+        Next elem
+        
+        tempErr = Err.Number
+        
+        tempBool = (tempErr = 0)
+        
+    On Error GoTo 0
     
     isDataStructure = tempBool
 End Function
@@ -473,10 +486,18 @@ End Function
 Public Function Erroneous(ByVal TestingValue As Variant, Optional ByVal NegateValue = False) As Boolean
     Dim temp As Variant
     
-    On Error Resume Next
-        temp = Application.Evaluate(TestingValue)
-        Erroneous = TypeName(temp) = "Error"
-    On Error GoTo 0
+    temp = False
+    
+    If TypeOf TestingValue Is ErrObject Then
+        temp = (TestingValue.Number <> 0)
+    Else
+        On Error Resume Next
+            temp = Application.Evaluate(TestingValue)
+            temp = (TypeName(temp) = "Error")
+        On Error GoTo 0
+    End If
+    
+    Erroneous = temp
     
     Call addToDictAndFluentPath("Erroneous", CBool(Erroneous), CBool(NegateValue), TypeName(temp), "Error")
 End Function

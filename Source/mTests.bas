@@ -1130,8 +1130,8 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
-
-        fluent.TestValue = testFluent.Of(CStr(Application.Evaluate("1 / 0"))).Should.Be.EqualTo("Error 2007")
+        
+        fluent.TestValue = testFluent.Of("1 / 0").Should.Be.Erroneous
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -1139,7 +1139,11 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         
-        fluent.TestValue = testFluent.Of("1 / 0").Should.Be.Erroneous
+        On Error Resume Next
+            Debug.Print 1 / 0
+            
+            fluent.TestValue = testFluent.Of(Err).Should.Be.Erroneous
+        On Error GoTo 0
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
@@ -1750,6 +1754,16 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         
         fluent.TestValue = testFluent.Of(CStr(Application.Evaluate("1 / 0"))).ShouldNot.Be.EqualTo("Error 2007")
+        Debug.Assert fluent.Should.Be.EqualTo(False)
+        Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        
+        On Error Resume Next
+            fluent.TestValue = testFluent.Of(Err).Should.Be.Erroneous
+        On Error GoTo 0
         Debug.Assert fluent.Should.Be.EqualTo(False)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
