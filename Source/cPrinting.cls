@@ -70,6 +70,88 @@ Public Property Get FluentPath() As String
     FluentPath = pFluentPath
 End Property
 
+Private Function IPrinting_getFluentPath(FluentPath As String, functionName As String, shouldStr As String, newVal As Variant, TestingValue As Variant, dict As Scripting.Dictionary)
+    Dim LowerVal As Variant
+    Dim HigherVal As Variant
+
+    Select Case functionName
+        Case "Alphabetical"
+            FluentPath = FluentPath & shouldStr & " be alphabetical "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "Alphanumeric"
+            FluentPath = FluentPath & shouldStr & " be alphanumeric "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "Between"
+            LowerVal = dict("lowerVal")
+            HigherVal = dict("higherVal")
+            FluentPath = FluentPath & shouldStr & " be between "
+            FluentPath = FluentPath & LowerVal & " and " & HigherVal & ". Actual: " & TestingValue
+        Case "Contain"
+            FluentPath = FluentPath & shouldStr & " contain "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "Erroneous"
+            FluentPath = FluentPath & shouldStr & " be "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "ErrorNumberOf"
+            FluentPath = FluentPath & shouldStr & " have error number of "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "ErrorDescriptionOf"
+            FluentPath = FluentPath & shouldStr & " have error description of "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "EqualTo"
+            FluentPath = FluentPath & shouldStr & " be equal to "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "EndWith"
+            FluentPath = FluentPath & shouldStr & " end with "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "EvaluateTo"
+            FluentPath = FluentPath & shouldStr & " evaluate to "
+            FluentPath = FluentPath & CStr(newVal) & ". Actual: " & TestingValue
+        Case "GreaterThan"
+            FluentPath = FluentPath & shouldStr & " be greater than "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "GreaterThanOrEqualTo"
+            FluentPath = FluentPath & shouldStr & " be greater than or equal to "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "InDataStructure"
+            FluentPath = FluentPath & shouldStr & " be in datastructure. "
+        Case "InDataStructures"
+            FluentPath = FluentPath & shouldStr & " be in datastructures. "
+        Case "LengthBetween"
+            LowerVal = dict("lowerVal")
+            HigherVal = dict("higherVal")
+            FluentPath = FluentPath & shouldStr & " have length between "
+            FluentPath = FluentPath & LowerVal & " and " & HigherVal & ". Actual: " & Len(TestingValue)
+        Case "LengthOf"
+            FluentPath = FluentPath & shouldStr & " have length of "
+            FluentPath = FluentPath & newVal & ". Actual: " & Len(TestingValue)
+        Case "LessThan"
+            FluentPath = FluentPath & shouldStr & " be less than "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "LessThanOrEqualTo"
+            FluentPath = FluentPath & shouldStr & " be less than or equal to "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "MaxLengthOf"
+            FluentPath = FluentPath & shouldStr & " have max length of "
+            FluentPath = FluentPath & newVal & ". Actual: " & Len(TestingValue)
+        Case "MinLengthOf"
+            FluentPath = FluentPath & shouldStr & " have min length of "
+            FluentPath = FluentPath & newVal & ". Actual: " & Len(TestingValue)
+        Case "Numeric"
+            FluentPath = FluentPath & shouldStr & " be numeric "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+        Case "OneOf"
+            FluentPath = FluentPath & shouldStr & " be one of: " & dict("expected")
+        Case "Something"
+            FluentPath = FluentPath & shouldStr & " be something: " & dict("expected")
+        Case "StartWith"
+            FluentPath = FluentPath & shouldStr & " start with "
+            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+    End Select
+    
+    IPrinting_getFluentPath = FluentPath
+End Function
+
 Public Sub PrintToImmediate()
     Dim arr() As Variant
     Dim i As Long
@@ -130,6 +212,10 @@ Public Sub PrintToSheet()
     Call addValueConditColors(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*")
     
     Call addResultsIconSets(testResultCol)
+    
+    Set pExcel = Nothing
+    
+    Set pWorkbook = Nothing
 
 End Sub
 
@@ -204,7 +290,7 @@ Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
     End With
 End Sub
 
-Private Function getArrayFromCollection(ByVal Col As Collection) As Variant()
+Private Function getArrayFromCollection(ByVal col As Collection) As Variant()
     Dim Category As Long
     Dim TestResult As Long
     Dim TestName As Long
@@ -215,16 +301,16 @@ Private Function getArrayFromCollection(ByVal Col As Collection) As Variant()
     If pCategory = "" Then
         TestResult = 0
         TestName = 1
-        ReDim arr(Col.Count - 1, 1)
+        ReDim arr(col.Count - 1, 1)
     Else
         Category = 0
         TestResult = 1
         TestName = 2
-        ReDim arr(Col.Count - 1, 2)
+        ReDim arr(col.Count - 1, 2)
     End If
     
-    For i = 1 To Col.Count
-       temp = Split(Col(i), "=")
+    For i = 1 To col.Count
+       temp = Split(col(i), "=")
        arr(i - 1, Category) = temp(Category)
        arr(i - 1, TestResult) = temp(TestResult)
         If temp(TestResult) = -1 Then

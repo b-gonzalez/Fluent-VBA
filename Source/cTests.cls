@@ -29,7 +29,7 @@ Attribute Item.VB_UserMemId = 0
     Set Item = pCol(value)
 End Property
 
-Public Property Get NewEnum() As IUnknown
+Public Property Get NewEnum()
 Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = pCol.[_NewEnum]
 End Property

@@ -40,11 +40,11 @@ Private Function IBe_EqualTo(ByVal value As Variant) As Boolean
 End Function
 
 Private Function IBe_GreaterThanOrEqualTo(ByVal value As Double) As Boolean
-    IBe_GreaterThanOrEqualTo = pExpressions.GreaterThanOrEqualTo(CDbl(pBeValue), value)
+    IBe_GreaterThanOrEqualTo = pExpressions.GreaterThanOrEqualTo(CDbl(pBeValue), value, updateFluentPath:=True)
 End Function
 
 Private Function IBe_LessThanOrEqualTo(ByVal value As Double) As Boolean
-    IBe_LessThanOrEqualTo = pExpressions.LessThanOrEqualTo(CDbl(pBeValue), value)
+    IBe_LessThanOrEqualTo = pExpressions.LessThanOrEqualTo(CDbl(pBeValue), value, updateFluentPath:=True)
 End Function
 
 Private Function IBe_Something() As Boolean
@@ -60,7 +60,11 @@ Private Function IBe_OneOf(ParamArray Vals() As Variant)
 End Function
 
 Private Function IBe_InDataStructure(ByVal DataStructure As Variant, Optional ByVal Method As flMethod = flRecursive) As Boolean
-    IBe_InDataStructure = pExpressions.InDataStructure(pBeValue, DataStructure, Method)
+    IBe_InDataStructure = pExpressions.InDataStructure(pBeValue, DataStructure, Method, updateFluentPath:=True)
+End Function
+
+Private Function IBe_InDataStructures(ParamArray DataStructures() As Variant) As Boolean
+    IBe_InDataStructures = pExpressions.InDataStructures(pBeValue, flIterative, False, DataStructures)
 End Function
 
 Private Function IBe_Alphabetic() As Boolean

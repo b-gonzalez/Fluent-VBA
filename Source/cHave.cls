@@ -32,11 +32,11 @@ Private Function IHave_LengthOf(ByVal value As Double) As Boolean
 End Function
 
 Private Function IHave_MaxLengthOf(ByVal value As Double) As Boolean
-    IHave_MaxLengthOf = pExpressions.MaxLengthOf(CDbl(pHaveVal), value)
+    IHave_MaxLengthOf = pExpressions.MaxLengthOf(CDbl(pHaveVal), value, updateFluentPath:=True)
 End Function
 
 Private Function IHave_MinLengthOf(ByVal value As Double) As Boolean
-    IHave_MinLengthOf = pExpressions.MinLengthOf(CDbl(pHaveVal), value)
+    IHave_MinLengthOf = pExpressions.MinLengthOf(CDbl(pHaveVal), value, updateFluentPath:=True)
 End Function
 
 Private Function IHave_LengthBetween(ByVal lowVal As Double, ByVal highVal As Double) As Boolean

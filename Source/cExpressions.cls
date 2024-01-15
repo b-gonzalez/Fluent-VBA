@@ -52,9 +52,39 @@ Public Property Set setPrinting(ByVal value As IPrinting)
     Set iPrint = value
 End Property
 
-Public Function InDataStructure(ByVal TestingValue As Variant, ByVal DataStructure As Variant, Optional ByVal Method As flMethod = flRecursive, Optional NegateValue As Boolean = False) As Boolean
+Public Function InDataStructures(ByVal TestingValue As Variant, ByVal Method As flMethod, NegateValue As Boolean, ParamArray args() As Variant) As Boolean
+    Dim i As Long
+    Dim temp_bool As Boolean
+    Dim IsLastElem As Boolean
+    Dim col As VBA.Collection
+    
+    Set col = getNestedElementsRecur(args)
+    
+    temp_bool = False
+    
+'    For i = 1 To col.Count
+'
+    temp_bool = Me.InDataStructure(TestingValue, col, Method, NegateValue, updateFluentPath:=False)
+'
+'        If temp_bool Then
+'            Exit For
+'        End If
+'    Next i
+    
+    InDataStructures = temp_bool
+    
+    Call addToDictAndFluentPath("InDataStructures", CBool(InDataStructures), CBool(NegateValue), TestingValue)
+    
+End Function
+
+Public Function InDataStructure( _
+ByVal TestingValue As Variant, _
+ByVal DataStructure As Variant, _
+Optional ByVal Method As flMethod = flRecursive, _
+Optional NegateValue As Boolean = False, _
+Optional updateFluentPath As Boolean = False) As Boolean
     Dim elem As Variant
-    Dim Col As Collection
+    Dim col As Collection
     Dim tempBool As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
@@ -64,13 +94,13 @@ Public Function InDataStructure(ByVal TestingValue As Variant, ByVal DataStructu
     
     If isDataStructure(DataStructure) Then
         If Method = flRecursive Then
-            Set Col = getNestedElementsRecur(DataStructure)
+            Set col = getNestedElementsRecur(DataStructure)
         ElseIf Method = flIterative Then
-            Set Col = getNestedElementsIter(DataStructure)
+            Set col = getNestedElementsIter(DataStructure)
         End If
         
             
-        For Each elem In Col
+        For Each elem In col
             If TestingValue = elem Then
                 tempBool = True
                 Exit For
@@ -80,7 +110,15 @@ Public Function InDataStructure(ByVal TestingValue As Variant, ByVal DataStructu
     
     InDataStructure = tempBool
     
-    Call addToDictAndFluentPath("InDataStructure", CBool(InDataStructure), CBool(NegateValue), TestingValue)
+'    If Not IsMissing(IsLastElem) Then
+'        If IsLastElem Then
+'            Call addToDictAndFluentPath("InDataStructure", CBool(InDataStructure), CBool(NegateValue), TestingValue)
+'        End If
+'    Else
+    If updateFluentPath Then
+        Call addToDictAndFluentPath("InDataStructure", CBool(InDataStructure), CBool(NegateValue), TestingValue)
+    End If
+'    End If
     
 End Function
 
@@ -115,13 +153,13 @@ Private Function isDataStructure(ByVal DataStructure As Variant)
     isDataStructure = tempBool
 End Function
 
-Private Function getNestedElementsRecur(ByVal DataStructure As Variant, Optional ByRef Col As Collection = Nothing) As Collection
+Private Function getNestedElementsRecur(ByVal DataStructure As Variant, Optional ByRef col As Collection = Nothing) As Collection
     Dim elem As Variant
     Dim tempDataStructure As Variant
     
     
-    If Col Is Nothing Then
-        Set Col = New Collection
+    If col Is Nothing Then
+        Set col = New Collection
     End If
     
     If isDataStructure(DataStructure) Then
@@ -137,26 +175,26 @@ Private Function getNestedElementsRecur(ByVal DataStructure As Variant, Optional
         
         For Each elem In tempDataStructure
             If isDataStructure(elem) Then
-                Set Col = getNestedElementsRecur(elem, Col)
+                Set col = getNestedElementsRecur(elem, col)
             Else
-                Col.Add elem
+                col.Add elem
             End If
         Next elem
     Else
-        Col.Add elem
+        col.Add elem
     End If
     
-    Set getNestedElementsRecur = Col
+    Set getNestedElementsRecur = col
 End Function
 
 Private Function getNestedElementsIter(ByVal DataStructure As Variant) As Collection
     Dim elem As Variant
-    Dim Col As Collection
+    Dim col As Collection
     Dim tempDataStructure As Variant
     Dim i As Long
     Dim hasDataStructures As Boolean
 
-    Set Col = New Collection
+    Set col = New Collection
 
     If TypeName(DataStructure) = "Dictionary" Then
         tempDataStructure = DataStructure.Items
@@ -169,24 +207,24 @@ Private Function getNestedElementsIter(ByVal DataStructure As Variant) As Collec
     End If
 
     For Each elem In tempDataStructure
-        Col.Add elem
+        col.Add elem
     Next elem
     
     Do
         hasDataStructures = False
-        For i = 1 To Col.Count
-            If isDataStructure(Col(i)) Then
+        For i = 1 To col.Count
+            If isDataStructure(col(i)) Then
                 hasDataStructures = True
-                For Each elem In Col(i)
-                    Col.Add elem
+                For Each elem In col(i)
+                    col.Add elem
                 Next elem
-                Col.Remove i
+                col.Remove i
                 Exit For
             End If
         Next i
     Loop While hasDataStructures = True
 
-    Set getNestedElementsIter = Col
+    Set getNestedElementsIter = col
 End Function
 
 Public Function GreaterThan(ByVal TestingValue As Double, ByVal TestingInput As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
@@ -200,14 +238,20 @@ Public Function GreaterThan(ByVal TestingValue As Double, ByVal TestingInput As 
     
 End Function
 
-Public Function GreaterThanOrEqualTo(ByVal TestingValue As Double, ByVal TestingInput As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
+Public Function GreaterThanOrEqualTo( _
+ByVal TestingValue As Double, _
+ByVal TestingInput As Double, _
+Optional ByVal NegateValue As Boolean = False, _
+Optional updateFluentPath As Boolean = False) As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
     
     GreaterThanOrEqualTo = (TestingValue >= TestingInput)
     
-    Call addToDictAndFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(NegateValue), TestingValue, TestingInput)
+    If updateFluentPath Then
+        Call addToDictAndFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(NegateValue), TestingValue, TestingInput)
+    End If
         
 End Function
 
@@ -222,14 +266,20 @@ Public Function LessThan(ByVal TestingValue As Double, ByVal TestingInput As Dou
 
 End Function
 
-Public Function LessThanOrEqualTo(ByVal TestingValue As Double, ByVal TestingInput As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
+Public Function LessThanOrEqualTo( _
+ByVal TestingValue As Double, _
+ByVal TestingInput As Double, _
+Optional ByVal NegateValue As Boolean = False, _
+Optional updateFluentPath As Boolean = False) As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
        
     LessThanOrEqualTo = (TestingValue <= TestingInput)
-    
-    Call addToDictAndFluentPath("LessThanOrEqualTo", CBool(LessThanOrEqualTo), CBool(NegateValue), TestingValue, TestingInput)
+       
+    If updateFluentPath Then
+        Call addToDictAndFluentPath("LessThanOrEqualTo", CBool(LessThanOrEqualTo), CBool(NegateValue), TestingValue, TestingInput)
+    End If
         
 End Function
 
@@ -313,25 +363,37 @@ Public Function LengthOf(ByVal TestingValue As Double, ByVal TestingInput As Dou
             
 End Function
 
-Public Function MaxLengthOf(ByVal TestingValue As Double, ByVal TestingInput As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
+Public Function MaxLengthOf( _
+ByVal TestingValue As Double, _
+ByVal TestingInput As Double, _
+Optional ByVal NegateValue As Boolean = False, _
+Optional updateFluentPath As Boolean = False) As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
     MaxLengthOf = (Len(CStr(TestingValue)) <= TestingInput)
     
-    Call addToDictAndFluentPath("MaxLengthOf", CBool(MaxLengthOf), CBool(NegateValue), TestingValue, TestingInput)
+    If updateFluentPath Then
+        Call addToDictAndFluentPath("MaxLengthOf", CBool(MaxLengthOf), CBool(NegateValue), TestingValue, TestingInput)
+    End If
             
 End Function
 
-Public Function MinLengthOf(ByVal TestingValue As Double, ByVal TestingInput As Double, Optional ByVal NegateValue As Boolean = False) As Boolean
+Public Function MinLengthOf( _
+ByVal TestingValue As Double, _
+ByVal TestingInput As Double, _
+Optional ByVal NegateValue As Boolean = False, _
+Optional updateFluentPath As Boolean = False) As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
     MinLengthOf = (Len(CStr(TestingValue)) >= TestingInput)
-    
-    Call addToDictAndFluentPath("MinLengthOf", CBool(MinLengthOf), CBool(NegateValue), TestingValue, TestingInput)
+        
+    If updateFluentPath Then
+        Call addToDictAndFluentPath("MinLengthOf", CBool(MinLengthOf), CBool(NegateValue), TestingValue, TestingInput)
+    End If
         
 End Function
 
@@ -351,13 +413,13 @@ Public Function Between(ByVal TestingValue As Double, ByVal LowerVal As Double, 
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    Between = (GreaterThanOrEqualTo(TestingValue, LowerVal) And LessThanOrEqualTo(TestingValue, HigherVal))
+    Between = (GreaterThanOrEqualTo(TestingValue, LowerVal, updateFluentPath:=False) And LessThanOrEqualTo(TestingValue, HigherVal, updateFluentPath:=False))
     
     Call addToDictAndFluentPath("Between", CBool(Between), CBool(NegateValue), Expected:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
         
 End Function
 
-Public Function OneOf(ByVal TestingValue As Variant, ByVal NegateValue As Boolean, ParamArray Args() As Variant) As Boolean
+Public Function OneOf(ByVal TestingValue As Variant, ByVal NegateValue As Boolean, ParamArray args() As Variant) As Boolean
     Dim i As Long
     Dim j As Long
     Dim tempBool As Boolean
@@ -367,7 +429,7 @@ Public Function OneOf(ByVal TestingValue As Variant, ByVal NegateValue As Boolea
     Dim shouldStr As String
     Dim expectedStr As String
         
-    arr = Args(0)
+    arr = args(0)
     tempBool = False
     
     For i = LBound(arr) To UBound(arr)
@@ -403,7 +465,7 @@ Public Function LengthBetween(ByVal TestingValue As Double, ByVal LowerVal As Do
         
     tempOrigVal = Len(CStr(TestingValue))
     
-    LengthBetween = (MinLengthOf(tempOrigVal, LowerVal) And MaxLengthOf(tempOrigVal, HigherVal))
+    LengthBetween = (MinLengthOf(tempOrigVal, LowerVal, updateFluentPath:=False) And MaxLengthOf(tempOrigVal, HigherVal, updateFluentPath:=False))
     
     Call addToDictAndFluentPath("LengthBetween", CBool(LengthBetween), CBool(NegateValue), Expected:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
 
@@ -530,7 +592,14 @@ Public Function ErrorDescriptionOf(ByVal TestingValue As Variant, ByVal TestingI
     Call addToDictAndFluentPath("ErrorDescriptionOf", CBool(ErrorDescriptionOf), CBool(NegateValue), TestingInput, temp)
 End Function
 
-Private Sub addToDictAndFluentPath(ByVal functionName As String, ByVal Result As Boolean, ByVal NegateValue As Boolean, ByVal Expected As Variant, Optional ByVal actual As Variant, Optional LowerVal As Variant, Optional HigherVal As Variant)
+Private Sub addToDictAndFluentPath( _
+    ByVal functionName As String, _
+    ByVal Result As Boolean, _
+    ByVal NegateValue As Boolean, _
+    ByVal Expected As Variant, _
+    Optional ByVal actual As Variant, _
+    Optional LowerVal As Variant, _
+    Optional HigherVal As Variant)
 
     Set pExprDict = New Scripting.Dictionary
 
@@ -554,86 +623,6 @@ Private Sub addToDictAndFluentPath(ByVal functionName As String, ByVal Result As
     Call addFluentPathNew(pExprDict)
 
 End Sub
-
-Private Function getFluentPath(FluentPath As String, functionName As String, shouldStr As String, newVal As Variant, TestingValue As Variant, dict As Scripting.Dictionary)
-    Dim LowerVal As Variant
-    Dim HigherVal As Variant
-
-    Select Case functionName
-        Case "Alphabetical"
-            FluentPath = FluentPath & shouldStr & " be alphabetical "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "Alphanumeric"
-            FluentPath = FluentPath & shouldStr & " be alphanumeric "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "Between"
-            LowerVal = dict("lowerVal")
-            HigherVal = dict("higherVal")
-            FluentPath = FluentPath & shouldStr & " be between "
-            FluentPath = FluentPath & LowerVal & " and " & HigherVal & ". Actual: " & TestingValue
-        Case "Contain"
-            FluentPath = FluentPath & shouldStr & " contain "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "Erroneous"
-            FluentPath = FluentPath & shouldStr & " be "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "ErrorNumberOf"
-            FluentPath = FluentPath & shouldStr & " have error number of "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "ErrorDescriptionOf"
-            FluentPath = FluentPath & shouldStr & " have error description of "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "EqualTo"
-            FluentPath = FluentPath & shouldStr & " be equal to "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "EndWith"
-            FluentPath = FluentPath & shouldStr & " end with "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "EvaluateTo"
-            FluentPath = FluentPath & shouldStr & " evaluate to "
-            FluentPath = FluentPath & CStr(newVal) & ". Actual: " & TestingValue
-        Case "GreaterThan"
-            FluentPath = FluentPath & shouldStr & " be greater than "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "GreaterThanOrEqualTo"
-            FluentPath = FluentPath & shouldStr & " be greater than or equal to "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "InDataStructure"
-            FluentPath = FluentPath & shouldStr & " be in datastructure. "
-        Case "LengthBetween"
-            LowerVal = dict("lowerVal")
-            HigherVal = dict("higherVal")
-            FluentPath = FluentPath & shouldStr & " have length between "
-            FluentPath = FluentPath & LowerVal & " and " & HigherVal & ". Actual: " & Len(TestingValue)
-        Case "LengthOf"
-            FluentPath = FluentPath & shouldStr & " have length of "
-            FluentPath = FluentPath & newVal & ". Actual: " & Len(TestingValue)
-        Case "LessThan"
-            FluentPath = FluentPath & shouldStr & " be less than "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "LessThanOrEqualTo"
-            FluentPath = FluentPath & shouldStr & " be less than or equal to "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "MaxLengthOf"
-            FluentPath = FluentPath & shouldStr & " have max length of "
-            FluentPath = FluentPath & newVal & ". Actual: " & Len(TestingValue)
-        Case "MinLengthOf"
-            FluentPath = FluentPath & shouldStr & " have min length of "
-            FluentPath = FluentPath & newVal & ". Actual: " & Len(TestingValue)
-        Case "Numeric"
-            FluentPath = FluentPath & shouldStr & " be numeric "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-        Case "OneOf"
-            FluentPath = FluentPath & shouldStr & " be one of: " & dict("expected")
-        Case "Something"
-            FluentPath = FluentPath & shouldStr & " be something: " & dict("expected")
-        Case "StartWith"
-            FluentPath = FluentPath & shouldStr & " start with "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
-    End Select
-    
-    getFluentPath = FluentPath
-End Function
 
 Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     Dim FluentPath As String
@@ -684,7 +673,7 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     
     newVal = dict("actual")
     
-    FluentPath = getFluentPath(FluentPath, functionName, shouldStr, newVal, TestingValue, dict)
+    FluentPath = iPrint.getFluentPath(FluentPath, functionName, shouldStr, newVal, TestingValue, dict)
     
     finalFluentPath = Split(FluentPath, "=")(fluentElement)
     
