@@ -501,9 +501,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
 
-
-        
-        
     arr2 = Array(9, 10, 11)
     
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr)
@@ -792,6 +789,7 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Dim d As Object
     Dim al As Object
     Dim i As Long
+    Dim arr2 As Variant
     
     'Set testFluent = New cFluentOf
     With fluent.Meta.Tests
@@ -977,6 +975,161 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+
+
+    arr2 = Array(9, 10, 11)
+    
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr)
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    ReDim arr(1, 1)
+    arr(0, 0) = 12
+    arr(0, 1) = 13
+    arr(1, 0) = 14
+    arr(1, 1) = 15
+    
+    fluent.TestValue = testFluent.Of(12).Should.Be.InDataStructures(arr, arr2)
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    ReDim arr(1, 1, 1)
+    arr(0, 0, 0) = 6
+    arr(0, 0, 1) = 7
+    arr(0, 1, 0) = 8
+    arr(0, 1, 1) = 9
+    arr(1, 0, 0) = 10
+    arr(1, 0, 1) = 11
+    arr(1, 1, 0) = 12
+    arr(1, 1, 1) = 13
+    arr2 = Array(15, 16, 17)
+    
+    fluent.TestValue = testFluent.Of(9).Should.Be.InDataStructures(arr, arr2)
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    arr = Array(9, Array(10, Array(11)))
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(arr, arr2)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set al = CreateObject("System.Collections.Arraylist")
+    al.Add 9
+    al.Add 10
+    al.Add 11
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    Set col = New Collection
+    col.Add 12
+    col.Add 13
+    col.Add 14
+    
+    fluent.TestValue = testFluent.Of(13).ShouldNot.Be.InDataStructures(col)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set col = New Collection
+    col.Add 12
+    col.Add 13
+    col.Add 14
+    
+    fluent.TestValue = testFluent.Of(16).ShouldNot.Be.InDataStructures(arr, col, arr2)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set col = New Collection
+    col.Add 9
+    col.Add Array(10, Array(11))
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(col)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    Set col = Nothing
+    
+    arr = Array(12, 13, 14)
+    Set col = New Collection
+    col.Add 9
+    col.Add Array(10, Array(11))
+    
+    fluent.TestValue = testFluent.Of(14).ShouldNot.Be.InDataStructures(col, arr)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    Set col = Nothing
+
+    Set d = New Scripting.Dictionary
+    d.Add 1, 9
+    d.Add 2, 10
+    d.Add 3, 11
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    Set d = Nothing
+    
+    Set d = New Scripting.Dictionary
+    d.Add 1, 9
+    d.Add 2, 10
+    d.Add 3, 11
+    fluent.TestValue = testFluent.Of(2).ShouldNot.Be.InDataStructures(d.Items, d.keys)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    Set d = Nothing
+    
+    Set d = New Scripting.Dictionary
+    d.Add 1, 9
+    d.Add 2, Array(10, Array(11))
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set al = CreateObject("System.Collections.Arraylist")
+    al.Add 9
+    al.Add 10
+    al.Add 11
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    Set d = Nothing
+    
+    Set al = CreateObject("System.Collections.Arraylist")
+    al.Add 9
+    al.Add 10
+    al.Add 11
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    arr = Array(6, Array(7, Array(8)))
+    Set al = CreateObject("System.Collections.Arraylist")
+    al.Add 9
+    al.Add 10
+    al.Add 11
+    fluent.TestValue = testFluent.Of(8).ShouldNot.Be.InDataStructures(al, arr)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    
         
         ' //Approximate equality tests
         testFluent.Meta.ApproximateEqual = True
