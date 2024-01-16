@@ -80,6 +80,10 @@ End Sub
 Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
     Dim test As cTest
     Dim i As Long
+    Dim resultBool As Boolean
+    Dim fluentBool As Boolean
+    Dim expectedBool As Boolean
+    Dim actualBool As Boolean
 
     With fluent.Meta.Tests
         fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(True)
@@ -148,6 +152,21 @@ Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluent
     For i = 1 To fluent.Meta.Tests.Count
         Debug.Assert fluent.Meta.Tests(i).Result
     Next i
+    
+    i = 1
+    
+    With testFluent.Meta
+        For Each test In .Tests
+            resultBool = test.Result = .Tests(i).Result
+            fluentBool = test.FluentPath = .Tests(i).FluentPath
+            expectedBool = test.ExpectedValue = .Tests(i).ExpectedValue
+            actualBool = test.ActualValue = .Tests(i).ActualValue
+            
+            Debug.Assert resultBool And fluentBool And expectedBool And actualBool
+            
+            i = i + 1
+        Next test
+    End With
 End Sub
 
 Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
@@ -160,6 +179,10 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Dim al As Object
     Dim i As Long
     Dim counter As Long
+    Dim resultBool As Boolean
+    Dim fluentBool As Boolean
+    Dim expectedBool As Boolean
+    Dim actualBool As Boolean
     
     'Set testFluent = New cFluentOf
     With fluent.Meta.Tests
@@ -779,6 +802,21 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         Debug.Assert fluent.Meta.Tests(i).Result
     Next i
     
+    i = 1
+    
+    With testFluent.Meta
+        For Each test In .Tests
+            resultBool = test.Result = .Tests(i).Result
+            fluentBool = test.FluentPath = .Tests(i).FluentPath
+            expectedBool = test.ExpectedValue = .Tests(i).ExpectedValue
+            actualBool = test.ActualValue = .Tests(i).ActualValue
+            
+            Debug.Assert resultBool And fluentBool And expectedBool And actualBool
+            
+            i = i + 1
+        Next test
+    End With
+    
 End Sub
 
 Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
@@ -790,6 +828,10 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Dim al As Object
     Dim i As Long
     Dim arr2 As Variant
+    Dim resultBool As Boolean
+    Dim fluentBool As Boolean
+    Dim expectedBool As Boolean
+    Dim actualBool As Boolean
     
     'Set testFluent = New cFluentOf
     With fluent.Meta.Tests
@@ -1246,4 +1288,19 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
     For i = 1 To fluent.Meta.Tests.Count
         Debug.Assert fluent.Meta.Tests(i).Result
     Next i
+    
+    i = 1
+    
+    With testFluent.Meta
+        For Each test In .Tests
+            resultBool = test.Result = .Tests(i).Result
+            fluentBool = test.FluentPath = .Tests(i).FluentPath
+            expectedBool = test.ExpectedValue = .Tests(i).ExpectedValue
+            actualBool = test.ActualValue = .Tests(i).ActualValue
+            
+            Debug.Assert resultBool And fluentBool And expectedBool And actualBool
+            
+            i = i + 1
+        Next test
+    End With
 End Sub
