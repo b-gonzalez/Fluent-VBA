@@ -41,11 +41,11 @@ Private Function IBe_EqualTo(ByVal value As Variant) As Boolean
 End Function
 
 Private Function IBe_GreaterThanOrEqualTo(ByVal value As Double) As Boolean
-    IBe_GreaterThanOrEqualTo = Not pExpressions.GreaterThanOrEqualTo(CDbl(pNotBeValue), value, True)
+    IBe_GreaterThanOrEqualTo = Not pExpressions.GreaterThanOrEqualTo(CDbl(pNotBeValue), value, True, updateFluentPath:=True)
 End Function
 
 Private Function IBe_LessThanOrEqualTo(ByVal value As Double) As Boolean
-    IBe_LessThanOrEqualTo = Not pExpressions.LessThanOrEqualTo(CDbl(pNotBeValue), value, True)
+    IBe_LessThanOrEqualTo = Not pExpressions.LessThanOrEqualTo(CDbl(pNotBeValue), value, True, updateFluentPath:=True)
 End Function
 
 Private Function IBe_Something() As Boolean

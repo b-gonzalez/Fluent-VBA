@@ -1,6 +1,8 @@
 Attribute VB_Name = "mTests"
 Option Explicit
 
+Private mCounter As Long
+
 Public Sub runMainTests()
     Dim fluent As cFluent
     Dim testFluent As cFluentOf
@@ -56,6 +58,10 @@ Private Sub printTestCount(TestCount As Long)
 End Sub
 
 Private Sub TrueAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
+    mCounter = mCounter + 1
+    
+    Debug.Assert testFluent.Meta.Tests.Count = mCounter
+
     With fluent.Meta.Tests
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
@@ -67,6 +73,10 @@ Private Sub TrueAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf,
 End Sub
 
 Private Sub FalseAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
+    mCounter = mCounter + 1
+    
+    Debug.Assert testFluent.Meta.Tests.Count = mCounter
+
     With fluent.Meta.Tests
         Debug.Assert fluent.Should.Be.EqualTo(False)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
@@ -84,6 +94,9 @@ Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluent
     Dim fluentBool As Boolean
     Dim expectedBool As Boolean
     Dim actualBool As Boolean
+    Dim counter As Long
+    
+    counter = 0
 
     With fluent.Meta.Tests
         fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(True)
