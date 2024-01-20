@@ -412,11 +412,11 @@ function Get-ExcelGuid {
         $excel = New-Object -ComObject excel.application
         # $excel.Application.DisplayAlerts = $false
         $workbook = $excel.Workbooks.Add()
-        $GUID = "{0002E157-0000-0000-C000-000000000046}"
+        $extensibilityGUID = "{0002E157-0000-0000-C000-000000000046}"
         $Major = 0
         $Minor = 0
 
-        $workbook.VBProject.References.AddFromGuid($GUID, $Major, $Minor)
+        $workbook.VBProject.References.AddFromGuid($extensibilityGUID, $Major, $Minor)
         $vbe = $excel.application.VBE
         $vbProj = $vbe.ActiveVBProject
         $references = $vbProj.References
