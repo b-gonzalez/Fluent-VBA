@@ -34,10 +34,18 @@ function get-officeFiles {
     
         $GUIDs = @()
         $GUIDs += $scriptingGuid
+
+        #This function requires "Trust access to the VBA project object model" to be enabled in Excel
         get-excel -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
         $GUIDs += $excelGuid
+
+        #This function requires "Trust access to the VBA project object model" to be enabled in Word
         get-word -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
+
+        #This function requires "Trust access to the VBA project object model" to be enabled in PowerPoint
         get-powerpoint -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
+
+        #"Trust access to the VBA project object model" is not required for this function
         get-access -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
     
         foreach ($file in $distfiles) {

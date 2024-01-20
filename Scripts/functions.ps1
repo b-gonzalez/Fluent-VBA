@@ -51,6 +51,7 @@ function get-word {
     .NOTES
         Author: Brian Gonzalez
         Email: b.gonzalez.programming@gmail.com
+        NOTE: This function requires "Trust access to the VBA project object model" to be enabled on Word
     #>
     [OutputType([void])]
     param (
@@ -154,6 +155,7 @@ function get-powerpoint {
     .NOTES
         Author: Brian Gonzalez
         Email: b.gonzalez.programming@gmail.com
+        NOTE: This function requires "Trust access to the VBA project object model" to be enabled on PowerPoint
     #>
     [OutputType([void])]
     param (
@@ -360,6 +362,7 @@ function get-excel {
     .NOTES
         Author: Brian Gonzalez
         Email: b.gonzalez.programming@gmail.com
+        NOTE: This function requires "Trust access to the VBA project object model" to be enabled on Excel
     #>
     [OutputType([void])]
     param (
