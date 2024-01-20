@@ -16,8 +16,8 @@ function get-officeFiles {
         $srcFiles = Get-ChildItem -Path .\Source -File
         $macros = $srcFiles | Where-Object { $_.Name -ne "mTodo.bas" }
 
-        if (! (Test-Path -Path .\Distribution)) {
-            New-Item -Path .\Distribution -Name "Distribution" -ItemType "directory"
+        if (! (Test-Path -PathType container .\Distribution)) {
+            New-Item -Path .\Distribution -ItemType "directory"
         }
 
         $distFiles = Get-ChildItem -Path .\Distribution -File
