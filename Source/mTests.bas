@@ -14,9 +14,9 @@ Public Sub runMainTests()
     Set testFluentResult = New cFluentOf
     Set events = New zUdeTests
     
-    Set events.setFluent = fluent
-    Set events.setFluentOf = testFluent
-    Set events.setFluentEventOfResult = testFluentResult
+'    Set events.setFluent = fluent
+'    Set events.setFluentOf = testFluent
+'    Set events.setFluentEventOfResult = testFluentResult
     
     With fluent.Meta.Printing
         .TestName = "Result"

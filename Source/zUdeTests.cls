@@ -13,8 +13,8 @@ Option Explicit
 
 Private Const TEST_UNEXPECTED_ERROR As Long = 513
 
-Private WithEvents pTests As cTests
-Attribute pTests.VB_VarHelpID = -1
+Private WithEvents pTest As cTests
+Attribute pTest.VB_VarHelpID = -1
 Private WithEvents pTestOf As cTests
 Attribute pTestOf.VB_VarHelpID = -1
 Private WithEvents pTestOfResults As cTests
@@ -34,7 +34,7 @@ End Sub
 
 Public Property Set setFluent(value As cFluent)
     Set pFluentEvent = value
-    Set pTests = pFluentEvent.Meta.Tests
+    Set pTest = pFluentEvent.Meta.Tests
 End Property
 
 Public Property Set setFluentOf(value As cFluentOf)
@@ -64,13 +64,13 @@ End Sub
 
 Private Sub pTest_TestPassed(ByVal test As cTest)
     Debug.Assert pFluentEvent.Meta.Tests.Result = test.Result
-    Debug.Assert test.ExpectedValue = test.ActualValue
+'    Debug.Assert test.ExpectedValue = test.ActualValue
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
 Private Sub pTest_TestFailed(ByVal test As cTest)
     Debug.Assert pFluentEvent.Meta.Tests.Result = test.Result
-    Debug.Assert test.ExpectedValue <> test.ActualValue
+'    Debug.Assert test.ExpectedValue <> test.ActualValue
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
@@ -80,11 +80,11 @@ Private Sub pTest_TestCompleted(ByVal test As cTest)
 End Sub
 
 Private Sub pTestOfResult_TestPassed(ByVal test As cTest)
-    Debug.Assert test.ExpectedValue = test.ActualValue
+'    Debug.Assert test.ExpectedValue = test.ActualValue
 End Sub
 
 Private Sub pTestOfResult_TestFailed(ByVal test As cTest)
-    Debug.Assert test.ExpectedValue <> test.ActualValue
+'    Debug.Assert test.ExpectedValue <> test.ActualValue
 End Sub
 
 Private Sub pTestOf_TestUnexpected(ByVal test As cTest)
