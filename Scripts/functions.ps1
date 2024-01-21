@@ -69,7 +69,9 @@ function get-word {
     
         $Major = 0
         $Minor = 0
-    
+
+        #This section requires "Trust access to the VBA project object model" to be enabled.
+        #If it is not enabled this section will fail.
         foreach ($macro in $macros) {
             if ($macro.Extension -ne ".doccls") {
                 $doc.VBProject.VBComponents.Import($macro.FullName)
@@ -174,6 +176,8 @@ function get-powerpoint {
         $Major = 0
         $Minor = 0
     
+        #This section requires "Trust access to the VBA project object model" to be enabled.
+        #If it is not enabled this section will fail.
         foreach ($macro in $macros) {
             if ($macro.Extension -ne ".doccls") {
                 $presentation.VBProject.VBComponents.Import($macro.FullName)
@@ -380,9 +384,10 @@ function get-excel {
         $Major = 0
         $Minor = 0
     
+        #This section requires "Trust access to the VBA project object model" to be enabled.
+        #If it is not enabled this section will fail.
         foreach ($macro in $macros) {
             if ($macro.Extension -ne ".doccls") {
-                # $workbook.VBProject.VBComponents.Import($macro.FullName)
                 $workbook.VBProject.VBComponents.Import($macro.FullName) | Out-Null
             }
         }
