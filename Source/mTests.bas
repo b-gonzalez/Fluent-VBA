@@ -1390,4 +1390,6 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
             i = i + 1
         Next test
     End With
+    
+    mCounter = 0
 End Sub

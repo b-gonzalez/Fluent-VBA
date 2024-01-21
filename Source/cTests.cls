@@ -12,6 +12,7 @@ Option Explicit
 Public Event TestPassed(ByVal test As cTest)
 Public Event TestFailed(ByVal test As cTest)
 Public Event TestCompleted(ByVal test As cTest)
+Public Event TestUnexpected(ByVal test As cTest)
 
 Private pResult As Boolean
 Private pCol As Collection
@@ -45,9 +46,11 @@ Public Sub CheckTest(test As cTest)
     
     RaiseEvent TestCompleted(test)
     
-    If test.Result Then
+    If test.Result = True Then
         RaiseEvent TestPassed(test)
-    Else
+    ElseIf test.Result = False Then
         RaiseEvent TestFailed(test)
+    Else
+        RaiseEvent TestUnexpected(test)
     End If
 End Sub

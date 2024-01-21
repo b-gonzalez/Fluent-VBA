@@ -11,15 +11,18 @@ Attribute VB_Exposed = False
 
 Option Explicit
 
-Private pFluentEvent As cFluent
-Private pFluentEventOf As cFluentOf
-Private pFluentEventOfResult As cFluentOf
+Private Const TEST_UNEXPECTED_ERROR As Long = 513
+
 Private WithEvents pTests As cTests
 Attribute pTests.VB_VarHelpID = -1
 Private WithEvents pTestOf As cTests
 Attribute pTestOf.VB_VarHelpID = -1
 Private WithEvents pTestOfResults As cTests
 Attribute pTestOfResults.VB_VarHelpID = -1
+
+Private pFluentEvent As cFluent
+Private pFluentEventOf As cFluentOf
+Private pFluentEventOfResult As cFluentOf
 Private TestCount As Long
 Private testCountOf As Long
 Private i As Long
@@ -82,4 +85,19 @@ End Sub
 
 Private Sub pTestOfResult_TestFailed(ByVal test As cTest)
     Debug.Assert test.ExpectedValue <> test.ActualValue
+End Sub
+
+Private Sub pTestOf_TestUnexpected(ByVal test As cTest)
+    'this event should never be raised
+    Err.Raise Number:=TEST_UNEXPECTED_ERROR, Description:="Test unexpected event should never be raised"
+End Sub
+
+Private Sub pTestOfResults_TestUnexpected(ByVal test As cTest)
+    'this event should never be raised
+    Err.Raise Number:=TEST_UNEXPECTED_ERROR, Description:="Test unexpected event should never be raised"
+End Sub
+
+Private Sub pTests_TestUnexpected(ByVal test As cTest)
+    'this event should never be raised
+    Err.Raise Number:=TEST_UNEXPECTED_ERROR, Description:="Test unexpected event should never be raised"
 End Sub
