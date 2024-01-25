@@ -41,7 +41,7 @@ Public Function InDataStructure(ByVal DataStructure As Variant, Optional ByVal M
 
 End Function
 
-Public Function InDataStructures(ParamArray DataStructures() As Variant) As Boolean
+Public Function InDataStructures(ByVal Method As flMethod, ParamArray DataStructures() As Variant) As Boolean
 
 End Function
 

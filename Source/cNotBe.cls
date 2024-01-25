@@ -64,8 +64,8 @@ Private Function IBe_InDataStructure(ByVal DataStructure As Variant, Optional By
     IBe_InDataStructure = Not pExpressions.InDataStructure(pNotBeValue, DataStructure, Method, True, updateFluentPath:=True)
 End Function
 
-Private Function IBe_InDataStructures(ParamArray DataStructures() As Variant) As Boolean
-    IBe_InDataStructures = Not pExpressions.InDataStructures(pNotBeValue, flMethod.flIterative, True, DataStructures)
+Private Function IBe_InDataStructures(ByVal Method As flMethod, ParamArray DataStructures() As Variant) As Boolean
+    IBe_InDataStructures = Not pExpressions.InDataStructures(pNotBeValue, Method, True, DataStructures)
 End Function
 
 Private Function IBe_Alphabetic() As Boolean
