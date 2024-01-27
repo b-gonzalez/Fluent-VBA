@@ -415,7 +415,7 @@ Public Function Between(ByVal TestingValue As Double, ByVal LowerVal As Double, 
         
     Between = (GreaterThanOrEqualTo(TestingValue, LowerVal, updateFluentPath:=False) And LessThanOrEqualTo(TestingValue, HigherVal, updateFluentPath:=False))
     
-    Call addToDictAndFluentPath("Between", CBool(Between), CBool(NegateValue), Expected:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
+    Call addToDictAndFluentPath("Between", CBool(Between), CBool(NegateValue), TestingValue:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
         
 End Function
 
@@ -467,7 +467,7 @@ Public Function LengthBetween(ByVal TestingValue As Double, ByVal LowerVal As Do
     
     LengthBetween = (MinLengthOf(tempOrigVal, LowerVal, updateFluentPath:=False) And MaxLengthOf(tempOrigVal, HigherVal, updateFluentPath:=False))
     
-    Call addToDictAndFluentPath("LengthBetween", CBool(LengthBetween), CBool(NegateValue), Expected:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
+    Call addToDictAndFluentPath("LengthBetween", CBool(LengthBetween), CBool(NegateValue), TestingValue:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
 
 End Function
 
@@ -593,23 +593,23 @@ Public Function ErrorDescriptionOf(ByVal TestingValue As Variant, ByVal TestingI
 End Function
 
 Private Sub addToDictAndFluentPath( _
-    ByVal functionName As String, _
+    ByVal FunctionName As String, _
     ByVal Result As Boolean, _
     ByVal NegateValue As Boolean, _
-    ByVal Expected As Variant, _
-    Optional ByVal actual As Variant, _
+    ByVal TestingValue As Variant, _
+    Optional ByVal TestingInput As Variant, _
     Optional LowerVal As Variant, _
     Optional HigherVal As Variant)
 
     Set pExprDict = New Scripting.Dictionary
 
-    pExprDict.Add "functionName", functionName
+    pExprDict.Add "functionName", FunctionName
     pExprDict.Add "result", Result
     pExprDict.Add "negateValue", NegateValue
-    pExprDict.Add "expected", Expected
+    pExprDict.Add "testingValue", TestingValue
     
-    If Not IsMissing(actual) Then
-        pExprDict.Add "actual", actual
+    If Not IsMissing(TestingInput) Then
+        pExprDict.Add "testingInput", TestingInput
     End If
     
     If Not IsMissing(LowerVal) Then
@@ -632,19 +632,18 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     Dim fluentCategory As String
     Dim newVal As Variant
     Dim TestingValue As Variant
-    Dim functionName As String
+    Dim TestingInput As Variant
+    Dim FunctionName As String
     Dim finalFluentPath
     Dim fluentElement As Long
     Dim test As cTest
     
     Set test = New cTest
     
-    functionName = dict("functionName")
+    FunctionName = dict("functionName")
     
     If dict("negateValue") Then
         dict("result") = Not dict("result")
-'        dict("expected") = Not dict("expected")
-'        dict("actual") = Not dict("actual")
         fluentBool = dict("result")
         shouldStr = "should not"
     Else
@@ -665,15 +664,14 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     
     If pPrinting.TestName <> "" Then FluentPath = FluentPath & pPrinting.TestName & " "
     
-    TestingValue = dict("expected")
-    
-    If Not dict.exists("actual") Then
-        dict.Add "actual", ""
+    If Not dict.exists("testingInput") Then
+        dict.Add "testingInput", ""
     End If
     
-    newVal = dict("actual")
+    TestingInput = dict("testingInput")
+    TestingValue = dict("testingValue")
     
-    FluentPath = iPrint.getFluentPath(FluentPath, functionName, shouldStr, newVal, TestingValue, dict)
+    FluentPath = iPrint.getFluentPath(FluentPath, FunctionName, shouldStr, newVal, TestingValue, dict)
     
     finalFluentPath = Split(FluentPath, "=")(fluentElement)
     
@@ -685,9 +683,11 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     
     test.Result = fluentBool
     
-    test.ExpectedValue = newVal
+    test.TestingValue = TestingValue
     
-    test.ActualValue = TestingValue
+    test.TestingInput = TestingInput
+    
+    test.FunctionName = FunctionName
     
     Call pTests.CheckTest(test)
     

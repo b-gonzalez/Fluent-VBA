@@ -70,11 +70,11 @@ Public Property Get FluentPath() As String
     FluentPath = pFluentPath
 End Property
 
-Private Function IPrinting_getFluentPath(FluentPath As String, functionName As String, shouldStr As String, newVal As Variant, TestingValue As Variant, dict As Scripting.Dictionary)
+Private Function IPrinting_getFluentPath(FluentPath As String, FunctionName As String, shouldStr As String, newVal As Variant, TestingValue As Variant, dict As Scripting.Dictionary)
     Dim LowerVal As Variant
     Dim HigherVal As Variant
 
-    Select Case functionName
+    Select Case FunctionName
         Case "Alphabetical"
             FluentPath = FluentPath & shouldStr & " be alphabetical "
             FluentPath = FluentPath & newVal & ". Actual: " & TestingValue

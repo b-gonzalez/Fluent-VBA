@@ -8,15 +8,19 @@ Public Sub runMainTests()
     Dim testFluent As cFluentOf
     Dim testFluentResult As cFluentOf
     Dim events As zUdeTests
+    Dim posTestFluent As cFluentOf
+    Dim negTestFluent As cFluentOf
+    Dim col As Collection
+    Dim i As Long
     
     Set fluent = New cFluent
     Set testFluent = New cFluentOf
     Set testFluentResult = New cFluentOf
     Set events = New zUdeTests
     
-'    Set events.setFluent = fluent
-'    Set events.setFluentOf = testFluent
-'    Set events.setFluentEventOfResult = testFluentResult
+    Set events.setFluent = fluent
+    Set events.setFluentOf = testFluent
+    Set events.setFluentEventOfResult = testFluentResult
     
     With fluent.Meta.Printing
         .TestName = "Result"
@@ -35,13 +39,19 @@ Public Sub runMainTests()
 '
     fluent.Meta.Printing.Category = "Fluent - positiveDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - positiveDocumentationTests"
-    Call positiveDocumentationTests(fluent, testFluent, testFluentResult)
+    Set posTestFluent = positiveDocumentationTests(fluent, testFluent, testFluentResult)
 
     fluent.Meta.Printing.Category = "Fluent - negativeDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - negativeDocumentationTests"
-    Call negativeDocumentationTests(fluent, testFluent, testFluentResult)
+    Set negTestFluent = negativeDocumentationTests(fluent, testFluent, testFluentResult)
+    
+    With posTestFluent.Meta
+        For i = 1 To .Tests.Count
+            Debug.Assert .Tests(i).FunctionName = negTestFluent.Meta.Tests(i).FunctionName
+        Next i
+    End With
 '
-'    Debug.Print "All tests Finished!"
+    Debug.Print "All tests Finished!"
     Call printTestCount(mCounter)
     mCounter = 0
     
@@ -94,8 +104,8 @@ Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluent
     Dim i As Long
     Dim resultBool As Boolean
     Dim fluentBool As Boolean
-    Dim expectedBool As Boolean
-    Dim actualBool As Boolean
+    Dim valueBool As Boolean
+    Dim inputBool As Boolean
     Dim counter As Long
     
     counter = 0
@@ -174,10 +184,10 @@ Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluent
         For Each test In .Tests
             resultBool = test.Result = .Tests(i).Result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
-            expectedBool = test.ExpectedValue = .Tests(i).ExpectedValue
-            actualBool = test.ActualValue = .Tests(i).ActualValue
+            valueBool = test.TestingValue = .Tests(i).TestingValue
+            inputBool = test.TestingInput = .Tests(i).TestingInput
             
-            Debug.Assert resultBool And fluentBool And expectedBool And actualBool
+            Debug.Assert resultBool And fluentBool And valueBool And inputBool
             
             i = i + 1
         Next test
@@ -188,7 +198,7 @@ Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluent
     mCounter = 0
 End Sub
 
-Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
+Private Function positiveDocumentationTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
     'Dim testFluent As cFluentOf
     Dim test As cTest
     Dim col As Collection
@@ -200,8 +210,8 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Dim counter As Long
     Dim resultBool As Boolean
     Dim fluentBool As Boolean
-    Dim expectedBool As Boolean
-    Dim actualBool As Boolean
+    Dim valueBool As Boolean
+    Dim inputBool As Boolean
     
     Set fluent = New cFluent
     Set testFluent = New cFluentOf
@@ -383,13 +393,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d.keys)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         Set d = Nothing
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(al)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
@@ -1014,9 +1017,6 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of("1 / 0").Should.EvaluateTo(CVErr(xlErrDiv0))
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of("1 / 0").Should.EvaluateTo(CVErr(xlErrDiv0))
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
         fluent.TestValue = testFluent.Of("abc").Should.Be.Alphabetic
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
@@ -1063,10 +1063,10 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
         For Each test In .Tests
             resultBool = test.Result = .Tests(i).Result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
-            expectedBool = test.ExpectedValue = .Tests(i).ExpectedValue
-            actualBool = test.ActualValue = .Tests(i).ActualValue
+            valueBool = test.TestingValue = .Tests(i).TestingValue
+            inputBool = test.TestingInput = .Tests(i).TestingInput
             
-            Debug.Assert resultBool And fluentBool And expectedBool And actualBool
+            Debug.Assert resultBool And fluentBool And valueBool And inputBool
             
             i = i + 1
         Next test
@@ -1076,9 +1076,11 @@ Private Sub positiveDocumentationTests(fluent As cFluent, testFluent As cFluentO
     printTestCount (testFluent.Meta.Tests.Count)
     mCounter = 0
     
-End Sub
+    Set positiveDocumentationTests = testFluent
+    
+End Function
 
-Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
+Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
     'Dim testFluent As cFluentOf
     Dim test As cTest
     Dim col As Collection
@@ -1089,8 +1091,8 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Dim arr2 As Variant
     Dim resultBool As Boolean
     Dim fluentBool As Boolean
-    Dim expectedBool As Boolean
-    Dim actualBool As Boolean
+    Dim valueBool As Boolean
+    Dim inputBool As Boolean
     
     Set fluent = New cFluent
     Set testFluent = New cFluentOf
@@ -1898,7 +1900,7 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
         fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.EvaluateTo(CVErr(xlErrDiv0))
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of("abc123").ShouldNot.Be.Alphanumeric
+        fluent.TestValue = testFluent.Of("abc").ShouldNot.Be.Alphabetic
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(123).ShouldNot.Be.Numeric
@@ -1937,10 +1939,10 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
         For Each test In .Tests
             resultBool = test.Result = .Tests(i).Result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
-            expectedBool = test.ExpectedValue = .Tests(i).ExpectedValue
-            actualBool = test.ActualValue = .Tests(i).ActualValue
+            valueBool = test.TestingValue = .Tests(i).TestingValue
+            inputBool = test.TestingInput = .Tests(i).TestingInput
             
-            Debug.Assert resultBool And fluentBool And expectedBool And actualBool
+            Debug.Assert resultBool And fluentBool And valueBool And inputBool
             
             i = i + 1
         Next test
@@ -1950,4 +1952,6 @@ Private Sub negativeDocumentationTests(fluent As cFluent, testFluent As cFluentO
     printTestCount (testFluent.Meta.Tests.Count)
     mCounter = 0
     
-End Sub
+    Set negativeDocumentationTests = testFluent
+    
+End Function
