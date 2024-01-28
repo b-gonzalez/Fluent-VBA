@@ -70,83 +70,93 @@ Public Property Get FluentPath() As String
     FluentPath = pFluentPath
 End Property
 
-Private Function IPrinting_getFluentPath(FluentPath As String, FunctionName As String, shouldStr As String, newVal As Variant, TestingValue As Variant, dict As Scripting.Dictionary)
+Private Function IPrinting_getFluentPath( _
+    FluentPath As String, _
+    shouldStr As String, _
+    test As cTest)
+    
+    Dim TestingValue As Variant
+    Dim TestingInput As Variant
     Dim LowerVal As Variant
     Dim HigherVal As Variant
+    
+    TestingValue = test.TestingValue
+    TestingInput = test.TestingInput
+    
+    If test.LowerVal <> Empty And test.HigherVal <> Empty Then
+        LowerVal = test.LowerVal
+        HigherVal = test.HigherVal
+    End If
 
-    Select Case FunctionName
+    Select Case test.FunctionName
         Case "Alphabetical"
             FluentPath = FluentPath & shouldStr & " be alphabetical "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "Alphanumeric"
             FluentPath = FluentPath & shouldStr & " be alphanumeric "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "Between"
-            LowerVal = dict("lowerVal")
-            HigherVal = dict("higherVal")
             FluentPath = FluentPath & shouldStr & " be between "
             FluentPath = FluentPath & LowerVal & " and " & HigherVal & ". Actual: " & TestingValue
         Case "Contain"
             FluentPath = FluentPath & shouldStr & " contain "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "Erroneous"
             FluentPath = FluentPath & shouldStr & " be "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "ErrorNumberOf"
             FluentPath = FluentPath & shouldStr & " have error number of "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "ErrorDescriptionOf"
             FluentPath = FluentPath & shouldStr & " have error description of "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "EqualTo"
             FluentPath = FluentPath & shouldStr & " be equal to "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "EndWith"
             FluentPath = FluentPath & shouldStr & " end with "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "EvaluateTo"
             FluentPath = FluentPath & shouldStr & " evaluate to "
-            FluentPath = FluentPath & CStr(newVal) & ". Actual: " & TestingValue
+            FluentPath = FluentPath & CStr(TestingInput) & ". Actual: " & TestingValue
         Case "GreaterThan"
             FluentPath = FluentPath & shouldStr & " be greater than "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "GreaterThanOrEqualTo"
             FluentPath = FluentPath & shouldStr & " be greater than or equal to "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "InDataStructure"
             FluentPath = FluentPath & shouldStr & " be in datastructure. "
         Case "InDataStructures"
             FluentPath = FluentPath & shouldStr & " be in datastructures. "
         Case "LengthBetween"
-            LowerVal = dict("lowerVal")
-            HigherVal = dict("higherVal")
             FluentPath = FluentPath & shouldStr & " have length between "
             FluentPath = FluentPath & LowerVal & " and " & HigherVal & ". Actual: " & Len(TestingValue)
         Case "LengthOf"
             FluentPath = FluentPath & shouldStr & " have length of "
-            FluentPath = FluentPath & newVal & ". Actual: " & Len(TestingValue)
+            FluentPath = FluentPath & TestingInput & ". Actual: " & Len(TestingValue)
         Case "LessThan"
             FluentPath = FluentPath & shouldStr & " be less than "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "LessThanOrEqualTo"
             FluentPath = FluentPath & shouldStr & " be less than or equal to "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "MaxLengthOf"
             FluentPath = FluentPath & shouldStr & " have max length of "
-            FluentPath = FluentPath & newVal & ". Actual: " & Len(TestingValue)
+            FluentPath = FluentPath & TestingInput & ". Actual: " & Len(TestingValue)
         Case "MinLengthOf"
             FluentPath = FluentPath & shouldStr & " have min length of "
-            FluentPath = FluentPath & newVal & ". Actual: " & Len(TestingValue)
+            FluentPath = FluentPath & TestingInput & ". Actual: " & Len(TestingValue)
         Case "Numeric"
             FluentPath = FluentPath & shouldStr & " be numeric "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
         Case "OneOf"
-            FluentPath = FluentPath & shouldStr & " be one of: " & dict("expected")
+            FluentPath = FluentPath & shouldStr & " be one of: " & TestingInput
         Case "Something"
-            FluentPath = FluentPath & shouldStr & " be something: " & dict("expected")
+            FluentPath = FluentPath & shouldStr & " be something"
         Case "StartWith"
             FluentPath = FluentPath & shouldStr & " start with "
-            FluentPath = FluentPath & newVal & ". Actual: " & TestingValue
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
     End Select
     
     IPrinting_getFluentPath = FluentPath

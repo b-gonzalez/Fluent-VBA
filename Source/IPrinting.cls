@@ -17,6 +17,6 @@ Public Property Let FluentPath(value As String)
 
 End Property
 
-Public Function getFluentPath(FluentPath As String, FunctionName As String, shouldStr As String, newVal As Variant, TestingValue As Variant, dict As Scripting.Dictionary)
+Public Function getFluentPath(FluentPath As String, shouldStr As String, test As cTest)
 
 End Function

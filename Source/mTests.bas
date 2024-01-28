@@ -62,7 +62,7 @@ End Sub
 
 Private Sub printTestCount(TestCount As Long)
     If TestCount > 1 Then
-        Debug.Print TestCount & " tests finished!"
+        Debug.Print TestCount & " tests finished!" & vbNewLine
     ElseIf TestCount = 1 Then
         Debug.Print "Test finished!"
     End If
@@ -74,7 +74,6 @@ Private Sub TrueAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf,
     Debug.Assert testFluent.Meta.Tests.Count = mCounter
 
     With fluent.Meta.Tests
-        
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)

@@ -427,16 +427,16 @@ Public Function OneOf(ByVal TestingValue As Variant, ByVal NegateValue As Boolea
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
-    Dim expectedStr As String
+    Dim TestingInputStr As String
         
     arr = args(0)
     tempBool = False
     
     For i = LBound(arr) To UBound(arr)
         If IsObject(arr(i)) Then
-            expectedStr = expectedStr & TypeName(arr(i)) & ", "
+            TestingInputStr = TestingInputStr & TypeName(arr(i)) & ", "
         Else
-            expectedStr = expectedStr & arr(i) & ", "
+            TestingInputStr = TestingInputStr & arr(i) & ", "
         End If
     
         If IsObject(arr(i)) Or IsObject(TestingValue) Then
@@ -449,11 +449,13 @@ Public Function OneOf(ByVal TestingValue As Variant, ByVal NegateValue As Boolea
         End If
     Next i
     
-    expectedStr = Left(expectedStr, Len(expectedStr) - 2)
+    TestingInputStr = Left(TestingInputStr, Len(TestingInputStr) - 2)
     
     OneOf = tempBool
     
-    Call addToDictAndFluentPath("OneOf", CBool(OneOf), CBool(NegateValue), expectedStr)
+    If TypeOf TestingValue Is Object  Then TestingValue = TypeName(TestingValue)
+    
+    Call addToDictAndFluentPath("OneOf", CBool(OneOf), CBool(NegateValue), TestingValue, TestingInputStr)
         
 End Function
 
@@ -600,56 +602,65 @@ Private Sub addToDictAndFluentPath( _
     Optional ByVal TestingInput As Variant, _
     Optional LowerVal As Variant, _
     Optional HigherVal As Variant)
+    
+    Dim test As cTest
+    Dim shouldStr As String
+    
+    Set test = New cTest
+    shouldStr = "Should"
 
-    Set pExprDict = New Scripting.Dictionary
+'    Set pExprDict = New Scripting.Dictionary
+'
+'    pExprDict.Add "functionName", FunctionName
+'    pExprDict.Add "result", Result
+'    pExprDict.Add "negateValue", NegateValue
+'    pExprDict.Add "testingValue", TestingValue
+'
+'    If Not IsMissing(TestingInput) Then
+'        pExprDict.Add "testingInput", TestingInput
+'    End If
+'
+'    If Not IsMissing(LowerVal) Then
+'        pExprDict.Add "lowerVal", LowerVal
+'    End If
+'
+'    If Not IsMissing(HigherVal) Then
+'        pExprDict.Add "higherVal", HigherVal
+'    End If
 
-    pExprDict.Add "functionName", FunctionName
-    pExprDict.Add "result", Result
-    pExprDict.Add "negateValue", NegateValue
-    pExprDict.Add "testingValue", TestingValue
+    If NegateValue Then
+        Result = Not Result
+        shouldStr = "should not"
+    End If
+
+    With test
+        .FunctionName = FunctionName
+        .Result = Result
+        .TestingValue = TestingValue
+        .TestingInput = Empty
+    End With
     
     If Not IsMissing(TestingInput) Then
-        pExprDict.Add "testingInput", TestingInput
+        test.TestingInput = TestingInput
     End If
-    
+
     If Not IsMissing(LowerVal) Then
-        pExprDict.Add "lowerVal", LowerVal
+        test.LowerVal = LowerVal
     End If
-    
+
     If Not IsMissing(HigherVal) Then
-        pExprDict.Add "higherVal", HigherVal
+        test.HigherVal = HigherVal
     End If
     
-    Call addFluentPathNew(pExprDict)
+    
+    Call addFluentPathNew(test, shouldStr)
 
 End Sub
 
-Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
+Private Sub addFluentPathNew(ByVal test As cTest, ByVal shouldStr As String)
     Dim FluentPath As String
-    Dim shouldStr As String
-    Dim fluentBool As Boolean
-    Dim fluentTestName As String
-    Dim fluentCategory As String
-    Dim newVal As Variant
-    Dim TestingValue As Variant
-    Dim TestingInput As Variant
-    Dim FunctionName As String
-    Dim finalFluentPath
+    Dim finalFluentPath As String
     Dim fluentElement As Long
-    Dim test As cTest
-    
-    Set test = New cTest
-    
-    FunctionName = dict("functionName")
-    
-    If dict("negateValue") Then
-        dict("result") = Not dict("result")
-        fluentBool = dict("result")
-        shouldStr = "should not"
-    Else
-        fluentBool = dict("result")
-        shouldStr = "should"
-    End If
     
     FluentPath = ""
     
@@ -660,18 +671,13 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
         fluentElement = 1
     End If
     
-    FluentPath = FluentPath & CLng(fluentBool) & "="
+    FluentPath = FluentPath & CLng(test.Result) & "="
     
     If pPrinting.TestName <> "" Then FluentPath = FluentPath & pPrinting.TestName & " "
     
-    If Not dict.exists("testingInput") Then
-        dict.Add "testingInput", ""
-    End If
-    
-    TestingInput = dict("testingInput")
-    TestingValue = dict("testingValue")
-    
-    FluentPath = iPrint.getFluentPath(FluentPath, FunctionName, shouldStr, newVal, TestingValue, dict)
+    With test
+        FluentPath = iPrint.getFluentPath(FluentPath, shouldStr, test)
+    End With
     
     finalFluentPath = Split(FluentPath, "=")(fluentElement)
     
@@ -681,17 +687,8 @@ Private Sub addFluentPathNew(ByVal dict As Scripting.Dictionary)
     
     test.FluentPath = finalFluentPath
     
-    test.Result = fluentBool
-    
-    test.TestingValue = TestingValue
-    
-    test.TestingInput = TestingInput
-    
-    test.FunctionName = FunctionName
-    
     Call pTests.CheckTest(test)
     
-    Set pExprDict = Nothing
 End Sub
 
 Private Sub Class_Initialize()
