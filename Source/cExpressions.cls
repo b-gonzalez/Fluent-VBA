@@ -73,7 +73,7 @@ Public Function InDataStructures(ByVal TestingValue As Variant, ByVal Method As 
     
     InDataStructures = temp_bool
     
-    Call addToDictAndFluentPath("InDataStructures", CBool(InDataStructures), CBool(NegateValue), TestingValue)
+    Call addToTestAndFluentPath("InDataStructures", CBool(InDataStructures), CBool(NegateValue), TestingValue)
     
 End Function
 
@@ -116,7 +116,7 @@ Optional updateFluentPath As Boolean = False) As Boolean
 '        End If
 '    Else
     If updateFluentPath Then
-        Call addToDictAndFluentPath("InDataStructure", CBool(InDataStructure), CBool(NegateValue), TestingValue)
+        Call addToTestAndFluentPath("InDataStructure", CBool(InDataStructure), CBool(NegateValue), TestingValue)
     End If
 '    End If
     
@@ -234,7 +234,7 @@ Public Function GreaterThan(ByVal TestingValue As Double, ByVal TestingInput As 
     
     GreaterThan = (TestingValue > TestingInput)
     
-    Call addToDictAndFluentPath("GreaterThan", CBool(GreaterThan), CBool(NegateValue), TestingValue, TestingInput)
+    Call addToTestAndFluentPath("GreaterThan", CBool(GreaterThan), CBool(NegateValue), TestingValue, TestingInput)
     
 End Function
 
@@ -250,7 +250,7 @@ Optional updateFluentPath As Boolean = False) As Boolean
     GreaterThanOrEqualTo = (TestingValue >= TestingInput)
     
     If updateFluentPath Then
-        Call addToDictAndFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(NegateValue), TestingValue, TestingInput)
+        Call addToTestAndFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(NegateValue), TestingValue, TestingInput)
     End If
         
 End Function
@@ -262,7 +262,7 @@ Public Function LessThan(ByVal TestingValue As Double, ByVal TestingInput As Dou
         
     LessThan = (TestingValue < TestingInput)
     
-    Call addToDictAndFluentPath("LessThan", CBool(LessThan), CBool(NegateValue), TestingValue, TestingInput)
+    Call addToTestAndFluentPath("LessThan", CBool(LessThan), CBool(NegateValue), TestingValue, TestingInput)
 
 End Function
 
@@ -278,7 +278,7 @@ Optional updateFluentPath As Boolean = False) As Boolean
     LessThanOrEqualTo = (TestingValue <= TestingInput)
        
     If updateFluentPath Then
-        Call addToDictAndFluentPath("LessThanOrEqualTo", CBool(LessThanOrEqualTo), CBool(NegateValue), TestingValue, TestingInput)
+        Call addToTestAndFluentPath("LessThanOrEqualTo", CBool(LessThanOrEqualTo), CBool(NegateValue), TestingValue, TestingInput)
     End If
         
 End Function
@@ -303,7 +303,7 @@ Public Function EqualTo(ByVal TestingValue As Variant, ByVal TestingInput As Var
     
     EqualTo = tempBool
     
-    Call addToDictAndFluentPath("EqualTo", CBool(EqualTo), CBool(NegateValue), TestingValue, TestingInput)
+    Call addToTestAndFluentPath("EqualTo", CBool(EqualTo), CBool(NegateValue), TestingValue, TestingInput)
         
 End Function
 
@@ -316,7 +316,7 @@ Public Function Contain(ByVal TestingValue As Variant, ByVal TestingInput As Var
         Contain = True
     End If
     
-    Call addToDictAndFluentPath("Contain", CBool(Contain), CBool(NegateValue), TestingValue, TestingInput)
+    Call addToTestAndFluentPath("Contain", CBool(Contain), CBool(NegateValue), TestingValue, TestingInput)
         
 End Function
 
@@ -332,7 +332,7 @@ Public Function StartWith(ByVal TestingValue As Variant, ByVal TestingInput As V
         StartWith = True
     End If
     
-    Call addToDictAndFluentPath("StartWith", CBool(StartWith), CBool(NegateValue), TestingValue, TestingInput)
+    Call addToTestAndFluentPath("StartWith", CBool(StartWith), CBool(NegateValue), TestingValue, TestingInput)
         
 End Function
 
@@ -348,7 +348,7 @@ Public Function EndWith(ByVal TestingValue As Variant, ByVal TestingInput As Var
         EndWith = True
     End If
     
-    Call addToDictAndFluentPath("EndWith", CBool(EndWith), CBool(NegateValue), TestingValue, TestingInput)
+    Call addToTestAndFluentPath("EndWith", CBool(EndWith), CBool(NegateValue), TestingValue, TestingInput)
     
 End Function
 
@@ -359,7 +359,7 @@ Public Function LengthOf(ByVal TestingValue As Double, ByVal TestingInput As Dou
         
     LengthOf = (Len(CStr(TestingValue)) = TestingInput)
     
-    Call addToDictAndFluentPath("LengthOf", CBool(LengthOf), CBool(NegateValue), TestingValue, TestingInput)
+    Call addToTestAndFluentPath("LengthOf", CBool(LengthOf), CBool(NegateValue), TestingValue, TestingInput)
             
 End Function
 
@@ -375,7 +375,7 @@ Optional updateFluentPath As Boolean = False) As Boolean
     MaxLengthOf = (Len(CStr(TestingValue)) <= TestingInput)
     
     If updateFluentPath Then
-        Call addToDictAndFluentPath("MaxLengthOf", CBool(MaxLengthOf), CBool(NegateValue), TestingValue, TestingInput)
+        Call addToTestAndFluentPath("MaxLengthOf", CBool(MaxLengthOf), CBool(NegateValue), TestingValue, TestingInput)
     End If
             
 End Function
@@ -392,7 +392,7 @@ Optional updateFluentPath As Boolean = False) As Boolean
     MinLengthOf = (Len(CStr(TestingValue)) >= TestingInput)
         
     If updateFluentPath Then
-        Call addToDictAndFluentPath("MinLengthOf", CBool(MinLengthOf), CBool(NegateValue), TestingValue, TestingInput)
+        Call addToTestAndFluentPath("MinLengthOf", CBool(MinLengthOf), CBool(NegateValue), TestingValue, TestingInput)
     End If
         
 End Function
@@ -404,7 +404,7 @@ Public Function Something(ByVal TestingValue As Variant, Optional ByVal NegateVa
         
     Something = (Not TestingValue Is Nothing)
     
-    Call addToDictAndFluentPath("Something", CBool(Something), CBool(NegateValue), TypeName(TestingValue))
+    Call addToTestAndFluentPath("Something", CBool(Something), CBool(NegateValue), TypeName(TestingValue))
         
 End Function
 
@@ -415,7 +415,7 @@ Public Function Between(ByVal TestingValue As Double, ByVal LowerVal As Double, 
         
     Between = (GreaterThanOrEqualTo(TestingValue, LowerVal, updateFluentPath:=False) And LessThanOrEqualTo(TestingValue, HigherVal, updateFluentPath:=False))
     
-    Call addToDictAndFluentPath("Between", CBool(Between), CBool(NegateValue), TestingValue:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
+    Call addToTestAndFluentPath("Between", CBool(Between), CBool(NegateValue), TestingValue:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
         
 End Function
 
@@ -455,7 +455,7 @@ Public Function OneOf(ByVal TestingValue As Variant, ByVal NegateValue As Boolea
     
     If TypeOf TestingValue Is Object  Then TestingValue = TypeName(TestingValue)
     
-    Call addToDictAndFluentPath("OneOf", CBool(OneOf), CBool(NegateValue), TestingValue, TestingInputStr)
+    Call addToTestAndFluentPath("OneOf", CBool(OneOf), CBool(NegateValue), TestingValue, TestingInputStr)
         
 End Function
 
@@ -469,7 +469,7 @@ Public Function LengthBetween(ByVal TestingValue As Double, ByVal LowerVal As Do
     
     LengthBetween = (MinLengthOf(tempOrigVal, LowerVal, updateFluentPath:=False) And MaxLengthOf(tempOrigVal, HigherVal, updateFluentPath:=False))
     
-    Call addToDictAndFluentPath("LengthBetween", CBool(LengthBetween), CBool(NegateValue), TestingValue:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
+    Call addToTestAndFluentPath("LengthBetween", CBool(LengthBetween), CBool(NegateValue), TestingValue:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
 
 End Function
 
@@ -480,7 +480,7 @@ Public Function EvaluateTo(ByVal TestingValue As Variant, ByVal TestingInput As 
     
     EvaluateTo = (Evaluate(TestingValue) = TestingInput)
 
-    Call addToDictAndFluentPath("EvaluateTo", CBool(EvaluateTo), CBool(NegateValue), TestingValue, TestingInput)
+    Call addToTestAndFluentPath("EvaluateTo", CBool(EvaluateTo), CBool(NegateValue), TestingValue, TestingInput)
     
 End Function
 
@@ -498,7 +498,7 @@ Public Function Alphabetic(ByVal TestingValue As Variant, Optional ByVal NegateV
     
     Alphabetic = (TestingValue = tempAlph)
     
-    Call addToDictAndFluentPath("Alphabetic", CBool(Alphabetic), CBool(NegateValue), TypeName(TestingValue))
+    Call addToTestAndFluentPath("Alphabetic", CBool(Alphabetic), CBool(NegateValue), TypeName(TestingValue))
 End Function
 
 Public Function Numeric(ByVal TestingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Boolean
@@ -515,7 +515,7 @@ Public Function Numeric(ByVal TestingValue As Variant, Optional ByVal NegateValu
     
     Numeric = (TestingValue = tempNum)
      
-    Call addToDictAndFluentPath("Numeric", CBool(Numeric), CBool(NegateValue), TypeName(TestingValue))
+    Call addToTestAndFluentPath("Numeric", CBool(Numeric), CBool(NegateValue), TypeName(TestingValue))
 End Function
 
 Public Function Alphanumeric(ByVal TestingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Boolean
@@ -544,7 +544,7 @@ Public Function Alphanumeric(ByVal TestingValue As Variant, Optional ByVal Negat
     
     Alphanumeric = b
     
-    Call addToDictAndFluentPath("Alphanumeric", CBool(Alphanumeric), CBool(NegateValue), TypeName(TestingValue))
+    Call addToTestAndFluentPath("Alphanumeric", CBool(Alphanumeric), CBool(NegateValue), TypeName(TestingValue))
 End Function
 
 Public Function Erroneous(ByVal TestingValue As Variant, Optional ByVal NegateValue = False) As Boolean
@@ -563,7 +563,7 @@ Public Function Erroneous(ByVal TestingValue As Variant, Optional ByVal NegateVa
     
     Erroneous = temp
     
-    Call addToDictAndFluentPath("Erroneous", CBool(Erroneous), CBool(NegateValue), TypeName(temp), "Error")
+    Call addToTestAndFluentPath("Erroneous", CBool(Erroneous), CBool(NegateValue), TypeName(temp), "Error")
 End Function
 
 Public Function ErrorNumberOf(ByVal TestingValue As Variant, ByVal TestingInput As Variant, Optional ByVal NegateValue = False) As Boolean
@@ -577,7 +577,7 @@ Public Function ErrorNumberOf(ByVal TestingValue As Variant, ByVal TestingInput 
         ErrorNumberOf = (temp = TestingInput)
     On Error GoTo 0
     
-    Call addToDictAndFluentPath("ErrorNumberOf", CBool(ErrorNumberOf), CBool(NegateValue), TestingInput, temp)
+    Call addToTestAndFluentPath("ErrorNumberOf", CBool(ErrorNumberOf), CBool(NegateValue), TestingInput, temp)
 End Function
 
 Public Function ErrorDescriptionOf(ByVal TestingValue As Variant, ByVal TestingInput As Variant, Optional ByVal NegateValue = False) As Boolean
@@ -591,10 +591,10 @@ Public Function ErrorDescriptionOf(ByVal TestingValue As Variant, ByVal TestingI
         ErrorDescriptionOf = (Err.Description = TestingInput)
     On Error GoTo 0
     
-    Call addToDictAndFluentPath("ErrorDescriptionOf", CBool(ErrorDescriptionOf), CBool(NegateValue), TestingInput, temp)
+    Call addToTestAndFluentPath("ErrorDescriptionOf", CBool(ErrorDescriptionOf), CBool(NegateValue), TestingInput, temp)
 End Function
 
-Private Sub addToDictAndFluentPath( _
+Private Sub addToTestAndFluentPath( _
     ByVal FunctionName As String, _
     ByVal Result As Boolean, _
     ByVal NegateValue As Boolean, _
@@ -608,25 +608,6 @@ Private Sub addToDictAndFluentPath( _
     
     Set test = New cTest
     shouldStr = "Should"
-
-'    Set pExprDict = New Scripting.Dictionary
-'
-'    pExprDict.Add "functionName", FunctionName
-'    pExprDict.Add "result", Result
-'    pExprDict.Add "negateValue", NegateValue
-'    pExprDict.Add "testingValue", TestingValue
-'
-'    If Not IsMissing(TestingInput) Then
-'        pExprDict.Add "testingInput", TestingInput
-'    End If
-'
-'    If Not IsMissing(LowerVal) Then
-'        pExprDict.Add "lowerVal", LowerVal
-'    End If
-'
-'    If Not IsMissing(HigherVal) Then
-'        pExprDict.Add "higherVal", HigherVal
-'    End If
 
     If NegateValue Then
         Result = Not Result
@@ -657,6 +638,98 @@ Private Sub addToDictAndFluentPath( _
 
 End Sub
 
+Private Function getFluentPath( _
+    FluentPath As String, _
+    shouldStr As String, _
+    test As cTest)
+    
+    Dim TestingValue As Variant
+    Dim TestingInput As Variant
+    Dim LowerVal As Variant
+    Dim HigherVal As Variant
+    
+    TestingValue = test.TestingValue
+    TestingInput = test.TestingInput
+    
+    If test.LowerVal <> Empty And test.HigherVal <> Empty Then
+        LowerVal = test.LowerVal
+        HigherVal = test.HigherVal
+    End If
+
+    Select Case test.FunctionName
+        Case "Alphabetical"
+            FluentPath = FluentPath & shouldStr & " be alphabetical "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "Alphanumeric"
+            FluentPath = FluentPath & shouldStr & " be alphanumeric "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "Between"
+            FluentPath = FluentPath & shouldStr & " be between "
+            FluentPath = FluentPath & LowerVal & " and " & HigherVal & ". Actual: " & TestingValue
+        Case "Contain"
+            FluentPath = FluentPath & shouldStr & " contain "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "Erroneous"
+            FluentPath = FluentPath & shouldStr & " be "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "ErrorNumberOf"
+            FluentPath = FluentPath & shouldStr & " have error number of "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "ErrorDescriptionOf"
+            FluentPath = FluentPath & shouldStr & " have error description of "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "EqualTo"
+            FluentPath = FluentPath & shouldStr & " be equal to "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "EndWith"
+            FluentPath = FluentPath & shouldStr & " end with "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "EvaluateTo"
+            FluentPath = FluentPath & shouldStr & " evaluate to "
+            FluentPath = FluentPath & CStr(TestingInput) & ". Actual: " & TestingValue
+        Case "GreaterThan"
+            FluentPath = FluentPath & shouldStr & " be greater than "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "GreaterThanOrEqualTo"
+            FluentPath = FluentPath & shouldStr & " be greater than or equal to "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "InDataStructure"
+            FluentPath = FluentPath & shouldStr & " be in datastructure. "
+        Case "InDataStructures"
+            FluentPath = FluentPath & shouldStr & " be in datastructures. "
+        Case "LengthBetween"
+            FluentPath = FluentPath & shouldStr & " have length between "
+            FluentPath = FluentPath & LowerVal & " and " & HigherVal & ". Actual: " & Len(TestingValue)
+        Case "LengthOf"
+            FluentPath = FluentPath & shouldStr & " have length of "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & Len(TestingValue)
+        Case "LessThan"
+            FluentPath = FluentPath & shouldStr & " be less than "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "LessThanOrEqualTo"
+            FluentPath = FluentPath & shouldStr & " be less than or equal to "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "MaxLengthOf"
+            FluentPath = FluentPath & shouldStr & " have max length of "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & Len(TestingValue)
+        Case "MinLengthOf"
+            FluentPath = FluentPath & shouldStr & " have min length of "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & Len(TestingValue)
+        Case "Numeric"
+            FluentPath = FluentPath & shouldStr & " be numeric "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+        Case "OneOf"
+            FluentPath = FluentPath & shouldStr & " be one of: " & TestingInput
+        Case "Something"
+            FluentPath = FluentPath & shouldStr & " be something"
+        Case "StartWith"
+            FluentPath = FluentPath & shouldStr & " start with "
+            FluentPath = FluentPath & TestingInput & ". Actual: " & TestingValue
+    End Select
+    
+    getFluentPath = FluentPath
+End Function
+
 Private Sub addFluentPathNew(ByVal test As cTest, ByVal shouldStr As String)
     Dim FluentPath As String
     Dim finalFluentPath As String
@@ -676,7 +749,7 @@ Private Sub addFluentPathNew(ByVal test As cTest, ByVal shouldStr As String)
     If pPrinting.TestName <> "" Then FluentPath = FluentPath & pPrinting.TestName & " "
     
     With test
-        FluentPath = iPrint.getFluentPath(FluentPath, shouldStr, test)
+        FluentPath = getFluentPath(FluentPath, shouldStr, test)
     End With
     
     finalFluentPath = Split(FluentPath, "=")(fluentElement)

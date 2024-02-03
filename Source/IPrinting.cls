@@ -16,7 +16,3 @@ End Property
 Public Property Let FluentPath(value As String)
 
 End Property
-
-Public Function getFluentPath(FluentPath As String, shouldStr As String, test As cTest)
-
-End Function

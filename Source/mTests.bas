@@ -58,6 +58,8 @@ Public Sub runMainTests()
 '    fluent.Meta.Printing.PrintToSheet
 '    testFluent.Meta.Printing.PrintToSheet
 '    fluent.Meta.Printing.PrintToImmediate
+
+    events.CheckCounters
 End Sub
 
 Private Sub printTestCount(TestCount As Long)

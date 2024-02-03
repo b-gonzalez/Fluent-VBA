@@ -14,8 +14,8 @@ Private pTestingInput As Variant
 Private pFluentPath As String
 Private pResult As Boolean
 Private pFunctionName As String
-Private pLowerVal As Variant
-Private pHigherVal As Variant
+Private pLowerVal As Double
+Private pHigherVal As Double
 
 Public Property Let TestingValue(value As Variant)
     pTestingValue = value
@@ -33,19 +33,19 @@ Public Property Get TestingInput() As Variant
     TestingInput = pTestingInput
 End Property
 
-Public Property Let LowerVal(value As Variant)
+Public Property Let LowerVal(value As Double)
     pLowerVal = value
 End Property
 
-Public Property Get LowerVal() As Variant
+Public Property Get LowerVal() As Double
     TestingInput = pLowerVal
 End Property
 
-Public Property Let HigherVal(value As Variant)
+Public Property Let HigherVal(value As Double)
     pHigherVal = value
 End Property
 
-Public Property Get HigherVal() As Variant
+Public Property Get HigherVal() As Double
     HigherVal = pHigherVal
 End Property
 

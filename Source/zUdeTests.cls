@@ -24,12 +24,14 @@ Private pFluentEvent As cFluent
 Private pFluentEventOf As cFluentOf
 Private pFluentEventOfResult As cFluentOf
 Private TestCount As Long
-Private testCountOf As Long
+Private TestOfCount As Long
+Private TestOfResultsCount As Long
 Private i As Long
 
 Private Sub Class_Initialize()
     TestCount = 0
-    testCountOf = 0
+    TestOfCount = 0
+    TestOfResultsCount = 0
 End Sub
 
 Public Property Set setFluent(value As cFluent)
@@ -58,8 +60,8 @@ Private Sub pTestOf_TestFailed(ByVal test As cTest)
 End Sub
 
 Private Sub pTestOf_TestCompleted(ByVal test As cTest)
-    testCountOf = testCountOf + 1
-    Debug.Assert pFluentEventOf.Meta.Tests.Count = testCountOf
+    TestOfCount = TestOfCount + 1
+    Debug.Assert pFluentEventOf.Meta.Tests.Count = TestOfCount
 End Sub
 
 Private Sub pTest_TestPassed(ByVal test As cTest)
@@ -87,6 +89,10 @@ Private Sub pTestOfResult_TestFailed(ByVal test As cTest)
 '    Debug.Assert test.ExpectedValue <> test.ActualValue
 End Sub
 
+Private Sub pTestOfResults_TestCompleted(ByVal test As cTest)
+    TestOfResultsCount = TestOfResultsCount + 1
+End Sub
+
 Private Sub pTestOf_TestUnexpected(ByVal test As cTest)
     'this event should never be raised
     Err.Raise Number:=TEST_UNEXPECTED_ERROR, Description:="Test unexpected event should never be raised"
@@ -100,4 +106,10 @@ End Sub
 Private Sub pTests_TestUnexpected(ByVal test As cTest)
     'this event should never be raised
     Err.Raise Number:=TEST_UNEXPECTED_ERROR, Description:="Test unexpected event should never be raised"
+End Sub
+
+Public Sub CheckCounters()
+    Debug.Assert TestOfResultsCount > 0
+    Debug.Assert TestCount > 0
+    Debug.Assert TestOfCount > 0
 End Sub
