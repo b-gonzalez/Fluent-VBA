@@ -16,21 +16,39 @@ Private pResult As Boolean
 Private pFunctionName As String
 Private pLowerVal As Double
 Private pHigherVal As Double
+Private pStrTestValue As String
+Private pStrTestInput As String
 
 Public Property Let TestingValue(value As Variant)
     pTestingValue = value
 End Property
 
-Public Property Get TestingValue() As Variant
-    TestingValue = pTestingValue
+Public Property Set TestingValue(value As Variant)
+    Set pTestingValue = value
 End Property
 
-Public Property Let TestingInput(value As Variant)
+Public Property Get TestingValue() As Variant
+    If TypeOf pTestingValue Is Object  Then
+        Set TestingValue = pTestingValue
+    Else
+        TestingValue = pTestingValue
+    End If
+End Property
+
+Public Property Let testingInput(value As Variant)
     pTestingInput = value
 End Property
 
-Public Property Get TestingInput() As Variant
-    TestingInput = pTestingInput
+Public Property Set testingInput(value As Variant)
+    Set pTestingInput = value
+End Property
+
+Public Property Get testingInput() As Variant
+    If TypeOf pTestingInput Is Object  Then
+        Set testingInput = pTestingInput
+    Else
+        testingInput = pTestingInput
+    End If
 End Property
 
 Public Property Let LowerVal(value As Double)
@@ -38,7 +56,7 @@ Public Property Let LowerVal(value As Double)
 End Property
 
 Public Property Get LowerVal() As Double
-    TestingInput = pLowerVal
+    LowerVal = pLowerVal
 End Property
 
 Public Property Let HigherVal(value As Double)
@@ -65,10 +83,27 @@ Public Property Get Result() As Boolean
     Result = pResult
 End Property
 
-Public Property Let FunctionName(value As String)
+Public Property Let functionName(value As String)
     pFunctionName = value
 End Property
 
-Public Property Get FunctionName() As String
-    FunctionName = pFunctionName
+Public Property Get functionName() As String
+    functionName = pFunctionName
 End Property
+
+Public Property Let StrTestValue(value As String)
+    pStrTestValue = value
+End Property
+
+Public Property Get StrTestValue() As String
+    StrTestValue = pStrTestValue
+End Property
+
+Public Property Let StrTestInput(value As String)
+    pStrTestInput = value
+End Property
+
+Public Property Get StrTestInput() As String
+    StrTestInput = pStrTestInput
+End Property
+

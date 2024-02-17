@@ -37,11 +37,11 @@ Public Function GreaterThanOrEqualTo(ByVal value As Double) As Boolean
 
 End Function
 
-Public Function InDataStructure(ByVal DataStructure As Variant, Optional ByVal Method As flMethod = flRecursive) As Boolean
+Public Function InDataStructure(ByVal DataStructure As Variant, Optional ByVal method As flSearch = flRecursive) As Boolean
 
 End Function
 
-Public Function InDataStructures(ByVal Method As flMethod, ParamArray DataStructures() As Variant) As Boolean
+Public Function InDataStructures(ByVal method As flSearch, ParamArray DataStructures() As Variant) As Boolean
 
 End Function
 
