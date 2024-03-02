@@ -16,18 +16,20 @@ Public Event TestUnexpected(ByVal test As cTest)
 
 Private pResult As Boolean
 Private pCol As Collection
+Private pCount As Long
 
 Private Sub Class_Initialize()
     Set pCol = New Collection
+    pCount = 0
 End Sub
 
 Public Property Get Result() As Boolean
     Result = pResult
 End Property
 
-Public Property Get Item(value As Long) As cTest
+Public Property Get Item(OneBasedIndex As Long) As cTest
 Attribute Item.VB_UserMemId = 0
-    Set Item = pCol(value)
+    Set Item = pCol(OneBasedIndex)
 End Property
 
 Public Property Get NewEnum() As IUnknown
@@ -36,13 +38,19 @@ Attribute NewEnum.VB_UserMemId = -4
 End Property
 
 Public Property Get Count() As Long
-    Count = pCol.Count
+    Count = pCount
 End Property
+
+Public Sub ResetCounter()
+    pCount = 0
+End Sub
 
 Public Sub CheckTest(test As cTest)
     pResult = test.Result
     
     pCol.Add test
+    
+    pCount = pCount + 1
     
     RaiseEvent TestCompleted(test)
     

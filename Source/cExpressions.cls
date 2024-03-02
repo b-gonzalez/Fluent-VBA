@@ -20,7 +20,7 @@ Private pFluentPath As String
 
 Private Const NOT_IMPLEMENTED_ERROR As Long = 514
 
-Public Enum flSearch
+Public Enum flAlgorithm
     flRecursive
     flIterative
 End Enum
@@ -87,7 +87,7 @@ Public Property Set setPrinting(ByVal value As IPrinting)
     Set iPrint = value
 End Property
 
-Public Function InDataStructures(ByVal TestingValue As Variant, ByVal method As flSearch, negateValue As Boolean, ParamArray args() As Variant) As Boolean
+Public Function InDataStructures(ByVal TestingValue As Variant, ByVal method As flAlgorithm, negateValue As Boolean, ParamArray args() As Variant) As Boolean
     Dim i As Long
     Dim temp_bool As Boolean
     Dim IsLastElem As Boolean
@@ -114,7 +114,7 @@ End Function
 Public Function InDataStructure( _
 ByVal TestingValue As Variant, _
 ByVal DataStructure As Variant, _
-Optional ByVal method As flSearch = flRecursive, _
+Optional ByVal method As flAlgorithm = flRecursive, _
 Optional negateValue As Boolean = False, _
 Optional updateFluentPath As Boolean = False) As Boolean
     Dim elem As Variant
@@ -127,7 +127,7 @@ Optional updateFluentPath As Boolean = False) As Boolean
     
     tempBool = False
     
-    If isDataStructure(DataStructure) Then
+    If IsDataStructure(DataStructure) Then
         If method = flRecursive Then
             Set col = getNestedElementsRecur(DataStructure)
         ElseIf method = flIterative Then
@@ -150,7 +150,7 @@ Optional updateFluentPath As Boolean = False) As Boolean
     
 End Function
 
-Private Function isDataStructure(ByVal DataStructure As Variant)
+Private Function IsDataStructure(ByVal DataStructure As Variant)
     Dim dsTypeName As String
     Dim tempBool As Boolean
     Dim fluentBool As Boolean
@@ -171,7 +171,7 @@ Private Function isDataStructure(ByVal DataStructure As Variant)
         
     On Error GoTo 0
     
-    isDataStructure = tempBool
+    IsDataStructure = tempBool
 End Function
 
 Private Function getNestedElementsRecur(ByVal DataStructure As Variant, Optional ByRef col As Collection = Nothing) As Collection
@@ -183,7 +183,7 @@ Private Function getNestedElementsRecur(ByVal DataStructure As Variant, Optional
         Set col = New Collection
     End If
     
-    If isDataStructure(DataStructure) Then
+    If IsDataStructure(DataStructure) Then
         If TypeName(DataStructure) = "Dictionary" Then
             tempDataStructure = DataStructure.Items
         Else
@@ -195,7 +195,7 @@ Private Function getNestedElementsRecur(ByVal DataStructure As Variant, Optional
         End If
         
         For Each elem In tempDataStructure
-            If isDataStructure(elem) Then
+            If IsDataStructure(elem) Then
                 Set col = getNestedElementsRecur(elem, col)
             Else
                 col.Add elem
@@ -234,7 +234,7 @@ Private Function getNestedElementsIter(ByVal DataStructure As Variant) As Collec
     Do
         hasDataStructures = False
         For i = 1 To col.Count
-            If isDataStructure(col(i)) Then
+            If IsDataStructure(col(i)) Then
                 hasDataStructures = True
                 For Each elem In col(i)
                     col.Add elem
@@ -926,7 +926,7 @@ Private Sub addFluentPathNew(ByVal test As cTest, ByVal negateValue As Boolean)
     
     FluentPath = getFluentPath(FluentPath, test, negateValue)
     
-    finalFluentPath = Split(FluentPath, "=")(fluentElement)
+    finalFluentPath = Trim(Split(FluentPath, "=")(fluentElement))
     
     iPrint.FluentPath = finalFluentPath
     
@@ -954,22 +954,24 @@ Private Function ToString(ByVal nv As Variant) As String
             For Each elem In nv
                     If TypeName(elem) = "Nothing" Then
                         col.Add TypeName(elem)
-                    ElseIf TypeOf elem Is Object  Then
-                        If Not elem Is Nothing Then
+                    ElseIf TypeOf elem Is Object  Or IsArray(elem) Then
+                        If IsDataStructure(elem) Then
+                            col.Add InputToStringRecur(elem)
+                        ElseIf Not elem Is Nothing Then
                             col.Add TypeName(elem)
                         End If
-                    ElseIf IsArray(elem) Then
-                        col.Add TypeName(elem)
+                    
                     Else
                         col.Add elem
                     End If
                     
-                    ReDim strArgs(1 To col.Count)
-                    
-                    For i = 1 To col.Count
-                        strArgs(i) = col(i)
-                    Next i
             Next elem
+            
+            ReDim strArgs(1 To col.Count)
+                    
+            For i = 1 To col.Count
+                strArgs(i) = col(i)
+            Next i
             
             tempNVTS = Join(strArgs, ", ")
         Case Not TypeOf nv Is Object
@@ -977,11 +979,86 @@ Private Function ToString(ByVal nv As Variant) As String
         Case TypeOf nv Is ErrObject
             tempNVTS = TypeName(nv)
         Case TypeOf nv Is Object
-            tempNVTS = TypeName(nv)
+            If IsDataStructure(nv) Then
+                tempNVTS = InputToStringRecur(nv)
+            ElseIf Not nv Is Nothing Then
+                tempNVTS = TypeName(nv)
+            End If
     End Select
     
     ToString = tempNVTS
         
+End Function
+
+Function DatastructureIsEmpty(v As Variant) As Boolean
+    Dim elem As Variant
+    Dim counter As Long
+    Dim b As Boolean
+    Dim temp As Variant
+
+    Select Case True
+        Case TypeOf v Is Dictionary Or TypeOf v Is Collection
+            b = (v.Count = 0)
+        
+        Case IsArray(v)
+            On Error Resume Next
+            
+                '// will throw an error if v is initialized with no elements
+                temp = UBound(v)
+                
+                b = (Err.Number <> 0)
+                
+                If Not b Then
+                    For Each elem In v
+                        If elem <> Empty Then
+                            counter = counter + 1
+                        End If
+                    Next elem
+                    
+                    b = (counter = 0)
+                End If
+                
+            On Error GoTo 0
+    End Select
+    
+    DatastructureIsEmpty = b
+End Function
+
+Private Function InputToStringRecur(v As Variant) As String
+    Dim temp As String
+    Dim elem As Variant
+    Dim emptyDS As Boolean
+
+    temp = ""
+
+    Select Case True
+        Case IsArray(v) And DatastructureIsEmpty(v)
+            temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
+        Case IsObject(v) Or IsArray(v)
+            If IsArray(v) Then
+                temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
+            Else
+                temp = TypeName(v) & "("
+            End If
+            
+            For Each elem In v
+                If IsObject(elem) Or IsArray(elem) Then
+                    temp = temp & InputToStringRecur(elem) & ", "
+                Else
+                    temp = temp & elem & ", "
+                End If
+            Next elem
+        Case Else
+            temp = temp & elem & ", "
+    End Select
+    
+    If Right(temp, 2) = ", " Then
+        temp = Left(temp, Len(temp) - 2)
+    End If
+
+    temp = temp & ")"
+
+    InputToStringRecur = temp
 End Function
 
 Private Sub Class_Initialize()

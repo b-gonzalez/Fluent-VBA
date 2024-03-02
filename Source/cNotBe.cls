@@ -60,11 +60,11 @@ Private Function IBe_OneOf(ParamArray Vals() As Variant)
     IBe_OneOf = Not pExpressions.OneOf(pNotBeValue, False, Vals)
 End Function
 
-Private Function IBe_InDataStructure(ByVal DataStructure As Variant, Optional ByVal method As flSearch = flRecursive) As Boolean
+Private Function IBe_InDataStructure(ByVal DataStructure As Variant, Optional ByVal method As flAlgorithm = flRecursive) As Boolean
     IBe_InDataStructure = Not pExpressions.InDataStructure(pNotBeValue, DataStructure, method, True, updateFluentPath:=True)
 End Function
 
-Private Function IBe_InDataStructures(ByVal method As flSearch, ParamArray DataStructures() As Variant) As Boolean
+Private Function IBe_InDataStructures(ByVal method As flAlgorithm, ParamArray DataStructures() As Variant) As Boolean
     IBe_InDataStructures = Not pExpressions.InDataStructures(pNotBeValue, method, True, DataStructures)
 End Function
 

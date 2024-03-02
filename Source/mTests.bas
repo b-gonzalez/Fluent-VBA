@@ -59,10 +59,16 @@ Public Sub runMainTests()
     mTestCounter = 0
     
 '    fluent.Meta.Printing.PrintToSheet
-    testFluent.Meta.Printing.PrintToSheet
+'    testFluent.Meta.Printing.PrintToSheet
 '    fluent.Meta.Printing.PrintToImmediate
 
     events.CheckCounters
+    
+    testFluent.Meta.Tests.ResetCounter
+    fluent.Meta.Tests.ResetCounter
+    
+    Debug.Assert testFluent.Meta.Tests.Count = 0
+    Debug.Assert testFluent.Meta.Tests.Count = 0
 End Sub
 
 Private Sub printTestCount(TestCount As Long)
