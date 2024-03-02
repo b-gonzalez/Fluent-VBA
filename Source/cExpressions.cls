@@ -1041,13 +1041,23 @@ Private Function InputToStringRecur(v As Variant) As String
                 temp = TypeName(v) & "("
             End If
             
-            For Each elem In v
-                If IsObject(elem) Or IsArray(elem) Then
-                    temp = temp & InputToStringRecur(elem) & ", "
-                Else
-                    temp = temp & elem & ", "
-                End If
-            Next elem
+            If Not TypeOf v Is Dictionary Then
+                For Each elem In v
+                    If IsObject(elem) Or IsArray(elem) Then
+                        temp = temp & InputToStringRecur(elem) & ", "
+                    Else
+                        temp = temp & elem & ", "
+                    End If
+                Next elem
+            Else
+                For Each elem In v.keys
+                    If IsObject(v(elem)) Or IsArray(v(elem)) Then
+                        temp = temp & elem & ": " & InputToStringRecur(v(elem)) & ", "
+                    Else
+                        temp = temp & elem & ": " & v(elem) & ", "
+                    End If
+                Next elem
+            End If
         Case Else
             temp = temp & elem & ", "
     End Select
