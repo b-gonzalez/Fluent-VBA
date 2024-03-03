@@ -19,19 +19,19 @@ Private pHigherVal As Double
 Private pStrTestValue As String
 Private pStrTestInput As String
 
-Public Property Let TestingValue(value As Variant)
+Public Property Let testingValue(value As Variant)
     pTestingValue = value
 End Property
 
-Public Property Set TestingValue(value As Variant)
+Public Property Set testingValue(value As Variant)
     Set pTestingValue = value
 End Property
 
-Public Property Get TestingValue() As Variant
+Public Property Get testingValue() As Variant
     If TypeOf pTestingValue Is Object  Then
-        Set TestingValue = pTestingValue
+        Set testingValue = pTestingValue
     Else
-        TestingValue = pTestingValue
+        testingValue = pTestingValue
     End If
 End Property
 

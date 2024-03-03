@@ -36,7 +36,7 @@ Private Function IBe_LessThan(ByVal value As Double) As Boolean
 End Function
 
 Private Function IBe_EqualTo(ByVal value As Variant) As Boolean
-    IBe_EqualTo = pExpressions.EqualTo(pBeValue, value)
+    IBe_EqualTo = pExpressions.EqualTo(pBeValue, value, updateFluentPath:=True)
 End Function
 
 Private Function IBe_GreaterThanOrEqualTo(ByVal value As Double) As Boolean

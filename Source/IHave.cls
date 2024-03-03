@@ -32,3 +32,7 @@ End Function
 Public Function ErrorDescriptionOf(ByVal value As String) As Boolean
 
 End Function
+
+Public Function SameTypeAs(ByVal value As Variant) As Boolean
+
+End Function

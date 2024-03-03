@@ -38,7 +38,14 @@ Private Property Get IShould_have() As IHave
     
     Set pHaveSet = pHave
     Set pHaveSet.SetExpr = pExpressions
-    pHaveSet.TestValue = pShouldVal
+'    pHaveSet.TestValue = pShouldVal
+
+    If IsObject(pShouldVal) Then
+        Set pHaveSet.TestValue = pShouldVal
+    Else
+        pHaveSet.TestValue = pShouldVal
+    End If
+    
     Set IShould_have = pHaveSet
 End Property
 

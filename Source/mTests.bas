@@ -4,6 +4,11 @@ Option Explicit
 Private mCounter As Long
 Private mTestCounter As Long
 
+Private Enum hw
+    helloWorld
+    goodbyeWorld
+End Enum
+
 Public Sub runMainTests()
     Dim fluent As cFluent
     Dim testFluent As cFluentOf
@@ -52,23 +57,15 @@ Public Sub runMainTests()
         Next i
     End With
 
-    Debug.Print "All tests Finished!"
+    Debug.Print "All tests Finished"
     Call printTestCount(mCounter)
     
     mCounter = 0
     mTestCounter = 0
-    
-'    fluent.Meta.Printing.PrintToSheet
-'    testFluent.Meta.Printing.PrintToSheet
-'    fluent.Meta.Printing.PrintToImmediate
 
-    events.CheckCounters
-    
-    testFluent.Meta.Tests.ResetCounter
-    fluent.Meta.Tests.ResetCounter
-    
-    Debug.Assert testFluent.Meta.Tests.Count = 0
-    Debug.Assert testFluent.Meta.Tests.Count = 0
+    Debug.Assert events.CheckTestCounters
+
+    Debug.Assert checkResetCounters(fluent, testFluent)
 End Sub
 
 Private Sub printTestCount(TestCount As Long)
@@ -196,7 +193,7 @@ Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluent
         For Each test In .Tests
             resultBool = test.Result = .Tests(i).Result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
-            valueBool = test.TestingValue = .Tests(i).TestingValue
+            valueBool = test.testingValue = .Tests(i).testingValue
             inputBool = test.testingInput = .Tests(i).testingInput
             
             Debug.Assert resultBool And fluentBool And valueBool And inputBool
@@ -1053,7 +1050,49 @@ Private Function positiveDocumentationTests(fluent As cFluent, testFluent As cFl
         fluent.TestValue = testFluent.Of("1 / 0").Should.Have.ErrorNumberOf(2007)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-
+        fluent.TestValue = testFluent.Of(CBool(True)).Should.Have.SameTypeAs(CBool(True))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CStr("Hello World!")).Should.Have.SameTypeAs(CStr("Goodbye World!"))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CLng(12345)).Should.Have.SameTypeAs(CLng(54321))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CSng(123.45)).Should.Have.SameTypeAs(CSng(543.21))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CDbl(123.45)).Should.Have.SameTypeAs(CDbl(543.21))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CDate(#12/31/1999#)).Should.Have.SameTypeAs(CDate(#12/31/2000#))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CLng(hw.helloWorld)).Should.Have.SameTypeAs(CLng(hw.goodbyeWorld))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        fluent.TestValue = testFluent.Of(arr).Should.Have.SameTypeAs(arr)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(Nothing).Should.Have.SameTypeAs(Nothing)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameTypeAs(col)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameTypeAs(col)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set d = New Dictionary
+        fluent.TestValue = testFluent.Of(d).Should.Have.SameTypeAs(d)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        
+        fluent.TestValue = testFluent.Of(d).Should.Have.SameTypeAs(d)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     End With
     
@@ -1931,6 +1970,52 @@ Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFl
         
         fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorNumberOf(2007)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+
+
+        fluent.TestValue = testFluent.Of(CBool(True)).ShouldNot.Have.SameTypeAs(CBool(True))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CStr("Hello World!")).ShouldNot.Have.SameTypeAs(CStr("Goodbye World!"))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CLng(12345)).ShouldNot.Have.SameTypeAs(CLng(54321))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CSng(123.45)).ShouldNot.Have.SameTypeAs(CSng(543.21))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CDbl(123.45)).ShouldNot.Have.SameTypeAs(CDbl(543.21))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CDate(#12/31/1999#)).ShouldNot.Have.SameTypeAs(CDate(#12/31/2000#))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CLng(hw.helloWorld)).ShouldNot.Have.SameTypeAs(CLng(hw.goodbyeWorld))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameTypeAs(arr)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(Nothing).ShouldNot.Have.SameTypeAs(Nothing)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameTypeAs(col)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameTypeAs(col)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set d = New Dictionary
+        fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameTypeAs(d)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        
+        fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameTypeAs(d)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
     For Each test In fluent.Meta.Tests
@@ -1962,4 +2047,15 @@ Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFl
     
     Set negativeDocumentationTests = testFluent
     
+End Function
+
+Public Function checkResetCounters(fluent As cFluent, testFluent As cFluentOf)
+    Dim b As Boolean
+    
+    testFluent.Meta.Tests.ResetCounter
+    fluent.Meta.Tests.ResetCounter
+    
+    b = (testFluent.Meta.Tests.Count = 0 And fluent.Meta.Tests.Count = 0)
+   
+   checkResetCounters = b
 End Function

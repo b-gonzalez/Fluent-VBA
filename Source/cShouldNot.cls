@@ -35,9 +35,16 @@ Private Property Get IShould_have() As IHave
     If pNotHave Is Nothing Then
         Set pNotHave = New cNotHave
     End If
+    
     Set pNotHaveSet = pNotHave
     Set pNotHaveSet.SetExpr = pExpressions
-    pNotHaveSet.TestValue = pShouldNotVal
+    
+    If IsObject(pShouldNotVal) Then
+        Set pNotHaveSet.TestValue = pShouldNotVal
+    Else
+        pNotHaveSet.TestValue = pShouldNotVal
+    End If
+    
     Set IShould_have = pNotHaveSet
 End Property
 

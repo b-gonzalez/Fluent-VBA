@@ -87,7 +87,7 @@ Public Property Set setPrinting(ByVal value As IPrinting)
     Set iPrint = value
 End Property
 
-Public Function InDataStructures(ByVal TestingValue As Variant, ByVal method As flAlgorithm, negateValue As Boolean, ParamArray args() As Variant) As Boolean
+Public Function InDataStructures(ByVal testingValue As Variant, ByVal method As flAlgorithm, negateValue As Boolean, ParamArray args() As Variant) As Boolean
     Dim i As Long
     Dim temp_bool As Boolean
     Dim IsLastElem As Boolean
@@ -101,18 +101,18 @@ Public Function InDataStructures(ByVal TestingValue As Variant, ByVal method As 
     
     temp_bool = False
     
-    temp_bool = Me.InDataStructure(TestingValue, col, method, negateValue, updateFluentPath:=False)
+    temp_bool = Me.InDataStructure(testingValue, col, method, negateValue, updateFluentPath:=False)
     
     InDataStructures = temp_bool
     
     strTestingVal = ToString(args)
     
-    Call addToTestAndFluentPath("InDataStructures", CBool(InDataStructures), CBool(negateValue), TestingValue, args)
+    Call addToTestAndFluentPath("InDataStructures", CBool(InDataStructures), CBool(negateValue), testingValue, args)
     
 End Function
 
 Public Function InDataStructure( _
-ByVal TestingValue As Variant, _
+ByVal testingValue As Variant, _
 ByVal DataStructure As Variant, _
 Optional ByVal method As flAlgorithm = flRecursive, _
 Optional negateValue As Boolean = False, _
@@ -135,7 +135,7 @@ Optional updateFluentPath As Boolean = False) As Boolean
         End If
             
         For Each elem In col
-            If TestingValue = elem Then
+            If testingValue = elem Then
                 tempBool = True
                 Exit For
             End If
@@ -145,7 +145,7 @@ Optional updateFluentPath As Boolean = False) As Boolean
     InDataStructure = tempBool
     
     If updateFluentPath Then
-        Call addToTestAndFluentPath("InDataStructure", CBool(InDataStructure), CBool(negateValue), TestingValue, DataStructure)
+        Call addToTestAndFluentPath("InDataStructure", CBool(InDataStructure), CBool(negateValue), testingValue, DataStructure)
     End If
     
 End Function
@@ -248,19 +248,19 @@ Private Function getNestedElementsIter(ByVal DataStructure As Variant) As Collec
     Set getNestedElementsIter = col
 End Function
 
-Public Function GreaterThan(ByVal TestingValue As Double, ByVal testingInput As Double, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function GreaterThan(ByVal testingValue As Double, ByVal testingInput As Double, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
     
-    GreaterThan = (TestingValue > testingInput)
+    GreaterThan = (testingValue > testingInput)
     
-    Call addToTestAndFluentPath("GreaterThan", CBool(GreaterThan), CBool(negateValue), TestingValue, testingInput)
+    Call addToTestAndFluentPath("GreaterThan", CBool(GreaterThan), CBool(negateValue), testingValue, testingInput)
     
 End Function
 
 Public Function GreaterThanOrEqualTo( _
-ByVal TestingValue As Double, _
+ByVal testingValue As Double, _
 ByVal testingInput As Double, _
 Optional ByVal negateValue As Boolean = False, _
 Optional updateFluentPath As Boolean = False) As Boolean
@@ -268,27 +268,27 @@ Optional updateFluentPath As Boolean = False) As Boolean
     Dim fluentBool As Boolean
     Dim shouldStr As String
     
-    GreaterThanOrEqualTo = (TestingValue >= testingInput)
+    GreaterThanOrEqualTo = (testingValue >= testingInput)
     
     If updateFluentPath Then
-        Call addToTestAndFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(negateValue), TestingValue, testingInput)
+        Call addToTestAndFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(negateValue), testingValue, testingInput)
     End If
         
 End Function
 
-Public Function LessThan(ByVal TestingValue As Double, ByVal testingInput As Double, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function LessThan(ByVal testingValue As Double, ByVal testingInput As Double, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    LessThan = (TestingValue < testingInput)
+    LessThan = (testingValue < testingInput)
     
-    Call addToTestAndFluentPath("LessThan", CBool(LessThan), CBool(negateValue), TestingValue, testingInput)
+    Call addToTestAndFluentPath("LessThan", CBool(LessThan), CBool(negateValue), testingValue, testingInput)
 
 End Function
 
 Public Function LessThanOrEqualTo( _
-ByVal TestingValue As Double, _
+ByVal testingValue As Double, _
 ByVal testingInput As Double, _
 Optional ByVal negateValue As Boolean = False, _
 Optional updateFluentPath As Boolean = False) As Boolean
@@ -296,52 +296,59 @@ Optional updateFluentPath As Boolean = False) As Boolean
     Dim fluentBool As Boolean
     Dim shouldStr As String
        
-    LessThanOrEqualTo = (TestingValue <= testingInput)
+    LessThanOrEqualTo = (testingValue <= testingInput)
        
     If updateFluentPath Then
-        Call addToTestAndFluentPath("LessThanOrEqualTo", CBool(LessThanOrEqualTo), CBool(negateValue), TestingValue, testingInput)
+        Call addToTestAndFluentPath("LessThanOrEqualTo", CBool(LessThanOrEqualTo), CBool(negateValue), testingValue, testingInput)
     End If
         
 End Function
 
-Public Function EqualTo(ByVal TestingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function EqualTo( _
+ByVal testingValue As Variant, _
+ByVal testingInput As Variant, _
+Optional ByVal negateValue As Boolean = False, _
+Optional updateFluentPath As Boolean = False) As Boolean
+
     Dim tempBool As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
     
-    tempBool = (TestingValue = testingInput)
+    tempBool = (testingValue = testingInput)
     
     If pMeta.ApproximateEqual Then
-        If TypeName(TestingValue) <> TypeName(testingInput) Then
-            If IsNumeric(TestingValue) And IsNumeric(testingInput) Then
-                tempBool = (Abs(TestingValue - testingInput) <= pMeta.Epsilon)
-            ElseIf VarType(TestingValue) = vbString Or VarType(testingInput) = vbString Then
-                tempBool = (StrComp(CStr(TestingValue), CStr(testingInput), vbTextCompare) = 0)
+        If TypeName(testingValue) <> TypeName(testingInput) Then
+            If IsNumeric(testingValue) And IsNumeric(testingInput) Then
+                tempBool = (Abs(testingValue - testingInput) <= pMeta.Epsilon)
+            ElseIf VarType(testingValue) = vbString Or VarType(testingInput) = vbString Then
+                tempBool = (StrComp(CStr(testingValue), CStr(testingInput), vbTextCompare) = 0)
             End If
         End If
     End If
     
     EqualTo = tempBool
     
-    Call addToTestAndFluentPath("EqualTo", CBool(EqualTo), CBool(negateValue), TestingValue, testingInput)
+    If updateFluentPath Then
+        Call addToTestAndFluentPath("EqualTo", CBool(EqualTo), CBool(negateValue), testingValue, testingInput)
+    End If
         
 End Function
 
-Public Function Contain(ByVal TestingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function Contain(ByVal testingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    If TestingValue Like "*" & testingInput & "*" Then
+    If testingValue Like "*" & testingInput & "*" Then
         Contain = True
     End If
     
-    Call addToTestAndFluentPath("Contain", CBool(Contain), CBool(negateValue), TestingValue, testingInput)
+    Call addToTestAndFluentPath("Contain", CBool(Contain), CBool(negateValue), testingValue, testingInput)
         
 End Function
 
-Public Function StartWith(ByVal TestingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function StartWith(ByVal testingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim valLength As Long
     Dim FluentPath As String
     Dim fluentBool As Boolean
@@ -349,15 +356,15 @@ Public Function StartWith(ByVal TestingValue As Variant, ByVal testingInput As V
         
     valLength = Len(testingInput)
     
-    If Left(TestingValue, valLength) = CStr(testingInput) Then
+    If Left(testingValue, valLength) = CStr(testingInput) Then
         StartWith = True
     End If
     
-    Call addToTestAndFluentPath("StartWith", CBool(StartWith), CBool(negateValue), TestingValue, testingInput)
+    Call addToTestAndFluentPath("StartWith", CBool(StartWith), CBool(negateValue), testingValue, testingInput)
         
 End Function
 
-Public Function EndWith(ByVal TestingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function EndWith(ByVal testingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim valLength As Long
     Dim FluentPath As String
     Dim fluentBool As Boolean
@@ -365,27 +372,27 @@ Public Function EndWith(ByVal TestingValue As Variant, ByVal testingInput As Var
         
     valLength = Len(testingInput)
     
-    If Right(TestingValue, valLength) = CStr(testingInput) Then
+    If Right(testingValue, valLength) = CStr(testingInput) Then
         EndWith = True
     End If
     
-    Call addToTestAndFluentPath("EndWith", CBool(EndWith), CBool(negateValue), TestingValue, testingInput)
+    Call addToTestAndFluentPath("EndWith", CBool(EndWith), CBool(negateValue), testingValue, testingInput)
     
 End Function
 
-Public Function LengthOf(ByVal TestingValue As Double, ByVal testingInput As Double, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function LengthOf(ByVal testingValue As Double, ByVal testingInput As Double, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    LengthOf = (Len(CStr(TestingValue)) = testingInput)
+    LengthOf = (Len(CStr(testingValue)) = testingInput)
     
-    Call addToTestAndFluentPath("LengthOf", CBool(LengthOf), CBool(negateValue), TestingValue, testingInput)
+    Call addToTestAndFluentPath("LengthOf", CBool(LengthOf), CBool(negateValue), testingValue, testingInput)
             
 End Function
 
 Public Function MaxLengthOf( _
-ByVal TestingValue As Double, _
+ByVal testingValue As Double, _
 ByVal testingInput As Double, _
 Optional ByVal negateValue As Boolean = False, _
 Optional updateFluentPath As Boolean = False) As Boolean
@@ -393,16 +400,16 @@ Optional updateFluentPath As Boolean = False) As Boolean
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    MaxLengthOf = (Len(CStr(TestingValue)) <= testingInput)
+    MaxLengthOf = (Len(CStr(testingValue)) <= testingInput)
     
     If updateFluentPath Then
-        Call addToTestAndFluentPath("MaxLengthOf", CBool(MaxLengthOf), CBool(negateValue), TestingValue, testingInput)
+        Call addToTestAndFluentPath("MaxLengthOf", CBool(MaxLengthOf), CBool(negateValue), testingValue, testingInput)
     End If
             
 End Function
 
 Public Function MinLengthOf( _
-ByVal TestingValue As Double, _
+ByVal testingValue As Double, _
 ByVal testingInput As Double, _
 Optional ByVal negateValue As Boolean = False, _
 Optional updateFluentPath As Boolean = False) As Boolean
@@ -410,37 +417,37 @@ Optional updateFluentPath As Boolean = False) As Boolean
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    MinLengthOf = (Len(CStr(TestingValue)) >= testingInput)
+    MinLengthOf = (Len(CStr(testingValue)) >= testingInput)
         
     If updateFluentPath Then
-        Call addToTestAndFluentPath("MinLengthOf", CBool(MinLengthOf), CBool(negateValue), TestingValue, testingInput)
+        Call addToTestAndFluentPath("MinLengthOf", CBool(MinLengthOf), CBool(negateValue), testingValue, testingInput)
     End If
         
 End Function
 
-Public Function Something(ByVal TestingValue As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function Something(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    Something = (Not TestingValue Is Nothing)
+    Something = (Not testingValue Is Nothing)
     
-    Call addToTestAndFluentPath("Something", CBool(Something), CBool(negateValue), TestingValue)
+    Call addToTestAndFluentPath("Something", CBool(Something), CBool(negateValue), testingValue)
         
 End Function
 
-Public Function Between(ByVal TestingValue As Double, ByVal LowerVal As Double, ByVal HigherVal As Double, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function Between(ByVal testingValue As Double, ByVal LowerVal As Double, ByVal HigherVal As Double, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    Between = (GreaterThanOrEqualTo(TestingValue, LowerVal, updateFluentPath:=False) And LessThanOrEqualTo(TestingValue, HigherVal, updateFluentPath:=False))
+    Between = (GreaterThanOrEqualTo(testingValue, LowerVal, updateFluentPath:=False) And LessThanOrEqualTo(testingValue, HigherVal, updateFluentPath:=False))
     
-    Call addToTestAndFluentPath("Between", CBool(Between), CBool(negateValue), TestingValue:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
+    Call addToTestAndFluentPath("Between", CBool(Between), CBool(negateValue), testingValue:=testingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
         
 End Function
 
-Public Function OneOf(ByVal TestingValue As Variant, ByVal negateValue As Boolean, ParamArray args() As Variant) As Boolean
+Public Function OneOf(ByVal testingValue As Variant, ByVal negateValue As Boolean, ParamArray args() As Variant) As Boolean
     Dim i As Long
     Dim j As Long
     Dim tempBool As Boolean
@@ -460,11 +467,11 @@ Public Function OneOf(ByVal TestingValue As Variant, ByVal negateValue As Boolea
 '            TestingInputStr = TestingInputStr & arr(i) & ", "
 '        End If
 
-        If IsObject(arr(i)) Or IsObject(TestingValue) Then
-            If TypeName(arr(i)) = TypeName(TestingValue) Then
+        If IsObject(arr(i)) Or IsObject(testingValue) Then
+            If TypeName(arr(i)) = TypeName(testingValue) Then
                 tempBool = True
             End If
-        ElseIf arr(i) = TestingValue Then
+        ElseIf arr(i) = testingValue Then
             tempBool = True
             'Exit For
         End If
@@ -474,72 +481,72 @@ Public Function OneOf(ByVal TestingValue As Variant, ByVal negateValue As Boolea
     
     OneOf = tempBool
     
-    If TypeOf TestingValue Is Object  Then TestingValue = TypeName(TestingValue)
+    If TypeOf testingValue Is Object  Then testingValue = TypeName(testingValue)
     
-    Call addToTestAndFluentPath("OneOf", CBool(OneOf), CBool(negateValue), TestingValue, arr)
+    Call addToTestAndFluentPath("OneOf", CBool(OneOf), CBool(negateValue), testingValue, arr)
         
 End Function
 
-Public Function LengthBetween(ByVal TestingValue As Double, ByVal LowerVal As Double, ByVal HigherVal As Double, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function LengthBetween(ByVal testingValue As Double, ByVal LowerVal As Double, ByVal HigherVal As Double, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim tempOrigVal As Double
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
         
-    tempOrigVal = Len(CStr(TestingValue))
+    tempOrigVal = Len(CStr(testingValue))
     
     LengthBetween = (MinLengthOf(tempOrigVal, LowerVal, updateFluentPath:=False) And MaxLengthOf(tempOrigVal, HigherVal, updateFluentPath:=False))
     
-    Call addToTestAndFluentPath("LengthBetween", CBool(LengthBetween), CBool(negateValue), TestingValue:=TestingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
+    Call addToTestAndFluentPath("LengthBetween", CBool(LengthBetween), CBool(negateValue), testingValue:=testingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
 
 End Function
 
-Public Function EvaluateTo(ByVal TestingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue = False) As Variant
+Public Function EvaluateTo(ByVal testingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue = False) As Variant
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
     
-    EvaluateTo = (Evaluate(TestingValue) = testingInput)
+    EvaluateTo = (Evaluate(testingValue) = testingInput)
 
-    Call addToTestAndFluentPath("EvaluateTo", CBool(EvaluateTo), CBool(negateValue), TestingValue, testingInput)
+    Call addToTestAndFluentPath("EvaluateTo", CBool(EvaluateTo), CBool(negateValue), testingValue, testingInput)
     
 End Function
 
-Public Function Alphabetic(ByVal TestingValue As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function Alphabetic(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim i As Long
     Dim tempChar As String
     Dim tempAlph As String
     
-    For i = 1 To Len(TestingValue)
-        tempChar = Mid(TestingValue, i, 1)
+    For i = 1 To Len(testingValue)
+        tempChar = Mid(testingValue, i, 1)
         If tempChar Like "[A-Za-z]" Then
             tempAlph = tempAlph & tempChar
         End If
     Next i
     
-    Alphabetic = (TestingValue = tempAlph)
+    Alphabetic = (testingValue = tempAlph)
     
-    Call addToTestAndFluentPath("Alphabetic", CBool(Alphabetic), CBool(negateValue), TestingValue)
+    Call addToTestAndFluentPath("Alphabetic", CBool(Alphabetic), CBool(negateValue), testingValue)
 End Function
 
-Public Function Numeric(ByVal TestingValue As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function Numeric(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim i As Long
     Dim tempChar As String
     Dim tempNum As String
     
-    For i = 1 To Len(TestingValue)
-        tempChar = Mid(TestingValue, i, 1)
+    For i = 1 To Len(testingValue)
+        tempChar = Mid(testingValue, i, 1)
         If tempChar Like "[0-9]" Then
             tempNum = tempNum & tempChar
         End If
     Next i
     
-    Numeric = (TestingValue = tempNum)
+    Numeric = (testingValue = tempNum)
      
-    Call addToTestAndFluentPath("Numeric", CBool(Numeric), CBool(negateValue), TestingValue)
+    Call addToTestAndFluentPath("Numeric", CBool(Numeric), CBool(negateValue), testingValue)
 End Function
 
-Public Function Alphanumeric(ByVal TestingValue As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
+Public Function Alphanumeric(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Boolean
     Dim i As Long
     Dim tempChar As String
     Dim tempAlph As String
@@ -548,8 +555,8 @@ Public Function Alphanumeric(ByVal TestingValue As Variant, Optional ByVal negat
     
     b = False
     
-    For i = 1 To Len(TestingValue)
-        tempChar = Mid(TestingValue, i, 1)
+    For i = 1 To Len(testingValue)
+        tempChar = Mid(testingValue, i, 1)
         If tempChar Like "[A-Za-z]" Then
             tempAlph = tempAlph & tempChar
         ElseIf tempChar Like "[0-9]" Then
@@ -558,61 +565,61 @@ Public Function Alphanumeric(ByVal TestingValue As Variant, Optional ByVal negat
     Next i
     
     If Len(tempAlph) > 1 And Len(tempNum) > 1 Then
-        If Len(tempAlph) + Len(tempNum) = Len(TestingValue) Then
+        If Len(tempAlph) + Len(tempNum) = Len(testingValue) Then
             b = True
         End If
     End If
     
     Alphanumeric = b
     
-    Call addToTestAndFluentPath("Alphanumeric", CBool(Alphanumeric), CBool(negateValue), TestingValue)
+    Call addToTestAndFluentPath("Alphanumeric", CBool(Alphanumeric), CBool(negateValue), testingValue)
 End Function
 
-Public Function Erroneous(ByVal TestingValue As Variant, Optional ByVal negateValue = False) As Boolean
+Public Function Erroneous(ByVal testingValue As Variant, Optional ByVal negateValue = False) As Boolean
     Dim tempTestingVal As Variant
     Dim tempErrType As Variant
     
     tempTestingVal = False
     
-    If TypeOf TestingValue Is ErrObject Then
-        tempTestingVal = (TestingValue.Number <> 0)
+    If TypeOf testingValue Is ErrObject Then
+        tempTestingVal = (testingValue.Number <> 0)
     Else
         On Error Resume Next
-            tempTestingVal = Application.Evaluate(TestingValue)
+            tempTestingVal = Application.Evaluate(testingValue)
             tempTestingVal = (TypeName(tempTestingVal) = "Error")
         On Error GoTo 0
     End If
     
     Erroneous = tempTestingVal
     
-    If TypeOf TestingValue Is Object  Then
-        tempErrType = TypeName(TestingValue)
+    If TypeOf testingValue Is Object  Then
+        tempErrType = TypeName(testingValue)
     Else
-        tempErrType = TestingValue
+        tempErrType = testingValue
     End If
     
     Call addToTestAndFluentPath("Erroneous", CBool(Erroneous), CBool(negateValue), tempErrType)
 End Function
 
-Public Function ErrorNumberOf(ByVal TestingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue = False) As Boolean
+Public Function ErrorNumberOf(ByVal testingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue = False) As Boolean
     Dim temp As Variant
     Dim e1 As Variant
     
     On Error Resume Next
-        temp = Application.Evaluate(TestingValue)
+        temp = Application.Evaluate(testingValue)
         Err.Raise (testingInput)
         temp = Err.Number
         ErrorNumberOf = (temp = testingInput)
     On Error GoTo 0
     
-    Call addToTestAndFluentPath("ErrorNumberOf", CBool(ErrorNumberOf), CBool(negateValue), TestingValue, testingInput)
+    Call addToTestAndFluentPath("ErrorNumberOf", CBool(ErrorNumberOf), CBool(negateValue), testingValue, testingInput)
 End Function
 
-Public Function ErrorDescriptionOf(ByVal TestingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue = False) As Boolean
+Public Function ErrorDescriptionOf(ByVal testingValue As Variant, ByVal testingInput As Variant, Optional ByVal negateValue = False) As Boolean
     Dim tempTestVal As Variant
     
     On Error Resume Next
-        tempTestVal = CStr(Application.Evaluate(TestingValue))
+        tempTestVal = CStr(Application.Evaluate(testingValue))
         tempTestVal = Replace(tempTestVal, "Error ", "")
         Err.Raise tempTestVal
         tempTestVal = Err.Description
@@ -622,11 +629,30 @@ Public Function ErrorDescriptionOf(ByVal TestingValue As Variant, ByVal testingI
     Call addToTestAndFluentPath("ErrorDescriptionOf", CBool(ErrorDescriptionOf), CBool(negateValue), tempTestVal, testingInput)
 End Function
 
+Public Function SameTypeAs( _
+ByVal testingValue As Variant, _
+ByVal testingInput As Variant, _
+Optional ByVal negateValue = False, _
+Optional updateFluentPath As Boolean = False) As Boolean
+
+    Dim t1 As String
+    Dim t2 As String
+    
+    t1 = TypeName(testingValue)
+    t2 = TypeName(testingInput)
+    
+'    SameTypeAs = (t1 = t2)
+    
+    SameTypeAs = EqualTo(t1, t2, updateFluentPath = False)
+    
+    Call addToTestAndFluentPath("SameTypeAs", CBool(SameTypeAs), CBool(negateValue), testingValue, testingInput)
+End Function
+
 Private Sub addToTestAndFluentPath( _
     ByVal functionName As String, _
     ByVal Result As Boolean, _
     ByVal negateValue As Boolean, _
-    ByVal TestingValue As Variant, _
+    ByVal testingValue As Variant, _
     Optional ByVal testingInput As Variant, _
     Optional LowerVal As Variant, _
     Optional HigherVal As Variant)
@@ -650,11 +676,11 @@ Private Sub addToTestAndFluentPath( _
         .StrTestValue = ""
     End With
         
-    If TypeName(TestingValue) <> "Nothing" Then
-        If TypeOf TestingValue Is Object  Then
-            Set test.TestingValue = TestingValue
+    If TypeName(testingValue) <> "Nothing" Then
+        If TypeOf testingValue Is Object  Then
+            Set test.testingValue = testingValue
         Else
-            test.TestingValue = TestingValue
+            test.testingValue = testingValue
         End If
     End If
     
@@ -682,7 +708,7 @@ Private Sub addToTestAndFluentPath( _
     
     With test
         .StrTestInput = ToString(.testingInput)
-        .StrTestValue = ToString(.TestingValue)
+        .StrTestValue = ToString(.testingValue)
     End With
     
     

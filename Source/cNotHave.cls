@@ -24,7 +24,7 @@ Private Property Let ISetExpressionAndValue_testValue(ByVal value As Variant)
 End Property
 
 Private Property Set ISetExpressionAndValue_testValue(ByVal value As Variant)
-    'Intentionally left blank
+    Set pNotHaveVal = pExpressions.TestValue
 End Property
 
 Private Function IHave_LengthOf(ByVal value As Double) As Boolean
@@ -49,4 +49,8 @@ End Function
 
 Public Function IHave_ErrorDescriptionOf(ByVal value As String) As Boolean
     IHave_ErrorDescriptionOf = Not pExpressions.ErrorDescriptionOf(pNotHaveVal, value, True)
+End Function
+
+Public Function IHave_SameTypeAs(ByVal value As Variant) As Boolean
+    IHave_SameTypeAs = IHave_SameTypeAs = pExpressions.SameTypeAs(pNotHaveVal, value, True)
 End Function

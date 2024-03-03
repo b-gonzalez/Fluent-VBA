@@ -108,8 +108,17 @@ Private Sub pTests_TestUnexpected(ByVal test As cTest)
     Err.Raise Number:=TEST_UNEXPECTED_ERROR, Description:="Test unexpected event should never be raised"
 End Sub
 
-Public Sub CheckCounters()
-    Debug.Assert TestOfResultsCount > 0
-    Debug.Assert TestCount > 0
-    Debug.Assert TestOfCount > 0
-End Sub
+Public Function CheckTestCounters()
+    Dim b As Boolean
+    
+    b = ( _
+    TestOfResultsCount > 0 And _
+    TestCount > 0 And _
+    TestOfCount > 0)
+    
+'    Debug.Assert TestOfResultsCount > 0
+'    Debug.Assert TestCount > 0
+'    Debug.Assert TestOfCount > 0
+
+    CheckTestCounters = b
+End Function
