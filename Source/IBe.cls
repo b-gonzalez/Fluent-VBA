@@ -64,3 +64,7 @@ End Function
 Public Function Something() As Boolean
 
 End Function
+
+Public Function IdenticalTo(ParamArray args() As Variant) As Boolean
+
+End Function

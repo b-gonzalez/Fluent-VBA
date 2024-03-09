@@ -83,3 +83,7 @@ End Function
 Private Function IBe_Erroneous() As Boolean
     IBe_Erroneous = Not pExpressions.Erroneous(pNotBeValue, True)
 End Function
+
+Private Function IBe_IdenticalTo(ParamArray args() As Variant) As Boolean
+    IBe_IdenticalTo = Not pExpressions.IdenticalTo(pNotBeValue, True, args)
+End Function

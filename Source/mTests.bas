@@ -211,6 +211,8 @@ Private Function positiveDocumentationTests(fluent As cFluent, testFluent As cFl
     'Dim testFluent As cFluentOf
     Dim test As cTest
     Dim col As Collection
+    Dim col2 As Collection
+    Dim col3 As Collection
     Dim arr As Variant
     Dim arr2 As Variant
     Dim d As Object
@@ -1094,6 +1096,104 @@ Private Function positiveDocumentationTests(fluent As cFluent, testFluent As cFl
         fluent.TestValue = testFluent.Of(d).Should.Have.SameTypeAs(d)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        Set col = New Collection
+        col.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 2
+        fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col2, col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 2
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col2, col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 2
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col2, col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 2
+        fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col2, col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).Should.Be.IdenticalTo(col)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col2).Should.Be.IdenticalTo(col, col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        Set col2 = Nothing
+        Set col3 = Nothing
+        
+        arr = Array(1, 2, 3)
+        fluent.TestValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr2, Array(1, 2, 3))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = Array(2, 3, 4)
+        fluent.TestValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr2, Array(2, 3, 4))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
     End With
     
     For Each test In fluent.Meta.Tests
@@ -1131,6 +1231,8 @@ Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFl
     'Dim testFluent As cFluentOf
     Dim test As cTest
     Dim col As Collection
+    Dim col2 As Collection
+    Dim col3 As Collection
     Dim arr As Variant
     Dim d As Object
     Dim al As Object
@@ -2016,6 +2118,104 @@ Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFl
         
         fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameTypeAs(d)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        col.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 2
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2, col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 2
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2, col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 2
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2, col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 2
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2, col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).ShouldNot.Be.IdenticalTo(col)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col2).ShouldNot.Be.IdenticalTo(col, col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        Set col2 = Nothing
+        Set col3 = Nothing
+        
+        arr = Array(1, 2, 3)
+        fluent.TestValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr2, Array(1, 2, 3))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = Array(2, 3, 4)
+        fluent.TestValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr2, Array(2, 3, 4))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
     For Each test In fluent.Meta.Tests
