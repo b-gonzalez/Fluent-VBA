@@ -43,14 +43,18 @@ Private Function IHave_LengthBetween(ByVal lowVal As Double, ByVal highVal As Do
     IHave_LengthBetween = Not pExpressions.LengthBetween(CDbl(pNotHaveVal), lowVal, highVal, True)
 End Function
 
-Public Function IHave_ErrorNumberOf(ByVal value As Long) As Boolean
+Private Function IHave_ErrorNumberOf(ByVal value As Long) As Boolean
     IHave_ErrorNumberOf = Not pExpressions.ErrorNumberOf(pNotHaveVal, value, True)
 End Function
 
-Public Function IHave_ErrorDescriptionOf(ByVal value As String) As Boolean
+Private Function IHave_ErrorDescriptionOf(ByVal value As String) As Boolean
     IHave_ErrorDescriptionOf = Not pExpressions.ErrorDescriptionOf(pNotHaveVal, value, True)
 End Function
 
-Public Function IHave_SameTypeAs(ByVal value As Variant) As Boolean
-    IHave_SameTypeAs = IHave_SameTypeAs = pExpressions.SameTypeAs(pNotHaveVal, value, True)
+Private Function IHave_SameTypeAs(ByVal value As Variant) As Boolean
+    IHave_SameTypeAs = Not pExpressions.SameTypeAs(pNotHaveVal, value, True)
+End Function
+
+Private Function IHave_SameElementsAs(ParamArray args() As Variant) As Boolean
+    IHave_SameElementsAs = Not pExpressions.SameElementsAs(pNotHaveVal, True, args)
 End Function

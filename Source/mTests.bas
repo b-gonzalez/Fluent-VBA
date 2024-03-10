@@ -1096,6 +1096,17 @@ Private Function positiveDocumentationTests(fluent As cFluent, testFluent As cFl
         fluent.TestValue = testFluent.Of(d).Should.Have.SameTypeAs(d)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of(CLng(123)).Should.Have.SameTypeAs(CStr("Hello world"))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CLng(123)).Should.Have.SameTypeAs(CDbl(123.456))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        fluent.TestValue = testFluent.Of(CLng(123)).Should.Have.SameTypeAs(col)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        
         Set col = New Collection
         col.Add 1
         fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col)
@@ -1193,6 +1204,166 @@ Private Function positiveDocumentationTests(fluent As cFluent, testFluent As cFl
         arr2 = arr
         fluent.TestValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr2, Array(2, 3, 4))
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        Set col = New Collection
+        col.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 2
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2, col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 2
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2, col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 2
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2, col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 2
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2, col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).Should.Have.SameElementsAs(col)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col2).Should.Have.SameElementsAs(col, col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        Set col2 = Nothing
+        Set col3 = Nothing
+        
+        arr = Array(1, 2, 3)
+        fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2, Array(1, 2, 3))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = Array(2, 3, 4)
+        fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2, Array(2, 3, 4))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        Set col = New Collection
+        col.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(Array(1))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(Array(2))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2, Array(1))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col3 = New Collection
+        col.Add 2
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(Array(1), col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 2
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2, Array(1))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col3.Add 2
+        fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(Array(1), col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).Should.Have.SameElementsAs(col)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col2 = New Collection
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).Should.Have.SameElementsAs(Array(1), Array(1))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        
+        Set col2 = New Collection
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).Should.Have.SameElementsAs(Array(2), Array(1))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        
+        Set col2 = New Collection
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).Should.Have.SameElementsAs(Array(1), Array(2))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
         
     End With
     
@@ -2072,8 +2243,6 @@ Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFl
         
         fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorNumberOf(2007)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-
 
         fluent.TestValue = testFluent.Of(CBool(True)).ShouldNot.Have.SameTypeAs(CBool(True))
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -2118,6 +2287,17 @@ Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFl
         
         fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameTypeAs(d)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(CLng(123)).ShouldNot.Have.SameTypeAs(CStr("Hello world"))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(CLng(123)).ShouldNot.Have.SameTypeAs(CDbl(123.456))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        fluent.TestValue = testFluent.Of(CLng(123)).ShouldNot.Have.SameTypeAs(col)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
         
         Set col = New Collection
         col.Add 1
@@ -2216,6 +2396,166 @@ Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFl
         arr2 = arr
         fluent.TestValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr2, Array(2, 3, 4))
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        col.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 2
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2, col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 2
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2, col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 2
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2, col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 2
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2, col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).ShouldNot.Have.SameElementsAs(col)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col2.Add 1
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col2).ShouldNot.Have.SameElementsAs(col, col3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        Set col2 = Nothing
+        Set col3 = Nothing
+        
+        arr = Array(1, 2, 3)
+        fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2, Array(1, 2, 3))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = Array(2, 3, 4)
+        fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        arr = Array(1, 2, 3)
+        arr2 = arr
+        fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2, Array(2, 3, 4))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        Set col = New Collection
+        col.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(Array(1))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(Array(2))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2, Array(1))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col3 = New Collection
+        col.Add 2
+        col3.Add 1
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(Array(1), col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 2
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2, Array(1))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col3 = New Collection
+        col.Add 1
+        col3.Add 2
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(Array(1), col3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        Set col2 = New Collection
+        col.Add 1
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).ShouldNot.Have.SameElementsAs(col)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col2 = New Collection
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).ShouldNot.Have.SameElementsAs(Array(1), Array(1))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        
+        Set col2 = New Collection
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).ShouldNot.Have.SameElementsAs(Array(2), Array(1))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
+        
+        Set col2 = New Collection
+        col2.Add 1
+        fluent.TestValue = testFluent.Of(col2).ShouldNot.Have.SameElementsAs(Array(1), Array(2))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set col = Nothing
     End With
     
     For Each test In fluent.Meta.Tests

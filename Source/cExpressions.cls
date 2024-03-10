@@ -40,6 +40,7 @@ Enum flHave
     MaxLengthOf_
     MinLengthOf_
     SameTypeAs_
+    SameElementsAs_
 End Enum
 
 Enum flBe
@@ -715,6 +716,49 @@ Call addToTestAndFluentPath("IdenticalTo", CBool(IdenticalTo), CBool(negateValue
 
 End Function
 
+Public Function SameElementsAs( _
+ByVal testingValue As Variant, _
+ByVal negateValue As Boolean, _
+ParamArray args() As Variant) As Boolean
+
+Dim i As Long
+Dim temp As Variant
+Dim b As Boolean
+Dim elem As Variant
+Dim col As Collection
+Dim col2 As Collection
+
+b = False
+Set col = New Collection
+
+For Each elem In testingValue
+    col.Add elem
+Next elem
+
+For i = LBound(args(0)) To UBound(args(0))
+    If IsObject(args(0)(i)) Then
+        Set temp = args(0)(i)
+    Else
+        temp = args(0)(i)
+    End If
+    
+    Set col2 = New Collection
+    
+    For Each elem In temp
+        col2.Add elem
+    Next elem
+
+    b = EqualTo(InputToStringRecur(col), InputToStringRecur(col2), updateFluentPath:=False)
+    
+    If Not b Then Exit For
+Next i
+
+SameElementsAs = b
+
+Call addToTestAndFluentPath("SameElementsAs", CBool(SameElementsAs), CBool(negateValue), testingValue, args)
+
+End Function
+
 Private Sub addToTestAndFluentPath( _
     ByVal functionName As String, _
     ByVal Result As Boolean, _
@@ -882,6 +926,8 @@ Function Have_(haveType As flHave, Optional tesingInput As String = "", Optional
             funcStr = "max length of"
         Case MinLengthOf_
             funcStr = "min length of"
+        Case SameElementsAs_
+            funcStr = "same elements as"
         Case SameTypeAs_
             funcStr = "same type as"
         Case Else
@@ -972,6 +1018,8 @@ Public Function getFunctionExpr(test As cTest)
                 tempFluentPath = Be_(Numeric_)
             Case "OneOf"
                 tempFluentPath = Be_(OneOf_, .StrTestInput)
+            Case "SameElementsAs"
+                tempFluentPath = Have_(SameElementsAs_, .StrTestInput)
             Case "SameTypeAs"
                 tempFluentPath = Have_(SameTypeAs_, .StrTestInput)
             Case "Something"

@@ -36,3 +36,7 @@ End Function
 Public Function SameTypeAs(ByVal value As Variant) As Boolean
 
 End Function
+
+Public Function SameElementsAs(ParamArray args() As Variant) As Boolean
+    
+End Function
