@@ -25,25 +25,27 @@ Public Enum flAlgorithm
     flIterative
 End Enum
 
-Enum flShould
+Public Enum flShould
     Contain_
     EndWith_
     EvaluateTo_
     StartWith_
 End Enum
 
-Enum flHave
+Public Enum flHave
     ErrorDescriptionOf_
     ErrorNumberOf_
+    ExactSameElementsAs_
     LengthBetween_
     LengthOf_
     MaxLengthOf_
     MinLengthOf_
-    SameTypeAs_
     SameElementsAs_
+    SameTypeAs_
+    SameUniqueElementsAs_
 End Enum
 
-Enum flBe
+Public Enum flBe
     Alphabetic_
     Alphanumeric_
     Between_
@@ -94,27 +96,14 @@ Public Function InDataStructures( _
 ByVal testingValue As Variant, _
 ByVal method As flAlgorithm, _
 ByVal negateValue As Boolean, _
-ParamArray args() As Variant) As Boolean
-    Dim i As Long
-    Dim temp_bool As Boolean
-    Dim IsLastElem As Boolean
+ByVal testingInput As Variant) As Boolean
     Dim col As VBA.Collection
-    Dim strArgs() As String
-    Dim strTestingVal As String
     
-    ReDim strArgs(UBound(args))
+    Set col = getNestedElementsRecur(testingInput)
+
+    InDataStructures = Me.InDataStructure(testingValue, col, method, negateValue, updateFluentPath:=False)
     
-    Set col = getNestedElementsRecur(args)
-    
-    temp_bool = False
-    
-    temp_bool = Me.InDataStructure(testingValue, col, method, negateValue, updateFluentPath:=False)
-    
-    InDataStructures = temp_bool
-    
-    strTestingVal = ToString(args)
-    
-    Call addToTestAndFluentPath("InDataStructures", CBool(InDataStructures), CBool(negateValue), testingValue, args)
+    Call addToTestAndFluentPath("InDataStructures", CBool(InDataStructures), CBool(negateValue), testingValue, testingInput)
     
 End Function
 
@@ -473,43 +462,35 @@ Optional ByVal negateValue As Boolean = False) As Boolean
         
 End Function
 
-Public Function OneOf(ByVal testingValue As Variant, ByVal negateValue As Boolean, ParamArray args() As Variant) As Boolean
+Public Function OneOf(ByVal testingValue As Variant, ByVal negateValue As Boolean, ByVal testingInput As Variant) As Boolean
     Dim i As Long
     Dim j As Long
     Dim tempBool As Boolean
-    Dim arr As Variant
     Dim FluentPath As String
     Dim fluentBool As Boolean
     Dim shouldStr As String
     Dim TestingInputStr As String
         
-    arr = args(0)
     tempBool = False
     
-    For i = LBound(arr) To UBound(arr)
-'        If IsObject(arr(i)) Then
-'            TestingInputStr = TestingInputStr & TypeName(arr(i)) & ", "
-'        Else
-'            TestingInputStr = TestingInputStr & arr(i) & ", "
-'        End If
+    For i = LBound(testingInput) To UBound(testingInput)
 
-        If IsObject(arr(i)) Or IsObject(testingValue) Then
-            If TypeName(arr(i)) = TypeName(testingValue) Then
+        If IsObject(testingInput(i)) Or IsObject(testingValue) Then
+            If TypeName(testingInput(i)) = TypeName(testingValue) Then
                 tempBool = True
             End If
-        ElseIf arr(i) = testingValue Then
+        ElseIf testingInput(i) = testingValue Then
             tempBool = True
-            'Exit For
         End If
+        
+        If tempBool Then Exit For
     Next i
-    
-'    TestingInputStr = Left(TestingInputStr, Len(TestingInputStr) - 2)
     
     OneOf = tempBool
     
     If TypeOf testingValue Is Object  Then testingValue = TypeName(testingValue)
     
-    Call addToTestAndFluentPath("OneOf", CBool(OneOf), CBool(negateValue), testingValue, arr)
+    Call addToTestAndFluentPath("OneOf", CBool(OneOf), CBool(negateValue), testingValue, testingInput)
         
 End Function
 
@@ -680,8 +661,6 @@ Optional ByVal updateFluentPath As Boolean = False) As Boolean
     t1 = TypeName(testingValue)
     t2 = TypeName(testingInput)
     
-'    SameTypeAs = (t1 = t2)
-    
     SameTypeAs = EqualTo(t1, t2, updateFluentPath:=False)
     
     Call addToTestAndFluentPath("SameTypeAs", CBool(SameTypeAs), CBool(negateValue), testingValue, testingInput)
@@ -690,72 +669,126 @@ End Function
 Public Function IdenticalTo( _
 ByVal testingValue As Variant, _
 ByVal negateValue As Boolean, _
-ParamArray args() As Variant) As Boolean
+ByVal testingInput As Variant, _
+ByVal updateFluentPath As Boolean) As Boolean
 
-Dim i As Long
-Dim temp As Variant
-Dim b As Boolean
-
-b = False
-
-For i = LBound(args(0)) To UBound(args(0))
-    If IsObject(args(0)(i)) Then
-        Set temp = args(0)(i)
-    Else
-        temp = args(0)(i)
+    Dim i As Long
+    Dim temp As Variant
+    Dim elem As Variant
+    
+    IdenticalTo = EqualTo(InputToStringRecur(testingValue), InputToStringRecur(testingInput), updateFluentPath:=False)
+    
+    If updateFluentPath Then
+        Call addToTestAndFluentPath("IdenticalTo", CBool(IdenticalTo), CBool(negateValue), testingValue, testingInput)
     End If
 
-    b = EqualTo(InputToStringRecur(testingValue), InputToStringRecur(temp), updateFluentPath:=False)
+End Function
+
+Public Function ExactSameElementsAs( _
+ByVal testingValue As Variant, _
+ByVal negateValue As Boolean, _
+ByVal updateFluentPath As Boolean, _
+ByVal testingInput As Variant) As Boolean
+
+    Dim elem As Variant
+    Dim col As Collection
+    Dim col2 As Collection
     
-    If Not b Then Exit For
-Next i
+    Set col = New Collection
+    Set col2 = New Collection
+    
+    For Each elem In testingValue
+        col.Add elem
+    Next elem
+    
+    For Each elem In testingInput
+        col2.Add elem
+    Next elem
+    
+    ExactSameElementsAs = IdenticalTo(col, negateValue, col2, False)
+    
+    Call addToTestAndFluentPath("ExactSameElementsAs", CBool(ExactSameElementsAs), CBool(negateValue), testingValue, testingInput)
 
-IdenticalTo = b
+End Function
 
-Call addToTestAndFluentPath("IdenticalTo", CBool(IdenticalTo), CBool(negateValue), testingValue, args)
+Public Function SameUniqueElementsAs( _
+ByVal testingValue As Variant, _
+ByVal negateValue As Boolean, _
+ByVal testingInput As Variant) As Boolean
+
+    Dim elem As Variant
+    Dim d As Dictionary
+    Dim tempStr As String
+    
+    Set d = New Dictionary
+    tempStr = ""
+    
+    For Each elem In testingValue
+        tempStr = ToString(elem)
+        If Not d.Exists(tempStr) Then
+            d.Add tempStr, Empty
+        End If
+    Next elem
+    
+    tempStr = ""
+    
+    For Each elem In testingInput
+        tempStr = ToString(elem)
+        If Not d.Exists(tempStr) Then
+            d.Add tempStr, Empty
+        Else
+            d(tempStr) = tempStr
+        End If
+    Next elem
+    
+    SameUniqueElementsAs = IdenticalTo(d.Keys, negateValue, d.Items, False)
+    
+    Call addToTestAndFluentPath("SameUniqueElementsAs", CBool(SameUniqueElementsAs), CBool(negateValue), testingValue, testingInput)
 
 End Function
 
 Public Function SameElementsAs( _
 ByVal testingValue As Variant, _
 ByVal negateValue As Boolean, _
-ParamArray args() As Variant) As Boolean
+ByVal testingInput As Variant) As Boolean
 
-Dim i As Long
-Dim temp As Variant
-Dim b As Boolean
-Dim elem As Variant
-Dim col As Collection
-Dim col2 As Collection
-
-b = False
-Set col = New Collection
-
-For Each elem In testingValue
-    col.Add elem
-Next elem
-
-For i = LBound(args(0)) To UBound(args(0))
-    If IsObject(args(0)(i)) Then
-        Set temp = args(0)(i)
-    Else
-        temp = args(0)(i)
-    End If
+    Dim i As Long
+    Dim elem As Variant
+    Dim d As Dictionary
+    Dim d2 As Dictionary
+    Dim tempStr As String
     
-    Set col2 = New Collection
+    i = 1
+    elem = Empty
+    Set d = New Dictionary
+    Set d2 = New Dictionary
+    tempStr = ""
     
-    For Each elem In temp
-        col2.Add elem
+    For Each elem In testingValue
+        tempStr = ToString(elem)
+        
+        If d.Exists(tempStr) Then
+            d(tempStr) = d(tempStr) + 1
+        Else
+            d.Add ToString(elem), i
+        End If
     Next elem
-
-    b = EqualTo(InputToStringRecur(col), InputToStringRecur(col2), updateFluentPath:=False)
     
-    If Not b Then Exit For
-Next i
-
-SameElementsAs = b
-
-Call addToTestAndFluentPath("SameElementsAs", CBool(SameElementsAs), CBool(negateValue), testingValue, args)
+    tempStr = ""
+    
+    For Each elem In testingInput
+        tempStr = ToString(elem)
+        
+        If d2.Exists(tempStr) Then
+            d2(tempStr) = d2(tempStr) + 1
+        Else
+            d2.Add ToString(elem), i
+        End If
+    Next elem
+    
+    SameElementsAs = IdenticalTo(d, negateValue, d2, False)
+    
+    Call addToTestAndFluentPath("SameElementsAs", CBool(SameElementsAs), CBool(negateValue), testingValue, testingInput)
 
 End Function
 
@@ -852,7 +885,7 @@ Function Should_(shouldType As flShould, Optional testingInput As Variant) As St
     Should_ = shouldStr
 End Function
 
-Function Be_(beType As flBe, Optional tesingInput As String = "", Optional LowerVal As Variant, Optional HigherVal As Variant)
+Function Be_(beType As flBe, Optional TesingInput As String = "", Optional LowerVal As Variant, Optional HigherVal As Variant)
     Dim beStr As String
     Dim funcStr As String
     
@@ -896,18 +929,18 @@ Function Be_(beType As flBe, Optional tesingInput As String = "", Optional Lower
     
     beStr = beStr & funcStr
     
-    If tesingInput <> "" And IsMissing(LowerVal) And IsMissing(HigherVal) Then
-        beStr = beStr & " " & tesingInput
+    If TesingInput <> "" And IsMissing(LowerVal) And IsMissing(HigherVal) Then
+        beStr = beStr & " " & TesingInput
     End If
     
-    If tesingInput = "" And Not IsMissing(LowerVal) And Not IsMissing(HigherVal) Then
+    If TesingInput = "" And Not IsMissing(LowerVal) And Not IsMissing(HigherVal) Then
         beStr = beStr & " " & LowerVal & " and " & HigherVal
     End If
 
     Be_ = beStr
 End Function
 
-Function Have_(haveType As flHave, Optional tesingInput As String = "", Optional LowerVal As Variant, Optional HigherVal As Variant)
+Function Have_(haveType As flHave, Optional TesingInput As String = "", Optional LowerVal As Variant, Optional HigherVal As Variant)
     Dim haveStr As String
     Dim funcStr As String
     
@@ -926,21 +959,25 @@ Function Have_(haveType As flHave, Optional tesingInput As String = "", Optional
             funcStr = "max length of"
         Case MinLengthOf_
             funcStr = "min length of"
+        Case ExactSameElementsAs_
+            funcStr = "exact same elements as"
         Case SameElementsAs_
             funcStr = "same elements as"
         Case SameTypeAs_
             funcStr = "same type as"
+        Case SameUniqueElementsAs_
+            funcStr = "same unique elements as"
         Case Else
             Err.Raise NOT_IMPLEMENTED_ERROR, "Function not implemented"
     End Select
     
     haveStr = haveStr & funcStr
     
-    If Not IsMissing(tesingInput) And IsMissing(LowerVal) And IsMissing(HigherVal) Then
-        haveStr = haveStr & " " & tesingInput
+    If Not IsMissing(TesingInput) And IsMissing(LowerVal) And IsMissing(HigherVal) Then
+        haveStr = haveStr & " " & TesingInput
     End If
     
-    If IsMissing(tesingInput) And Not IsMissing(LowerVal) And Not IsMissing(HigherVal) Then
+    If IsMissing(TesingInput) And Not IsMissing(LowerVal) And Not IsMissing(HigherVal) Then
         haveStr = haveStr & " " & LowerVal & " and " & HigherVal
     End If
 
@@ -992,6 +1029,8 @@ Public Function getFunctionExpr(test As cTest)
                 tempFluentPath = Should_(EndWith_, .testingInput)
             Case "EvaluateTo"
                 tempFluentPath = Should_(EvaluateTo_, .StrTestInput)
+            Case "ExactSameElementsAs"
+                tempFluentPath = Have_(ExactSameElementsAs_, .StrTestInput)
             Case "GreaterThan"
                 tempFluentPath = Be_(GreaterThan_, .testingInput)
             Case "GreaterThanOrEqualTo"
@@ -1022,6 +1061,8 @@ Public Function getFunctionExpr(test As cTest)
                 tempFluentPath = Have_(SameElementsAs_, .StrTestInput)
             Case "SameTypeAs"
                 tempFluentPath = Have_(SameTypeAs_, .StrTestInput)
+            Case "SameUniqueElementsAs"
+                tempFluentPath = Have_(SameUniqueElementsAs_, .StrTestInput)
             Case "Something"
                 tempFluentPath = Be_(Something_)
             Case "StartWith"
@@ -1203,7 +1244,7 @@ Private Function InputToStringRecur(v As Variant) As String
                     End If
                 Next elem
             Else
-                For Each elem In v.keys
+                For Each elem In v.Keys
                     If IsObject(v(elem)) Or IsArray(v(elem)) Then
                         temp = temp & elem & ": " & InputToStringRecur(v(elem)) & ", "
                     Else

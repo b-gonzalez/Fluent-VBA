@@ -37,6 +37,14 @@ Public Function SameTypeAs(ByVal value As Variant) As Boolean
 
 End Function
 
-Public Function SameElementsAs(ParamArray args() As Variant) As Boolean
+Public Function ExactSameElementsAs(ByVal value As Variant) As Boolean
+    
+End Function
+
+Public Function SameUniqueElementsAs(ByVal value As Variant) As Boolean
+    
+End Function
+
+Public Function SameElementsAs(ByVal value As Variant) As Boolean
     
 End Function

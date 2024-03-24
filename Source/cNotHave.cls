@@ -55,6 +55,16 @@ Private Function IHave_SameTypeAs(ByVal value As Variant) As Boolean
     IHave_SameTypeAs = Not pExpressions.SameTypeAs(pNotHaveVal, value, True)
 End Function
 
-Private Function IHave_SameElementsAs(ParamArray args() As Variant) As Boolean
-    IHave_SameElementsAs = Not pExpressions.SameElementsAs(pNotHaveVal, True, args)
+Private Function IHave_ExactSameElementsAs(ByVal value As Variant) As Boolean
+'    Dim temp As Variant
+'    temp = args
+    IHave_ExactSameElementsAs = Not pExpressions.ExactSameElementsAs(pNotHaveVal, True, True, value)
+End Function
+
+Private Function IHave_SameUniqueElementsAs(ByVal value As Variant) As Boolean
+    IHave_SameUniqueElementsAs = Not pExpressions.SameUniqueElementsAs(pNotHaveVal, True, value)
+End Function
+
+Public Function IHave_SameElementsAs(ByVal value As Variant) As Boolean
+    IHave_SameElementsAs = Not pExpressions.SameElementsAs(pNotHaveVal, True, value)
 End Function

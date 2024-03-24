@@ -83,6 +83,8 @@ Private Function IBe_Erroneous() As Boolean
     IBe_Erroneous = pExpressions.Erroneous(pBeValue)
 End Function
 
-Private Function IBe_IdenticalTo(ParamArray args() As Variant) As Boolean
-    IBe_IdenticalTo = pExpressions.IdenticalTo(pBeValue, False, args)
+Private Function IBe_IdenticalTo(ByVal value As Variant) As Boolean
+'    Dim temp As Variant
+'    temp = args
+    IBe_IdenticalTo = pExpressions.IdenticalTo(pBeValue, False, value, True)
 End Function

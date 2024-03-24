@@ -174,7 +174,7 @@ Private Sub addTableToWorkbook(wb As Workbook)
         Set lo = ws.ListObjects.Add(xlSrcRange, ws.Range("$A$1:$B$1"), , xlYes)
     End If
     
-    lo.Name = "Table1"
+    lo.name = "Table1"
 End Sub
 
 Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
