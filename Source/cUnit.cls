@@ -11,9 +11,9 @@ Option Explicit
 
 Implements IUnit
 
-Private pShould As cShould
+'Private pShould As cShould
 Private pShouldSet As ISetExpressionAndValue
-Private pShouldNot As cShouldNot
+'Private pShouldNot As cShouldNot
 Private pShouldNotSet As ISetExpressionAndValue
 Private pExpressions As cExpressions
 Private pMeta As cMeta
@@ -24,13 +24,13 @@ Private pUnitVal As Variant
 Private pTestCount As Long
 
 Public Property Get Should() As IShould
-    Set pShould = getShould
-    Set Should = pShould
+'    Set pShould = getShould
+    Set Should = getShould
 End Property
 
 Public Property Get ShouldNot() As IShould
-    Set pShouldNot = getShouldNot
-    Set ShouldNot = pShouldNot
+'    Set pShouldNot = getShouldNot
+    Set ShouldNot = getShouldNot
 End Property
 
 Private Property Get IUnit_meta() As cMeta
@@ -102,4 +102,3 @@ Private Sub Class_Initialize()
     Set pExpressions.setPrinting = pMeta.Printing
     Set pExpressions.setTests = pMeta.Tests
 End Sub
-

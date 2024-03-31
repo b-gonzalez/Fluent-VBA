@@ -62,13 +62,18 @@ function get-word {
     )
 
     try {
+        $distPath = "$outputPath\Distribution\Fluent VBA"
+        $testPath = "$outputPath\test_files\test_fluent"
+
         $word = New-Object -ComObject word.application
         $doc = $word.documents.add()
         $wdFormatFlatXMLMacroEnabled = 13
-        $doc.SaveAs($outputPath, $wdFormatFlatXMLMacroEnabled)
+        $doc.SaveAs($distPath, $wdFormatFlatXMLMacroEnabled)
     
         $Major = 0
         $Minor = 0
+
+        $doc.VBProject.name = "fluent_vba"
 
         #This section requires "Trust access to the VBA project object model" to be enabled.
         #If it is not enabled this section will fail.
@@ -84,6 +89,13 @@ function get-word {
             }
         }
 
+        $mInit = $macros | Where-Object name -Contains "mInit.bas"
+
+        $doc2 = $word.documents.add()
+        $doc2.SaveAs($testPath, $wdFormatFlatXMLMacroEnabled)
+        $doc2.VBProject.name = "fluent_vba_test"
+        $doc2.VBProject.VBComponents.Import($mInit.FullName) | Out-Null
+
 
     }
     catch {
@@ -92,11 +104,15 @@ function get-word {
     }
     finally {
         $doc.Save()
+        $doc2.Save()
+
         if ($removePersonalInfo) {
             $doc.RemovePersonalInformation = $true
+            $doc2.RemovePersonalInformation = $true
         }
 
         $doc.Close()
+        $doc2.Close()
         $word.Quit()
 
         [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
@@ -168,13 +184,18 @@ function get-powerpoint {
     )
 
     try {
+        $distPath = "$outputPath\Distribution\Fluent VBA"
+        $testPath = "$outputPath\test_files\test_fluent"
+
         $powerpoint = New-Object -ComObject powerpoint.application
         $presentation = $powerpoint.Presentations.Add()
         $ppSaveAsOpenXMLPresentationMacroEnabled = 25
-        $presentation.SaveAs($outputPath, $ppSaveAsOpenXMLPresentationMacroEnabled)
+        $presentation.SaveAs($distPath, $ppSaveAsOpenXMLPresentationMacroEnabled)
     
         $Major = 0
         $Minor = 0
+
+        $presentation.VBProject.name = "fluent_vba"
     
         #This section requires "Trust access to the VBA project object model" to be enabled.
         #If it is not enabled this section will fail.
@@ -188,6 +209,13 @@ function get-powerpoint {
                 $presentation.VBProject.References.AddFromGuid($GUID, $Major, $Minor) 
             }
         }
+
+        $mInit = $macros | Where-Object name -Contains "mInit.bas"
+
+        $pres2 = $powerpoint.Presentations.Add()
+        $pres2.SaveAs($testPath, $ppSaveAsOpenXMLPresentationMacroEnabled)
+        $pres2.VBProject.name = "fluent_vba_test"
+        $pres2.VBProject.VBComponents.Import($mInit.FullName) | Out-Null
     
     }
     catch {
@@ -197,13 +225,17 @@ function get-powerpoint {
     finally {
         if ($removePersonalInfo) {
             $presentation.RemovePersonalInformation = $true
+            $pres2.RemovePersonalInformation = $true
         }
 
         $presentation.Save()
+        $pres2.Save()
         $presentation.Close()
+        $pres2.Close()
         $powerpoint.Quit()
         [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($presentation)
         [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($powerpoint)
+        [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($pres2)
         [GC]::Collect()
     }
 }
@@ -271,15 +303,20 @@ function get-access {
     )
 
     try {
+        $distPath = "$outputPath\Distribution\Fluent VBA"
+        $testPath = "$outputPath\test_files\test_fluent"
+
         $acc = New-Object -ComObject Access.Application
         $acFileFormatAccess2007 = 12
-        $acc.NewCurrentDataBase($outputPath, $acFileFormatAccess2007)
+        $acc.NewCurrentDataBase($distPath, $acFileFormatAccess2007)
     
         $acCmdCompileAndSaveAllModules = 126
         $acModule = 5
     
         $Major = 0
         $Minor = 0
+
+        $acc.VBE.ActiveVBProject.name = "fluent_vba"
     
         foreach ($macro in $macros) {
             if ($macro.Extension -ne ".doccls") {
@@ -295,6 +332,17 @@ function get-access {
                 $acc.VBE.ActiveVBProject.References.AddFromGuid($GUID, $Major, $Minor)
             }
         }
+
+        $acc.CloseCurrentDatabase()
+
+        $mInit = $macros | Where-Object name -Contains "mInit.bas"
+
+        $acc.NewCurrentDataBase($testPath, $acFileFormatAccess2007)
+        $acc.VBE.ActiveVBProject.name = "fluent_vba_test"
+        $acc.VBE.ActiveVBProject.VBComponents.Import($mInit.FullName)
+        # $acc.VBE.ActiveVBProject.VBComponents($acc.VBE.ActiveVBProject.VBComponents.Count).Name = $mInit.BaseName
+        $acc.DoCmd.RunCommand($acCmdCompileAndSaveAllModules)
+        $acc.DoCmd.Save($acModule, $mInit.BaseName)
     
     }
     catch {
@@ -376,18 +424,23 @@ function get-excel {
         [Parameter(Mandatory = $false)][switch]$removePersonalInfo
     )
     try {
+        $distPath = "$outputPath\Distribution\Fluent VBA"
+        $testPath = "$outputPath\test_files\test_fluent"
+
         $excel = New-Object -ComObject excel.application
         $workbook = $excel.Workbooks.Add()
         $xlOpenXMLWorkbookMacroEnabled = 52
-        $workbook.SaveAs($outputPath, $xlOpenXMLWorkbookMacroEnabled)
+        $workbook.SaveAs($distPath, $xlOpenXMLWorkbookMacroEnabled)
     
         $Major = 0
         $Minor = 0
+
+        $workbook.VBProject.name = "fluent_vba"
     
         #This section requires "Trust access to the VBA project object model" to be enabled.
         #If it is not enabled this section will fail.
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls") {
+            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike "mInit.bas") {
                 $workbook.VBProject.VBComponents.Import($macro.FullName) | Out-Null
             }
         }
@@ -397,6 +450,13 @@ function get-excel {
                 $workbook.VBProject.References.AddFromGuid($GUID, $Major, $Minor)
             }
         }
+
+        $mInit = $macros | Where-Object name -Contains "mInit.bas"
+
+        $wb2 = $excel.Workbooks.Add()
+        $wb2.SaveAs($testPath, $xlOpenXMLWorkbookMacroEnabled)
+        $wb2.VBProject.name = "fluent_vba_test"
+        $wb2.VBProject.VBComponents.Import($mInit.FullName) | Out-Null
         
     }
     catch {
@@ -406,10 +466,13 @@ function get-excel {
     finally {
         if ($removePersonalInfo) {
             $workbook.RemovePersonalInformation = $true
+            $wb2.RemovePersonalInformation = $true
         }
         
         $workbook.Save()
         $workbook.Close()
+        $wb2.Save()
+        $wb2.Close()
         $excel.Quit()
         [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
         [GC]::Collect()

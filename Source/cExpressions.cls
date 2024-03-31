@@ -13,7 +13,7 @@ Private pMeta As cMeta
 Private pTests As cTests
 Private pPrinting As cPrinting
 Private iPrint As IPrinting
-Private pExprDict As Scripting.Dictionary
+Private pExprDict As scripting.Dictionary
 
 Private pTestValue As Variant
 Private pFluentPath As String
@@ -520,7 +520,7 @@ Optional ByVal negateValue = False) As Variant
     Dim fluentBool As Boolean
     Dim shouldStr As String
     
-    EvaluateTo = (Evaluate(testingValue) = testingInput)
+    EvaluateTo = (Excel.Evaluate(testingValue) = testingInput)
 
     Call addToTestAndFluentPath("EvaluateTo", CBool(EvaluateTo), CBool(negateValue), testingValue, testingInput)
     
@@ -599,7 +599,7 @@ Public Function Erroneous(ByVal testingValue As Variant, Optional ByVal negateVa
         tempTestingVal = (testingValue.Number <> 0)
     Else
         On Error Resume Next
-            tempTestingVal = Application.Evaluate(testingValue)
+            tempTestingVal = Excel.Evaluate(testingValue)
             tempTestingVal = (TypeName(tempTestingVal) = "Error")
         On Error GoTo 0
     End If
@@ -623,7 +623,7 @@ Optional ByVal negateValue = False) As Boolean
     Dim e1 As Variant
     
     On Error Resume Next
-        temp = Application.Evaluate(testingValue)
+        temp = Excel.Evaluate(testingValue)
         Err.Raise (testingInput)
         temp = Err.Number
         ErrorNumberOf = (temp = testingInput)
@@ -639,7 +639,7 @@ Optional ByVal negateValue = False) As Boolean
     Dim tempTestVal As Variant
     
     On Error Resume Next
-        tempTestVal = CStr(Application.Evaluate(testingValue))
+        tempTestVal = CStr(Excel.Evaluate(testingValue))
         tempTestVal = Replace(tempTestVal, "Error ", "")
         Err.Raise tempTestVal
         tempTestVal = Err.Description
@@ -717,10 +717,10 @@ ByVal negateValue As Boolean, _
 ByVal testingInput As Variant) As Boolean
 
     Dim elem As Variant
-    Dim d As Dictionary
+    Dim d As scripting.Dictionary
     Dim tempStr As String
     
-    Set d = New Dictionary
+    Set d = New scripting.Dictionary
     tempStr = ""
     
     For Each elem In testingValue
@@ -754,14 +754,14 @@ ByVal testingInput As Variant) As Boolean
 
     Dim i As Long
     Dim elem As Variant
-    Dim d As Dictionary
-    Dim d2 As Dictionary
+    Dim d As scripting.Dictionary
+    Dim d2 As scripting.Dictionary
     Dim tempStr As String
     
     i = 1
     elem = Empty
-    Set d = New Dictionary
-    Set d2 = New Dictionary
+    Set d = New scripting.Dictionary
+    Set d2 = New scripting.Dictionary
     tempStr = ""
     
     For Each elem In testingValue
@@ -1266,5 +1266,5 @@ Private Function InputToStringRecur(v As Variant) As String
 End Function
 
 Private Sub Class_Initialize()
-    Set pExprDict = New Scripting.Dictionary
+    Set pExprDict = New scripting.Dictionary
 End Sub

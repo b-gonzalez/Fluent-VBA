@@ -2,7 +2,8 @@ function get-officeFiles {
     try {
         $curDir = $PSScriptRoot
         $parentDir = (get-item $curDir).parent.FullName
-        $outputPath = "$parentDir\Distribution\Fluent VBA"
+        # $outputPath = "$parentDir\Distribution\Fluent VBA"
+        # $outputPath = "$parentDir"
         $functions = "$parentDir\Scripts\functions.ps1"
         Import-Module $functions
         
@@ -20,6 +21,12 @@ function get-officeFiles {
             New-Item -Path .\Distribution -ItemType "directory"
         }
 
+        if (! (Test-Path -PathType container .\test_files)) {
+            New-Item -Path .\test_files -ItemType "directory"
+        }
+
+        $testFiles = Get-ChildItem -Path .\test_files -File
+
         $distFiles = Get-ChildItem -Path .\Distribution -File
 
         foreach ($file in $srcFiles) {
@@ -31,22 +38,26 @@ function get-officeFiles {
         foreach ($file in $distfiles) {
             $file.delete()
         }
+
+        foreach ($file in $testFiles) {
+            $file.delete()
+        }
     
         $GUIDs = @()
         $GUIDs += $scriptingGuid
 
         #This function requires "Trust access to the VBA project object model" to be enabled in Excel
-        get-excel -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
+        get-excel -outputPath $parentDir -macros $macros -GUIDs $GUIDs -removePersonalInfo
         $GUIDs += $excelGuid
 
-        #This function requires "Trust access to the VBA project object model" to be enabled in Word
-        get-word -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
+        # #This function requires "Trust access to the VBA project object model" to be enabled in Word
+        get-word -outputPath $parentDir -macros $macros -GUIDs $GUIDs -removePersonalInfo
 
-        #This function requires "Trust access to the VBA project object model" to be enabled in PowerPoint
-        get-powerpoint -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
+        # #This function requires "Trust access to the VBA project object model" to be enabled in PowerPoint
+        get-powerpoint -outputPath $parentDir -macros $macros -GUIDs $GUIDs -removePersonalInfo
 
-        #"Trust access to the VBA project object model" is not required for this function
-        get-access -outputPath $outputPath -macros $macros -GUIDs $GUIDs -removePersonalInfo
+        # #"Trust access to the VBA project object model" is not required for this function
+        get-access -outputPath $parentDir -macros $macros -GUIDs $GUIDs -removePersonalInfo
     
         foreach ($file in $distfiles) {
             if ($file.FullName -like '*~$uent*') {
