@@ -513,3 +513,167 @@ function Get-ExcelGuid {
         [GC]::Collect()
     }
 }
+
+function add-ExcelRef {
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory = $true)][string]$testFilePath,
+        [Parameter(Mandatory = $true)][string]$distFilePath,
+        [Parameter(Mandatory = $false)][switch]$removePersonalInfo
+    )
+    & {
+        try {
+            $excel = New-Object -ComObject excel.application
+  
+            #The opened file must have macros enabled on the file by 
+            #clicking the "enable macros" button. If it does not, 
+            #adding the project reference in the $refFilePath variable
+            #will fail.
+        
+            $workbook = $excel.Workbooks.open($testFilePath)
+  
+            $excel.Visible = $true
+  
+            $workbook.VBProject.References.AddFromFile($distFilePath)
+          
+        }
+        catch {
+            Write-Host "An error occurred:"
+            Write-Host $_
+        }
+        finally {
+            if ($removePersonalInfo) {
+                $workbook.RemovePersonalInformation = $true
+            }
+          
+            $workbook.Save()
+            $workbook.Close()
+            $excel.Quit()
+            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
+            [GC]::Collect()
+        }
+    }
+}
+  
+function add-WordRef {
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory = $true)][string]$testFilePath,
+        [Parameter(Mandatory = $true)][string]$distFilePath,
+        [Parameter(Mandatory = $false)][switch]$removePersonalInfo
+    )
+    & {
+        try {
+            $word = New-Object -ComObject word.application
+            $doc = $word.documents.open($testFilePath)
+  
+            #The opened file must have macros enabled on the file by 
+            #clicking the "enable macros" button. If it does not, 
+            #adding the project reference in the $refFilePath variable
+            #will fail.
+  
+            $word.Visible = $true
+  
+            $doc.VBProject.VBE.VBProjects("fluent_vba_test").References.AddFromFile($distFilePath)
+          
+        }
+        catch {
+            Write-Host "An error occurred:"
+            Write-Host $_
+        }
+        finally {
+            if ($removePersonalInfo) {
+                $doc.RemovePersonalInformation = $true
+            }
+          
+            $doc.Save()
+            $doc.Close()
+            $word.Quit()
+            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
+            [GC]::Collect()
+        }
+    }
+}
+  
+function add-PowerPointRef {
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory = $true)][string]$testFilePath,
+        [Parameter(Mandatory = $true)][string]$distFilePath,
+        [Parameter(Mandatory = $false)][switch]$removePersonalInfo
+    )
+    & {
+        try {
+            $powerpoint = New-Object -ComObject powerpoint.application
+  
+            #The opened file must have macros enabled on the file by 
+            #clicking the "enable macros" button. If it does not, 
+            #adding the project reference in the $refFilePath variable
+            #will fail.
+        
+            $presentation = $powerpoint.Presentations.open($testFilePath)
+  
+            $powerpoint.Visible = $true
+            
+            #for PowerPoint, distFilePath needs to refer to an add-in file
+            $presentation.VBProject.References.AddFromFile($distFilePath)
+          
+        }
+        catch {
+            Write-Host "An error occurred:"
+            Write-Host $_
+        }
+        finally {
+            if ($removePersonalInfo) {
+                $presentation.RemovePersonalInformation = $true
+            }
+          
+            $presentation.Save()
+            $presentation.Close()
+            $powerpoint.Quit()
+            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($presentation)
+            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($powerpoint)
+            [GC]::Collect()
+        }
+    }
+}
+  
+function add-AccessRef {
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory = $true)][string]$testFilePath,
+        [Parameter(Mandatory = $true)][string]$distFilePath,
+        [Parameter(Mandatory = $false)][switch]$removePersonalInfo
+    )
+    & {
+        try {
+            $acc = New-Object -ComObject Access.Application
+  
+            #The opened file must have macros enabled on the file by 
+            #clicking the "enable macros" button. If it does not, 
+            #adding the project reference in the $refFilePath variable
+            #will fail.
+        
+            $acc.OpenCurrentDatabase($testFilePath)
+  
+            $acc.Visible = $true
+  
+            $acc.VBE.ActiveVBProject.References.AddFromFile($distFilePath)
+          
+        }
+        catch {
+            Write-Host "An error occurred:"
+            Write-Host $_
+        }
+        finally {
+            if ($removePersonalInfo) {
+                $acc.CurrentProject.RemovePersonalInformation = $true
+            }
+  
+            $acc.CloseCurrentDatabase()
+            $acc.Quit()
+            [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($acc)
+            [GC]::Collect()
+        }
+    }
+}
