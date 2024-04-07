@@ -190,6 +190,8 @@ function get-powerpoint {
         $powerpoint = New-Object -ComObject powerpoint.application
         $presentation = $powerpoint.Presentations.Add()
         $ppSaveAsOpenXMLPresentationMacroEnabled = 25
+        $ppSaveAsAddIn = 8
+
         $presentation.SaveAs($distPath, $ppSaveAsOpenXMLPresentationMacroEnabled)
     
         $Major = 0
@@ -216,6 +218,8 @@ function get-powerpoint {
         $pres2.SaveAs($testPath, $ppSaveAsOpenXMLPresentationMacroEnabled)
         $pres2.VBProject.name = "fluent_vba_test"
         $pres2.VBProject.VBComponents.Import($mInit.FullName) | Out-Null
+
+        $presentation.SaveAs($distPath, $ppSaveAsAddIn)
     
     }
     catch {
