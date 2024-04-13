@@ -64,18 +64,18 @@ Private Property Get IShould_be() As IBe
     Set IShould_be = pNotBeSet
 End Property
 
-Private Function IShould_contain(ByVal value As Variant) As Boolean
+Private Function IShould_contain(ByVal value As Variant) As Variant
     IShould_contain = Not pExpressions.Contain(pShouldNotVal, value, True)
 End Function
 
-Private Function IShould_startWith(ByVal value As Variant) As Boolean
+Private Function IShould_startWith(ByVal value As Variant) As Variant
     IShould_startWith = Not pExpressions.StartWith(pShouldNotVal, value, True)
 End Function
 
-Private Function IShould_endWith(ByVal value As Variant) As Boolean
+Private Function IShould_endWith(ByVal value As Variant) As Variant
     IShould_endWith = Not pExpressions.EndWith(pShouldNotVal, value, True)
 End Function
 
-Public Function IShould_evaluateTo(ByVal value As Variant) As Boolean
+Public Function IShould_evaluateTo(ByVal value As Variant) As Variant
     IShould_evaluateTo = Not pExpressions.EvaluateTo(pShouldNotVal, value)
 End Function

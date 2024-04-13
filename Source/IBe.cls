@@ -9,62 +9,62 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Function Alphabetic() As Boolean
+Public Function Alphabetic() As Variant
 
 End Function
 
-Public Function Alphanumeric() As Boolean
+Public Function Alphanumeric() As Variant
 
 End Function
 
-Public Function Between(ByVal LowerVal As Double, ByVal HigherVal As Double) As Boolean
+Public Function Between(ByVal LowerVal As Double, ByVal HigherVal As Double) As Variant
 
 End Function
 
-Public Function Erroneous() As Boolean
+Public Function Erroneous() As Variant
 
 End Function
 
-Public Function EqualTo(ByVal value As Variant) As Boolean
+Public Function EqualTo(ByVal value As Variant) As Variant
 
 End Function
 
-Public Function GreaterThan(ByVal value As Double) As Boolean
+Public Function GreaterThan(ByVal value As Double) As Variant
 
 End Function
 
-Public Function GreaterThanOrEqualTo(ByVal value As Double) As Boolean
+Public Function GreaterThanOrEqualTo(ByVal value As Double) As Variant
 
 End Function
 
-Public Function InDataStructure(ByVal DataStructure As Variant, Optional ByVal method As flAlgorithm = flRecursive) As Boolean
+Public Function InDataStructure(ByVal DataStructure As Variant, Optional ByVal method As flAlgorithm = flRecursive) As Variant
 
 End Function
 
-Public Function InDataStructures(ByVal method As flAlgorithm, ParamArray DataStructures() As Variant) As Boolean
+Public Function InDataStructures(ByVal method As flAlgorithm, ParamArray DataStructures() As Variant) As Variant
 
 End Function
 
-Public Function LessThan(ByVal value As Double) As Boolean
+Public Function LessThan(ByVal value As Double) As Variant
 
 End Function
 
-Public Function LessThanOrEqualTo(ByVal value As Double) As Boolean
+Public Function LessThanOrEqualTo(ByVal value As Double) As Variant
 
 End Function
 
-Public Function Numeric() As Boolean
+Public Function Numeric() As Variant
 
 End Function
 
-Public Function OneOf(ParamArray Vals() As Variant)
+Public Function OneOf(ParamArray Vals() As Variant) As Variant
 
 End Function
 
-Public Function Something() As Boolean
+Public Function Something() As Variant
 
 End Function
 
-Public Function IdenticalTo(ByVal value As Variant) As Boolean
+Public Function IdenticalTo(ByVal value As Variant) As Variant
 
 End Function

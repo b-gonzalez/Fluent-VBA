@@ -9,42 +9,42 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Function LengthOf(ByVal value As Double) As Boolean
+Public Function LengthOf(ByVal value As Double) As Variant
 
 End Function
 
-Public Function MaxLengthOf(ByVal value As Double) As Boolean
+Public Function MaxLengthOf(ByVal value As Double) As Variant
 
 End Function
 
-Public Function MinLengthOf(ByVal value As Double) As Boolean
+Public Function MinLengthOf(ByVal value As Double) As Variant
 
 End Function
 
-Public Function LengthBetween(ByVal LowValue As Double, ByVal HighValue As Double) As Boolean
+Public Function LengthBetween(ByVal LowValue As Double, ByVal HighValue As Double) As Variant
 
 End Function
 
-Public Function ErrorNumberOf(ByVal value As Long) As Boolean
+Public Function ErrorNumberOf(ByVal value As Long) As Variant
 
 End Function
 
-Public Function ErrorDescriptionOf(ByVal value As String) As Boolean
+Public Function ErrorDescriptionOf(ByVal value As String) As Variant
 
 End Function
 
-Public Function SameTypeAs(ByVal value As Variant) As Boolean
+Public Function SameTypeAs(ByVal value As Variant) As Variant
 
 End Function
 
-Public Function ExactSameElementsAs(ByVal value As Variant) As Boolean
+Public Function ExactSameElementsAs(ByVal value As Variant) As Variant
     
 End Function
 
-Public Function SameUniqueElementsAs(ByVal value As Variant) As Boolean
+Public Function SameUniqueElementsAs(ByVal value As Variant) As Variant
     
 End Function
 
-Public Function SameElementsAs(ByVal value As Variant) As Boolean
+Public Function SameElementsAs(ByVal value As Variant) As Variant
     
 End Function

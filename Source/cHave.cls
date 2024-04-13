@@ -27,44 +27,44 @@ Private Property Set ISetExpressionAndValue_testValue(ByVal value As Variant)
     Set pHaveVal = pExpressions.TestValue
 End Property
 
-Private Function IHave_LengthOf(ByVal value As Double) As Boolean
+Private Function IHave_LengthOf(ByVal value As Double) As Variant
     IHave_LengthOf = pExpressions.LengthOf(CDbl(pHaveVal), value)
 End Function
 
-Private Function IHave_MaxLengthOf(ByVal value As Double) As Boolean
+Private Function IHave_MaxLengthOf(ByVal value As Double) As Variant
     IHave_MaxLengthOf = pExpressions.MaxLengthOf(CDbl(pHaveVal), value, updateFluentPath:=True)
 End Function
 
-Private Function IHave_MinLengthOf(ByVal value As Double) As Boolean
+Private Function IHave_MinLengthOf(ByVal value As Double) As Variant
     IHave_MinLengthOf = pExpressions.MinLengthOf(CDbl(pHaveVal), value, updateFluentPath:=True)
 End Function
 
-Private Function IHave_LengthBetween(ByVal lowVal As Double, ByVal highVal As Double) As Boolean
+Private Function IHave_LengthBetween(ByVal lowVal As Double, ByVal highVal As Double) As Variant
     IHave_LengthBetween = pExpressions.LengthBetween(CDbl(pHaveVal), lowVal, highVal)
 End Function
 
-Private Function IHave_ErrorNumberOf(ByVal value As Long) As Boolean
+Private Function IHave_ErrorNumberOf(ByVal value As Long) As Variant
     IHave_ErrorNumberOf = pExpressions.ErrorNumberOf(pHaveVal, value)
 End Function
 
-Private Function IHave_ErrorDescriptionOf(ByVal value As String) As Boolean
+Private Function IHave_ErrorDescriptionOf(ByVal value As String) As Variant
     IHave_ErrorDescriptionOf = pExpressions.ErrorDescriptionOf(pHaveVal, value)
 End Function
 
-Private Function IHave_SameTypeAs(ByVal value As Variant) As Boolean
+Private Function IHave_SameTypeAs(ByVal value As Variant) As Variant
     IHave_SameTypeAs = pExpressions.SameTypeAs(pHaveVal, value)
 End Function
 
-Private Function IHave_ExactSameElementsAs(ByVal value As Variant) As Boolean
+Private Function IHave_ExactSameElementsAs(ByVal value As Variant) As Variant
 '    Dim temp As Variant
 '    temp = args
     IHave_ExactSameElementsAs = pExpressions.ExactSameElementsAs(pHaveVal, False, True, value)
 End Function
 
-Private Function IHave_SameUniqueElementsAs(ByVal value As Variant) As Boolean
+Private Function IHave_SameUniqueElementsAs(ByVal value As Variant) As Variant
     IHave_SameUniqueElementsAs = pExpressions.SameUniqueElementsAs(pHaveVal, False, value)
 End Function
 
-Public Function IHave_SameElementsAs(ByVal value As Variant) As Boolean
+Public Function IHave_SameElementsAs(ByVal value As Variant) As Variant
     IHave_SameElementsAs = pExpressions.SameElementsAs(pHaveVal, False, value)
 End Function
