@@ -235,6 +235,8 @@ Private Function getArrayFromCollection(ByVal col As Collection) As Variant()
             arr(i - 1, TestName) = pPassedMessage & " - " & temp(TestName)
         ElseIf temp(TestResult) = 0 Then
             arr(i - 1, TestName) = pFailedMessage & " - " & temp(TestName)
+        ElseIf temp(TestResult) = 1 Then
+            arr(i - 1, TestName) = "Unexpected - " & temp(TestName)
         End If
     Next i
     

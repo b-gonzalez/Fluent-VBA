@@ -94,10 +94,10 @@ Private Sub TrueAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf,
     With fluent.Meta.Tests
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
-        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
-        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
-        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        Debug.Assert testFluentResult.Of(.result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
 End Sub
 
@@ -110,10 +110,10 @@ Private Sub FalseAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf
     With fluent.Meta.Tests
         Debug.Assert fluent.Should.Be.EqualTo(False)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
-        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
-        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
-        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
-        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        Debug.Assert testFluentResult.Of(.result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
 End Sub
 
@@ -189,18 +189,18 @@ Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluent
     End With
     
     For Each test In fluent.Meta.Tests
-        Debug.Assert test.Result
+        Debug.Assert test.result
     Next test
     
     For i = 1 To fluent.Meta.Tests.Count
-        Debug.Assert fluent.Meta.Tests(i).Result
+        Debug.Assert fluent.Meta.Tests(i).result
     Next i
     
     i = 1
     
     With testFluent.Meta
         For Each test In .Tests
-            resultBool = test.Result = .Tests(i).Result
+            resultBool = test.result = .Tests(i).result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
             valueBool = test.testingValue = .Tests(i).testingValue
             inputBool = test.testingInput = .Tests(i).testingInput
@@ -1849,18 +1849,18 @@ Private Function positiveDocumentationTests(fluent As cFluent, testFluent As cFl
     End With
     
     For Each test In fluent.Meta.Tests
-        Debug.Assert test.Result
+        Debug.Assert test.result
     Next test
     
     For i = 1 To fluent.Meta.Tests.Count
-        Debug.Assert fluent.Meta.Tests(i).Result
+        Debug.Assert fluent.Meta.Tests(i).result
     Next i
     
     i = 1
     
     With testFluent.Meta
         For Each test In .Tests
-            resultBool = test.Result = .Tests(i).Result
+            resultBool = test.result = .Tests(i).result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
             valueBool = test.StrTestValue = .Tests(i).StrTestValue
             inputBool = test.StrTestInput = .Tests(i).StrTestInput
@@ -3512,18 +3512,18 @@ Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFl
     End With
     
     For Each test In fluent.Meta.Tests
-        Debug.Assert test.Result
+        Debug.Assert test.result
     Next test
     
     For i = 1 To fluent.Meta.Tests.Count
-        Debug.Assert fluent.Meta.Tests(i).Result
+        Debug.Assert fluent.Meta.Tests(i).result
     Next i
     
     i = 1
     
     With testFluent.Meta
         For Each test In .Tests
-            resultBool = test.Result = .Tests(i).Result
+            resultBool = test.result = .Tests(i).result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
             valueBool = test.StrTestValue = .Tests(i).StrTestValue
             inputBool = test.StrTestInput = .Tests(i).StrTestInput

@@ -101,9 +101,13 @@ ByVal testingInput As Variant) As Variant
     
     InDataStructures = Null
     
-    Set col = getNestedElementsRecur(testingInput)
-
-    InDataStructures = Me.InDataStructure(testingValue, col, method, negateValue, updateFluentPath:=False)
+    If IsDataStructure(testingInput) Then
+        
+        Set col = getNestedElementsRecur(testingInput)
+    
+        InDataStructures = Me.InDataStructure(testingValue, col, method, negateValue, updateFluentPath:=False)
+    
+    End If
     
     Call addToTestAndFluentPath("InDataStructures", CBool(InDataStructures), CBool(negateValue), testingValue, testingInput)
     
@@ -125,9 +129,9 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     InDataStructure = Null
     
-    tempBool = False
-    
     If IsDataStructure(DataStructure) Then
+        tempBool = False
+    
         If method = flRecursive Then
             Set col = getNestedElementsRecur(DataStructure)
         ElseIf method = flIterative Then
@@ -140,12 +144,14 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
                 Exit For
             End If
         Next elem
+        
+        InDataStructure = tempBool
+
     End If
     
-    InDataStructure = tempBool
-    
     If updateFluentPath Then
-        Call addToTestAndFluentPath("InDataStructure", CBool(InDataStructure), CBool(negateValue), testingValue, DataStructure)
+'        Call addToTestAndFluentPath("InDataStructure", CBool(InDataStructure), CBool(negateValue), testingValue, DataStructure)
+        Call addToTestAndFluentPath("InDataStructure", InDataStructure, CBool(negateValue), testingValue, DataStructure)
     End If
     
 End Function
@@ -255,9 +261,13 @@ Public Function GreaterThan(ByVal testingValue As Double, ByVal testingInput As 
     
     GreaterThan = Null
     
-    GreaterThan = (testingValue > testingInput)
+    If IsNumeric(testingValue) And IsNumeric(testingInput) Then
     
-    Call addToTestAndFluentPath("GreaterThan", CBool(GreaterThan), CBool(negateValue), testingValue, testingInput)
+        GreaterThan = (testingValue > testingInput)
+        
+        Call addToTestAndFluentPath("GreaterThan", CBool(GreaterThan), CBool(negateValue), testingValue, testingInput)
+    
+    End If
     
 End Function
 
@@ -272,10 +282,14 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     GreaterThanOrEqualTo = Null
     
-    GreaterThanOrEqualTo = (testingValue >= testingInput)
+    If IsNumeric(testingValue) And IsNumeric(testingInput) Then
     
-    If updateFluentPath Then
-        Call addToTestAndFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(negateValue), testingValue, testingInput)
+        GreaterThanOrEqualTo = (testingValue >= testingInput)
+        
+        If updateFluentPath Then
+            Call addToTestAndFluentPath("GreaterThanOrEqualTo", CBool(GreaterThanOrEqualTo), CBool(negateValue), testingValue, testingInput)
+        End If
+    
     End If
         
 End Function
@@ -328,14 +342,21 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     EqualTo = Null
     
-    tempBool = (testingValue = testingInput)
-    
-    If pMeta.ApproximateEqual Then
-        If TypeName(testingValue) <> TypeName(testingInput) Then
-            If IsNumeric(testingValue) And IsNumeric(testingInput) Then
-                tempBool = (Abs(testingValue - testingInput) <= pMeta.Epsilon)
-            ElseIf VarType(testingValue) = vbString Or VarType(testingInput) = vbString Then
-                tempBool = (StrComp(CStr(testingValue), CStr(testingInput), vbTextCompare) = 0)
+    If IsNull(testingValue) Or IsNull(testingInput) Then
+        tempBool = TypeName(testingValue) = TypeName(testingInput)
+        
+        testingValue = TypeName(testingValue)
+        testingInput = TypeName(testingInput)
+    Else
+        tempBool = (testingValue = testingInput)
+        
+        If pMeta.ApproximateEqual Then
+            If TypeName(testingValue) <> TypeName(testingInput) Then
+                If IsNumeric(testingValue) And IsNumeric(testingInput) Then
+                    tempBool = (Abs(testingValue - testingInput) <= pMeta.Epsilon)
+                ElseIf VarType(testingValue) = vbString Or VarType(testingInput) = vbString Then
+                    tempBool = (StrComp(CStr(testingValue), CStr(testingInput), vbTextCompare) = 0)
+                End If
             End If
         End If
     End If
@@ -846,7 +867,7 @@ End Function
 
 Private Sub addToTestAndFluentPath( _
     ByVal functionName As String, _
-    ByVal Result As Boolean, _
+    ByVal result As Variant, _
     ByVal negateValue As Boolean, _
     ByVal testingValue As Variant, _
     Optional ByVal testingInput As Variant, _
@@ -857,14 +878,19 @@ Private Sub addToTestAndFluentPath( _
     Dim shouldBool As String
     
     Set test = New cTest
+    
+    If IsNull(result) Then
+'        result = TypeName(result)
+        test.HasNull = True
+    End If
 
     If negateValue Then
-        Result = Not Result
+        result = Not result
     End If
 
     With test
         .functionName = functionName
-        .Result = Result
+        .result = result
         .testingInput = Empty
         .LowerVal = Empty
         .HigherVal = Empty
@@ -1038,18 +1064,22 @@ Function Have_(haveType As flHave, Optional TesingInput As String = "", Optional
 End Function
 
 Public Function buildFluentPath(test As cTest, FluentPath As String, tempFluentPath As String) As String
+    If IsNull(test.result) Then
+        test.result = TypeName(test.result)
+    End If
+
     With test
         If .StrTestInput = "" Then
             tempFluentPath = FluentPath & _
             " Testing value: " & .StrTestValue & ";" & _
             " Expectation: Testing value " & tempFluentPath & ";" & _
-            " Result: " & .Result
+            " Result: " & .result
         Else
             tempFluentPath = FluentPath & _
             " Testing value: " & .StrTestValue & ";" & _
             " Testing input: " & .StrTestInput & ";" & _
             " Expectation: Testing value " & tempFluentPath & ";" & _
-            " Result: " & .Result
+            " Result: " & .result
         End If
     End With
     
@@ -1166,7 +1196,7 @@ Private Sub addFluentPathNew(ByVal test As cTest, ByVal negateValue As Boolean)
         fluentElement = 1
     End If
     
-    FluentPath = FluentPath & CLng(test.Result) & "="
+    FluentPath = FluentPath & getResultNumber(test.result) & "="
     
     If pPrinting.TestName <> "" Then FluentPath = FluentPath & pPrinting.TestName & " "
     
@@ -1220,6 +1250,8 @@ Private Function ToString(ByVal nv As Variant) As String
             Next i
             
             tempNVTS = Join(strArgs, ", ")
+        Case IsNull(nv)
+            tempNVTS = TypeName(nv)
         Case Not TypeOf nv Is Object
             tempNVTS = CStr(nv)
         Case TypeOf nv Is ErrObject
@@ -1315,6 +1347,20 @@ Private Function InputToStringRecur(v As Variant) As String
     temp = temp & ")"
 
     InputToStringRecur = temp
+End Function
+
+Public Function getResultNumber(result As Variant)
+    Dim resultNumber As Variant
+    
+    resultNumber = Null
+    
+    If IsNull(result) Then
+        resultNumber = 1
+    ElseIf TypeName(result) = "Boolean" Then
+        resultNumber = CLng(result)
+    End If
+    
+    getResultNumber = resultNumber
 End Function
 
 Private Sub Class_Initialize()

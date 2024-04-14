@@ -12,12 +12,13 @@ Option Explicit
 Private pTestingValue As Variant
 Private pTestingInput As Variant
 Private pFluentPath As String
-Private pResult As Boolean
+Private pResult As Variant
 Private pFunctionName As String
 Private pLowerVal As Double
 Private pHigherVal As Double
 Private pStrTestValue As String
 Private pStrTestInput As String
+Private pHasNull As Boolean
 
 Public Property Let testingValue(value As Variant)
     pTestingValue = value
@@ -75,12 +76,12 @@ Public Property Get FluentPath() As String
     FluentPath = pFluentPath
 End Property
 
-Public Property Let Result(value As Boolean)
+Public Property Let result(value As Variant)
     pResult = value
 End Property
 
-Public Property Get Result() As Boolean
-    Result = pResult
+Public Property Get result() As Variant
+    result = pResult
 End Property
 
 Public Property Let functionName(value As String)
@@ -107,3 +108,10 @@ Public Property Get StrTestInput() As String
     StrTestInput = pStrTestInput
 End Property
 
+Public Property Let HasNull(value As Boolean)
+    pHasNull = value
+End Property
+
+Public Property Get HasNull() As Boolean
+    HasNull = pHasNull
+End Property
