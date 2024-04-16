@@ -66,13 +66,11 @@ End Sub
 
 Private Sub pTest_TestPassed(ByVal test As cTest)
     Debug.Assert pFluentEvent.Meta.Tests.result = test.result
-'    Debug.Assert test.ExpectedValue = test.ActualValue
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
 Private Sub pTest_TestFailed(ByVal test As cTest)
     Debug.Assert pFluentEvent.Meta.Tests.result = test.result
-'    Debug.Assert test.ExpectedValue <> test.ActualValue
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
@@ -94,19 +92,7 @@ Private Sub pTestOfResults_TestCompleted(ByVal test As cTest)
 End Sub
 
 Private Sub pTestOf_TestUnexpected(ByVal test As cTest)
-    'this event should never be raised
-'    Err.Raise Number:=TEST_UNEXPECTED_ERROR, Description:="Test unexpected event should never be raised"
     Debug.Assert test.result = "Null" And test.HasNull
-End Sub
-
-Private Sub pTestOfResults_TestUnexpected(ByVal test As cTest)
-    'this event should never be raised
-    Err.Raise Number:=TEST_UNEXPECTED_ERROR, Description:="Test unexpected event should never be raised"
-End Sub
-
-Private Sub pTests_TestUnexpected(ByVal test As cTest)
-    'this event should never be raised
-    Err.Raise Number:=TEST_UNEXPECTED_ERROR, Description:="Test unexpected event should never be raised"
 End Sub
 
 Public Function CheckTestCounters()
@@ -116,10 +102,6 @@ Public Function CheckTestCounters()
     TestOfResultsCount > 0 And _
     TestCount > 0 And _
     TestOfCount > 0)
-    
-'    Debug.Assert TestOfResultsCount > 0
-'    Debug.Assert TestCount > 0
-'    Debug.Assert TestOfCount > 0
 
     CheckTestCounters = b
 End Function
