@@ -52,7 +52,7 @@ Private Function IBe_Something() As Variant
 End Function
 
 Private Function IBe_Between(ByVal LowerVal As Double, ByVal HigherVal As Double) As Variant
-    IBe_Between = pExpressions.Between(CDbl(pBeValue), LowerVal, HigherVal)
+    IBe_Between = pExpressions.Between(pBeValue, LowerVal, HigherVal)
 End Function
 
 Private Function IBe_OneOf(ParamArray Vals() As Variant) As Variant

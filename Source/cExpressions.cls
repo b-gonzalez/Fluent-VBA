@@ -13,7 +13,7 @@ Private pMeta As cMeta
 Private pTests As cTests
 Private pPrinting As cPrinting
 Private iPrint As IPrinting
-Private pExprDict As scripting.Dictionary
+Private pExprDict As Scripting.Dictionary
 
 Private pTestValue As Variant
 Private pFluentPath As String
@@ -98,18 +98,19 @@ ByVal method As flAlgorithm, _
 ByVal negateValue As Boolean, _
 ByVal testingInput As Variant) As Variant
     Dim col As VBA.Collection
+    Dim i As Long
     
     InDataStructures = Null
     
-    If IsDataStructure(testingInput) Then
+    For i = LBound(testingInput) To UBound(testingInput)
+        If IsDataStructure(testingInput(i)) Then
+            Set col = getNestedElementsRecur(testingInput)
         
-        Set col = getNestedElementsRecur(testingInput)
+            InDataStructures = Me.InDataStructure(testingValue, col, method, negateValue, updateFluentPath:=False)
+        End If
+    Next i
     
-        InDataStructures = Me.InDataStructure(testingValue, col, method, negateValue, updateFluentPath:=False)
-    
-    End If
-    
-    Call addToTestAndFluentPath("InDataStructures", CBool(InDataStructures), CBool(negateValue), testingValue, testingInput)
+    Call addToTestAndFluentPath("InDataStructures", InDataStructures, CBool(negateValue), testingValue, testingInput)
     
 End Function
 
@@ -122,9 +123,6 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim elem As Variant
     Dim col As Collection
     Dim tempBool As Boolean
-'    Dim FluentPath As String
-'    Dim fluentBool As Boolean
-'    Dim shouldStr As String
     Dim strTestingVal As String
     
     InDataStructure = Null
@@ -294,7 +292,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
         LessThan = (testingValue < testingInput)
     End If
     
-    Call addToTestAndFluentPath("LessThan", CBool(LessThan), CBool(negateValue), testingValue, testingInput)
+    Call addToTestAndFluentPath("LessThan", LessThan, CBool(negateValue), testingValue, testingInput)
 
 End Function
 
@@ -311,7 +309,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     End If
        
     If updateFluentPath Then
-        Call addToTestAndFluentPath("LessThanOrEqualTo", CBool(LessThanOrEqualTo), CBool(negateValue), testingValue, testingInput)
+        Call addToTestAndFluentPath("LessThanOrEqualTo", LessThanOrEqualTo, CBool(negateValue), testingValue, testingInput)
     End If
         
 End Function
@@ -356,13 +354,13 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
 End Function
 
 Public Function Contain( _
-ByVal testingValue As String, _
+ByVal testingValue As Variant, _
 ByVal testingInput As String, _
 Optional ByVal negateValue As Boolean = False) As Variant
 
     Contain = Null
         
-    If Not IsObject(testingValue) And Not IsObject(testingInput) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
         Contain = CStr(testingValue) Like "*" & CStr(testingInput) & "*"
     End If
         
@@ -371,14 +369,14 @@ Optional ByVal negateValue As Boolean = False) As Variant
 End Function
 
 Public Function StartWith( _
-ByVal testingValue As String, _
+ByVal testingValue As Variant, _
 ByVal testingInput As String, _
 Optional ByVal negateValue As Boolean = False) As Variant
     Dim valLength As Long
     
     StartWith = Null
     
-    If Not IsObject(testingValue) And Not IsObject(testingInput) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
         valLength = Len(testingInput)
         StartWith = Left$(testingValue, valLength) = CStr(testingInput)
     End If
@@ -388,14 +386,14 @@ Optional ByVal negateValue As Boolean = False) As Variant
 End Function
 
 Public Function EndWith( _
-ByVal testingValue As String, _
+ByVal testingValue As Variant, _
 ByVal testingInput As String, _
 Optional ByVal negateValue As Boolean = False) As Variant
     Dim valLength As Long
     
     EndWith = Null
     
-    If Not IsObject(testingValue) And Not IsObject(testingInput) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
         valLength = Len(testingInput)
         EndWith = Right$(testingValue, valLength) = CStr(testingInput)
     End If
@@ -405,13 +403,13 @@ Optional ByVal negateValue As Boolean = False) As Variant
 End Function
 
 Public Function LengthOf( _
-ByVal testingValue As String, _
+ByVal testingValue As Variant, _
 ByVal testingInput As Long, _
 Optional ByVal negateValue As Boolean = False) As Variant
     
     LengthOf = Null
     
-    If Not IsObject(testingValue) And Not IsObject(testingInput) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
         LengthOf = (Len(CStr(testingValue)) = testingInput)
     End If
     
@@ -420,14 +418,14 @@ Optional ByVal negateValue As Boolean = False) As Variant
 End Function
 
 Public Function MaxLengthOf( _
-ByVal testingValue As String, _
+ByVal testingValue As Variant, _
 ByVal testingInput As Long, _
 Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     MaxLengthOf = Null
     
-    If Not IsObject(testingValue) And Not IsObject(testingInput) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
         MaxLengthOf = (Len(CStr(testingValue)) <= testingInput)
     End If
     
@@ -438,14 +436,14 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
 End Function
 
 Public Function MinLengthOf( _
-ByVal testingValue As String, _
+ByVal testingValue As Variant, _
 ByVal testingInput As Long, _
 Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     MinLengthOf = Null
     
-    If Not IsObject(testingValue) And Not IsObject(testingInput) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
         MinLengthOf = (Len(CStr(testingValue)) >= testingInput)
     End If
         
@@ -468,14 +466,14 @@ Public Function Something(ByVal testingValue As Variant, Optional ByVal negateVa
 End Function
 
 Public Function Between( _
-ByVal testingValue As Double, _
+ByVal testingValue As Variant, _
 ByVal LowerVal As Double, _
 ByVal HigherVal As Double, _
 Optional ByVal negateValue As Boolean = False) As Variant
     
     Between = Null
     
-    If IsNumeric(testingValue) And IsNumeric(LowerVal) And IsNumeric(HigherVal) Then
+    If IsNumeric(testingValue) Then
         Between = (GreaterThanOrEqualTo(testingValue, LowerVal, updateFluentPath:=False) And LessThanOrEqualTo(testingValue, HigherVal, updateFluentPath:=False))
     End If
     
@@ -516,7 +514,7 @@ Public Function OneOf(ByVal testingValue As Variant, ByVal negateValue As Boolea
 End Function
 
 Public Function LengthBetween( _
-ByVal testingValue As String, _
+ByVal testingValue As Variant, _
 ByVal LowerVal As Double, _
 ByVal HigherVal As Double, _
 Optional ByVal negateValue As Boolean = False) As Variant
@@ -524,7 +522,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     LengthBetween = Null
     
-    If TypeName(testingValue) = "String" Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
         tempTestVal = Len(CStr(testingValue))
         LengthBetween = (MinLengthOf(tempTestVal, LowerVal, updateFluentPath:=False) And MaxLengthOf(tempTestVal, HigherVal, updateFluentPath:=False))
     End If
@@ -537,54 +535,61 @@ Public Function EvaluateTo( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Variant, _
 Optional ByVal negateValue = False) As Variant
-    
-    EvaluateTo = Null
-    
-    EvaluateTo = (Excel.Evaluate(testingValue) = testingInput)
 
+    EvaluateTo = Null
+
+    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+        EvaluateTo = (Excel.Evaluate(testingValue) = testingInput)
+    End If
+    
     Call addToTestAndFluentPath("EvaluateTo", EvaluateTo, CBool(negateValue), testingValue, testingInput)
     
 End Function
 
-Public Function Alphabetic(ByVal testingValue As String, Optional ByVal negateValue As Boolean = False) As Variant
+Public Function Alphabetic(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Variant
     Dim i As Long
     Dim tempChar As String
     Dim tempAlph As String
     
     Alphabetic = Null
     
-    For i = 1 To Len(testingValue)
-        tempChar = Mid$(testingValue, i, 1)
-        If tempChar Like "[A-Za-z]" Then
-            tempAlph = tempAlph & tempChar
-        End If
-    Next i
-    
-    Alphabetic = (testingValue = tempAlph)
+    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+        For i = 1 To Len(testingValue)
+            tempChar = Mid$(testingValue, i, 1)
+            
+            If tempChar Like "[A-Za-z]" Then
+                tempAlph = tempAlph & tempChar
+            End If
+        Next i
+        
+        Alphabetic = (testingValue = tempAlph)
+    End If
     
     Call addToTestAndFluentPath("Alphabetic", Alphabetic, CBool(negateValue), testingValue)
 End Function
 
-Public Function Numeric(ByVal testingValue As String, Optional ByVal negateValue As Boolean = False) As Variant
+Public Function Numeric(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Variant
     Dim i As Long
     Dim tempChar As String
     Dim tempNum As String
     
     Numeric = Null
     
-    For i = 1 To Len(testingValue)
-        tempChar = Mid$(testingValue, i, 1)
-        If tempChar Like "[0-9]" Then
-            tempNum = tempNum & tempChar
-        End If
-    Next i
-    
-    Numeric = (testingValue = tempNum)
+    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+        For i = 1 To Len(testingValue)
+            tempChar = Mid$(testingValue, i, 1)
+            If tempChar Like "[0-9]" Then
+                tempNum = tempNum & tempChar
+            End If
+        Next i
+        
+        Numeric = (testingValue = tempNum)
+    End If
      
     Call addToTestAndFluentPath("Numeric", Numeric, CBool(negateValue), testingValue)
 End Function
 
-Public Function Alphanumeric(ByVal testingValue As String, Optional ByVal negateValue As Boolean = False) As Variant
+Public Function Alphanumeric(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Variant
     Dim i As Long
     Dim tempChar As String
     Dim tempAlph As String
@@ -595,22 +600,24 @@ Public Function Alphanumeric(ByVal testingValue As String, Optional ByVal negate
     
     b = False
     
-    For i = 1 To Len(testingValue)
-        tempChar = Mid$(testingValue, i, 1)
-        If tempChar Like "[A-Za-z]" Then
-            tempAlph = tempAlph & tempChar
-        ElseIf tempChar Like "[0-9]" Then
-            tempNum = tempNum & tempChar
+    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+        For i = 1 To Len(testingValue)
+            tempChar = Mid$(testingValue, i, 1)
+            If tempChar Like "[A-Za-z]" Then
+                tempAlph = tempAlph & tempChar
+            ElseIf tempChar Like "[0-9]" Then
+                tempNum = tempNum & tempChar
+            End If
+        Next i
+        
+        If Len(tempAlph) > 1 And Len(tempNum) > 1 Then
+            If Len(tempAlph) + Len(tempNum) = Len(testingValue) Then
+                b = True
+            End If
         End If
-    Next i
-    
-    If Len(tempAlph) > 1 And Len(tempNum) > 1 Then
-        If Len(tempAlph) + Len(tempNum) = Len(testingValue) Then
-            b = True
-        End If
+        
+        Alphanumeric = b
     End If
-    
-    Alphanumeric = b
     
     Call addToTestAndFluentPath("Alphanumeric", Alphanumeric, CBool(negateValue), testingValue)
 End Function
@@ -730,7 +737,7 @@ ByVal testingInput As Variant) As Variant
     
     ExactSameElementsAs = Null
     
-    If IsDataStructure(testingInput) And IsDataStructure(testingInput) Then
+    If IsDataStructure(testingValue) And IsDataStructure(testingInput) Then
         Set col = New Collection
         Set col2 = New Collection
         
@@ -755,13 +762,13 @@ ByVal negateValue As Boolean, _
 ByVal testingInput As Variant) As Variant
 
     Dim elem As Variant
-    Dim d As scripting.Dictionary
+    Dim d As Scripting.Dictionary
     Dim tempStr As String
     
     SameUniqueElementsAs = Null
     
-    If IsDataStructure(testingInput) And IsDataStructure(testingInput) Then
-        Set d = New scripting.Dictionary
+    If IsDataStructure(testingValue) And IsDataStructure(testingInput) Then
+        Set d = New Scripting.Dictionary
         tempStr = ""
         
         For Each elem In testingValue
@@ -796,17 +803,17 @@ ByVal testingInput As Variant) As Variant
 
     Dim i As Long
     Dim elem As Variant
-    Dim d As scripting.Dictionary
-    Dim d2 As scripting.Dictionary
+    Dim d As Scripting.Dictionary
+    Dim d2 As Scripting.Dictionary
     Dim tempStr As String
     
     SameElementsAs = Null
     
-    If IsDataStructure(testingInput) And IsDataStructure(testingInput) Then
+    If IsDataStructure(testingValue) And IsDataStructure(testingInput) Then
         i = 1
         elem = Empty
-        Set d = New scripting.Dictionary
-        Set d2 = New scripting.Dictionary
+        Set d = New Scripting.Dictionary
+        Set d2 = New Scripting.Dictionary
         tempStr = ""
         
         For Each elem In testingValue
@@ -1194,8 +1201,10 @@ Private Function ToString(ByVal nv As Variant) As String
     Dim i As Long
     Dim elem As Variant
     Dim col As Collection
+    Dim counter As Long
     
     i = 0
+    counter = 0
     Set col = New Collection
     
     Select Case True
@@ -1213,16 +1222,19 @@ Private Function ToString(ByVal nv As Variant) As String
                     Else
                         col.Add elem
                     End If
-                    
+                counter = counter + 1
             Next elem
             
-            ReDim strArgs(1 To col.Count)
-                    
-            For i = 1 To col.Count
-                strArgs(i) = col(i)
-            Next i
             
-            tempNVTS = Join(strArgs, ", ")
+            If counter > 0 Then
+                ReDim strArgs(1 To col.Count)
+                    
+                For i = 1 To col.Count
+                    strArgs(i) = col(i)
+                Next i
+                
+                tempNVTS = Join(strArgs, ", ")
+            End If
         Case IsNull(nv)
             tempNVTS = TypeName(nv)
         Case Not TypeOf nv Is Object
@@ -1337,5 +1349,5 @@ Public Function getResultNumber(result As Variant)
 End Function
 
 Private Sub Class_Initialize()
-    Set pExprDict = New scripting.Dictionary
+    Set pExprDict = New Scripting.Dictionary
 End Sub
