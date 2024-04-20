@@ -86,6 +86,7 @@ Public Sub runMainTests()
     Call printTestCount(mCounter)
     
     mCounter = 0
+    
     mTestCounter = 0
 
     Debug.Assert events.CheckTestCounters
@@ -1127,7 +1128,23 @@ Private Function positiveDocumentationTests(fluent As cFluent, testFluent As cFl
         fluent.TestValue = testFluent.Of("1 / 0").Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        On Error Resume Next
+            Debug.Print 1 / 0
+            
+            fluent.TestValue = testFluent.Of(Err).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        On Error GoTo 0
+        
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of("1 / 0").Should.Have.ErrorNumberOf(2007)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        On Error Resume Next
+            Debug.Print 1 / 0
+            
+            fluent.TestValue = testFluent.Of(Err).Should.Have.ErrorNumberOf(2007)
+        On Error GoTo 0
+        
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(CBool(True)).Should.Have.SameTypeAs(CBool(True))
@@ -2811,11 +2828,27 @@ Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFl
         
         fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Be.Erroneous
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
         fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        On Error Resume Next
+            Debug.Print 1 / 0
+            
+            fluent.TestValue = testFluent.Of(Err).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        On Error GoTo 0
+        
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorNumberOf(2007)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        On Error Resume Next
+            Debug.Print 1 / 0
+            
+            fluent.TestValue = testFluent.Of(Err).ShouldNot.Have.ErrorNumberOf(2007)
+        On Error GoTo 0
+        
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
         fluent.TestValue = testFluent.Of(CBool(True)).ShouldNot.Have.SameTypeAs(CBool(True))
@@ -3911,6 +3944,84 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
         
         Set d = New Scripting.Dictionary
         fluent.TestValue = testFluent.Of(d).Should.Be.Alphanumeric
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(123).Should.Be.Erroneous
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(1.23).Should.Be.Erroneous
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).Should.Be.Erroneous
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).Should.Be.Erroneous
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(Null).Should.Be.Erroneous
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Be.Erroneous
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        fluent.TestValue = testFluent.Of(col).Should.Be.Erroneous
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set d = New Scripting.Dictionary
+        fluent.TestValue = testFluent.Of(d).Should.Be.Erroneous
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(123).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(1.23).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(True).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(False).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(Null).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        Set col = New Collection
+        fluent.TestValue = testFluent.Of(col).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        Set d = New Scripting.Dictionary
+        fluent.TestValue = testFluent.Of(d).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(123).Should.Have.ErrorNumberOf("2007")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(1.23).Should.Have.ErrorNumberOf("2007")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(True).Should.Have.ErrorNumberOf("2007")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(False).Should.Have.ErrorNumberOf("2007")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(Null).Should.Have.ErrorNumberOf("2007")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Have.ErrorNumberOf("2007")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        Set col = New Collection
+        fluent.TestValue = testFluent.Of(col).Should.Have.ErrorNumberOf("2007")
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        Set d = New Scripting.Dictionary
+        fluent.TestValue = testFluent.Of(d).Should.Have.ErrorNumberOf("2007")
         Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Be.IdenticalTo("Hello world")

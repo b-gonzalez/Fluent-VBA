@@ -625,26 +625,30 @@ End Function
 Public Function Erroneous(ByVal testingValue As Variant, Optional ByVal negateValue = False) As Variant
     Dim tempTestingVal As Variant
     Dim tempErrType As Variant
+    Dim tempErrObj As ErrObject
     
     Erroneous = Null
     
     tempTestingVal = False
     
-    If TypeOf testingValue Is ErrObject Then
-        tempTestingVal = (testingValue.Number <> 0)
-    Else
-        On Error Resume Next
-            tempTestingVal = Excel.Evaluate(testingValue)
-            tempTestingVal = (TypeName(tempTestingVal) = "Error")
-        On Error GoTo 0
-    End If
-    
-    Erroneous = tempTestingVal
-    
-    If TypeOf testingValue Is Object  Then
-        tempErrType = TypeName(testingValue)
-    Else
-        tempErrType = testingValue
+    If TypeName(testingValue) = "ErrObject" Or TypeName(testingValue) = "String" Then
+        If TypeOf testingValue Is ErrObject Then
+            Set tempErrObj = testingValue
+            tempTestingVal = (tempErrObj.Number <> 0)
+        ElseIf TypeName(testingValue) = "String" Then
+            On Error Resume Next
+                tempTestingVal = Excel.Evaluate(testingValue)
+                tempTestingVal = (TypeName(tempTestingVal) = "Error")
+            On Error GoTo 0
+        End If
+        
+        Erroneous = tempTestingVal
+        
+        If TypeOf testingValue Is Object  Then
+            tempErrType = TypeName(testingValue)
+        Else
+            tempErrType = testingValue
+        End If
     End If
     
     Call addToTestAndFluentPath("Erroneous", Erroneous, CBool(negateValue), tempErrType)
@@ -655,16 +659,23 @@ ByVal testingValue As Variant, _
 ByVal testingInput As Long, _
 Optional ByVal negateValue = False) As Variant
     Dim temp As Variant
-'    Dim e1 As Variant
+    Dim tempErrObj As ErrObject
     
     ErrorNumberOf = Null
     
-    On Error Resume Next
-        temp = Excel.Evaluate(testingValue)
-        Err.Raise (testingInput)
-        temp = Err.Number
-        ErrorNumberOf = (temp = testingInput)
-    On Error GoTo 0
+    If TypeName(testingValue) = "ErrObject" Or TypeName(testingValue) = "String" Then
+        If TypeOf testingValue Is ErrObject Then
+            Set tempErrObj = testingValue
+            temp = tempErrObj.Number
+        ElseIf TypeName(testingValue) = "String" Then
+            On Error Resume Next
+                temp = Excel.Evaluate(testingValue)
+                Call Err.Raise(testingInput)
+                temp = Err.Number
+                ErrorNumberOf = (temp = testingInput)
+            On Error GoTo 0
+        End If
+    End If
     
     Call addToTestAndFluentPath("ErrorNumberOf", ErrorNumberOf, CBool(negateValue), testingValue, testingInput)
 End Function
@@ -674,18 +685,26 @@ ByVal testingValue As Variant, _
 ByVal testingInput As String, _
 Optional ByVal negateValue = False) As Variant
     Dim tempTestVal As Variant
+    Dim tempErrObj As ErrObject
     
     ErrorDescriptionOf = Null
     
-    On Error Resume Next
-        tempTestVal = CStr(Excel.Evaluate(testingValue))
-        tempTestVal = Replace(tempTestVal, "Error ", "")
-        Err.Raise tempTestVal
-        tempTestVal = Err.Description
-        ErrorDescriptionOf = (tempTestVal = testingInput)
-    On Error GoTo 0
+    If TypeName(testingValue) = "ErrObject" Or TypeName(testingValue) = "String" Then
+        If TypeOf testingValue Is ErrObject Then
+            Set tempErrObj = testingValue
+            tempTestVal = tempErrObj.Description
+        ElseIf TypeName(testingValue) = "String" Then
+            On Error Resume Next
+                tempTestVal = CStr(Excel.Evaluate(testingValue))
+                tempTestVal = Replace(tempTestVal, "Error ", "")
+                Err.Raise tempTestVal
+                tempTestVal = Err.Description
+                ErrorDescriptionOf = (tempTestVal = testingInput)
+            On Error GoTo 0
+        End If
+    End If
     
-    Call addToTestAndFluentPath("ErrorDescriptionOf", CBool(ErrorDescriptionOf), CBool(negateValue), tempTestVal, testingInput)
+    Call addToTestAndFluentPath("ErrorDescriptionOf", ErrorDescriptionOf, CBool(negateValue), tempTestVal, testingInput)
 End Function
 
 Public Function SameTypeAs( _
