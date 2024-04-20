@@ -17,11 +17,20 @@ Public Event TestUnexpected(ByVal test As cTest)
 Private pResult As Variant
 Private pCol As Collection
 Private pCount As Long
+Private pTestDictCounter As Scripting.Dictionary
 
 Private Sub Class_Initialize()
     Set pCol = New Collection
     pCount = 0
 End Sub
+
+Public Property Set TestDictCounter(value As Scripting.Dictionary)
+    Set pTestDictCounter = value
+End Property
+
+Public Property Get TestDictCounter() As Scripting.Dictionary
+    Set TestDictCounter = pTestDictCounter
+End Property
 
 Public Property Get result() As Boolean
     result = pResult

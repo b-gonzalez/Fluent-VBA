@@ -15,6 +15,8 @@ Private pPrinting As cPrinting
 Private iPrint As IPrinting
 Private pExprDict As Scripting.Dictionary
 
+Private pTestDictCounter As Scripting.Dictionary
+
 Private pTestValue As Variant
 Private pFluentPath As String
 
@@ -81,6 +83,7 @@ End Property
 
 Public Property Set setMeta(ByVal value As cMeta)
     Set pMeta = value
+    Set pMeta.Tests.TestDictCounter = pTestDictCounter
 End Property
 
 Public Property Set setTests(ByVal value As cTests)
@@ -251,7 +254,7 @@ Private Function getNestedElementsIter(ByVal DataStructure As Variant) As Collec
     Set getNestedElementsIter = col
 End Function
 
-Public Function GreaterThan(ByVal testingValue As Double, ByVal testingInput As Double, Optional ByVal negateValue As Boolean = False) As Variant
+Public Function GreaterThan(ByVal testingValue As Variant, ByVal testingInput As Double, Optional ByVal negateValue As Boolean = False) As Variant
     
     GreaterThan = Null
     
@@ -264,7 +267,7 @@ Public Function GreaterThan(ByVal testingValue As Double, ByVal testingInput As 
 End Function
 
 Public Function GreaterThanOrEqualTo( _
-ByVal testingValue As Double, _
+ByVal testingValue As Variant, _
 ByVal testingInput As Double, _
 Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
@@ -282,7 +285,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
 End Function
 
 Public Function LessThan( _
-ByVal testingValue As Double, _
+ByVal testingValue As Variant, _
 ByVal testingInput As Double, _
 Optional ByVal negateValue As Boolean = False) As Variant
     
@@ -297,7 +300,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
 End Function
 
 Public Function LessThanOrEqualTo( _
-ByVal testingValue As Double, _
+ByVal testingValue As Variant, _
 ByVal testingInput As Double, _
 Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
@@ -326,26 +329,29 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     tempBool = False
     
-    If IsNull(testingValue) Or IsNull(testingInput) Then
-        tempBool = (TypeName(testingValue) = TypeName(testingInput))
-        
-        testingValue = TypeName(testingValue)
-        testingInput = TypeName(testingInput)
-    Else
-        tempBool = (testingValue = testingInput)
-        
-        If pMeta.ApproximateEqual Then
-            If TypeName(testingValue) <> TypeName(testingInput) Then
-                If IsNumeric(testingValue) And IsNumeric(testingInput) Then
-                    tempBool = (Abs(testingValue - testingInput) <= pMeta.Epsilon)
-                ElseIf VarType(testingValue) = vbString Or VarType(testingInput) = vbString Then
-                    tempBool = (StrComp(CStr(testingValue), CStr(testingInput), vbTextCompare) = 0)
+    If Not IsObject(testingValue) And Not IsDataStructure(testingValue) And _
+    Not IsObject(testingInput) And Not IsDataStructure(testingInput) Then
+        If IsNull(testingValue) Or IsNull(testingInput) Then
+            tempBool = (TypeName(testingValue) = TypeName(testingInput))
+            
+            testingValue = TypeName(testingValue)
+            testingInput = TypeName(testingInput)
+        Else
+            tempBool = (testingValue = testingInput)
+            
+            If pMeta.ApproximateEqual Then
+                If TypeName(testingValue) <> TypeName(testingInput) Then
+                    If IsNumeric(testingValue) And IsNumeric(testingInput) Then
+                        tempBool = (Abs(testingValue - testingInput) <= pMeta.Epsilon)
+                    ElseIf VarType(testingValue) = vbString Or VarType(testingInput) = vbString Then
+                        tempBool = (StrComp(CStr(testingValue), CStr(testingInput), vbTextCompare) = 0)
+                    End If
                 End If
             End If
         End If
+        
+        EqualTo = tempBool
     End If
-    
-    EqualTo = tempBool
     
     If updateFluentPath Then
         Call addToTestAndFluentPath("EqualTo", EqualTo, CBool(negateValue), testingValue, testingInput)
@@ -1188,6 +1194,12 @@ Private Sub addFluentPathNew(ByVal test As cTest, ByVal negateValue As Boolean)
     
     FluentPath = ""
     
+    If pTestDictCounter.Exists(test.functionName) Then
+        pTestDictCounter(test.functionName) = pTestDictCounter(test.functionName) + 1
+    Else
+        Err.Raise Number:=NOT_IMPLEMENTED_ERROR, Description:="Test name not implemented in TestDictCounter"
+    End If
+    
     If pPrinting.Category <> "" Then
         FluentPath = FluentPath & pPrinting.Category & "="
         fluentElement = 2
@@ -1353,7 +1365,7 @@ Private Function InputToStringRecur(v As Variant) As String
     InputToStringRecur = temp
 End Function
 
-Public Function getResultNumber(result As Variant)
+Private Function getResultNumber(result As Variant)
     Dim resultNumber As Variant
     
     resultNumber = Null
@@ -1367,6 +1379,46 @@ Public Function getResultNumber(result As Variant)
     getResultNumber = resultNumber
 End Function
 
+Private Function getTestDictCounter() As Scripting.Dictionary
+    Dim TestDictCounter As Scripting.Dictionary
+    
+    Set TestDictCounter = New Scripting.Dictionary
+    
+    TestDictCounter.Add "Alphabetic", 0
+    TestDictCounter.Add "Alphanumeric", 0
+    TestDictCounter.Add "Between", 0
+    TestDictCounter.Add "Contain", 0
+    TestDictCounter.Add "EndWith", 0
+    TestDictCounter.Add "EqualTo", 0
+    TestDictCounter.Add "Erroneous", 0
+    TestDictCounter.Add "ErrorDescriptionOf", 0
+    TestDictCounter.Add "ErrorNumberOf", 0
+    TestDictCounter.Add "EvaluateTo", 0
+    TestDictCounter.Add "ExactSameElementsAs", 0
+    TestDictCounter.Add "GreaterThan", 0
+    TestDictCounter.Add "GreaterThanOrEqualTo", 0
+    TestDictCounter.Add "IdenticalTo", 0
+    TestDictCounter.Add "InDataStructure", 0
+    TestDictCounter.Add "InDataStructures", 0
+    TestDictCounter.Add "LengthBetween", 0
+    TestDictCounter.Add "LengthOf", 0
+    TestDictCounter.Add "LessThan", 0
+    TestDictCounter.Add "LessThanOrEqualTo", 0
+    TestDictCounter.Add "MaxLengthOf", 0
+    TestDictCounter.Add "MinLengthOf", 0
+    TestDictCounter.Add "Numeric", 0
+    TestDictCounter.Add "OneOf", 0
+    TestDictCounter.Add "SameElementsAs", 0
+    TestDictCounter.Add "SameTypeAs", 0
+    TestDictCounter.Add "SameUniqueElementsAs", 0
+    TestDictCounter.Add "Something", 0
+    TestDictCounter.Add "StartWith", 0
+    
+    Set getTestDictCounter = TestDictCounter
+End Function
+
 Private Sub Class_Initialize()
     Set pExprDict = New Scripting.Dictionary
+    Set pTestDictCounter = getTestDictCounter
+'    Set pMeta.Tests.TestDictCounter = pTestDictCounter
 End Sub

@@ -29,11 +29,11 @@ Private Property Let ISetExpressionAndValue_testValue(ByVal value As Variant)
 End Property
 
 Private Function IBe_GreaterThan(ByVal value As Double) As Variant
-    IBe_GreaterThan = Not pExpressions.GreaterThan(CDbl(pNotBeValue), value, True)
+    IBe_GreaterThan = Not pExpressions.GreaterThan(pNotBeValue, value, True)
 End Function
 
 Private Function IBe_LessThan(ByVal value As Double) As Variant
-    IBe_LessThan = Not pExpressions.LessThan(CDbl(pNotBeValue), value, True)
+    IBe_LessThan = Not pExpressions.LessThan(pNotBeValue, value, True)
 End Function
 
 Private Function IBe_EqualTo(ByVal value As Variant) As Variant
@@ -41,11 +41,11 @@ Private Function IBe_EqualTo(ByVal value As Variant) As Variant
 End Function
 
 Private Function IBe_GreaterThanOrEqualTo(ByVal value As Double) As Variant
-    IBe_GreaterThanOrEqualTo = Not pExpressions.GreaterThanOrEqualTo(CDbl(pNotBeValue), value, True, updateFluentPath:=True)
+    IBe_GreaterThanOrEqualTo = Not pExpressions.GreaterThanOrEqualTo(pNotBeValue, value, True, updateFluentPath:=True)
 End Function
 
 Private Function IBe_LessThanOrEqualTo(ByVal value As Double) As Variant
-    IBe_LessThanOrEqualTo = Not pExpressions.LessThanOrEqualTo(CDbl(pNotBeValue), value, True, updateFluentPath:=True)
+    IBe_LessThanOrEqualTo = Not pExpressions.LessThanOrEqualTo(pNotBeValue, value, True, updateFluentPath:=True)
 End Function
 
 Private Function IBe_Something() As Variant

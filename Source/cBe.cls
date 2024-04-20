@@ -28,11 +28,11 @@ Private Property Set ISetExpressionAndValue_testValue(ByVal value As Variant)
 End Property
 
 Private Function IBe_GreaterThan(ByVal value As Double) As Variant
-    IBe_GreaterThan = pExpressions.GreaterThan(CDbl(pBeValue), value)
+    IBe_GreaterThan = pExpressions.GreaterThan(pBeValue, value)
 End Function
 
 Private Function IBe_LessThan(ByVal value As Double) As Variant
-    IBe_LessThan = pExpressions.LessThan(CDbl(pBeValue), value)
+    IBe_LessThan = pExpressions.LessThan(pBeValue, value)
 End Function
 
 Private Function IBe_EqualTo(ByVal value As Variant) As Variant
@@ -40,11 +40,11 @@ Private Function IBe_EqualTo(ByVal value As Variant) As Variant
 End Function
 
 Private Function IBe_GreaterThanOrEqualTo(ByVal value As Double) As Variant
-    IBe_GreaterThanOrEqualTo = pExpressions.GreaterThanOrEqualTo(CDbl(pBeValue), value, updateFluentPath:=True)
+    IBe_GreaterThanOrEqualTo = pExpressions.GreaterThanOrEqualTo(pBeValue, value, updateFluentPath:=True)
 End Function
 
 Private Function IBe_LessThanOrEqualTo(ByVal value As Double) As Variant
-    IBe_LessThanOrEqualTo = pExpressions.LessThanOrEqualTo(CDbl(pBeValue), value, updateFluentPath:=True)
+    IBe_LessThanOrEqualTo = pExpressions.LessThanOrEqualTo(pBeValue, value, updateFluentPath:=True)
 End Function
 
 Private Function IBe_Something() As Variant
