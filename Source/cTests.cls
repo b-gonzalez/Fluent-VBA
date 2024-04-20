@@ -14,7 +14,7 @@ Public Event TestFailed(ByVal test As cTest)
 Public Event TestCompleted(ByVal test As cTest)
 Public Event TestUnexpected(ByVal test As cTest)
 
-Private pResult As Boolean
+Private pResult As Variant
 Private pCol As Collection
 Private pCount As Long
 
@@ -23,8 +23,8 @@ Private Sub Class_Initialize()
     pCount = 0
 End Sub
 
-Public Property Get Result() As Boolean
-    Result = pResult
+Public Property Get result() As Boolean
+    result = pResult
 End Property
 
 Public Property Get Item(OneBasedIndex As Long) As cTest
@@ -46,7 +46,7 @@ Public Sub ResetCounter()
 End Sub
 
 Public Sub CheckTest(test As cTest)
-    pResult = test.Result
+    pResult = test.result
     
     pCol.Add test
     
@@ -54,9 +54,9 @@ Public Sub CheckTest(test As cTest)
     
     RaiseEvent TestCompleted(test)
     
-    If test.Result = True Then
+    If test.result = True Then
         RaiseEvent TestPassed(test)
-    ElseIf test.Result = False Then
+    ElseIf test.result = False Then
         RaiseEvent TestFailed(test)
     Else
         RaiseEvent TestUnexpected(test)

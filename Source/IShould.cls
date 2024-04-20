@@ -17,15 +17,15 @@ Public Property Get Have() As IHave
 
 End Property
 
-Public Function Contain(ByVal value As Variant) As Variant
+Public Function Contain(ByVal value As String) As Variant
 
 End Function
 
-Public Function StartWith(ByVal value As Variant) As Variant
+Public Function StartWith(ByVal value As String) As Variant
 
 End Function
 
-Public Function EndWith(ByVal value As Variant) As Variant
+Public Function EndWith(ByVal value As String) As Variant
 
 End Function
 

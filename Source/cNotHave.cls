@@ -27,20 +27,20 @@ Private Property Set ISetExpressionAndValue_testValue(ByVal value As Variant)
     Set pNotHaveVal = pExpressions.TestValue
 End Property
 
-Private Function IHave_LengthOf(ByVal value As Double) As Variant
-    IHave_LengthOf = Not pExpressions.LengthOf(CDbl(pNotHaveVal), value, True)
+Private Function IHave_LengthOf(ByVal value As Long) As Variant
+    IHave_LengthOf = Not pExpressions.LengthOf(pNotHaveVal, value, True)
 End Function
 
-Private Function IHave_MaxLengthOf(ByVal value As Double) As Variant
-    IHave_MaxLengthOf = Not pExpressions.MaxLengthOf(CDbl(pNotHaveVal), value, True, updateFluentPath:=True)
+Private Function IHave_MaxLengthOf(ByVal value As Long) As Variant
+    IHave_MaxLengthOf = Not pExpressions.MaxLengthOf(pNotHaveVal, value, True, updateFluentPath:=True)
 End Function
 
-Private Function IHave_MinLengthOf(ByVal value As Double) As Variant
-    IHave_MinLengthOf = Not pExpressions.MinLengthOf(CDbl(pNotHaveVal), value, True, updateFluentPath:=True)
+Private Function IHave_MinLengthOf(ByVal value As Long) As Variant
+    IHave_MinLengthOf = Not pExpressions.MinLengthOf(pNotHaveVal, value, True, updateFluentPath:=True)
 End Function
 
-Private Function IHave_LengthBetween(ByVal lowVal As Double, ByVal highVal As Double) As Variant
-    IHave_LengthBetween = Not pExpressions.LengthBetween(CDbl(pNotHaveVal), lowVal, highVal, True)
+Private Function IHave_LengthBetween(ByVal lowVal As Long, ByVal highVal As Long) As Variant
+    IHave_LengthBetween = Not pExpressions.LengthBetween(pNotHaveVal, lowVal, highVal, True)
 End Function
 
 Private Function IHave_ErrorNumberOf(ByVal value As Long) As Variant

@@ -66,15 +66,15 @@ Private Property Get IShould_be() As IBe
     Set IShould_be = pBeSet
 End Property
 
-Private Function IShould_contain(ByVal value As Variant) As Variant
+Private Function IShould_contain(ByVal value As String) As Variant
     IShould_contain = pExpressions.Contain(pShouldVal, value)
 End Function
 
-Private Function IShould_startWith(ByVal value As Variant) As Variant
+Private Function IShould_startWith(ByVal value As String) As Variant
     IShould_startWith = pExpressions.StartWith(pShouldVal, value)
 End Function
 
-Private Function IShould_endWith(ByVal value As Variant) As Variant
+Private Function IShould_endWith(ByVal value As String) As Variant
     IShould_endWith = pExpressions.EndWith(pShouldVal, value)
 End Function
 

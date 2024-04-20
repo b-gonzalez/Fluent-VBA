@@ -19,6 +19,7 @@ Private pCategory As String
 Private iPrint As IPrinting
 Private pPassedMessage As String
 Private pFailedMessage As String
+Private pUnexpectedMessage As String
 Private pFluentPath As String
 Private pExcel As Excel.Application
 Private pWorkbook As Excel.Workbook
@@ -64,6 +65,14 @@ End Property
 
 Public Property Get FailedMessage() As String
     FailedMessage = pFailedMessage
+End Property
+
+Public Property Let UnexpectedMessage(ByVal value As String)
+    pUnexpectedMessage = value
+End Property
+
+Public Property Get UnexpectedMessage() As String
+    UnexpectedMessage = pUnexpectedMessage
 End Property
 
 Public Property Get FluentPath() As String
@@ -119,15 +128,15 @@ Public Sub PrintToSheet()
         Set categoryCol = lo.ListColumns("Category")
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
         ws.Columns("C:C").EntireColumn.AutoFit
-        Call addCategoryStyle(categoryCol, "-1", "0")
+        Call addCategoryStyle(categoryCol, "-1", "0", "1")
     Else
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
         ws.Columns("B:B").EntireColumn.AutoFit
     End If
 
-    Call addValueConditColors(testResultCol, "-1", "0")
+    Call addValueConditColors(testResultCol, "-1", "0", "1")
     
-    Call addValueConditColors(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*")
+    Call addValueConditColors(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*", "*" & pUnexpectedMessage & "*")
     
     Call addResultsIconSets(testResultCol)
     
@@ -177,37 +186,6 @@ Private Sub addTableToWorkbook(wb As Workbook)
     lo.name = "Table1"
 End Sub
 
-Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
-    Dim wb As Workbook
-
-    lc.Range.Select
-    
-    Set wb = getWorkbook()
-    
-    With lc.DataBodyRange
-        .FormatConditions.AddIconSetCondition
-        .FormatConditions(.FormatConditions.Count).SetFirstPriority
-        With .FormatConditions(1)
-            .ReverseOrder = False
-            .ShowIconOnly = False
-            .IconSet = wb.IconSets(xl3Symbols2)
-        End With
-        .FormatConditions(1).IconCriteria(1).Icon = xlIconYellowExclamation
-        With .FormatConditions(1).IconCriteria(2)
-            .Type = xlConditionValueNumber
-            .value = -1
-            .Operator = 7
-            .Icon = xlIconGreenCheck
-        End With
-        With .FormatConditions(1).IconCriteria(3)
-            .Type = xlConditionValueNumber
-            .value = 0
-            .Operator = 7
-            .Icon = xlIconRedCross
-        End With
-    End With
-End Sub
-
 Private Function getArrayFromCollection(ByVal col As Collection) As Variant()
     Dim Category As Long
     Dim TestResult As Long
@@ -235,25 +213,46 @@ Private Function getArrayFromCollection(ByVal col As Collection) As Variant()
             arr(i - 1, TestName) = pPassedMessage & " - " & temp(TestName)
         ElseIf temp(TestResult) = 0 Then
             arr(i - 1, TestName) = pFailedMessage & " - " & temp(TestName)
+        ElseIf temp(TestResult) = 1 Then
+            arr(i - 1, TestName) = pUnexpectedMessage & " - " & temp(TestName)
         End If
     Next i
     
     getArrayFromCollection = arr
 End Function
 
-Private Sub addCategoryStyleOld(ByVal resultCol As Excel.ListColumn, ByVal categoryCol As Excel.ListColumn)
-    Dim i As Long
+Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
+    Dim wb As Workbook
+
+    lc.Range.Select
     
-    For i = 1 To resultCol.Range.Rows.Count
-        If resultCol.Range.Cells(i, 1).value = -1 Then
-            Call setGood(categoryCol.Range.Cells(i, 1))
-        ElseIf resultCol.Range.Cells(i, 1).value = 0 Then
-            Call setBad(categoryCol.Range.Cells(i, 1))
-        End If
-    Next i
+    Set wb = getWorkbook()
+    
+    With lc.DataBodyRange
+        .FormatConditions.AddIconSetCondition
+        .FormatConditions(.FormatConditions.Count).SetFirstPriority
+        With .FormatConditions(1)
+            .ReverseOrder = False
+            .ShowIconOnly = False
+            .IconSet = wb.IconSets(xl3TrafficLights1)
+        End With
+        .FormatConditions(1).IconCriteria(1).Icon = xlIconGreenCheck
+        With .FormatConditions(1).IconCriteria(2)
+            .Type = xlConditionValueNumber
+            .value = 0
+            .Operator = 7
+            .Icon = xlIconRedCross
+        End With
+        With .FormatConditions(1).IconCriteria(3)
+            .Type = xlConditionValueNumber
+            .value = 1
+            .Operator = 7
+            .Icon = xlIconYellowExclamation
+        End With
+    End With
 End Sub
 
-Sub addCategoryStyle(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String)
+Sub addCategoryStyle(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String, unexpectedMsg As String)
     
     With lc.Range
         .FormatConditions.Add Type:=xlExpression, Formula1:= _
@@ -270,7 +269,7 @@ Sub addCategoryStyle(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, By
         End With
         .FormatConditions(1).StopIfTrue = False
         
-            .FormatConditions.Add Type:=xlExpression, Formula1:= _
+        .FormatConditions.Add Type:=xlExpression, Formula1:= _
             "=OFFSET(A1,0,1)=" & passedMsg
         .FormatConditions(.FormatConditions.Count).SetFirstPriority
         With .FormatConditions(1).Font
@@ -283,25 +282,28 @@ Sub addCategoryStyle(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, By
             .TintAndShade = 0
         End With
         .FormatConditions(1).StopIfTrue = False
+        
+        .FormatConditions.Add Type:=xlExpression, Formula1:= _
+            "=OFFSET(A1,0,1)=" & unexpectedMsg
+        .FormatConditions(.FormatConditions.Count).SetFirstPriority
+        With .FormatConditions(1).Font
+            .Color = -16754788
+            .TintAndShade = 0
+        End With
+        With .FormatConditions(1).Interior
+            .PatternColorIndex = xlAutomatic
+            .Color = 10284031
+            .TintAndShade = 0
+        End With
+        .FormatConditions(1).StopIfTrue = False
     End With
 End Sub
 
-Private Sub addValueConditColorsNew(ByVal lc As Excel.ListColumn, ByVal passedValue As String, ByVal failedValue As String)
-    Dim cell As Excel.Range
-    
-    For Each cell In lc.DataBodyRange
-        If cell.value Like passedValue Then
-            Call setGood(cell)
-        ElseIf cell.value Like failedValue Then
-            Call setBad(cell)
-        End If
-    Next cell
-End Sub
-
-Private Sub addValueConditColors(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String)
+Private Sub addValueConditColors(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String, ByVal unexpectedMsg As String)
     lc.Range.Select
     
     With lc.DataBodyRange
+        '//FAILED
         .FormatConditions.Add Type:=xlTextString, String:=failedMsg, _
             TextOperator:=xlContains
         .FormatConditions(.FormatConditions.Count).SetFirstPriority
@@ -316,6 +318,22 @@ Private Sub addValueConditColors(ByVal lc As Excel.ListColumn, ByVal passedMsg A
         End With
         .FormatConditions(1).StopIfTrue = False
         
+        '//UNEXPECTED
+        .FormatConditions.Add Type:=xlTextString, String:=unexpectedMsg, _
+            TextOperator:=xlContains
+        .FormatConditions(.FormatConditions.Count).SetFirstPriority
+        With .FormatConditions(1).Font
+            .Color = -16754788
+            .TintAndShade = 0
+        End With
+        With .FormatConditions(1).Interior
+            .PatternColorIndex = xlAutomatic
+            .Color = 10284031
+            .TintAndShade = 0
+        End With
+        .FormatConditions(1).StopIfTrue = False
+        
+        '//PASSED
         .FormatConditions.Add Type:=xlTextString, String:=passedMsg, _
             TextOperator:=xlContains
         .FormatConditions(.FormatConditions.Count).SetFirstPriority
@@ -332,17 +350,8 @@ Private Sub addValueConditColors(ByVal lc As Excel.ListColumn, ByVal passedMsg A
     End With
 End Sub
 
-Private Sub setGood(ByVal cell As Variant)
-    cell.Interior.Color = 13561798
-    cell.Font.Color = 24832
-End Sub
-
-Private Sub setBad(ByVal cell As Variant)
-    cell.Interior.Color = 13551615
-    cell.Font.Color = 393372
-End Sub
-
 Private Sub Class_Initialize()
     pPassedMessage = "PASSED"
     pFailedMessage = "FAILED"
+    pUnexpectedMessage = "UNEXPECTED"
 End Sub
