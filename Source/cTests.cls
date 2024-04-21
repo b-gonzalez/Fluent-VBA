@@ -9,10 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Event TestPassed(ByVal test As cTest)
-Public Event TestFailed(ByVal test As cTest)
-Public Event TestCompleted(ByVal test As cTest)
-Public Event TestUnexpected(ByVal test As cTest)
+Public Event TestPassed(ByVal test As ITest)
+Public Event TestFailed(ByVal test As ITest)
+Public Event TestCompleted(ByVal test As ITest)
+Public Event TestUnexpected(ByVal test As ITest)
 
 Private pResult As Variant
 Private pCol As Collection
@@ -36,7 +36,7 @@ Public Property Get result() As Boolean
     result = pResult
 End Property
 
-Public Property Get Item(OneBasedIndex As Long) As cTest
+Public Property Get Item(OneBasedIndex As Long) As ITest
 Attribute Item.VB_UserMemId = 0
     Set Item = pCol(OneBasedIndex)
 End Property
@@ -54,7 +54,7 @@ Public Sub ResetCounter()
     pCount = 0
 End Sub
 
-Public Sub CheckTest(test As cTest)
+Public Sub CheckTest(test As ITest)
     pResult = test.result
     
     pCol.Add test

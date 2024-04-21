@@ -9,17 +9,19 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
+Implements IFluentOf
+
 Private pUnit As IUnit
 Private pUnitShould As cUnit
 Private pMeta As cMeta
 Private pExpressions As cExpressions
 Private pFluentOfVal As Variant
 
-Public Property Get Meta() As cMeta
-    Set Meta = pMeta
+Private Property Get IFluentOf_Meta() As cMeta
+    Set IFluentOf_Meta = pMeta
 End Property
 
-Public Function Of(ByVal value As Variant) As cUnit
+Private Function IFluentOf_Of(Optional ByVal value As Variant = Empty) As cUnit
     If IsObject(value) Then
         Set pFluentOfVal = value
         Set pUnit.TestValue = value
@@ -27,7 +29,8 @@ Public Function Of(ByVal value As Variant) As cUnit
         pFluentOfVal = value
         pUnit.TestValue = value
     End If
-    Set Of = pUnit
+    
+    Set IFluentOf_Of = pUnit
 End Function
 
 Private Sub Class_Initialize()

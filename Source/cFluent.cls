@@ -9,39 +9,41 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
+Implements IFluent
+
 Private pUnit As IUnit
 Private pUnitShould As cUnit
 Private pMeta As cMeta
 Private pExpressions As cExpressions
 Private pFluentVal As Variant
 
-Public Property Get Should() As IShould
-    Set Should = pUnitShould.Should
+Private Property Get IFluent_Should() As IShould
+    Set IFluent_Should = pUnitShould.Should
 End Property
 
-Public Property Get ShouldNot() As IShould
-    Set ShouldNot = pUnitShould.ShouldNot
+Private Property Get IFluent_ShouldNot() As IShould
+    Set IFluent_ShouldNot = pUnitShould.ShouldNot
 End Property
 
-Public Property Get Meta() As cMeta
-    Set Meta = pMeta
+Private Property Get IFluent_Meta() As cMeta
+    Set IFluent_Meta = pMeta
 End Property
 
-Public Property Set TestValue(value As Variant)
+Private Property Set IFluent_TestValue(value As Variant)
     Set pFluentVal = value
     Set pUnit.TestValue = pFluentVal
 End Property
 
-Public Property Let TestValue(ByVal value As Variant)
+Private Property Let IFluent_TestValue(ByVal value As Variant)
     pFluentVal = value
     pUnit.TestValue = pFluentVal
 End Property
 
-Public Property Get TestValue() As Variant
+Private Property Get IFluent_TestValue() As Variant
     If IsObject(pFluentVal) Then
-        Set TestValue = pUnit.TestValue
+        Set IFluent_TestValue = pUnit.TestValue
     Else
-        TestValue = pUnit.TestValue
+        IFluent_TestValue = pUnit.TestValue
     End If
 End Property
 

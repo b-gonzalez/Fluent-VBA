@@ -10,13 +10,13 @@ Public Enum hw
 End Enum
 
 Public Sub runMainTests()
-    Dim fluent As cFluent
-    Dim testFluent As cFluentOf
-    Dim testFluentResult As cFluentOf
+    Dim fluent As IFluent
+    Dim testFluent As IFluentOf
+    Dim testFluentResult As IFluentOf
     Dim events As zUdeTests
-    Dim posTestFluent As cFluentOf
-    Dim negTestFluent As cFluentOf
-    Dim nulTestFluent As cFluentOf
+    Dim posTestFluent As IFluentOf
+    Dim negTestFluent As IFluentOf
+    Dim nulTestFluent As IFluentOf
     Dim col As Collection
     Dim i As Long
     Dim posFluentOfStr As String
@@ -109,7 +109,7 @@ Private Sub printTestCount(TestCount As Long)
     End If
 End Sub
 
-Private Sub TrueAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
+Private Sub TrueAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
     
@@ -127,7 +127,7 @@ Private Sub TrueAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf,
     End If
 End Sub
 
-Private Sub FalseAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
+Private Sub FalseAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
     
@@ -145,7 +145,7 @@ Private Sub FalseAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf
     End If
 End Sub
 
-Private Sub NullAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
+Private Sub NullAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
     
@@ -160,8 +160,8 @@ Private Sub NullAssertAndRaiseEvents(fluent As cFluent, testFluent As cFluentOf,
     End If
 End Sub
 
-Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
-    Dim test As cTest
+Private Sub EqualityTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
+    Dim test As ITest
     Dim i As Long
     Dim resultBool As Boolean
     Dim fluentBool As Boolean
@@ -172,6 +172,7 @@ Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluent
     counter = 0
 
     With fluent.Meta.Tests
+    
         fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
@@ -231,11 +232,44 @@ Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluent
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         testFluent.Meta.ApproximateEqual = False
         
+        '//Null and Empty tests
+        
         fluent.TestValue = testFluent.Of(Null).Should.Be.EqualTo(Null)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.EqualTo(Null)
+        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of().Should.Be.EqualTo(Empty)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of().ShouldNot.Be.EqualTo(Empty)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(Empty).Should.Be.EqualTo(Empty)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(Empty).ShouldNot.Be.EqualTo(Empty)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("").Should.Be.EqualTo(Empty)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("").ShouldNot.Be.EqualTo(Empty)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(Empty)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(0).ShouldNot.Be.EqualTo(Empty)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).Should.Be.EqualTo(Empty)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).ShouldNot.Be.EqualTo(Empty)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
     End With
     
     For Each test In fluent.Meta.Tests
@@ -266,9 +300,9 @@ Private Sub EqualityTests(fluent As cFluent, testFluent As cFluentOf, testFluent
     mTestCounter = 0
 End Sub
 
-Private Function positiveDocumentationTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf) As cFluentOf
+Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
     'Dim testFluent As cFluentOf
-    Dim test As cTest
+    Dim test As ITest
     Dim col As Collection
     Dim col2 As Collection
     Dim col3 As Collection
@@ -1969,9 +2003,9 @@ Private Function positiveDocumentationTests(fluent As cFluent, testFluent As cFl
     
 End Function
 
-Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf) As cFluentOf
+Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
     'Dim testFluent As cFluentOf
-    Dim test As cTest
+    Dim test As ITest
     Dim col As Collection
     Dim col2 As Collection
     Dim col3 As Collection
@@ -3672,11 +3706,11 @@ Private Function negativeDocumentationTests(fluent As cFluent, testFluent As cFl
     
 End Function
 
-Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentOf, testFluentResult As cFluentOf)
+Public Function nullDocumentationTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
     Dim col As Collection
     Dim d As Dictionary
     Dim arr As Variant
-    Dim test As cTest
+    Dim test As ITest
     Dim nullBool As Boolean
     Dim fluentBool As Boolean
     Dim valueBool As Boolean
@@ -3705,6 +3739,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
 
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(Null)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(flRecursive, "Hello World")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3717,6 +3754,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
 
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(flRecursive, True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(flRecursive, Null)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(flIterative, "Hello World")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3728,6 +3768,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(flIterative, True)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(flIterative, Null)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New Collection
@@ -3754,6 +3797,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of(d).Should.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of(Null).Should.Be.GreaterThan(10)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     Set col = New Collection
     fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3776,6 +3822,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     d.Add 2, 2.34
     d.Add 3, 3.34
     fluent.TestValue = testFluent.Of(d).Should.Be.GreaterThanOrEqualTo(10)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(Null).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New Collection
@@ -3802,6 +3851,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of(d).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of(Null).Should.Be.LessThan(10)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     Set col = New Collection
     fluent.TestValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3824,6 +3876,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     d.Add 2, 2.34
     d.Add 3, 3.34
     fluent.TestValue = testFluent.Of(d).Should.Be.LessThanOrEqualTo(10)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(Null).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New Collection
@@ -3850,6 +3905,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of(d).Should.Contain(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of(Null).Should.Contain("Hello world!")
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     Set col = New Collection
     fluent.TestValue = testFluent.Of(col).Should.StartWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3872,6 +3930,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     d.Add 2, 2.34
     d.Add 3, 3.34
     fluent.TestValue = testFluent.Of(d).Should.StartWith(2.34)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(Null).Should.StartWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New Collection
@@ -3898,6 +3959,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of(d).Should.EndWith(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of(Null).Should.EndWith("Hello")
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     Set col = New Collection
     fluent.TestValue = testFluent.Of(col).Should.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3920,6 +3984,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     d.Add 2, 2.34
     d.Add 3, 3.34
     fluent.TestValue = testFluent.Of(d).Should.Have.LengthOf(2.34)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(Null).Should.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New Collection
@@ -3946,6 +4013,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of(d).Should.Have.MaxLengthOf(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of(Null).Should.Have.MaxLengthOf(2)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     Set col = New Collection
     fluent.TestValue = testFluent.Of(col).Should.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3970,6 +4040,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of(d).Should.Have.MinLengthOf(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of(Null).Should.Have.MinLengthOf(2)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     fluent.TestValue = testFluent.Of("Hello World!").Should.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
@@ -3983,6 +4056,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Be.Something
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(Null).Should.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     fluent.TestValue = testFluent.Of("Hello World!").Should.Be.Between(1, 10)
@@ -3999,6 +4075,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of(d).Should.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of(Null).Should.Be.Between(1, 10)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     fluent.TestValue = testFluent.Of("Hello World!").Should.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
@@ -4013,6 +4092,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of(d).Should.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of(Null).Should.Have.LengthBetween(1, 10)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.EvaluateTo(True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
@@ -4022,6 +4104,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     
     Set d = New Scripting.Dictionary
     fluent.TestValue = testFluent.Of(d).Should.EvaluateTo(True)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(Null).Should.EvaluateTo(True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Be.Alphabetic
@@ -4035,6 +4120,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of(d).Should.Be.Alphabetic
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of(Null).Should.Be.Alphabetic
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Be.Numeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
@@ -4046,6 +4134,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of(d).Should.Be.Numeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of(Null).Should.Be.Numeric
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Be.Alphanumeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
@@ -4055,6 +4146,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     
     Set d = New Scripting.Dictionary
     fluent.TestValue = testFluent.Of(d).Should.Be.Alphanumeric
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(Null).Should.Be.Alphanumeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     fluent.TestValue = testFluent.Of(123).Should.Be.Erroneous
@@ -4157,6 +4251,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of("Hello world").Should.Be.IdenticalTo(d)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of("Hello world").Should.Be.IdenticalTo(Null)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Have.ExactSameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
@@ -4177,6 +4274,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     
     Set d = New Scripting.Dictionary
     fluent.TestValue = testFluent.Of("Hello world").Should.Have.ExactSameElementsAs(d)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(Null).Should.Have.ExactSameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Have.SameUniqueElementsAs("Hello world")
@@ -4201,6 +4301,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     fluent.TestValue = testFluent.Of("Hello world").Should.Have.SameUniqueElementsAs(d)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    fluent.TestValue = testFluent.Of(Null).Should.Have.SameUniqueElementsAs("Hello world")
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
@@ -4221,6 +4324,9 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     
     Set d = New Scripting.Dictionary
     fluent.TestValue = testFluent.Of("Hello world").Should.Have.SameElementsAs(d)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(Null).Should.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     For Each test In fluent.Meta.Tests
@@ -4253,7 +4359,7 @@ Public Function nullDocumentationTests(fluent As cFluent, testFluent As cFluentO
     Set nullDocumentationTests = testFluent
 End Function
 
-Public Function checkResetCounters(fluent As cFluent, testFluent As cFluentOf)
+Public Function checkResetCounters(fluent As IFluent, testFluent As IFluentOf)
     Dim b As Boolean
     
     testFluent.Meta.Tests.ResetCounter
@@ -4264,8 +4370,8 @@ Public Function checkResetCounters(fluent As cFluent, testFluent As cFluentOf)
    checkResetCounters = b
 End Function
 
-Public Function getFluentCounts(fluent As cFluent)
-    Dim test As cTest
+Public Function getFluentCounts(fluent As IFluent)
+    Dim test As ITest
     Dim d As Scripting.Dictionary
     Dim temp As String
     Dim elem As Variant
@@ -4290,8 +4396,8 @@ Public Function getFluentCounts(fluent As cFluent)
     getFluentCounts = temp
 End Function
 
-Public Function getFluentOfCounts(fluentOf As cFluentOf)
-    Dim test As cTest
+Public Function getFluentOfCounts(fluentOf As IFluentOf)
+    Dim test As ITest
     Dim d As Scripting.Dictionary
     Dim temp As String
     Dim elem As Variant

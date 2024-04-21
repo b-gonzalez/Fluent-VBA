@@ -20,9 +20,9 @@ Attribute pTestOf.VB_VarHelpID = -1
 Private WithEvents pTestOfResults As cTests
 Attribute pTestOfResults.VB_VarHelpID = -1
 
-Private pFluentEvent As cFluent
-Private pFluentEventOf As cFluentOf
-Private pFluentEventOfResult As cFluentOf
+Private pFluentEvent As IFluent
+Private pFluentEventOf As IFluentOf
+Private pFluentEventOfResult As IFluentOf
 Private TestCount As Long
 Private TestOfCount As Long
 Private TestOfResultsCount As Long
@@ -34,64 +34,64 @@ Private Sub Class_Initialize()
     TestOfResultsCount = 0
 End Sub
 
-Public Property Set setFluent(value As cFluent)
+Public Property Set setFluent(value As IFluent)
     Set pFluentEvent = value
     Set pTest = pFluentEvent.Meta.Tests
 End Property
 
-Public Property Set setFluentOf(value As cFluentOf)
+Public Property Set setFluentOf(value As IFluentOf)
     Set pFluentEventOf = value
     Set pTestOf = pFluentEventOf.Meta.Tests
 End Property
 
-Public Property Set setFluentEventOfResult(value As cFluentOf)
+Public Property Set setFluentEventOfResult(value As IFluentOf)
     Set pFluentEventOfResult = value
     Set pTestOfResults = pFluentEventOfResult.Meta.Tests
 End Property
 
-Private Sub pTestOf_TestPassed(ByVal test As cTest)
+Private Sub pTestOf_TestPassed(ByVal test As ITest)
     Debug.Assert pFluentEventOf.Meta.Tests.result = test.result
     Debug.Assert pFluentEventOf.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
-Private Sub pTestOf_TestFailed(ByVal test As cTest)
+Private Sub pTestOf_TestFailed(ByVal test As ITest)
     Debug.Assert pFluentEventOf.Meta.Tests.result = test.result
     Debug.Assert pFluentEventOf.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
-Private Sub pTestOf_TestCompleted(ByVal test As cTest)
+Private Sub pTestOf_TestCompleted(ByVal test As ITest)
     TestOfCount = TestOfCount + 1
     Debug.Assert pFluentEventOf.Meta.Tests.Count = TestOfCount
 End Sub
 
-Private Sub pTest_TestPassed(ByVal test As cTest)
+Private Sub pTest_TestPassed(ByVal test As ITest)
     Debug.Assert pFluentEvent.Meta.Tests.result = test.result
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
-Private Sub pTest_TestFailed(ByVal test As cTest)
+Private Sub pTest_TestFailed(ByVal test As ITest)
     Debug.Assert pFluentEvent.Meta.Tests.result = test.result
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
-Private Sub pTest_TestCompleted(ByVal test As cTest)
+Private Sub pTest_TestCompleted(ByVal test As ITest)
     TestCount = TestCount + 1
     Debug.Assert pFluentEvent.Meta.Tests.Count = TestCount
 End Sub
 
-Private Sub pTestOfResult_TestPassed(ByVal test As cTest)
+Private Sub pTestOfResult_TestPassed(ByVal test As ITest)
 '    Debug.Assert test.ExpectedValue = test.ActualValue
 End Sub
 
-Private Sub pTestOfResult_TestFailed(ByVal test As cTest)
+Private Sub pTestOfResult_TestFailed(ByVal test As ITest)
 '    Debug.Assert test.ExpectedValue <> test.ActualValue
 End Sub
 
-Private Sub pTestOfResults_TestCompleted(ByVal test As cTest)
+Private Sub pTestOfResults_TestCompleted(ByVal test As ITest)
     TestOfResultsCount = TestOfResultsCount + 1
 End Sub
 
-Private Sub pTestOf_TestUnexpected(ByVal test As cTest)
+Private Sub pTestOf_TestUnexpected(ByVal test As ITest)
     Debug.Assert test.result = "Null" And test.HasNull
 End Sub
 

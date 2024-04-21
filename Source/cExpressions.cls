@@ -366,7 +366,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
 
     Contain = Null
         
-    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
         Contain = CStr(testingValue) Like "*" & CStr(testingInput) & "*"
     End If
         
@@ -382,7 +382,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     StartWith = Null
     
-    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
         valLength = Len(testingInput)
         StartWith = Left$(testingValue, valLength) = CStr(testingInput)
     End If
@@ -399,7 +399,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     EndWith = Null
     
-    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
         valLength = Len(testingInput)
         EndWith = Right$(testingValue, valLength) = CStr(testingInput)
     End If
@@ -415,7 +415,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     LengthOf = Null
     
-    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
         LengthOf = (Len(CStr(testingValue)) = testingInput)
     End If
     
@@ -431,7 +431,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     MaxLengthOf = Null
     
-    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
         MaxLengthOf = (Len(CStr(testingValue)) <= testingInput)
     End If
     
@@ -449,7 +449,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     MinLengthOf = Null
     
-    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
         MinLengthOf = (Len(CStr(testingValue)) >= testingInput)
     End If
         
@@ -528,7 +528,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     LengthBetween = Null
     
-    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
         tempTestVal = Len(CStr(testingValue))
         LengthBetween = (MinLengthOf(tempTestVal, LowerVal, updateFluentPath:=False) And MaxLengthOf(tempTestVal, HigherVal, updateFluentPath:=False))
     End If
@@ -544,7 +544,7 @@ Optional ByVal negateValue = False) As Variant
 
     EvaluateTo = Null
 
-    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
         EvaluateTo = (Excel.Evaluate(testingValue) = testingInput)
     End If
     
@@ -559,7 +559,7 @@ Public Function Alphabetic(ByVal testingValue As Variant, Optional ByVal negateV
     
     Alphabetic = Null
     
-    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
         For i = 1 To Len(testingValue)
             tempChar = Mid$(testingValue, i, 1)
             
@@ -581,7 +581,7 @@ Public Function Numeric(ByVal testingValue As Variant, Optional ByVal negateValu
     
     Numeric = Null
     
-    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
         For i = 1 To Len(testingValue)
             tempChar = Mid$(testingValue, i, 1)
             If tempChar Like "[0-9]" Then
@@ -606,7 +606,7 @@ Public Function Alphanumeric(ByVal testingValue As Variant, Optional ByVal negat
     
     b = False
     
-    If Not IsObject(testingValue) And Not IsArray(testingValue) Then
+    If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
         For i = 1 To Len(testingValue)
             tempChar = Mid$(testingValue, i, 1)
             If tempChar Like "[A-Za-z]" Then
@@ -879,7 +879,7 @@ Private Sub addToTestAndFluentPath( _
     Optional LowerVal As Variant, _
     Optional HigherVal As Variant)
     
-    Dim test As cTest
+    Dim test As ITest
     Dim shouldBool As String
     
     Set test = New cTest
@@ -1068,7 +1068,7 @@ Function Have_(haveType As flHave, Optional TesingInput As String = "", Optional
 
 End Function
 
-Public Function buildFluentPath(test As cTest, FluentPath As String, tempFluentPath As String) As String
+Public Function buildFluentPath(test As ITest, FluentPath As String, tempFluentPath As String) As String
     If IsNull(test.result) Then
         test.result = TypeName(test.result)
     End If
@@ -1091,7 +1091,7 @@ Public Function buildFluentPath(test As cTest, FluentPath As String, tempFluentP
     buildFluentPath = tempFluentPath
 End Function
 
-Public Function getFunctionExpr(test As cTest)
+Public Function getFunctionExpr(test As ITest)
     Dim tempFluentPath As String
     
     With test
@@ -1162,7 +1162,7 @@ Public Function getFunctionExpr(test As cTest)
     getFunctionExpr = tempFluentPath
 End Function
 
-Function getFluentPath(FluentPath As String, test As cTest, Optional notShould As Boolean = False)
+Function getFluentPath(FluentPath As String, test As ITest, Optional notShould As Boolean = False)
     Dim LowerVal As Variant
     Dim HigherVal As Variant
     Dim tempFluentPath As String
@@ -1187,7 +1187,7 @@ Function getFluentPath(FluentPath As String, test As cTest, Optional notShould A
     getFluentPath = tempFluentPath
 End Function
 
-Private Sub addFluentPathNew(ByVal test As cTest, ByVal negateValue As Boolean)
+Private Sub addFluentPathNew(ByVal test As ITest, ByVal negateValue As Boolean)
     Dim FluentPath As String
     Dim finalFluentPath As String
     Dim fluentElement As Long
@@ -1241,7 +1241,7 @@ Private Function ToString(ByVal nv As Variant) As String
     Select Case True
         Case IsArray(nv)
             For Each elem In nv
-                    If TypeName(elem) = "Nothing" Then
+                    If TypeName(elem) = "Nothing" Or TypeName(elem) = "Null" Then
                         col.Add TypeName(elem)
                     ElseIf TypeOf elem Is Object  Or IsArray(elem) Then
                         If IsDataStructure(elem) Then
@@ -1249,7 +1249,6 @@ Private Function ToString(ByVal nv As Variant) As String
                         ElseIf Not elem Is Nothing Then
                             col.Add TypeName(elem)
                         End If
-                    
                     Else
                         col.Add elem
                     End If
