@@ -10,25 +10,25 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Implements IShould
-Implements ISetExpressionAndValue
+Implements ISetTestFuncsAndValue
 
 Private pNotBe As cNotBe
-Private pNotBeSet As ISetExpressionAndValue
+Private pNotBeSet As ISetTestFuncsAndValue
 Private pNotHave As cNotHave
-Private pNotHaveSet As ISetExpressionAndValue
-Private pExpressions As cExpressions
+Private pNotHaveSet As ISetTestFuncsAndValue
+Private pTestingFunctions As cTestingFunctions
 Private pShouldNotVal As Variant
 
-Private Property Set ISetExpressionAndValue_setExpr(ByVal value As cExpressions)
-    Set pExpressions = value
+Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
+    Set pTestingFunctions = value
 End Property
 
-Private Property Let ISetExpressionAndValue_testValue(ByVal value As Variant)
-    pShouldNotVal = pExpressions.TestValue
+Private Property Let ISetTestFuncsAndValue_testValue(ByVal value As Variant)
+    pShouldNotVal = pTestingFunctions.TestValue
 End Property
 
-Private Property Set ISetExpressionAndValue_testValue(ByVal value As Variant)
-    Set pShouldNotVal = pExpressions.TestValue
+Private Property Set ISetTestFuncsAndValue_testValue(ByVal value As Variant)
+    Set pShouldNotVal = pTestingFunctions.TestValue
 End Property
 
 Private Property Get IShould_have() As IHave
@@ -37,7 +37,7 @@ Private Property Get IShould_have() As IHave
     End If
     
     Set pNotHaveSet = pNotHave
-    Set pNotHaveSet.SetExpr = pExpressions
+    Set pNotHaveSet.SetTestFunc = pTestingFunctions
     
     If IsObject(pShouldNotVal) Then
         Set pNotHaveSet.TestValue = pShouldNotVal
@@ -53,7 +53,7 @@ Private Property Get IShould_be() As IBe
         Set pNotBe = New cNotBe
     End If
     Set pNotBeSet = pNotBe
-    Set pNotBeSet.SetExpr = pExpressions
+    Set pNotBeSet.SetTestFunc = pTestingFunctions
     
     If IsObject(pShouldNotVal) Then
         Set pNotBeSet.TestValue = pShouldNotVal
@@ -65,17 +65,17 @@ Private Property Get IShould_be() As IBe
 End Property
 
 Private Function IShould_contain(ByVal value As String) As Variant
-    IShould_contain = Not pExpressions.Contain(pShouldNotVal, value, True)
+    IShould_contain = Not pTestingFunctions.Contain(pShouldNotVal, value, True)
 End Function
 
 Private Function IShould_startWith(ByVal value As String) As Variant
-    IShould_startWith = Not pExpressions.StartWith(pShouldNotVal, value, True)
+    IShould_startWith = Not pTestingFunctions.StartWith(pShouldNotVal, value, True)
 End Function
 
 Private Function IShould_endWith(ByVal value As String) As Variant
-    IShould_endWith = Not pExpressions.EndWith(pShouldNotVal, value, True)
+    IShould_endWith = Not pTestingFunctions.EndWith(pShouldNotVal, value, True)
 End Function
 
 Public Function IShould_evaluateTo(ByVal value As Variant) As Variant
-    IShould_evaluateTo = Not pExpressions.EvaluateTo(pShouldNotVal, value)
+    IShould_evaluateTo = Not pTestingFunctions.EvaluateTo(pShouldNotVal, value)
 End Function

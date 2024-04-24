@@ -10,25 +10,25 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Implements IShould
-Implements ISetExpressionAndValue
+Implements ISetTestFuncsAndValue
 
 Private pShouldVal As Variant
 Private pBe As cBe
-Private pBeSet As ISetExpressionAndValue
+Private pBeSet As ISetTestFuncsAndValue
 Private pHave As cHave
-Private pHaveSet As ISetExpressionAndValue
-Private pExpressions As cExpressions
+Private pHaveSet As ISetTestFuncsAndValue
+Private pTestingFunctions As cTestingFunctions
 
-Private Property Set ISetExpressionAndValue_setExpr(ByVal value As cExpressions)
-    Set pExpressions = value
+Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
+    Set pTestingFunctions = value
 End Property
 
-Private Property Let ISetExpressionAndValue_testValue(ByVal value As Variant)
-    pShouldVal = pExpressions.TestValue
+Private Property Let ISetTestFuncsAndValue_testValue(ByVal value As Variant)
+    pShouldVal = pTestingFunctions.TestValue
 End Property
 
-Private Property Set ISetExpressionAndValue_testValue(ByVal value As Variant)
-    Set pShouldVal = pExpressions.TestValue
+Private Property Set ISetTestFuncsAndValue_testValue(ByVal value As Variant)
+    Set pShouldVal = pTestingFunctions.TestValue
 End Property
 
 Private Property Get IShould_have() As IHave
@@ -37,7 +37,7 @@ Private Property Get IShould_have() As IHave
     End If
     
     Set pHaveSet = pHave
-    Set pHaveSet.SetExpr = pExpressions
+    Set pHaveSet.SetTestFunc = pTestingFunctions
 '    pHaveSet.TestValue = pShouldVal
 
     If IsObject(pShouldVal) Then
@@ -55,7 +55,7 @@ Private Property Get IShould_be() As IBe
     End If
     
     Set pBeSet = pBe
-    Set pBeSet.SetExpr = pExpressions
+    Set pBeSet.SetTestFunc = pTestingFunctions
     
     If IsObject(pShouldVal) Then
         Set pBeSet.TestValue = pShouldVal
@@ -67,17 +67,17 @@ Private Property Get IShould_be() As IBe
 End Property
 
 Private Function IShould_contain(ByVal value As String) As Variant
-    IShould_contain = pExpressions.Contain(pShouldVal, value)
+    IShould_contain = pTestingFunctions.Contain(pShouldVal, value)
 End Function
 
 Private Function IShould_startWith(ByVal value As String) As Variant
-    IShould_startWith = pExpressions.StartWith(pShouldVal, value)
+    IShould_startWith = pTestingFunctions.StartWith(pShouldVal, value)
 End Function
 
 Private Function IShould_endWith(ByVal value As String) As Variant
-    IShould_endWith = pExpressions.EndWith(pShouldVal, value)
+    IShould_endWith = pTestingFunctions.EndWith(pShouldVal, value)
 End Function
 
 Private Function IShould_evaluateTo(ByVal value As Variant) As Variant
-    IShould_evaluateTo = pExpressions.EvaluateTo(pShouldVal, value)
+    IShould_evaluateTo = pTestingFunctions.EvaluateTo(pShouldVal, value)
 End Function

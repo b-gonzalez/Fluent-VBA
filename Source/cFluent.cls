@@ -14,7 +14,7 @@ Implements IFluent
 Private pUnit As IUnit
 Private pUnitShould As cUnit
 Private pMeta As cMeta
-Private pExpressions As cExpressions
+Private pTestingFunctions As cTestingFunctions
 Private pFluentVal As Variant
 
 Private Property Get IFluent_Should() As IShould
@@ -50,6 +50,6 @@ End Property
 Private Sub Class_Initialize()
     Set pUnit = New cUnit
     Set pUnitShould = pUnit
-    Set pExpressions = pUnit.Expressions
+    Set pTestingFunctions = pUnit.TestingFunctions
     Set pMeta = pUnit.Meta
 End Sub

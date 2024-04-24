@@ -14,7 +14,7 @@ Private pApproximateEqual As Boolean
 Private pEpsilon As Double
 Private pTestCount As Long
 Private pCategory As String
-Private pPrinting As IPrinting
+Private pPrinting As cPrinting
 Private pFluentPath As String
 Private pTests As cTests
 

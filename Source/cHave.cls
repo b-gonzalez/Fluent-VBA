@@ -10,61 +10,61 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Implements IHave
-Implements ISetExpressionAndValue
+Implements ISetTestFuncsAndValue
 
-Private pExpressions As cExpressions
+Private pTestingFunctions As cTestingFunctions
 Private pHaveVal As Variant
 
-Private Property Set ISetExpressionAndValue_setExpr(ByVal value As cExpressions)
-    Set pExpressions = value
+Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
+    Set pTestingFunctions = value
 End Property
 
-Private Property Let ISetExpressionAndValue_testValue(ByVal value As Variant)
-    pHaveVal = pExpressions.TestValue
+Private Property Let ISetTestFuncsAndValue_testValue(ByVal value As Variant)
+    pHaveVal = pTestingFunctions.TestValue
 End Property
 
-Private Property Set ISetExpressionAndValue_testValue(ByVal value As Variant)
-    Set pHaveVal = pExpressions.TestValue
+Private Property Set ISetTestFuncsAndValue_testValue(ByVal value As Variant)
+    Set pHaveVal = pTestingFunctions.TestValue
 End Property
 
 Private Function IHave_LengthOf(ByVal value As Long) As Variant
-    IHave_LengthOf = pExpressions.LengthOf(pHaveVal, value)
+    IHave_LengthOf = pTestingFunctions.LengthOf(pHaveVal, value)
 End Function
 
 Private Function IHave_MaxLengthOf(ByVal value As Long) As Variant
-    IHave_MaxLengthOf = pExpressions.MaxLengthOf(pHaveVal, value, updateFluentPath:=True)
+    IHave_MaxLengthOf = pTestingFunctions.MaxLengthOf(pHaveVal, value, updateFluentPath:=True)
 End Function
 
 Private Function IHave_MinLengthOf(ByVal value As Long) As Variant
-    IHave_MinLengthOf = pExpressions.MinLengthOf(pHaveVal, value, updateFluentPath:=True)
+    IHave_MinLengthOf = pTestingFunctions.MinLengthOf(pHaveVal, value, updateFluentPath:=True)
 End Function
 
 Private Function IHave_LengthBetween(ByVal lowVal As Long, ByVal highVal As Long) As Variant
-    IHave_LengthBetween = pExpressions.LengthBetween(pHaveVal, lowVal, highVal)
+    IHave_LengthBetween = pTestingFunctions.LengthBetween(pHaveVal, lowVal, highVal)
 End Function
 
 Private Function IHave_ErrorNumberOf(ByVal value As Long) As Variant
-    IHave_ErrorNumberOf = pExpressions.ErrorNumberOf(pHaveVal, value)
+    IHave_ErrorNumberOf = pTestingFunctions.ErrorNumberOf(pHaveVal, value)
 End Function
 
 Private Function IHave_ErrorDescriptionOf(ByVal value As String) As Variant
-    IHave_ErrorDescriptionOf = pExpressions.ErrorDescriptionOf(pHaveVal, value)
+    IHave_ErrorDescriptionOf = pTestingFunctions.ErrorDescriptionOf(pHaveVal, value)
 End Function
 
 Private Function IHave_SameTypeAs(ByVal value As Variant) As Variant
-    IHave_SameTypeAs = pExpressions.SameTypeAs(pHaveVal, value)
+    IHave_SameTypeAs = pTestingFunctions.SameTypeAs(pHaveVal, value)
 End Function
 
 Private Function IHave_ExactSameElementsAs(ByVal value As Variant) As Variant
 '    Dim temp As Variant
 '    temp = args
-    IHave_ExactSameElementsAs = pExpressions.ExactSameElementsAs(pHaveVal, False, True, value)
+    IHave_ExactSameElementsAs = pTestingFunctions.ExactSameElementsAs(pHaveVal, False, True, value)
 End Function
 
 Private Function IHave_SameUniqueElementsAs(ByVal value As Variant) As Variant
-    IHave_SameUniqueElementsAs = pExpressions.SameUniqueElementsAs(pHaveVal, False, value)
+    IHave_SameUniqueElementsAs = pTestingFunctions.SameUniqueElementsAs(pHaveVal, False, value)
 End Function
 
 Public Function IHave_SameElementsAs(ByVal value As Variant) As Variant
-    IHave_SameElementsAs = pExpressions.SameElementsAs(pHaveVal, False, value)
+    IHave_SameElementsAs = pTestingFunctions.SameElementsAs(pHaveVal, False, value)
 End Function

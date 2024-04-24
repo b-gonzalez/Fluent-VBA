@@ -14,7 +14,7 @@ Implements IFluentOf
 Private pUnit As IUnit
 Private pUnitShould As cUnit
 Private pMeta As cMeta
-Private pExpressions As cExpressions
+Private pTestingFunctions As cTestingFunctions
 Private pFluentOfVal As Variant
 
 Private Property Get IFluentOf_Meta() As cMeta
@@ -36,6 +36,6 @@ End Function
 Private Sub Class_Initialize()
     Set pUnit = New cUnit
     Set pUnitShould = pUnit
-    Set pExpressions = pUnit.Expressions
+    Set pTestingFunctions = pUnit.TestingFunctions
     Set pMeta = pUnit.Meta
 End Sub

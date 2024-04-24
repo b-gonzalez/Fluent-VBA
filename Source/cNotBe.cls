@@ -10,82 +10,82 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Implements IBe
-Implements ISetExpressionAndValue
+Implements ISetTestFuncsAndValue
 
 Private pNotBeValue As Variant
 Private pBe As IBe
-Private pExpressions As cExpressions
+Private pTestingFunctions As cTestingFunctions
 
-Private Property Set ISetExpressionAndValue_setExpr(ByVal value As cExpressions)
-    Set pExpressions = value
+Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
+    Set pTestingFunctions = value
 End Property
 
-Private Property Set ISetExpressionAndValue_testValue(ByVal value As Variant)
+Private Property Set ISetTestFuncsAndValue_testValue(ByVal value As Variant)
     Set pNotBeValue = value
 End Property
 
-Private Property Let ISetExpressionAndValue_testValue(ByVal value As Variant)
+Private Property Let ISetTestFuncsAndValue_testValue(ByVal value As Variant)
     pNotBeValue = value
 End Property
 
 Private Function IBe_GreaterThan(ByVal value As Double) As Variant
-    IBe_GreaterThan = Not pExpressions.GreaterThan(pNotBeValue, value, True)
+    IBe_GreaterThan = Not pTestingFunctions.GreaterThan(pNotBeValue, value, True)
 End Function
 
 Private Function IBe_LessThan(ByVal value As Double) As Variant
-    IBe_LessThan = Not pExpressions.LessThan(pNotBeValue, value, True)
+    IBe_LessThan = Not pTestingFunctions.LessThan(pNotBeValue, value, True)
 End Function
 
 Private Function IBe_EqualTo(ByVal value As Variant) As Variant
-    IBe_EqualTo = Not pExpressions.EqualTo(pNotBeValue, value, True, updateFluentPath:=True)
+    IBe_EqualTo = Not pTestingFunctions.EqualTo(pNotBeValue, value, True, updateFluentPath:=True)
 End Function
 
 Private Function IBe_GreaterThanOrEqualTo(ByVal value As Double) As Variant
-    IBe_GreaterThanOrEqualTo = Not pExpressions.GreaterThanOrEqualTo(pNotBeValue, value, True, updateFluentPath:=True)
+    IBe_GreaterThanOrEqualTo = Not pTestingFunctions.GreaterThanOrEqualTo(pNotBeValue, value, True, updateFluentPath:=True)
 End Function
 
 Private Function IBe_LessThanOrEqualTo(ByVal value As Double) As Variant
-    IBe_LessThanOrEqualTo = Not pExpressions.LessThanOrEqualTo(pNotBeValue, value, True, updateFluentPath:=True)
+    IBe_LessThanOrEqualTo = Not pTestingFunctions.LessThanOrEqualTo(pNotBeValue, value, True, updateFluentPath:=True)
 End Function
 
 Private Function IBe_Something() As Variant
-    IBe_Something = Not pExpressions.Something(pNotBeValue, True)
+    IBe_Something = Not pTestingFunctions.Something(pNotBeValue, True)
 End Function
 
 Private Function IBe_Between(ByVal LowerVal As Double, ByVal HigherVal As Double) As Variant
-    IBe_Between = Not pExpressions.Between(CDbl(pNotBeValue), LowerVal, HigherVal, True)
+    IBe_Between = Not pTestingFunctions.Between(CDbl(pNotBeValue), LowerVal, HigherVal, True)
 End Function
 
 Private Function IBe_OneOf(ParamArray Vals() As Variant) As Variant
-    IBe_OneOf = Not pExpressions.OneOf(pNotBeValue, False, Vals)
+    IBe_OneOf = Not pTestingFunctions.OneOf(pNotBeValue, False, Vals)
 End Function
 
 Private Function IBe_InDataStructure(ByVal DataStructure As Variant, Optional ByVal method As flAlgorithm = flRecursive) As Variant
-    IBe_InDataStructure = Not pExpressions.InDataStructure(pNotBeValue, DataStructure, method, True, updateFluentPath:=True)
+    IBe_InDataStructure = Not pTestingFunctions.InDataStructure(pNotBeValue, DataStructure, method, True, updateFluentPath:=True)
 End Function
 
 Private Function IBe_InDataStructures(ByVal method As flAlgorithm, ParamArray DataStructures() As Variant) As Variant
-    IBe_InDataStructures = Not pExpressions.InDataStructures(pNotBeValue, method, True, DataStructures)
+    IBe_InDataStructures = Not pTestingFunctions.InDataStructures(pNotBeValue, method, True, DataStructures)
 End Function
 
 Private Function IBe_Alphabetic() As Variant
-    IBe_Alphabetic = Not pExpressions.Alphabetic(pNotBeValue, True)
+    IBe_Alphabetic = Not pTestingFunctions.Alphabetic(pNotBeValue, True)
 End Function
 
 Private Function IBe_Alphanumeric() As Variant
-    IBe_Alphanumeric = Not pExpressions.Alphanumeric(pNotBeValue, True)
+    IBe_Alphanumeric = Not pTestingFunctions.Alphanumeric(pNotBeValue, True)
 End Function
 
 Private Function IBe_Numeric() As Variant
-    IBe_Numeric = Not pExpressions.Numeric(pNotBeValue, True)
+    IBe_Numeric = Not pTestingFunctions.Numeric(pNotBeValue, True)
 End Function
 
 Private Function IBe_Erroneous() As Variant
-    IBe_Erroneous = Not pExpressions.Erroneous(pNotBeValue, True)
+    IBe_Erroneous = Not pTestingFunctions.Erroneous(pNotBeValue, True)
 End Function
 
 Private Function IBe_IdenticalTo(ByVal value As Variant) As Variant
 '    Dim temp As Variant
 '    temp = args
-    IBe_IdenticalTo = Not pExpressions.IdenticalTo(pNotBeValue, True, value, True)
+    IBe_IdenticalTo = Not pTestingFunctions.IdenticalTo(pNotBeValue, True, value, True)
 End Function

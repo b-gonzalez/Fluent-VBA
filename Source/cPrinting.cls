@@ -23,6 +23,7 @@ Private pUnexpectedMessage As String
 Private pFluentPath As String
 Private pExcel As Excel.Application
 Private pWorkbook As Excel.Workbook
+Private pExpressions As cExpressions
 
 Private Property Get IPrinting_TestCollection() As Collection
     If pTestCollection Is Nothing Then
@@ -33,6 +34,10 @@ End Property
 
 Private Property Let IPrinting_FluentPath(value As String)
     pFluentPath = value
+End Property
+
+Private Property Get IPrinting_Expressions() As cExpressions
+    Set IPrinting_Expressions = pExpressions
 End Property
 
 Public Property Let Category(ByVal value As String)
@@ -354,4 +359,7 @@ Private Sub Class_Initialize()
     pPassedMessage = "PASSED"
     pFailedMessage = "FAILED"
     pUnexpectedMessage = "UNEXPECTED"
+    
+    Set pExpressions = New cExpressions
+    Set pExpressions.setPrinting = Me
 End Sub
