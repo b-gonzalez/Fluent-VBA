@@ -17,6 +17,6 @@ Public Property Let FluentPath(value As String)
 
 End Property
 
-Public Property Get Expressions() As cExpressions
+Public Property Get Expressions() As IExpressions
 
 End Property

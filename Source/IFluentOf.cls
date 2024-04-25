@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Get Meta() As cMeta
+Public Property Get Meta() As IMeta
 End Property
 
 Public Function Of(Optional ByVal value As Variant = Empty) As cUnit

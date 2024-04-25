@@ -9,6 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
+Implements IMeta
+
 Private pTestName As String
 Private pApproximateEqual As Boolean
 Private pEpsilon As Double
@@ -20,32 +22,32 @@ Private pTests As cTests
 
 Private Const defaultEpsilon As Double = 0.000001
 
-Public Property Let ApproximateEqual(ByVal value As Boolean)
+Private Property Let IMeta_ApproximateEqual(ByVal value As Boolean)
     pApproximateEqual = value
 End Property
 
-Public Property Get ApproximateEqual() As Boolean
-    ApproximateEqual = pApproximateEqual
+Private Property Get IMeta_ApproximateEqual() As Boolean
+    IMeta_ApproximateEqual = pApproximateEqual
 End Property
 
-Public Property Let Epsilon(ByVal value As Double)
+Private Property Let IMeta_Epsilon(ByVal value As Double)
     pEpsilon = value
 End Property
 
-Public Property Get Epsilon() As Double
-    Epsilon = pEpsilon
+Private Property Get IMeta_Epsilon() As Double
+    IMeta_Epsilon = pEpsilon
 End Property
 
-Public Property Get Printing() As cPrinting
-    Set Printing = pPrinting
+Private Property Get IMeta_Printing() As cPrinting
+    Set IMeta_Printing = pPrinting
 End Property
 
-Public Property Get Tests() As cTests
-    Set Tests = pTests
+Private Property Get IMeta_Tests() As cTests
+    Set IMeta_Tests = pTests
 End Property
 
 Private Sub Class_Initialize()
-    Me.Epsilon = defaultEpsilon
+    IMeta_Epsilon = defaultEpsilon
     Set pPrinting = New cPrinting
     Set pTests = New cTests
 End Sub

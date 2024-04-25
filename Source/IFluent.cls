@@ -15,7 +15,7 @@ End Property
 Public Property Get ShouldNot() As IShould
 End Property
 
-Public Property Get Meta() As cMeta
+Public Property Get Meta() As IMeta
 End Property
 
 Public Property Set TestValue(value As Variant)

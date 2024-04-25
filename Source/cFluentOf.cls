@@ -13,11 +13,11 @@ Implements IFluentOf
 
 Private pUnit As IUnit
 Private pUnitShould As cUnit
-Private pMeta As cMeta
+Private pMeta As IMeta
 Private pTestingFunctions As cTestingFunctions
 Private pFluentOfVal As Variant
 
-Private Property Get IFluentOf_Meta() As cMeta
+Private Property Get IFluentOf_Meta() As IMeta
     Set IFluentOf_Meta = pMeta
 End Property
 

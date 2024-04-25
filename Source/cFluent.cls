@@ -13,7 +13,7 @@ Implements IFluent
 
 Private pUnit As IUnit
 Private pUnitShould As cUnit
-Private pMeta As cMeta
+Private pMeta As IMeta
 Private pTestingFunctions As cTestingFunctions
 Private pFluentVal As Variant
 
@@ -25,7 +25,7 @@ Private Property Get IFluent_ShouldNot() As IShould
     Set IFluent_ShouldNot = pUnitShould.ShouldNot
 End Property
 
-Private Property Get IFluent_Meta() As cMeta
+Private Property Get IFluent_Meta() As IMeta
     Set IFluent_Meta = pMeta
 End Property
 

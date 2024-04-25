@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Private pMeta As cMeta
+Private pMeta As IMeta
 Private pTests As cTests
 Private pPrinting As cPrinting
 Private iPrint As IPrinting
@@ -21,7 +21,7 @@ Private pTestDictCounter As Scripting.Dictionary
 
 Private pTestValue As Variant
 Private pFluentPath As String
-Private pExpressions As cExpressions
+Private pExpressions As IExpressions
 
 Public Enum flAlgorithm
     flRecursive
@@ -49,7 +49,7 @@ Public Property Set setMeta(ByVal value As cMeta)
 '    Set pMeta.Tests.TestDictCounter = pTestDictCounter
 End Property
 
-Public Property Set Expressions(value As cExpressions)
+Public Property Set Expressions(value As IExpressions)
     Set pExpressions = value
 End Property
 

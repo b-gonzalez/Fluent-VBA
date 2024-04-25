@@ -71,7 +71,7 @@ Public Sub runMainTests()
 
     tempCounter = mCounter
     
-    testFluent.Meta.Printing.PrintToSheet
+'    testFluent.Meta.Printing.PrintToSheet
 
     Set fluent = New cFluent
     Set testFluent = New cFluentOf
@@ -96,7 +96,6 @@ Public Sub runMainTests()
     mTestCounter = 0
 
     Debug.Assert events.CheckTestCounters
-
 
     Debug.Assert checkResetCounters(fluent, testFluent)
     

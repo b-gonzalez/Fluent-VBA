@@ -16,7 +16,7 @@ Private pShouldSet As ISetTestFuncsAndValue
 'Private pShouldNot As cShouldNot
 Private pShouldNotSet As ISetTestFuncsAndValue
 Private pTestingFunctions As cTestingFunctions
-Private pMeta As cMeta
+Private pMeta As IMeta
 Private pPrinting As cPrinting
 Private iPrint As IPrinting
 
