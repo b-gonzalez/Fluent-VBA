@@ -21,7 +21,7 @@ End Property
 Public Property Get Epsilon() As Double
 End Property
 
-Public Property Get Printing() As cPrinting
+Public Property Get Printing() As IPrinting
 End Property
 
 Public Property Get Tests() As cTests

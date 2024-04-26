@@ -12,7 +12,7 @@ Option Explicit
 Private pMeta As IMeta
 Private pTests As cTests
 Private pPrinting As cPrinting
-Private iPrint As IPrinting
+Private iPrint As IPrintExpr
 Private pApproximateEqual As Boolean
 Private pEpsilon As Double
 'Private pExprDict As Scripting.Dictionary

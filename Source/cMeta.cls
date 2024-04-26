@@ -16,7 +16,7 @@ Private pApproximateEqual As Boolean
 Private pEpsilon As Double
 Private pTestCount As Long
 Private pCategory As String
-Private pPrinting As cPrinting
+Private pPrinting As IPrinting
 Private pFluentPath As String
 Private pTests As cTests
 
@@ -38,7 +38,7 @@ Private Property Get IMeta_Epsilon() As Double
     IMeta_Epsilon = pEpsilon
 End Property
 
-Private Property Get IMeta_Printing() As cPrinting
+Private Property Get IMeta_Printing() As IPrinting
     Set IMeta_Printing = pPrinting
 End Property
 

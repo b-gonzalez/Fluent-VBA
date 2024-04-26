@@ -12,8 +12,8 @@ Option Explicit
 Implements IExpressions
 
 Private pTestDictCounter As Scripting.Dictionary
-Private pPrinting As cPrinting
-Private iPrint As IPrinting
+Private pPrinting As IPrinting
+Private iPrint As IPrintExpr
 Private pTests As cTests
 Private pMeta As IMeta
 

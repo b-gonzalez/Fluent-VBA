@@ -9,6 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
+Implements IPrintExpr
 Implements IPrinting
 
 Private pPrintTotalTests As Boolean
@@ -16,7 +17,7 @@ Private pTestName As String
 Private pTestCollection As Collection
 Private pTestCount As Long
 Private pCategory As String
-Private iPrint As IPrinting
+Private iPrint As IPrintExpr
 Private pPassedMessage As String
 Private pFailedMessage As String
 Private pUnexpectedMessage As String
@@ -25,66 +26,66 @@ Private pExcel As Excel.Application
 Private pWorkbook As Excel.Workbook
 Private pExpressions As IExpressions
 
-Private Property Get IPrinting_TestCollection() As Collection
+Private Property Get IPrintExpr_TestCollection() As Collection
     If pTestCollection Is Nothing Then
         Set pTestCollection = New Collection
     End If
-    Set IPrinting_TestCollection = pTestCollection
+    Set IPrintExpr_TestCollection = pTestCollection
 End Property
 
-Private Property Let IPrinting_FluentPath(value As String)
+Private Property Let IPrintExpr_FluentPath(value As String)
     pFluentPath = value
 End Property
 
-Private Property Get IPrinting_Expressions() As IExpressions
-    Set IPrinting_Expressions = pExpressions
+Private Property Get IPrintExpr_Expressions() As IExpressions
+    Set IPrintExpr_Expressions = pExpressions
 End Property
 
-Public Property Let Category(ByVal value As String)
+Private Property Let IPrinting_Category(ByVal value As String)
     pCategory = value
 End Property
 
-Public Property Get Category() As String
-    Category = pCategory
+Private Property Get IPrinting_Category() As String
+    IPrinting_Category = pCategory
 End Property
 
-Public Property Let TestName(ByVal value As String)
+Private Property Let IPrinting_TestName(ByVal value As String)
     pTestName = value
 End Property
 
-Public Property Get TestName() As String
-    TestName = pTestName
+Private Property Get IPrinting_TestName() As String
+    IPrinting_TestName = pTestName
 End Property
 
-Public Property Let PassedMessage(ByVal value As String)
+Private Property Let IPrinting_PassedMessage(ByVal value As String)
     pPassedMessage = value
 End Property
 
-Public Property Get PassedMessage() As String
-    PassedMessage = pPassedMessage
+Private Property Get IPrinting_PassedMessage() As String
+    IPrinting_PassedMessage = pPassedMessage
 End Property
 
-Public Property Let FailedMessage(ByVal value As String)
+Private Property Let IPrinting_FailedMessage(ByVal value As String)
     pFailedMessage = value
 End Property
 
-Public Property Get FailedMessage() As String
-    FailedMessage = pFailedMessage
+Private Property Get IPrinting_FailedMessage() As String
+    IPrinting_FailedMessage = pFailedMessage
 End Property
 
-Public Property Let UnexpectedMessage(ByVal value As String)
+Private Property Let IPrinting_UnexpectedMessage(ByVal value As String)
     pUnexpectedMessage = value
 End Property
 
-Public Property Get UnexpectedMessage() As String
-    UnexpectedMessage = pUnexpectedMessage
+Private Property Get IPrinting_UnexpectedMessage() As String
+    IPrinting_UnexpectedMessage = pUnexpectedMessage
 End Property
 
-Public Property Get FluentPath() As String
-    FluentPath = pFluentPath
+Private Property Get IPrinting_FluentPath() As String
+    IPrinting_FluentPath = pFluentPath
 End Property
 
-Public Sub PrintToImmediate()
+Private Sub IPrinting_PrintToImmediate()
     Dim arr() As Variant
     Dim i As Long
     Dim TestName As Long
@@ -95,7 +96,7 @@ Public Sub PrintToImmediate()
         TestName = 2
     End If
     
-    arr = getArrayFromCollection(pTestCollection)
+    arr = IPrinting_getArrayFromCollection(pTestCollection)
     
     For i = LBound(arr, 1) To UBound(arr, 1)
         If pCategory <> "" Then
@@ -106,7 +107,7 @@ Public Sub PrintToImmediate()
     Next i
 End Sub
 
-Public Sub PrintToSheet()
+Private Sub IPrinting_PrintToSheet()
     Dim lo As Excel.ListObject
     Dim testResultCol As Excel.ListColumn
     Dim testNameCol As Excel.ListColumn
@@ -115,11 +116,11 @@ Public Sub PrintToSheet()
     Dim wb As Excel.Workbook
     Dim ws As Excel.Worksheet
     
-    arr = getArrayFromCollection(pTestCollection)
+    arr = IPrinting_getArrayFromCollection(pTestCollection)
 
-    Set wb = getWorkbook
+    Set wb = IPrinting_getWorkbook
     
-    Call addTableToWorkbook(wb)
+    Call IPrinting_addTableToWorkbook(wb)
     
     Set ws = wb.ActiveSheet
     
@@ -133,17 +134,17 @@ Public Sub PrintToSheet()
         Set categoryCol = lo.ListColumns("Category")
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
         ws.Columns("C:C").EntireColumn.AutoFit
-        Call addCategoryStyle(categoryCol, "-1", "0", "1")
+        Call IPrinting_addCategoryStyle(categoryCol, "-1", "0", "1")
     Else
         lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
         ws.Columns("B:B").EntireColumn.AutoFit
     End If
 
-    Call addValueConditColors(testResultCol, "-1", "0", "1")
+    Call IPrinting_addValueConditColors(testResultCol, "-1", "0", "1")
     
-    Call addValueConditColors(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*", "*" & pUnexpectedMessage & "*")
+    Call IPrinting_addValueConditColors(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*", "*" & pUnexpectedMessage & "*")
     
-    Call addResultsIconSets(testResultCol)
+    Call IPrinting_addResultsIconSets(testResultCol)
     
     Set pExcel = Nothing
     
@@ -151,7 +152,7 @@ Public Sub PrintToSheet()
 
 End Sub
 
-Private Function getWorkbook() As Workbook
+Private Function IPrinting_getWorkbook() As Workbook
     Dim xl As Excel.Application
     
     If pExcel Is Nothing Then
@@ -168,10 +169,10 @@ Private Function getWorkbook() As Workbook
         Set pWorkbook = pExcel.Workbooks.Add
     End If
         
-    Set getWorkbook = pWorkbook
+    Set IPrinting_getWorkbook = pWorkbook
 End Function
 
-Private Sub addTableToWorkbook(wb As Workbook)
+Private Sub IPrinting_addTableToWorkbook(wb As Workbook)
     Dim ws As Excel.Worksheet
     Dim lo As Excel.ListObject
     
@@ -191,7 +192,7 @@ Private Sub addTableToWorkbook(wb As Workbook)
     lo.name = "Table1"
 End Sub
 
-Private Function getArrayFromCollection(ByVal col As Collection) As Variant()
+Private Function IPrinting_getArrayFromCollection(ByVal col As Collection) As Variant()
     Dim Category As Long
     Dim TestResult As Long
     Dim TestName As Long
@@ -223,15 +224,15 @@ Private Function getArrayFromCollection(ByVal col As Collection) As Variant()
         End If
     Next i
     
-    getArrayFromCollection = arr
+    IPrinting_getArrayFromCollection = arr
 End Function
 
-Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
+Private Sub IPrinting_addResultsIconSets(ByVal lc As Excel.ListColumn)
     Dim wb As Workbook
 
     lc.Range.Select
     
-    Set wb = getWorkbook()
+    Set wb = IPrinting_getWorkbook()
     
     With lc.DataBodyRange
         .FormatConditions.AddIconSetCondition
@@ -257,7 +258,7 @@ Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
     End With
 End Sub
 
-Sub addCategoryStyle(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String, unexpectedMsg As String)
+Private Sub IPrinting_addCategoryStyle(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String, unexpectedMsg As String)
     
     With lc.Range
         .FormatConditions.Add Type:=xlExpression, Formula1:= _
@@ -304,7 +305,7 @@ Sub addCategoryStyle(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, By
     End With
 End Sub
 
-Private Sub addValueConditColors(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String, ByVal unexpectedMsg As String)
+Private Sub IPrinting_addValueConditColors(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String, ByVal unexpectedMsg As String)
     lc.Range.Select
     
     With lc.DataBodyRange

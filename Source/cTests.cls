@@ -19,7 +19,7 @@ Private pCol As Collection
 Private pCount As Long
 Private pTestDictCounter As Scripting.Dictionary
 
-Private Sub Class_Initialize()
+Public Sub Class_Initialize()
     Set pCol = New Collection
     pCount = 0
 End Sub

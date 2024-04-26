@@ -9,14 +9,68 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Get TestCollection() As Collection
-
+Public Property Let Category(ByVal value As String)
 End Property
 
-Public Property Let FluentPath(value As String)
-
+Public Property Get Category() As String
 End Property
 
-Public Property Get Expressions() As IExpressions
-
+Public Property Let TestName(ByVal value As String)
 End Property
+
+Public Property Get TestName() As String
+End Property
+
+Public Property Let PassedMessage(ByVal value As String)
+End Property
+
+Public Property Get PassedMessage() As String
+End Property
+
+Public Property Let FailedMessage(ByVal value As String)
+End Property
+
+Public Property Get FailedMessage() As String
+End Property
+
+Public Property Let UnexpectedMessage(ByVal value As String)
+End Property
+
+Public Property Get UnexpectedMessage() As String
+End Property
+
+Public Property Get FluentPath() As String
+End Property
+
+Public Sub PrintToImmediate()
+End Sub
+
+Public Sub PrintToSheet()
+End Sub
+
+Private Function getWorkbook() As Workbook
+End Function
+
+Private Sub addTableToWorkbook(wb As Workbook)
+End Sub
+
+Private Function getArrayFromCollection(ByVal col As Collection) As Variant()
+End Function
+
+Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
+End Sub
+
+Private Sub addCategoryStyle(ByVal lc As Excel.ListColumn, _
+ByVal passedMsg As String, _
+ByVal failedMsg As String, _
+unexpectedMsg As String)
+End Sub
+
+Private Sub addValueConditColors( _
+ByVal lc As Excel.ListColumn, _
+ByVal passedMsg As String, _
+ByVal failedMsg As String, _
+ByVal unexpectedMsg As String)
+End Sub
+
+

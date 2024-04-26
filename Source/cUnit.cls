@@ -18,7 +18,7 @@ Private pShouldNotSet As ISetTestFuncsAndValue
 Private pTestingFunctions As cTestingFunctions
 Private pMeta As IMeta
 Private pPrinting As cPrinting
-Private iPrint As IPrinting
+Private iPrint As IPrintExpr
 
 Private pUnitVal As Variant
 Private pTestCount As Long
