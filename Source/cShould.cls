@@ -18,12 +18,16 @@ Private pBeSet As ISetTestFuncsAndValue
 Private pHave As cHave
 Private pHaveSet As ISetTestFuncsAndValue
 Private pTestingFunctions As ITestingFunctions
+Private pShouldFunctions As IShouldTestFuncs
 
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
     Set pTestingFunctions = value
+    Set pShouldFunctions = value
 End Property
 
 Private Property Let ISetTestFuncsAndValue_testValue(ByVal value As Variant)
+    Dim tf As ITestingFunctions
+    
     pShouldVal = pTestingFunctions.TestValue
 End Property
 
@@ -66,18 +70,18 @@ Private Property Get IShould_be() As IBe
     Set IShould_be = pBeSet
 End Property
 
-Private Function IShould_contain(ByVal value As String) As Variant
-    IShould_contain = pTestingFunctions.Contain(pShouldVal, value)
+Private Function IShould_Contain(ByVal value As String) As Variant
+    IShould_Contain = pShouldFunctions.Contain(pShouldVal, value)
 End Function
 
-Private Function IShould_startWith(ByVal value As String) As Variant
-    IShould_startWith = pTestingFunctions.StartWith(pShouldVal, value)
+Private Function IShould_StartWith(ByVal value As String) As Variant
+    IShould_StartWith = pShouldFunctions.StartWith(pShouldVal, value)
 End Function
 
-Private Function IShould_endWith(ByVal value As String) As Variant
-    IShould_endWith = pTestingFunctions.EndWith(pShouldVal, value)
+Private Function IShould_EndWith(ByVal value As String) As Variant
+    IShould_EndWith = pShouldFunctions.EndWith(pShouldVal, value)
 End Function
 
-Private Function IShould_evaluateTo(ByVal value As Variant) As Variant
-    IShould_evaluateTo = pTestingFunctions.EvaluateTo(pShouldVal, value)
+Private Function IShould_EvaluateTo(ByVal value As Variant) As Variant
+    IShould_EvaluateTo = pShouldFunctions.EvaluateTo(pShouldVal, value)
 End Function

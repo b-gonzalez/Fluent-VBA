@@ -13,10 +13,12 @@ Implements IBe
 Implements ISetTestFuncsAndValue
 
 Private pTestingFunctions As ITestingFunctions
+Private pBeTestFuncs As IBeTestFuncs
 Private pBeValue As Variant
 
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
     Set pTestingFunctions = value
+    Set pBeTestFuncs = value
 End Property
 
 Private Property Let ISetTestFuncsAndValue_testValue(ByVal value As Variant)
@@ -28,63 +30,63 @@ Private Property Set ISetTestFuncsAndValue_testValue(ByVal value As Variant)
 End Property
 
 Private Function IBe_GreaterThan(ByVal value As Double) As Variant
-    IBe_GreaterThan = pTestingFunctions.GreaterThan(pBeValue, value)
+    IBe_GreaterThan = pBeTestFuncs.GreaterThan(pBeValue, value)
 End Function
 
 Private Function IBe_LessThan(ByVal value As Double) As Variant
-    IBe_LessThan = pTestingFunctions.LessThan(pBeValue, value)
+    IBe_LessThan = pBeTestFuncs.LessThan(pBeValue, value)
 End Function
 
 Private Function IBe_EqualTo(ByVal value As Variant) As Variant
-    IBe_EqualTo = pTestingFunctions.EqualTo(pBeValue, value, updateFluentPath:=True)
+    IBe_EqualTo = pBeTestFuncs.EqualTo(pBeValue, value, updateFluentPath:=True)
 End Function
 
 Private Function IBe_GreaterThanOrEqualTo(ByVal value As Double) As Variant
-    IBe_GreaterThanOrEqualTo = pTestingFunctions.GreaterThanOrEqualTo(pBeValue, value, updateFluentPath:=True)
+    IBe_GreaterThanOrEqualTo = pBeTestFuncs.GreaterThanOrEqualTo(pBeValue, value, updateFluentPath:=True)
 End Function
 
 Private Function IBe_LessThanOrEqualTo(ByVal value As Double) As Variant
-    IBe_LessThanOrEqualTo = pTestingFunctions.LessThanOrEqualTo(pBeValue, value, updateFluentPath:=True)
+    IBe_LessThanOrEqualTo = pBeTestFuncs.LessThanOrEqualTo(pBeValue, value, updateFluentPath:=True)
 End Function
 
 Private Function IBe_Something() As Variant
-    IBe_Something = pTestingFunctions.Something(pBeValue)
+    IBe_Something = pBeTestFuncs.Something(pBeValue)
 End Function
 
 Private Function IBe_Between(ByVal LowerVal As Double, ByVal HigherVal As Double) As Variant
-    IBe_Between = pTestingFunctions.Between(pBeValue, LowerVal, HigherVal)
+    IBe_Between = pBeTestFuncs.Between(pBeValue, LowerVal, HigherVal)
 End Function
 
 Private Function IBe_OneOf(ParamArray Vals() As Variant) As Variant
-    IBe_OneOf = pTestingFunctions.OneOf(pBeValue, False, Vals)
+    IBe_OneOf = pBeTestFuncs.OneOf(pBeValue, False, Vals)
 End Function
 
 Private Function IBe_InDataStructure(ByVal DataStructure As Variant, Optional ByVal method As flAlgorithm = flRecursive) As Variant
-    IBe_InDataStructure = pTestingFunctions.InDataStructure(pBeValue, DataStructure, method, updateFluentPath:=True)
+    IBe_InDataStructure = pBeTestFuncs.InDataStructure(pBeValue, DataStructure, method, updateFluentPath:=True)
 End Function
 
 Private Function IBe_InDataStructures(ByVal method As flAlgorithm, ParamArray DataStructures() As Variant) As Variant
-    IBe_InDataStructures = pTestingFunctions.InDataStructures(pBeValue, method, False, DataStructures)
+    IBe_InDataStructures = pBeTestFuncs.InDataStructures(pBeValue, method, False, DataStructures)
 End Function
 
 Private Function IBe_Alphabetic() As Variant
-    IBe_Alphabetic = pTestingFunctions.Alphabetic(pBeValue)
+    IBe_Alphabetic = pBeTestFuncs.Alphabetic(pBeValue)
 End Function
 
 Private Function IBe_Alphanumeric() As Variant
-    IBe_Alphanumeric = pTestingFunctions.Alphanumeric(pBeValue)
+    IBe_Alphanumeric = pBeTestFuncs.Alphanumeric(pBeValue)
 End Function
 
 Private Function IBe_Numeric() As Variant
-    IBe_Numeric = pTestingFunctions.Numeric(pBeValue)
+    IBe_Numeric = pBeTestFuncs.Numeric(pBeValue)
 End Function
 
 Private Function IBe_Erroneous() As Variant
-    IBe_Erroneous = pTestingFunctions.Erroneous(pBeValue)
+    IBe_Erroneous = pBeTestFuncs.Erroneous(pBeValue)
 End Function
 
 Private Function IBe_IdenticalTo(ByVal value As Variant) As Variant
 '    Dim temp As Variant
 '    temp = args
-    IBe_IdenticalTo = pTestingFunctions.IdenticalTo(pBeValue, False, value, True)
+    IBe_IdenticalTo = pBeTestFuncs.IdenticalTo(pBeValue, False, value, True)
 End Function

@@ -17,10 +17,12 @@ Private pNotBeSet As ISetTestFuncsAndValue
 Private pNotHave As cNotHave
 Private pNotHaveSet As ISetTestFuncsAndValue
 Private pTestingFunctions As ITestingFunctions
+Private pShouldFunctions As IShouldTestFuncs
 Private pShouldNotVal As Variant
 
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
     Set pTestingFunctions = value
+    Set pShouldFunctions = value
 End Property
 
 Private Property Let ISetTestFuncsAndValue_testValue(ByVal value As Variant)
@@ -64,18 +66,18 @@ Private Property Get IShould_be() As IBe
     Set IShould_be = pNotBeSet
 End Property
 
-Private Function IShould_contain(ByVal value As String) As Variant
-    IShould_contain = Not pTestingFunctions.Contain(pShouldNotVal, value, True)
+Private Function IShould_Contain(ByVal value As String) As Variant
+    IShould_Contain = Not pShouldFunctions.Contain(pShouldNotVal, value, True)
 End Function
 
-Private Function IShould_startWith(ByVal value As String) As Variant
-    IShould_startWith = Not pTestingFunctions.StartWith(pShouldNotVal, value, True)
+Private Function IShould_StartWith(ByVal value As String) As Variant
+    IShould_StartWith = Not pShouldFunctions.StartWith(pShouldNotVal, value, True)
 End Function
 
-Private Function IShould_endWith(ByVal value As String) As Variant
-    IShould_endWith = Not pTestingFunctions.EndWith(pShouldNotVal, value, True)
+Private Function IShould_EndWith(ByVal value As String) As Variant
+    IShould_EndWith = Not pShouldFunctions.EndWith(pShouldNotVal, value, True)
 End Function
 
-Public Function IShould_evaluateTo(ByVal value As Variant) As Variant
-    IShould_evaluateTo = Not pTestingFunctions.EvaluateTo(pShouldNotVal, value)
+Private Function IShould_EvaluateTo(ByVal value As Variant) As Variant
+    IShould_EvaluateTo = Not pShouldFunctions.EvaluateTo(pShouldNotVal, value, True)
 End Function
