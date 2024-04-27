@@ -13,7 +13,7 @@ Implements IHave
 Implements ISetTestFuncsAndValue
 
 Private pNotHaveVal As Variant
-Private pTestingFunctions As cTestingFunctions
+Private pTestingFunctions As ITestingFunctions
 
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
     Set pTestingFunctions = value

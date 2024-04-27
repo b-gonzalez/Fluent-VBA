@@ -12,7 +12,7 @@ Option Explicit
 Implements IHave
 Implements ISetTestFuncsAndValue
 
-Private pTestingFunctions As cTestingFunctions
+Private pTestingFunctions As ITestingFunctions
 Private pHaveVal As Variant
 
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)

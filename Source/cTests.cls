@@ -9,6 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
+'Implements ITests
+
 Public Event TestPassed(ByVal test As ITest)
 Public Event TestFailed(ByVal test As ITest)
 Public Event TestCompleted(ByVal test As ITest)

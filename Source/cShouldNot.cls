@@ -16,7 +16,7 @@ Private pNotBe As cNotBe
 Private pNotBeSet As ISetTestFuncsAndValue
 Private pNotHave As cNotHave
 Private pNotHaveSet As ISetTestFuncsAndValue
-Private pTestingFunctions As cTestingFunctions
+Private pTestingFunctions As ITestingFunctions
 Private pShouldNotVal As Variant
 
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)

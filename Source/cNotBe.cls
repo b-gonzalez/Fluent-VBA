@@ -14,7 +14,7 @@ Implements ISetTestFuncsAndValue
 
 Private pNotBeValue As Variant
 Private pBe As IBe
-Private pTestingFunctions As cTestingFunctions
+Private pTestingFunctions As ITestingFunctions
 
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
     Set pTestingFunctions = value

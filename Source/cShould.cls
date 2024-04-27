@@ -17,7 +17,7 @@ Private pBe As cBe
 Private pBeSet As ISetTestFuncsAndValue
 Private pHave As cHave
 Private pHaveSet As ISetTestFuncsAndValue
-Private pTestingFunctions As cTestingFunctions
+Private pTestingFunctions As ITestingFunctions
 
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
     Set pTestingFunctions = value

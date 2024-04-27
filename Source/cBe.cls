@@ -12,7 +12,7 @@ Option Explicit
 Implements IBe
 Implements ISetTestFuncsAndValue
 
-Private pTestingFunctions As cTestingFunctions
+Private pTestingFunctions As ITestingFunctions
 Private pBeValue As Variant
 
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
