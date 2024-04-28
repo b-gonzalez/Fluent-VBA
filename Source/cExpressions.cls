@@ -292,7 +292,7 @@ Private Function IExpressions_getFunctionExpr(test As ITest)
             Case "InDataStructures"
                 tempFluentPath = IExpressions_Be(InDataStructures_, .StrTestInput)
             Case "LengthBetween"
-                tempFluentPath = IExpressions_Have(InDataStructures_, .StrTestInput)
+                tempFluentPath = IExpressions_Have(LengthBetween_, .StrTestInput)
             Case "LengthOf"
                 tempFluentPath = IExpressions_Have(LengthOf_, .testingInput)
             Case "LessThan"

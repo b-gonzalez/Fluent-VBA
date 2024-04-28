@@ -10,14 +10,14 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Public Enum flShould
-    Contain_
+    Contain_ = 0
     EndWith_
     EvaluateTo_
-    StartWith_
+    StartWith_ = 3
 End Enum
 
 Public Enum flHave
-    ErrorDescriptionOf_
+    ErrorDescriptionOf_ = 4
     ErrorNumberOf_
     ExactSameElementsAs_
     LengthBetween_
@@ -26,11 +26,11 @@ Public Enum flHave
     MinLengthOf_
     SameElementsAs_
     SameTypeAs_
-    SameUniqueElementsAs_
+    SameUniqueElementsAs_ = 13
 End Enum
 
 Public Enum flBe
-    Alphabetic_
+    Alphabetic_ = 14
     Alphanumeric_
     Between_
     Erroneous_
@@ -44,7 +44,7 @@ Public Enum flBe
     LessThanOrEqualTo_
     Numeric_
     OneOf_
-    Something_
+    Something_ = 28
 End Enum
 
 Public Property Set setPrinting(ByVal value As cPrinting)
