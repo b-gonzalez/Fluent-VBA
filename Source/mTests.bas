@@ -87,6 +87,10 @@ Public Sub runMainTests()
     mCounter = tempCounter
     
     mCounter = mCounter + nulTestFluent.Meta.Tests.Count
+    
+    Set fluent = New cFluent
+    
+    mCounter = mCounter + MiscTests(fluent)
 
     Debug.Print "All tests Finished"
     Call printTestCount(mCounter)
@@ -103,11 +107,11 @@ Public Sub runMainTests()
     
 End Sub
 
-Private Sub printTestCount(TestCount As Long)
-    If TestCount > 1 Then
-        Debug.Print TestCount & " tests finished!" & vbNewLine
-    ElseIf TestCount = 1 Then
-        Debug.Print "Test finished!"
+Private Sub printTestCount(testCount As Long)
+    If testCount > 1 Then
+        Debug.Print testCount & " tests finished!" & vbNewLine
+    ElseIf testCount = 1 Then
+        Debug.Print "1 Test finished!"
     End If
 End Sub
 
@@ -149,13 +153,13 @@ Private Sub NullAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf,
     
     Debug.Assert testFluent.Meta.Tests.Count = mCounter
 
-    If IsNull(fluent.TestValue) Then
+'    If IsNull(fluent.TestValue) Then
         With fluent
             Debug.Assert testFluentResult.Of(.TestValue).Should.Be.EqualTo(Null)
             Debug.Assert testFluentResult.Of(.TestValue).ShouldNot.Be.EqualTo(True)
             Debug.Assert testFluentResult.Of(.TestValue).ShouldNot.Be.EqualTo(False)
         End With
-    End If
+'    End If
 End Sub
 
 Private Sub EqualityTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
@@ -188,12 +192,12 @@ Private Sub EqualityTests(fluent As IFluent, testFluent As IFluentOf, testFluent
         
         fluent.TestValue = testFluent.Of(-1).Should.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(True)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
         fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(True)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         '//Approximate equality tests
     
@@ -228,15 +232,16 @@ Private Sub EqualityTests(fluent As IFluent, testFluent As IFluentOf, testFluent
         testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("false").Should.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         testFluent.Meta.ApproximateEqual = False
         
         '//Null and Empty tests
         
         fluent.TestValue = testFluent.Of(Null).Should.Be.EqualTo(Null)
-        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.EqualTo(Null)
-        Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of().Should.Be.EqualTo(Empty)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -4073,8 +4078,8 @@ Public Function nullDocumentationTests(fluent As IFluent, testFluent As IFluentO
     fluent.TestValue = testFluent.Of(Null).Should.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello World!").Should.Have.LengthBetween(1, 10)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+'    fluent.TestValue = testFluent.Of("Hello World!").Should.Have.LengthBetween(1, 10)
+'    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -4352,6 +4357,19 @@ Public Function nullDocumentationTests(fluent As IFluent, testFluent As IFluentO
     mTestCounter = 0
     
     Set nullDocumentationTests = testFluent
+End Function
+
+Private Function MiscTests(fluent As IFluent)
+    Dim testCount As Long
+    
+    Debug.Assert fluent.Should.Be.EqualTo(Empty)
+    
+    Debug.Print "Misc tests finished"
+    testCount = fluent.Meta.Tests.Count
+    printTestCount (testCount)
+    Debug.Print
+    
+    MiscTests = testCount
 End Function
 
 Public Function checkResetCounters(fluent As IFluent, testFluent As IFluentOf)

@@ -303,7 +303,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
         funcVal = tempBool
     End If
     
-    IBeTestFuncs_EqualTo = tempBool
+    IBeTestFuncs_EqualTo = funcVal
     
     If updateFluentPath Then
         Call pExpressions.addToTestAndFluentPath("EqualTo", funcVal, CBool(negateValue), testingValue, testingInput)
@@ -752,7 +752,7 @@ ByVal updateFluentPath As Boolean) As Variant
     
     funcVal = Null
         
-    If pExpressions.IsDataStructure(testingInput) And pExpressions.IsDataStructure(testingInput) Then
+    If pExpressions.IsDataStructure(testingValue) And pExpressions.IsDataStructure(testingInput) Then
         funcVal = _
         IBeTestFuncs_EqualTo( _
             pExpressions.InputToStringRecur(testingValue), _

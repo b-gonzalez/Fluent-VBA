@@ -12,5 +12,5 @@ Option Explicit
 Public Property Get Meta() As IMeta
 End Property
 
-Public Function Of(Optional ByVal value As Variant = Empty) As cUnit
+Public Function Of(Optional ByVal All As Variant = Empty) As cUnit
 End Function

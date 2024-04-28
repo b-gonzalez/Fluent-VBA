@@ -33,18 +33,18 @@ Public Function ErrorDescriptionOf(ByVal value As String) As Variant
 
 End Function
 
-Public Function SameTypeAs(ByVal value As Variant) As Variant
+Public Function SameTypeAs(ByVal All As Variant) As Variant
 
 End Function
 
-Public Function ExactSameElementsAs(ByVal value As Variant) As Variant
+Public Function ExactSameElementsAs(ByVal DataStructure As Variant) As Variant
     
 End Function
 
-Public Function SameUniqueElementsAs(ByVal value As Variant) As Variant
+Public Function SameUniqueElementsAs(ByVal DataStructure As Variant) As Variant
     
 End Function
 
-Public Function SameElementsAs(ByVal value As Variant) As Variant
+Public Function SameElementsAs(ByVal DataStructure As Variant) As Variant
     
 End Function

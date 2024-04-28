@@ -26,3 +26,6 @@ End Property
 
 Public Property Get Tests() As cTests
 End Property
+
+Public Property Get DataStructures() As Collection
+End Property

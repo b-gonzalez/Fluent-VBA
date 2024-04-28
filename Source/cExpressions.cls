@@ -292,7 +292,7 @@ Private Function IExpressions_getFunctionExpr(test As ITest)
             Case "InDataStructures"
                 tempFluentPath = IExpressions_Be(InDataStructures_, .StrTestInput)
             Case "LengthBetween"
-                tempFluentPath = IExpressions_Be(InDataStructures_, .StrTestInput)
+                tempFluentPath = IExpressions_Have(InDataStructures_, .StrTestInput)
             Case "LengthOf"
                 tempFluentPath = IExpressions_Have(LengthOf_, .testingInput)
             Case "LessThan"
@@ -541,6 +541,22 @@ Private Function IExpressions_getResultNumber(result As Variant)
     IExpressions_getResultNumber = resultNumber
 End Function
 
+Private Function datastructureInCollection(dsName As String, col As Collection)
+    Dim elem As Variant
+    Dim b As Boolean
+    
+    b = False
+    
+    For Each elem In col
+        If elem = dsName Then
+            b = True
+            Exit For
+        End If
+    Next elem
+    
+    datastructureInCollection = b
+End Function
+
 Private Function IExpressions_IsDataStructure(ByVal DataStructure As Variant)
     Dim dsTypeName As String
     Dim tempBool As Boolean
@@ -550,17 +566,21 @@ Private Function IExpressions_IsDataStructure(ByVal DataStructure As Variant)
     
     dsTypeName = TypeName(DataStructure)
     tempBool = False
-
-    On Error Resume Next
-        For Each elem In DataStructure
-            Exit For
-        Next elem
-        
-        tempErr = Err.Number
-        
-        tempBool = (tempErr = 0)
-        
-    On Error GoTo 0
+    
+    If IsArray(DataStructure) Then
+        tempBool = True
+    ElseIf datastructureInCollection(dsTypeName, pMeta.DataStructures) Then
+        On Error Resume Next
+            For Each elem In DataStructure
+                Exit For
+            Next elem
+            
+            tempErr = Err.Number
+            
+            tempBool = (tempErr = 0)
+            
+        On Error GoTo 0
+    End If
     
     IExpressions_IsDataStructure = tempBool
 End Function

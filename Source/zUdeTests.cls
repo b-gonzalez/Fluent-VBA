@@ -23,13 +23,13 @@ Attribute pTestOfResults.VB_VarHelpID = -1
 Private pFluentEvent As IFluent
 Private pFluentEventOf As IFluentOf
 Private pFluentEventOfResult As IFluentOf
-Private TestCount As Long
+Private testCount As Long
 Private TestOfCount As Long
 Private TestOfResultsCount As Long
 Private i As Long
 
 Private Sub Class_Initialize()
-    TestCount = 0
+    testCount = 0
     TestOfCount = 0
     TestOfResultsCount = 0
 End Sub
@@ -75,8 +75,8 @@ Private Sub pTest_TestFailed(ByVal test As ITest)
 End Sub
 
 Private Sub pTest_TestCompleted(ByVal test As ITest)
-    TestCount = TestCount + 1
-    Debug.Assert pFluentEvent.Meta.Tests.Count = TestCount
+    testCount = testCount + 1
+    Debug.Assert pFluentEvent.Meta.Tests.Count = testCount
 End Sub
 
 Private Sub pTestOfResult_TestPassed(ByVal test As ITest)
@@ -100,7 +100,7 @@ Public Function CheckTestCounters()
     
     b = ( _
     TestOfResultsCount > 0 And _
-    TestCount > 0 And _
+    testCount > 0 And _
     TestOfCount > 0)
 
     CheckTestCounters = b

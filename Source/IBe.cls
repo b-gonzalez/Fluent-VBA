@@ -57,7 +57,7 @@ Public Function Numeric() As Variant
 
 End Function
 
-Public Function OneOf(ParamArray Vals() As Variant) As Variant
+Public Function OneOf(ParamArray All() As Variant) As Variant
 
 End Function
 
@@ -65,6 +65,6 @@ Public Function Something() As Variant
 
 End Function
 
-Public Function IdenticalTo(ByVal value As Variant) As Variant
+Public Function IdenticalTo(ByVal DataStructure As Variant) As Variant
 
 End Function

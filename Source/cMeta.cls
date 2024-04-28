@@ -19,6 +19,7 @@ Private pCategory As String
 Private pPrinting As IPrinting
 Private pFluentPath As String
 Private pTests As cTests
+Private pDataStructures As Collection
 
 Private Const defaultEpsilon As Double = 0.000001
 
@@ -46,8 +47,17 @@ Private Property Get IMeta_Tests() As cTests
     Set IMeta_Tests = pTests
 End Property
 
+Public Property Get IMeta_DataStructures() As Collection
+    Set IMeta_DataStructures = pDataStructures
+End Property
+
 Private Sub Class_Initialize()
     IMeta_Epsilon = defaultEpsilon
     Set pPrinting = New cPrinting
     Set pTests = New cTests
+    Set pDataStructures = New Collection
+    
+    pDataStructures.Add "Dictionary"
+    pDataStructures.Add "Collection"
+    pDataStructures.Add "ArrayList"
 End Sub

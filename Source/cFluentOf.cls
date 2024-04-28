@@ -21,13 +21,13 @@ Private Property Get IFluentOf_Meta() As IMeta
     Set IFluentOf_Meta = pMeta
 End Property
 
-Private Function IFluentOf_Of(Optional ByVal value As Variant = Empty) As cUnit
-    If IsObject(value) Then
-        Set pFluentOfVal = value
-        Set pUnit.TestValue = value
+Private Function IFluentOf_Of(Optional ByVal All As Variant = Empty) As cUnit
+    If IsObject(All) Then
+        Set pFluentOfVal = All
+        Set pUnit.TestValue = pFluentOfVal
     Else
-        pFluentOfVal = value
-        pUnit.TestValue = value
+        pFluentOfVal = All
+        pUnit.TestValue = pFluentOfVal
     End If
     
     Set IFluentOf_Of = pUnit

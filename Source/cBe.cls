@@ -57,8 +57,8 @@ Private Function IBe_Between(ByVal LowerVal As Double, ByVal HigherVal As Double
     IBe_Between = pBeTestFuncs.Between(pBeValue, LowerVal, HigherVal)
 End Function
 
-Private Function IBe_OneOf(ParamArray Vals() As Variant) As Variant
-    IBe_OneOf = pBeTestFuncs.OneOf(pBeValue, False, Vals)
+Private Function IBe_OneOf(ParamArray All() As Variant) As Variant
+    IBe_OneOf = pBeTestFuncs.OneOf(pBeValue, False, All)
 End Function
 
 Private Function IBe_InDataStructure(ByVal DataStructure As Variant, Optional ByVal method As flAlgorithm = flRecursive) As Variant
@@ -85,8 +85,8 @@ Private Function IBe_Erroneous() As Variant
     IBe_Erroneous = pBeTestFuncs.Erroneous(pBeValue)
 End Function
 
-Private Function IBe_IdenticalTo(ByVal value As Variant) As Variant
+Private Function IBe_IdenticalTo(ByVal DataStructure As Variant) As Variant
 '    Dim temp As Variant
 '    temp = args
-    IBe_IdenticalTo = pBeTestFuncs.IdenticalTo(pBeValue, False, value, True)
+    IBe_IdenticalTo = pBeTestFuncs.IdenticalTo(pBeValue, False, DataStructure, True)
 End Function
