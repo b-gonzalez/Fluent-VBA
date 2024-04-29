@@ -65,7 +65,7 @@ End Property
 Public Sub addToTestAndFluentPath( _
     ByVal functionName As String, _
     ByVal result As Variant, _
-    ByVal negateValue As Boolean, _
+    ByVal NegateValue As Boolean, _
     ByVal testingValue As Variant, _
     Optional ByVal testingInput As Variant, _
     Optional LowerVal As Variant, _
@@ -90,7 +90,7 @@ End Function
 Public Function getFluentPath(FluentPath As String, test As ITest, Optional notShould As Boolean = False)
 End Function
 
-Public Sub addFluentPathNew(ByVal test As ITest, ByVal negateValue As Boolean)
+Public Sub addFluentPathNew(ByVal test As ITest, ByVal NegateValue As Boolean)
 End Sub
 
 Public Function ToString(ByVal nv As Variant) As String

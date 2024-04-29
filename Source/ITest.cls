@@ -75,3 +75,8 @@ End Property
 Public Property Get HasNull() As Boolean
 End Property
 
+Public Property Let NegateValue(value As Boolean)
+End Property
+
+Public Property Get NegateValue() As Boolean
+End Property

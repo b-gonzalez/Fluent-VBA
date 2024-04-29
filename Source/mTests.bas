@@ -54,24 +54,24 @@ Public Sub runMainTests()
     Set posTestFluent = positiveDocumentationTests(fluent, testFluent, testFluentResult)
     Debug.Assert validateTestDictCounters(testFluent.Meta.Tests.TestDictCounter)
     
-    posFluentOfStr = getFluentOfCounts(posTestFluent)
+'    posFluentOfStr = getFluentOfCounts(posTestFluent)
     
     fluent.Meta.Printing.Category = "Fluent - negativeDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - negativeDocumentationTests"
     Set negTestFluent = negativeDocumentationTests(fluent, testFluent, testFluentResult)
     Debug.Assert validateTestDictCounters(testFluent.Meta.Tests.TestDictCounter)
     
-    negFluentOfStr = getFluentOfCounts(negTestFluent)
+'    negFluentOfStr = getFluentOfCounts(negTestFluent)
     
     With posTestFluent.Meta
         For i = 1 To .Tests.Count
             Debug.Assert .Tests(i).functionName = negTestFluent.Meta.Tests(i).functionName
         Next i
     End With
+    
+    Debug.Assert validateNegativeCounters(testFluent)
 
     tempCounter = mCounter
-    
-'    testFluent.Meta.Printing.PrintToSheet
 
     Set fluent = New cFluent
     Set testFluent = New cFluentOf
@@ -4446,4 +4446,34 @@ Private Function validateTestDictCounters(d As Scripting.Dictionary, Optional co
     Next elem
     
     validateTestDictCounters = (d.Count = counter)
+End Function
+
+Private Function validateNegativeCounters(testFluent As IFluentOf) As Boolean
+    Dim d As Scripting.Dictionary
+    Dim test As ITest
+    Dim counter As Long
+    Dim fn As String
+    Dim elem As Variant
+    
+    Set d = New Scripting.Dictionary
+    
+    counter = 0
+    
+    For Each test In testFluent.Meta.Tests
+        If test.NegateValue Then
+            fn = test.functionName
+            If Not d.Exists(fn) Then
+                d.Add fn, 1
+            Else
+                d(fn) = d(fn) + 1
+            End If
+        End If
+    Next test
+    
+    For Each elem In d.Keys
+        Debug.Assert d(elem) > 0
+        counter = counter + 1
+    Next elem
+    
+    validateNegativeCounters = (d.Count = counter)
 End Function

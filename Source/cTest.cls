@@ -21,6 +21,7 @@ Private pHigherVal As Double
 Private pStrTestValue As String
 Private pStrTestInput As String
 Private pHasNull As Boolean
+Private pNegateValue As Boolean
 
 Private Property Let ITest_testingValue(value As Variant)
     pTestingValue = value
@@ -116,4 +117,12 @@ End Property
 
 Private Property Get ITest_HasNull() As Boolean
     ITest_HasNull = pHasNull
+End Property
+
+Private Property Let ITest_NegateValue(value As Boolean)
+    pNegateValue = value
+End Property
+
+Private Property Get ITest_NegateValue() As Boolean
+    ITest_NegateValue = pNegateValue
 End Property

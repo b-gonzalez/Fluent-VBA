@@ -36,7 +36,7 @@ End Property
 Private Sub IExpressions_addToTestAndFluentPath( _
     ByVal functionName As String, _
     ByVal result As Variant, _
-    ByVal negateValue As Boolean, _
+    ByVal NegateValue As Boolean, _
     ByVal testingValue As Variant, _
     Optional ByVal testingInput As Variant, _
     Optional LowerVal As Variant, _
@@ -52,7 +52,7 @@ Private Sub IExpressions_addToTestAndFluentPath( _
         test.HasNull = True
     End If
 
-    If negateValue Then
+    If NegateValue Then
         result = Not result
     End If
 
@@ -64,6 +64,7 @@ Private Sub IExpressions_addToTestAndFluentPath( _
         .HigherVal = Empty
         .StrTestInput = ""
         .StrTestValue = ""
+        .NegateValue = NegateValue
     End With
         
     If TypeName(testingValue) <> "Nothing" Then
@@ -102,7 +103,7 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     End With
     
     
-    Call IExpressions_addFluentPathNew(test, negateValue)
+    Call IExpressions_addFluentPathNew(test, NegateValue)
 
 End Sub
 
@@ -350,7 +351,7 @@ Private Function IExpressions_getFluentPath(FluentPath As String, test As ITest,
     IExpressions_getFluentPath = tempFluentPath
 End Function
 
-Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue As Boolean)
+Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue As Boolean)
     Dim FluentPath As String
     Dim finalFluentPath As String
     Dim fluentElement As Long
@@ -374,7 +375,7 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
     
     If pPrinting.TestName <> "" Then FluentPath = FluentPath & pPrinting.TestName & " "
     
-    FluentPath = IExpressions_getFluentPath(FluentPath, test, negateValue)
+    FluentPath = IExpressions_getFluentPath(FluentPath, test, NegateValue)
     
     finalFluentPath = Trim(Split(FluentPath, "=")(fluentElement))
     
