@@ -10,6 +10,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Implements ITest
+Implements ITestDev
 
 Private pTestingValue As Variant
 Private pTestingInput As Variant
@@ -22,6 +23,9 @@ Private pStrTestValue As String
 Private pStrTestInput As String
 Private pHasNull As Boolean
 Private pNegateValue As Boolean
+Private pCategory As String
+Private pTestName As String
+Private pResultNumber As Long
 
 Private Property Let ITest_testingValue(value As Variant)
     pTestingValue = value
@@ -119,10 +123,34 @@ Private Property Get ITest_HasNull() As Boolean
     ITest_HasNull = pHasNull
 End Property
 
-Private Property Let ITest_NegateValue(value As Boolean)
+Private Property Let ITest_Category(value As String)
+    pCategory = value
+End Property
+
+Private Property Get ITest_Category() As String
+    ITest_Category = pCategory
+End Property
+
+Private Property Let ITest_TestName(value As String)
+    pTestName = value
+End Property
+
+Private Property Get ITest_TestName() As String
+    ITest_TestName = pTestName
+End Property
+
+Private Property Let ITestDev_negateValue(value As Boolean)
     pNegateValue = value
 End Property
 
-Private Property Get ITest_NegateValue() As Boolean
-    ITest_NegateValue = pNegateValue
+Private Property Get ITestDev_negateValue() As Boolean
+    ITestDev_negateValue = pNegateValue
+End Property
+
+Private Property Let ITestDev_ResultNumber(value As Long)
+    pResultNumber = value
+End Property
+
+Private Property Get ITestDev_ResultNumber() As Long
+    ITestDev_ResultNumber = pResultNumber
 End Property

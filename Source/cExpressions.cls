@@ -35,7 +35,7 @@ End Property
 
 Private Sub IExpressions_addToTestAndFluentPath( _
     ByVal functionName As String, _
-    ByVal result As Variant, _
+    ByVal Result As Variant, _
     ByVal NegateValue As Boolean, _
     ByVal testingValue As Variant, _
     Optional ByVal testingInput As Variant, _
@@ -43,29 +43,37 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     Optional HigherVal As Variant)
     
     Dim test As ITest
+    Dim testDev As ITestDev
     Dim shouldBool As String
     
     Set test = New cTest
+    Set testDev = test
     
-    If IsNull(result) Then
+    If IsNull(Result) Then
 '        result = TypeName(result)
         test.HasNull = True
     End If
 
     If NegateValue Then
-        result = Not result
+        Result = Not Result
     End If
 
     With test
         .functionName = functionName
-        .result = result
+        .Result = Result
         .testingInput = Empty
         .LowerVal = Empty
         .HigherVal = Empty
         .StrTestInput = ""
         .StrTestValue = ""
-        .NegateValue = NegateValue
+        .Category = pPrinting.Category
+        .TestName = pPrinting.Name
     End With
+    
+    If pPrinting.Category <> "" Then iPrint.CategorySet = True
+    If pPrinting.Name <> "" Then iPrint.NameSet = True
+    
+    testDev.NegateValue = NegateValue
         
     If TypeName(testingValue) <> "Nothing" Then
         If TypeOf testingValue Is Object  Then
@@ -233,22 +241,22 @@ Private Function IExpressions_Have(haveType As flHave, Optional TesingInput As S
 End Function
 
 Private Function IExpressions_buildFluentPath(test As ITest, FluentPath As String, tempFluentPath As String) As String
-    If IsNull(test.result) Then
-        test.result = TypeName(test.result)
+    If IsNull(test.Result) Then
+        test.Result = TypeName(test.Result)
     End If
 
     With test
         If .StrTestInput = "" Then
             tempFluentPath = FluentPath & _
-            " Testing value: " & .StrTestValue & ";" & _
+            "Testing value: " & .StrTestValue & ";" & _
             " Expectation: Testing value " & tempFluentPath & ";" & _
-            " Result: " & .result
+            " Result: " & .Result
         Else
             tempFluentPath = FluentPath & _
-            " Testing value: " & .StrTestValue & ";" & _
+            "Testing value: " & .StrTestValue & ";" & _
             " Testing input: " & .StrTestInput & ";" & _
             " Expectation: Testing value " & tempFluentPath & ";" & _
-            " Result: " & .result
+            " Result: " & .Result
         End If
     End With
     
@@ -355,8 +363,12 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue
     Dim FluentPath As String
     Dim finalFluentPath As String
     Dim fluentElement As Long
+    Dim resultNumber As Long
+    Dim testDev As ITestDev
     
     FluentPath = ""
+    fluentElement = 1
+    Set testDev = test
     
     If pTestDictCounter.Exists(test.functionName) Then
         pTestDictCounter(test.functionName) = pTestDictCounter(test.functionName) + 1
@@ -364,16 +376,9 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue
         Err.Raise Number:=NOT_IMPLEMENTED_ERROR, Description:="Test name not implemented in TestDictCounter"
     End If
     
-    If pPrinting.Category <> "" Then
-        FluentPath = FluentPath & pPrinting.Category & "="
-        fluentElement = 2
-    Else
-        fluentElement = 1
-    End If
+    testDev.resultNumber = IExpressions_getResultNumber(test.Result)
     
-    FluentPath = FluentPath & IExpressions_getResultNumber(test.result) & "="
-    
-    If pPrinting.TestName <> "" Then FluentPath = FluentPath & pPrinting.TestName & " "
+    FluentPath = FluentPath & testDev.resultNumber & "="
     
     FluentPath = IExpressions_getFluentPath(FluentPath, test, NegateValue)
     
@@ -381,9 +386,9 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue
     
     iPrint.FluentPath = finalFluentPath
     
-    iPrint.TestCollection.Add FluentPath
-    
     test.FluentPath = finalFluentPath
+    
+    iPrint.TestCollection.Add test
     
     Call pTests.CheckTest(test)
     
@@ -528,21 +533,21 @@ Private Function IExpressions_InputToStringRecur(v As Variant) As String
     IExpressions_InputToStringRecur = temp
 End Function
 
-Private Function IExpressions_getResultNumber(result As Variant)
+Private Function IExpressions_getResultNumber(Result As Variant)
     Dim resultNumber As Variant
     
     resultNumber = Null
     
-    If IsNull(result) Then
+    If IsNull(Result) Then
         resultNumber = 1
-    ElseIf TypeName(result) = "Boolean" Then
-        resultNumber = CLng(result)
+    ElseIf TypeName(Result) = "Boolean" Then
+        resultNumber = CLng(Result)
     End If
     
     IExpressions_getResultNumber = resultNumber
 End Function
 
-Private Function datastructureInCollection(dsName As String, col As Collection)
+Private Function IExpressions_datastructureInCollection(dsName As String, col As Collection)
     Dim elem As Variant
     Dim b As Boolean
     
@@ -555,7 +560,7 @@ Private Function datastructureInCollection(dsName As String, col As Collection)
         End If
     Next elem
     
-    datastructureInCollection = b
+    IExpressions_datastructureInCollection = b
 End Function
 
 Private Function IExpressions_IsDataStructure(ByVal DataStructure As Variant)
@@ -570,7 +575,7 @@ Private Function IExpressions_IsDataStructure(ByVal DataStructure As Variant)
     
     If IsArray(DataStructure) Then
         tempBool = True
-    ElseIf datastructureInCollection(dsTypeName, pMeta.DataStructures) Then
+    ElseIf IExpressions_datastructureInCollection(dsTypeName, pMeta.DataStructures) Then
         On Error Resume Next
             For Each elem In DataStructure
                 Exit For

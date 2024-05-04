@@ -20,3 +20,11 @@ End Property
 Public Property Get Expressions() As IExpressions
 
 End Property
+
+Public Property Let CategorySet(value As Boolean)
+
+End Property
+
+Public Property Let NameSet(value As Boolean)
+
+End Property
