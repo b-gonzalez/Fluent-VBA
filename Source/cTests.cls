@@ -34,8 +34,8 @@ Public Property Get TestDictCounter() As Scripting.Dictionary
     Set TestDictCounter = pTestDictCounter
 End Property
 
-Public Property Get result() As Boolean
-    result = pResult
+Public Property Get Result() As Boolean
+    Result = pResult
 End Property
 
 Public Property Get Item(OneBasedIndex As Long) As ITest
@@ -57,7 +57,7 @@ Public Sub ResetCounter()
 End Sub
 
 Public Sub CheckTest(test As ITest)
-    pResult = test.result
+    pResult = test.Result
     
     pCol.Add test
     
@@ -65,9 +65,9 @@ Public Sub CheckTest(test As ITest)
     
     RaiseEvent TestCompleted(test)
     
-    If test.result = True Then
+    If test.Result = True Then
         RaiseEvent TestPassed(test)
-    ElseIf test.result = False Then
+    ElseIf test.Result = False Then
         RaiseEvent TestFailed(test)
     Else
         RaiseEvent TestUnexpected(test)

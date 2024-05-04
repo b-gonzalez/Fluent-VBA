@@ -13,7 +13,7 @@ Implements IPrintExpr
 Implements IPrinting
 
 Private pPrintTotalTests As Boolean
-Private pTestName As String
+Private pName As String
 Private pTestCollection As Collection
 Private pTestCount As Long
 Private pCategory As String
@@ -25,6 +25,8 @@ Private pFluentPath As String
 Private pExcel As Excel.Application
 Private pWorkbook As Excel.Workbook
 Private pExpressions As IExpressions
+Private pCategorySet As Boolean
+Private pNameSet As Boolean
 
 Private Property Get IPrintExpr_TestCollection() As Collection
     If pTestCollection Is Nothing Then
@@ -41,6 +43,14 @@ Private Property Get IPrintExpr_Expressions() As IExpressions
     Set IPrintExpr_Expressions = pExpressions
 End Property
 
+Private Property Let IPrintExpr_CategorySet(value As Boolean)
+    pCategorySet = value
+End Property
+
+Private Property Let IPrintExpr_NameSet(value As Boolean)
+    pNameSet = value
+End Property
+
 Private Property Let IPrinting_Category(ByVal value As String)
     pCategory = value
 End Property
@@ -49,12 +59,12 @@ Private Property Get IPrinting_Category() As String
     IPrinting_Category = pCategory
 End Property
 
-Private Property Let IPrinting_TestName(ByVal value As String)
-    pTestName = value
+Private Property Let IPrinting_Name(ByVal value As String)
+    pName = value
 End Property
 
-Private Property Get IPrinting_TestName() As String
-    IPrinting_TestName = pTestName
+Private Property Get IPrinting_Name() As String
+    IPrinting_Name = pName
 End Property
 
 Private Property Let IPrinting_PassedMessage(ByVal value As String)
@@ -85,40 +95,99 @@ Private Property Get IPrinting_FluentPath() As String
     IPrinting_FluentPath = pFluentPath
 End Property
 
+Private Function IPrinting_ArrayFromTests(col As Collection, tp As TestProperty)
+    Dim test As ITest
+    Dim testDev As ITestDev
+    Dim elem As Variant
+    Dim arr() As Variant
+    Dim i As Long
+    
+    ReDim arr(1 To col.Count, 1 To 1)
+    i = 1
+    
+    For Each elem In col
+        Set test = elem
+        Set testDev = elem
+        
+        Select Case tp
+            Case TestProperty.TestCategory
+                arr(i, 1) = test.Category
+            Case TestProperty.TestInfo
+                arr(i, 1) = test.FluentPath
+            Case TestProperty.TestName
+                arr(i, 1) = test.TestName
+            Case TestProperty.TestResultNumber
+                arr(i, 1) = testDev.resultNumber
+        End Select
+        i = i + 1
+    Next elem
+    
+    IPrinting_ArrayFromTests = arr
+End Function
+
 Private Sub IPrinting_PrintToImmediate()
     Dim arr() As Variant
     Dim i As Long
+    Dim temp As String
     Dim TestName As Long
+    Dim testResultArr() As Variant
+    Dim testInfoArr() As Variant
+    Dim testNameArr() As Variant
+    Dim testCategoryArr() As Variant
+    Dim test As ITest
+    Dim testDev As ITestDev
     
-    If pCategory = "" Then
-        TestName = 1
-    Else
-        TestName = 2
-    End If
+    TestName = 1
+    temp = ""
     
-    arr = IPrinting_getArrayFromCollection(pTestCollection)
+    If pCategorySet Then testCategoryArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestCategory)
     
-    For i = LBound(arr, 1) To UBound(arr, 1)
-        If pCategory <> "" Then
-            Debug.Print pCategory & " - " & arr(i, TestName)
-        Else
-            Debug.Print arr(i, TestName)
+    If pNameSet Then testNameArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestName)
+    
+    testInfoArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestInfo)
+    
+    testResultArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestResultNumber)
+    
+    For Each test In pTestCollection
+        Set testDev = test
+        
+        If test.Category <> "" Then
+            temp = temp & test.Category & " - "
         End If
-    Next i
+    
+        If test.TestName <> "" Then
+            temp = temp & test.TestName & " - "
+        End If
+        
+        temp = temp & testDev.resultNumber & " - " & test.FluentPath
+        
+        Debug.Print temp
+        
+        temp = ""
+    Next test
+    
 End Sub
 
 Private Sub IPrinting_PrintToSheet()
     Dim lo As Excel.ListObject
+    Dim lc As Excel.ListColumn
     Dim testResultCol As Excel.ListColumn
     Dim testNameCol As Excel.ListColumn
-    Dim categoryCol As Excel.ListColumn
+    Dim testCategoryCol As Excel.ListColumn
+    Dim testInfoCol As Excel.ListColumn
     Dim arr() As Variant
     Dim wb As Excel.Workbook
     Dim ws As Excel.Worksheet
-    
-    arr = IPrinting_getArrayFromCollection(pTestCollection)
+    Dim testResultArr() As Variant
+    Dim testInfoArr() As Variant
+    Dim testNameArr() As Variant
+    Dim testCategoryArr() As Variant
 
     Set wb = IPrinting_getWorkbook
+    
+    testInfoArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestInfo)
+    
+    wb.ActiveSheet.Range("A2").Resize(UBound(testInfoArr, 1), UBound(testInfoArr, 2)).value = testInfoArr
     
     Call IPrinting_addTableToWorkbook(wb)
     
@@ -126,25 +195,35 @@ Private Sub IPrinting_PrintToSheet()
     
     Set lo = ws.ListObjects(1)
     
-    Set testResultCol = lo.ListColumns("Test result")
+    Set testInfoCol = lo.ListColumns("Test info")
+
+    testResultArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestResultNumber)
     
-    Set testNameCol = lo.ListColumns("Test name")
+    Set testResultCol = lo.ListColumns.Add(Position:=1)
+
+    testResultCol.Name = "Test result"
     
-    If pCategory <> "" Then
-        Set categoryCol = lo.ListColumns("Category")
-        lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
-        ws.Columns("C:C").EntireColumn.AutoFit
-        Call IPrinting_addCategoryStyle(categoryCol, "-1", "0", "1")
-    Else
-        lo.ListRows.Add.Range.Resize(UBound(arr, 1) + 1, UBound(arr, 2) + 1).value = arr
-        ws.Columns("B:B").EntireColumn.AutoFit
+    testResultCol.DataBodyRange.value = testResultArr
+    
+    If pNameSet Then
+        Set testNameCol = lo.ListColumns.Add(Position:=1)
+        testNameCol.Name = "Test name"
+        testNameArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestName)
+        testNameCol.DataBodyRange.value = testNameArr
     End If
 
-    Call IPrinting_addValueConditColors(testResultCol, "-1", "0", "1")
+    If pCategorySet Then
+        Set testCategoryCol = lo.ListColumns.Add(Position:=1)
+        testCategoryCol.Name = "Category"
+        testCategoryArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestCategory)
+        testCategoryCol.DataBodyRange.value = testCategoryArr
+    End If
     
-    Call IPrinting_addValueConditColors(testNameCol, "*" & pPassedMessage & "*", "*" & pFailedMessage & "*", "*" & pUnexpectedMessage & "*")
+    Call IPrinting_addValueConditColors(lo, "-1", "0", "1")
     
     Call IPrinting_addResultsIconSets(testResultCol)
+    
+    testInfoCol.Range.EntireColumn.AutoFit
     
     Set pExcel = Nothing
     
@@ -175,57 +254,15 @@ End Function
 Private Sub IPrinting_addTableToWorkbook(wb As Workbook)
     Dim ws As Excel.Worksheet
     Dim lo As Excel.ListObject
+    Dim lc As Excel.ListColumn
     
     Set ws = wb.ActiveSheet
-
-    If pCategory <> "" Then
-        ws.Range("A1").value = "Category"
-        ws.Range("B1").value = "Test result"
-        ws.Range("C1").value = "Test name"
-        Set lo = ws.ListObjects.Add(xlSrcRange, ws.Range("$A$1:$C$1"), , xlYes)
-    Else
-        ws.Range("A1").value = "Test result"
-        ws.Range("B1").value = "Test name"
-        Set lo = ws.ListObjects.Add(xlSrcRange, ws.Range("$A$1:$B$1"), , xlYes)
-    End If
     
-    lo.name = "Table1"
+    ws.Range("A1").value = "Test info"
+    Set lo = ws.ListObjects.Add(xlSrcRange, ws.Range("$A$1").CurrentRegion, , xlYes)
+    
+    lo.Name = "Table1"
 End Sub
-
-Private Function IPrinting_getArrayFromCollection(ByVal col As Collection) As Variant()
-    Dim Category As Long
-    Dim TestResult As Long
-    Dim TestName As Long
-    Dim arr() As Variant
-    Dim i As Long
-    Dim temp As Variant
-    
-    If pCategory = "" Then
-        TestResult = 0
-        TestName = 1
-        ReDim arr(col.Count - 1, 1)
-    Else
-        Category = 0
-        TestResult = 1
-        TestName = 2
-        ReDim arr(col.Count - 1, 2)
-    End If
-    
-    For i = 1 To col.Count
-       temp = Split(col(i), "=")
-       arr(i - 1, Category) = temp(Category)
-       arr(i - 1, TestResult) = temp(TestResult)
-        If temp(TestResult) = -1 Then
-            arr(i - 1, TestName) = pPassedMessage & " - " & temp(TestName)
-        ElseIf temp(TestResult) = 0 Then
-            arr(i - 1, TestName) = pFailedMessage & " - " & temp(TestName)
-        ElseIf temp(TestResult) = 1 Then
-            arr(i - 1, TestName) = pUnexpectedMessage & " - " & temp(TestName)
-        End If
-    Next i
-    
-    IPrinting_getArrayFromCollection = arr
-End Function
 
 Private Sub IPrinting_addResultsIconSets(ByVal lc As Excel.ListColumn)
     Dim wb As Workbook
@@ -258,102 +295,48 @@ Private Sub IPrinting_addResultsIconSets(ByVal lc As Excel.ListColumn)
     End With
 End Sub
 
-Private Sub IPrinting_addCategoryStyle(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String, unexpectedMsg As String)
+Private Sub IPrinting_addValueConditColors(ByVal lo As Excel.ListObject, ByVal passedMsg As String, ByVal failedMsg As String, ByVal unexpectedMsg As String)
+    Dim lc As Excel.ListColumn
+    Dim index As Long
+    Dim temp As Variant
+        
+    Set lc = lo.ListColumns("Test result")
+    index = lc.index
+        
+    lo.Range.AutoFilter Field:=index, Criteria1:="1"
+    On Error Resume Next
+        temp = lo.DataBodyRange.SpecialCells(xlCellTypeVisible).Count
+        
+        If Err.Number = 0 Then
+            lo.DataBodyRange.Select
+            Selection.Style = "Neutral"
+        End If
+        lo.Range.AutoFilter Field:=index
+    On Error GoTo 0
     
-    With lc.Range
-        .FormatConditions.Add Type:=xlExpression, Formula1:= _
-            "=OFFSET(A1,0,1)=" & failedMsg
-        .FormatConditions(.FormatConditions.Count).SetFirstPriority
-        With .FormatConditions(1).Font
-            .Color = -16383844
-            .TintAndShade = 0
-        End With
-        With .FormatConditions(1).Interior
-            .PatternColorIndex = xlAutomatic
-            .Color = 13551615
-            .TintAndShade = 0
-        End With
-        .FormatConditions(1).StopIfTrue = False
+    lo.Range.AutoFilter Field:=index, Criteria1:="-1"
+    On Error Resume Next
+        temp = lo.DataBodyRange.SpecialCells(xlCellTypeVisible).Count
         
-        .FormatConditions.Add Type:=xlExpression, Formula1:= _
-            "=OFFSET(A1,0,1)=" & passedMsg
-        .FormatConditions(.FormatConditions.Count).SetFirstPriority
-        With .FormatConditions(1).Font
-            .Color = -16752384
-            .TintAndShade = 0
-        End With
-        With .FormatConditions(1).Interior
-            .PatternColorIndex = xlAutomatic
-            .Color = 13561798
-            .TintAndShade = 0
-        End With
-        .FormatConditions(1).StopIfTrue = False
+        If Err.Number = 0 Then
+            lo.DataBodyRange.Select
+            Selection.Style = "Good"
+        End If
         
-        .FormatConditions.Add Type:=xlExpression, Formula1:= _
-            "=OFFSET(A1,0,1)=" & unexpectedMsg
-        .FormatConditions(.FormatConditions.Count).SetFirstPriority
-        With .FormatConditions(1).Font
-            .Color = -16754788
-            .TintAndShade = 0
-        End With
-        With .FormatConditions(1).Interior
-            .PatternColorIndex = xlAutomatic
-            .Color = 10284031
-            .TintAndShade = 0
-        End With
-        .FormatConditions(1).StopIfTrue = False
-    End With
-End Sub
-
-Private Sub IPrinting_addValueConditColors(ByVal lc As Excel.ListColumn, ByVal passedMsg As String, ByVal failedMsg As String, ByVal unexpectedMsg As String)
-    lc.Range.Select
+        lo.Range.AutoFilter Field:=index
+    On Error GoTo 0
     
-    With lc.DataBodyRange
-        '//FAILED
-        .FormatConditions.Add Type:=xlTextString, String:=failedMsg, _
-            TextOperator:=xlContains
-        .FormatConditions(.FormatConditions.Count).SetFirstPriority
-        With .FormatConditions(1).Font
-            .Color = -16383844
-            .TintAndShade = 0
-        End With
-        With .FormatConditions(1).Interior
-            .PatternColorIndex = xlAutomatic
-            .Color = 13551615
-            .TintAndShade = 0
-        End With
-        .FormatConditions(1).StopIfTrue = False
+    lo.Range.AutoFilter Field:=index, Criteria1:="0"
+    On Error Resume Next
+        temp = lo.DataBodyRange.SpecialCells(xlCellTypeVisible).Count
         
-        '//UNEXPECTED
-        .FormatConditions.Add Type:=xlTextString, String:=unexpectedMsg, _
-            TextOperator:=xlContains
-        .FormatConditions(.FormatConditions.Count).SetFirstPriority
-        With .FormatConditions(1).Font
-            .Color = -16754788
-            .TintAndShade = 0
-        End With
-        With .FormatConditions(1).Interior
-            .PatternColorIndex = xlAutomatic
-            .Color = 10284031
-            .TintAndShade = 0
-        End With
-        .FormatConditions(1).StopIfTrue = False
+        If Err.Number = 0 Then
+            lo.DataBodyRange.Select
+            Selection.Style = "Bad"
+        End If
         
-        '//PASSED
-        .FormatConditions.Add Type:=xlTextString, String:=passedMsg, _
-            TextOperator:=xlContains
-        .FormatConditions(.FormatConditions.Count).SetFirstPriority
-        With .FormatConditions(1).Font
-            .Color = -16752384
-            .TintAndShade = 0
-        End With
-        With .FormatConditions(1).Interior
-            .PatternColorIndex = xlAutomatic
-            .Color = 13561798
-            .TintAndShade = 0
-        End With
-        .FormatConditions(1).StopIfTrue = False
-    End With
+        lo.Range.AutoFilter Field:=index
+    On Error GoTo 0
 End Sub
 
 Private Sub Class_Initialize()

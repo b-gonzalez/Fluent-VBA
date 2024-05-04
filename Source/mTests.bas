@@ -46,6 +46,7 @@ Public Sub runMainTests()
     End With
 
     fluent.Meta.Printing.Category = "Fluent - EqualityTests"
+    testFluent.Meta.Printing.Name = "Test Fluent - abc 123"
     testFluent.Meta.Printing.Category = "Test Fluent - EqualityTests"
     Call EqualityTests(fluent, testFluent, testFluentResult)
 '
@@ -72,6 +73,8 @@ Public Sub runMainTests()
     Debug.Assert validateNegativeCounters(testFluent)
 
     tempCounter = mCounter
+    
+'testFluent.Meta.Printing.PrintToSheet
 
     Set fluent = New cFluent
     Set testFluent = New cFluentOf
@@ -79,6 +82,7 @@ Public Sub runMainTests()
     mCounter = 0
     fluent.Meta.Printing.Category = "Fluent - nullDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - nullDocumentationTests"
+    testFluent.Meta.Printing.Name = "abc 123"
     Set nulTestFluent = nullDocumentationTests(fluent, testFluent, testFluentResult)
     Set tempDict = testFluent.Meta.Tests.TestDictCounter
     tempDict("OneOf") = 1 '//intentionally passing since this method cannot be checked for nulls
@@ -103,7 +107,7 @@ Public Sub runMainTests()
 
     Debug.Assert checkResetCounters(fluent, testFluent)
     
-'    testFluent.Meta.Printing.PrintToSheet
+'testFluent.Meta.Printing.PrintToSheet
     
 End Sub
 
@@ -124,10 +128,10 @@ Private Sub TrueAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf,
     With fluent.Meta.Tests
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert testFluentResult.Of(.result).Should.Be.EqualTo(True)
-        Debug.Assert testFluentResult.Of(.result).ShouldNot.Be.EqualTo(False)
-        testFluentResult.Of(.result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
-        testFluentResult.Of(.result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
 End Sub
 
@@ -140,10 +144,10 @@ Private Sub FalseAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf
     With fluent.Meta.Tests
         Debug.Assert fluent.Should.Be.EqualTo(False)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
-        Debug.Assert testFluentResult.Of(.result).Should.Be.EqualTo(True)
-        Debug.Assert testFluentResult.Of(.result).ShouldNot.Be.EqualTo(False)
-        testFluentResult.Of(.result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
-        testFluentResult.Of(.result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
 End Sub
 
@@ -186,6 +190,18 @@ Private Sub EqualityTests(fluent As IFluent, testFluent As IFluentOf, testFluent
     
         fluent.TestValue = testFluent.Of(False).Should.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).ShouldNot.Be.EqualTo(True)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).ShouldNot.Be.EqualTo(False)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).ShouldNot.Be.EqualTo(True)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        fluent.TestValue = testFluent.Of(False).ShouldNot.Be.EqualTo(False)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
         fluent.TestValue = testFluent.Of(-1).Should.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -198,6 +214,18 @@ Private Sub EqualityTests(fluent As IFluent, testFluent As IFluentOf, testFluent
     
         fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(-1).ShouldNot.Be.EqualTo(True)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(-1).ShouldNot.Be.EqualTo(False)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(0).ShouldNot.Be.EqualTo(True)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        fluent.TestValue = testFluent.Of(0).ShouldNot.Be.EqualTo(False)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         '//Approximate equality tests
     
@@ -216,6 +244,22 @@ Private Sub EqualityTests(fluent As IFluent, testFluent As IFluentOf, testFluent
         testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("FALSE").Should.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        testFluent.Meta.ApproximateEqual = True
+        fluent.TestValue = testFluent.Of("TRUE").ShouldNot.Be.EqualTo(True)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        testFluent.Meta.ApproximateEqual = True
+        fluent.TestValue = testFluent.Of("TRUE").ShouldNot.Be.EqualTo(False)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        testFluent.Meta.ApproximateEqual = True
+        fluent.TestValue = testFluent.Of("FALSE").ShouldNot.Be.EqualTo(True)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        testFluent.Meta.ApproximateEqual = True
+        fluent.TestValue = testFluent.Of("FALSE").ShouldNot.Be.EqualTo(False)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
         testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("true").Should.Be.EqualTo(True)
@@ -232,6 +276,22 @@ Private Sub EqualityTests(fluent As IFluent, testFluent As IFluentOf, testFluent
         testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("false").Should.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        testFluent.Meta.ApproximateEqual = True
+        fluent.TestValue = testFluent.Of("true").ShouldNot.Be.EqualTo(True)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        testFluent.Meta.ApproximateEqual = True
+        fluent.TestValue = testFluent.Of("true").ShouldNot.Be.EqualTo(False)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        testFluent.Meta.ApproximateEqual = True
+        fluent.TestValue = testFluent.Of("false").ShouldNot.Be.EqualTo(True)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        testFluent.Meta.ApproximateEqual = True
+        fluent.TestValue = testFluent.Of("false").ShouldNot.Be.EqualTo(False)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         testFluent.Meta.ApproximateEqual = False
         
@@ -276,18 +336,18 @@ Private Sub EqualityTests(fluent As IFluent, testFluent As IFluentOf, testFluent
     End With
     
     For Each test In fluent.Meta.Tests
-        Debug.Assert test.result
+        Debug.Assert test.Result
     Next test
     
     For i = 1 To fluent.Meta.Tests.Count
-        Debug.Assert fluent.Meta.Tests(i).result
+        Debug.Assert fluent.Meta.Tests(i).Result
     Next i
     
     i = 1
     
     With testFluent.Meta
         For Each test In .Tests
-            resultBool = test.result = .Tests(i).result
+            resultBool = test.Result = .Tests(i).Result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
             valueBool = test.testingValue = .Tests(i).testingValue
             inputBool = test.testingInput = .Tests(i).testingInput
@@ -1973,18 +2033,18 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
     End With
     
     For Each test In fluent.Meta.Tests
-        Debug.Assert test.result
+        Debug.Assert test.Result
     Next test
     
     For i = 1 To fluent.Meta.Tests.Count
-        Debug.Assert fluent.Meta.Tests(i).result
+        Debug.Assert fluent.Meta.Tests(i).Result
     Next i
     
     i = 1
     
     With testFluent.Meta
         For Each test In .Tests
-            resultBool = test.result = .Tests(i).result
+            resultBool = test.Result = .Tests(i).Result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
             valueBool = test.StrTestValue = .Tests(i).StrTestValue
             inputBool = test.StrTestInput = .Tests(i).StrTestInput
@@ -3676,18 +3736,18 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
     End With
     
     For Each test In fluent.Meta.Tests
-        Debug.Assert test.result
+        Debug.Assert test.Result
     Next test
     
     For i = 1 To fluent.Meta.Tests.Count
-        Debug.Assert fluent.Meta.Tests(i).result
+        Debug.Assert fluent.Meta.Tests(i).Result
     Next i
     
     i = 1
     
     With testFluent.Meta
         For Each test In .Tests
-            resultBool = test.result = .Tests(i).result
+            resultBool = test.Result = .Tests(i).Result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
             valueBool = test.StrTestValue = .Tests(i).StrTestValue
             inputBool = test.StrTestInput = .Tests(i).StrTestInput
@@ -4454,13 +4514,15 @@ Private Function validateNegativeCounters(testFluent As IFluentOf) As Boolean
     Dim counter As Long
     Dim fn As String
     Dim elem As Variant
+    Dim testDev As ITestDev
     
     Set d = New Scripting.Dictionary
     
     counter = 0
     
     For Each test In testFluent.Meta.Tests
-        If test.NegateValue Then
+        Set testDev = test
+        If testDev.NegateValue Then
             fn = test.functionName
             If Not d.Exists(fn) Then
                 d.Add fn, 1

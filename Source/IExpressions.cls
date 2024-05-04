@@ -64,7 +64,7 @@ End Property
 
 Public Sub addToTestAndFluentPath( _
     ByVal functionName As String, _
-    ByVal result As Variant, _
+    ByVal Result As Variant, _
     ByVal NegateValue As Boolean, _
     ByVal testingValue As Variant, _
     Optional ByVal testingInput As Variant, _
@@ -102,7 +102,7 @@ End Function
 Public Function InputToStringRecur(v As Variant) As String
 End Function
 
-Public Function getResultNumber(result As Variant)
+Public Function getResultNumber(Result As Variant)
 End Function
 
 Public Function IsDataStructure(ByVal DataStructure As Variant)
@@ -111,4 +111,5 @@ End Function
 Public Function getTestDictCounter() As Scripting.Dictionary
 End Function
 
-
+Private Function datastructureInCollection(dsName As String, col As Collection)
+End Function

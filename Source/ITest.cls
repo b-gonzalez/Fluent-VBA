@@ -45,10 +45,10 @@ End Property
 Public Property Get FluentPath() As String
 End Property
 
-Public Property Let result(value As Variant)
+Public Property Let Result(value As Variant)
 End Property
 
-Public Property Get result() As Variant
+Public Property Get Result() As Variant
 End Property
 
 Public Property Let functionName(value As String)
@@ -75,8 +75,14 @@ End Property
 Public Property Get HasNull() As Boolean
 End Property
 
-Public Property Let NegateValue(value As Boolean)
+Public Property Let Category(value As String)
 End Property
 
-Public Property Get NegateValue() As Boolean
+Public Property Get Category() As String
+End Property
+
+Public Property Let TestName(value As String)
+End Property
+
+Public Property Get TestName() As String
 End Property
