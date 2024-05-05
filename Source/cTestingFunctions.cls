@@ -48,7 +48,7 @@ Private Property Set ITestingFunctions_setMeta(ByVal value As cMeta)
     Set pMeta = value
 End Property
 
-Private Property Set ITestingFunctions_Expressions(value As IExpressions)
+Private Property Set ITestingFunctions_Expressions(ByVal value As IExpressions)
     Set pExpressions = value
 End Property
 

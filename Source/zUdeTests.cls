@@ -34,17 +34,17 @@ Private Sub Class_Initialize()
     TestOfResultsCount = 0
 End Sub
 
-Public Property Set setFluent(value As IFluent)
+Public Property Set setFluent(ByVal value As IFluent)
     Set pFluentEvent = value
     Set pTest = pFluentEvent.Meta.Tests
 End Property
 
-Public Property Set setFluentOf(value As IFluentOf)
+Public Property Set setFluentOf(ByVal value As IFluentOf)
     Set pFluentEventOf = value
     Set pTestOf = pFluentEventOf.Meta.Tests
 End Property
 
-Public Property Set setFluentEventOfResult(value As IFluentOf)
+Public Property Set setFluentEventOfResult(ByVal value As IFluentOf)
     Set pFluentEventOfResult = value
     Set pTestOfResults = pFluentEventOfResult.Meta.Tests
 End Property

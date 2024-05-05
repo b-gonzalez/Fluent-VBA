@@ -35,7 +35,7 @@ Private Property Get IPrintExpr_TestCollection() As Collection
     Set IPrintExpr_TestCollection = pTestCollection
 End Property
 
-Private Property Let IPrintExpr_FluentPath(value As String)
+Private Property Let IPrintExpr_FluentPath(ByVal value As String)
     pFluentPath = value
 End Property
 
@@ -43,11 +43,11 @@ Private Property Get IPrintExpr_Expressions() As IExpressions
     Set IPrintExpr_Expressions = pExpressions
 End Property
 
-Private Property Let IPrintExpr_CategorySet(value As Boolean)
+Private Property Let IPrintExpr_CategorySet(ByVal value As Boolean)
     pCategorySet = value
 End Property
 
-Private Property Let IPrintExpr_NameSet(value As Boolean)
+Private Property Let IPrintExpr_NameSet(ByVal value As Boolean)
     pNameSet = value
 End Property
 

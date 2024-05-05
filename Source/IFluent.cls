@@ -18,7 +18,7 @@ End Property
 Public Property Get Meta() As IMeta
 End Property
 
-Public Property Set TestValue(All As Variant)
+Public Property Set TestValue(ByVal All As Variant)
 End Property
 
 Public Property Let TestValue(ByVal All As Variant)

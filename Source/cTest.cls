@@ -27,11 +27,11 @@ Private pCategory As String
 Private pTestName As String
 Private pResultNumber As Long
 
-Private Property Let ITest_testingValue(value As Variant)
+Private Property Let ITest_testingValue(ByVal value As Variant)
     pTestingValue = value
 End Property
 
-Private Property Set ITest_testingValue(value As Variant)
+Private Property Set ITest_testingValue(ByVal value As Variant)
     Set pTestingValue = value
 End Property
 
@@ -43,11 +43,11 @@ Private Property Get ITest_testingValue() As Variant
     End If
 End Property
 
-Private Property Let ITest_testingInput(value As Variant)
+Private Property Let ITest_testingInput(ByVal value As Variant)
     pTestingInput = value
 End Property
 
-Private Property Set ITest_testingInput(value As Variant)
+Private Property Set ITest_testingInput(ByVal value As Variant)
     Set pTestingInput = value
 End Property
 
@@ -59,7 +59,7 @@ Private Property Get ITest_testingInput() As Variant
     End If
 End Property
 
-Private Property Let ITest_LowerVal(value As Double)
+Private Property Let ITest_LowerVal(ByVal value As Double)
     pLowerVal = value
 End Property
 
@@ -67,7 +67,7 @@ Private Property Get ITest_LowerVal() As Double
     ITest_LowerVal = pLowerVal
 End Property
 
-Private Property Let ITest_HigherVal(value As Double)
+Private Property Let ITest_HigherVal(ByVal value As Double)
     pHigherVal = value
 End Property
 
@@ -75,7 +75,7 @@ Private Property Get ITest_HigherVal() As Double
     ITest_HigherVal = pHigherVal
 End Property
 
-Private Property Let ITest_FluentPath(value As String)
+Private Property Let ITest_FluentPath(ByVal value As String)
     pFluentPath = value
 End Property
 
@@ -83,7 +83,7 @@ Private Property Get ITest_FluentPath() As String
     ITest_FluentPath = pFluentPath
 End Property
 
-Private Property Let ITest_result(value As Variant)
+Private Property Let ITest_result(ByVal value As Variant)
     pResult = value
 End Property
 
@@ -91,7 +91,7 @@ Private Property Get ITest_result() As Variant
     ITest_result = pResult
 End Property
 
-Private Property Let ITest_functionName(value As String)
+Private Property Let ITest_functionName(ByVal value As String)
     pFunctionName = value
 End Property
 
@@ -99,7 +99,7 @@ Private Property Get ITest_functionName() As String
     ITest_functionName = pFunctionName
 End Property
 
-Private Property Let ITest_StrTestValue(value As String)
+Private Property Let ITest_StrTestValue(ByVal value As String)
     pStrTestValue = value
 End Property
 
@@ -107,7 +107,7 @@ Private Property Get ITest_StrTestValue() As String
     ITest_StrTestValue = pStrTestValue
 End Property
 
-Private Property Let ITest_StrTestInput(value As String)
+Private Property Let ITest_StrTestInput(ByVal value As String)
     pStrTestInput = value
 End Property
 
@@ -115,7 +115,7 @@ Private Property Get ITest_StrTestInput() As String
     ITest_StrTestInput = pStrTestInput
 End Property
 
-Private Property Let ITest_HasNull(value As Boolean)
+Private Property Let ITest_HasNull(ByVal value As Boolean)
     pHasNull = value
 End Property
 
@@ -123,7 +123,7 @@ Private Property Get ITest_HasNull() As Boolean
     ITest_HasNull = pHasNull
 End Property
 
-Private Property Let ITest_Category(value As String)
+Private Property Let ITest_Category(ByVal value As String)
     pCategory = value
 End Property
 
@@ -131,7 +131,7 @@ Private Property Get ITest_Category() As String
     ITest_Category = pCategory
 End Property
 
-Private Property Let ITest_TestName(value As String)
+Private Property Let ITest_TestName(ByVal value As String)
     pTestName = value
 End Property
 
@@ -139,7 +139,7 @@ Private Property Get ITest_TestName() As String
     ITest_TestName = pTestName
 End Property
 
-Private Property Let ITestDev_negateValue(value As Boolean)
+Private Property Let ITestDev_negateValue(ByVal value As Boolean)
     pNegateValue = value
 End Property
 
@@ -147,7 +147,7 @@ Private Property Get ITestDev_negateValue() As Boolean
     ITestDev_negateValue = pNegateValue
 End Property
 
-Private Property Let ITestDev_ResultNumber(value As Long)
+Private Property Let ITestDev_ResultNumber(ByVal value As Long)
     pResultNumber = value
 End Property
 

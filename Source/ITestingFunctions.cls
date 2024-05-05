@@ -26,5 +26,5 @@ End Property
 Public Property Set setMeta(ByVal value As cMeta)
 End Property
 
-Public Property Set Expressions(value As IExpressions)
+Public Property Set Expressions(ByVal value As IExpressions)
 End Property

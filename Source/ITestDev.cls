@@ -9,13 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Let NegateValue(value As Boolean)
+Public Property Let NegateValue(ByVal value As Boolean)
 End Property
 
 Public Property Get NegateValue() As Boolean
 End Property
 
-Public Property Let resultNumber(value As Long)
+Public Property Let resultNumber(ByVal value As Long)
 End Property
 
 Public Property Get resultNumber() As Long

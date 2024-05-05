@@ -407,6 +407,30 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         
         fluent.TestValue = testFluent.Of(10).Should.Contain(2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of("10").Should.Contain("1")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").Should.Contain("0")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").Should.Contain("10")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").Should.Contain("2")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("Hello world").Should.Contain("Hello")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("Hello world").Should.Contain("world")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).Should.Contain("ru")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).Should.Contain("als")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).Should.StartWith(1)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -414,16 +438,70 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(10).Should.StartWith(2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of("10").Should.StartWith("1")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        fluent.TestValue = testFluent.Of("10").Should.StartWith("2")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("Hello World").Should.StartWith("Hello")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).Should.StartWith("True")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).Should.StartWith("T")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).Should.StartWith("False")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).Should.StartWith("F")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of(10).Should.EndWith(0)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).Should.EndWith(2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of("10").Should.EndWith("0")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").Should.EndWith("2")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("Hello World").Should.EndWith("World")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).Should.EndWith("True")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).Should.EndWith("e")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).Should.EndWith("False")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).Should.EndWith("e")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of(10).Should.Have.LengthOf(2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of("abc").Should.Have.LengthOf(3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).Should.Have.LengthOf(4)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Have.LengthOf(Len("10"))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("abc").Should.Have.LengthOf(Len("abc"))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).Should.Have.LengthOf(Len("True"))
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).Should.Have.LengthOf(1)
@@ -434,17 +512,50 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         
         fluent.TestValue = testFluent.Of(10).Should.Have.MaxLengthOf(1)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of("10").Should.Have.MaxLengthOf(3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").Should.Have.MaxLengthOf(1)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).Should.Have.MaxLengthOf(Len("True"))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).Should.Have.MaxLengthOf(Len("False"))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).Should.Have.MinLengthOf(3)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Have.MinLengthOf(1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").Should.Have.MinLengthOf(3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").Should.Have.MinLengthOf(1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).Should.Have.MinLengthOf(Len("True"))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).Should.Have.MinLengthOf(Len("False"))
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(9)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(10)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10.1).Should.Be.GreaterThanOrEqualTo(9.1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
         fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(11)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10.1).Should.Be.GreaterThanOrEqualTo(11.1)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(9)
@@ -455,6 +566,15 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         
         fluent.TestValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(11)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10.1).Should.Be.LessThanOrEqualTo(10.1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10.1).Should.Be.LessThanOrEqualTo(11.1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10.1).Should.Be.LessThanOrEqualTo(9.1)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).Should.Be.Between(9, 11)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -486,13 +606,6 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         arr = Array()
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-'        Set col = Nothing
-'        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col)
-'        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-'
-'        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(10)
-'        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         arr = Array(9, 10, 11)
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
@@ -2108,11 +2221,56 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of("10").ShouldNot.Contain("1")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").ShouldNot.Contain("0")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").ShouldNot.Contain("10")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").ShouldNot.Contain("2")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Contain("Hello")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Contain("world")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).ShouldNot.Contain("ru")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).ShouldNot.Contain("als")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of(10).ShouldNot.StartWith(1)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).ShouldNot.StartWith(2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").ShouldNot.StartWith("1")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").ShouldNot.StartWith("2")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of("Hello World").ShouldNot.StartWith("Hello")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).ShouldNot.StartWith("True")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).ShouldNot.StartWith("T")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).ShouldNot.StartWith("False")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).ShouldNot.StartWith("F")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).ShouldNot.EndWith(0)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -2120,10 +2278,43 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(10).ShouldNot.EndWith(2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of("10").ShouldNot.EndWith("0")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").ShouldNot.EndWith("2")
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("Hello World").ShouldNot.EndWith("World")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+        fluent.TestValue = testFluent.Of(True).ShouldNot.EndWith("True")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).ShouldNot.EndWith("e")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).ShouldNot.EndWith("False")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).ShouldNot.EndWith("e")
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
         fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthOf(2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of("abc").ShouldNot.Have.LengthOf(3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).ShouldNot.Have.LengthOf(4)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthOf(Len("10"))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("abc").ShouldNot.Have.LengthOf(Len("abc"))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).ShouldNot.Have.LengthOf(Len("True"))
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthOf(1)
@@ -2135,14 +2326,50 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MaxLengthOf(1)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of("10").ShouldNot.Have.MaxLengthOf(3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").ShouldNot.Have.MaxLengthOf(1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).ShouldNot.Have.MaxLengthOf(Len("True"))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).ShouldNot.Have.MaxLengthOf(Len("False"))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MinLengthOf(3)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MinLengthOf(1)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").ShouldNot.Have.MinLengthOf(3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("10").ShouldNot.Have.MinLengthOf(1)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(True).ShouldNot.Have.MinLengthOf(Len("True"))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(False).ShouldNot.Have.MinLengthOf(Len("False"))
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(9)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(10)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.GreaterThanOrEqualTo(9.1)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(11)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.GreaterThanOrEqualTo(11.1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(11)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -2155,6 +2382,15 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(11)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.LessThanOrEqualTo(10.1)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.LessThanOrEqualTo(11.1)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.LessThanOrEqualTo(9.1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(9, 11)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -2186,13 +2422,6 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         arr = Array()
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-'        Set col = Nothing
-'        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col)
-'        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-'        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(123)
-'        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         arr = Array(9, 10, 11)
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
@@ -4137,9 +4366,6 @@ Public Function nullDocumentationTests(fluent As IFluent, testFluent As IFluentO
     
     fluent.TestValue = testFluent.Of(Null).Should.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-'    fluent.TestValue = testFluent.Of("Hello World!").Should.Have.LengthBetween(1, 10)
-'    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     fluent.TestValue = testFluent.Of(Array(1, 2, 3)).Should.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)

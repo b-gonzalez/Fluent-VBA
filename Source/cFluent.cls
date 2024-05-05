@@ -29,7 +29,7 @@ Private Property Get IFluent_Meta() As IMeta
     Set IFluent_Meta = pMeta
 End Property
 
-Private Property Set IFluent_TestValue(All As Variant)
+Private Property Set IFluent_TestValue(ByVal All As Variant)
     Set pFluentVal = All
     Set pUnit.TestValue = pFluentVal
 End Property

@@ -13,7 +13,7 @@ Public Property Get TestCollection() As Collection
 
 End Property
 
-Public Property Let FluentPath(value As String)
+Public Property Let FluentPath(ByVal value As String)
 
 End Property
 
@@ -21,10 +21,10 @@ Public Property Get Expressions() As IExpressions
 
 End Property
 
-Public Property Let CategorySet(value As Boolean)
+Public Property Let CategorySet(ByVal value As Boolean)
 
 End Property
 
-Public Property Let NameSet(value As Boolean)
+Public Property Let NameSet(ByVal value As Boolean)
 
 End Property

@@ -68,26 +68,32 @@ Public Sub addToTestAndFluentPath( _
     ByVal NegateValue As Boolean, _
     ByVal testingValue As Variant, _
     Optional ByVal testingInput As Variant, _
-    Optional LowerVal As Variant, _
-    Optional HigherVal As Variant)
+    Optional ByVal LowerVal As Variant, _
+    Optional ByVal HigherVal As Variant)
 End Sub
 
-Public Function Should(shouldType As flShould, Optional testingInput As Variant) As String
+Public Function Should(ByVal shouldType As flShould, Optional ByVal testingInput As Variant) As String
 End Function
 
-Public Function Be(beType As flBe, Optional TesingInput As String = "", Optional LowerVal As Variant, Optional HigherVal As Variant)
+Public Function Be(ByVal beType As flBe, _
+Optional ByVal TesingInput As String = "", _
+Optional ByVal LowerVal As Variant, _
+Optional ByVal HigherVal As Variant)
 End Function
 
-Public Function Have(haveType As flHave, Optional TesingInput As String = "", Optional LowerVal As Variant, Optional HigherVal As Variant)
+Public Function Have(ByVal haveType As flHave, _
+Optional ByVal TesingInput As String = "", _
+Optional ByVal LowerVal As Variant, _
+Optional ByVal HigherVal As Variant)
 End Function
 
-Public Function buildFluentPath(test As ITest, FluentPath As String, tempFluentPath As String) As String
+Public Function buildFluentPath(ByVal test As ITest, ByVal FluentPath As String, ByVal tempFluentPath As String) As String
 End Function
 
-Public Function getFunctionExpr(test As ITest)
+Public Function getFunctionExpr(ByVal test As ITest)
 End Function
 
-Public Function getFluentPath(FluentPath As String, test As ITest, Optional notShould As Boolean = False)
+Public Function getFluentPath(ByVal FluentPath As String, ByVal test As ITest, Optional ByVal notShould As Boolean = False)
 End Function
 
 Public Sub addFluentPathNew(ByVal test As ITest, ByVal NegateValue As Boolean)
@@ -96,13 +102,13 @@ End Sub
 Public Function ToString(ByVal nv As Variant) As String
 End Function
 
-Public Function DatastructureIsEmpty(v As Variant) As Boolean
+Public Function DatastructureIsEmpty(ByVal v As Variant) As Boolean
 End Function
 
-Public Function InputToStringRecur(v As Variant) As String
+Public Function InputToStringRecur(ByVal v As Variant) As String
 End Function
 
-Public Function getResultNumber(Result As Variant)
+Public Function getResultNumber(ByVal Result As Variant)
 End Function
 
 Public Function IsDataStructure(ByVal DataStructure As Variant)
@@ -111,5 +117,5 @@ End Function
 Public Function getTestDictCounter() As Scripting.Dictionary
 End Function
 
-Private Function datastructureInCollection(dsName As String, col As Collection)
+Private Function datastructureInCollection(ByVal dsName As String, ByVal col As Collection)
 End Function

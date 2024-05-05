@@ -39,8 +39,8 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     ByVal NegateValue As Boolean, _
     ByVal testingValue As Variant, _
     Optional ByVal testingInput As Variant, _
-    Optional LowerVal As Variant, _
-    Optional HigherVal As Variant)
+    Optional ByVal LowerVal As Variant, _
+    Optional ByVal HigherVal As Variant)
     
     Dim test As ITest
     Dim testDev As ITestDev
@@ -115,7 +115,7 @@ Private Sub IExpressions_addToTestAndFluentPath( _
 
 End Sub
 
-Private Function IExpressions_Should(shouldType As flShould, Optional testingInput As Variant) As String
+Private Function IExpressions_Should(ByVal shouldType As flShould, Optional ByVal testingInput As Variant) As String
     Dim shouldStr As String
     
     shouldStr = ""
@@ -140,7 +140,11 @@ Private Function IExpressions_Should(shouldType As flShould, Optional testingInp
     IExpressions_Should = shouldStr
 End Function
 
-Private Function IExpressions_Be(beType As flBe, Optional TesingInput As String = "", Optional LowerVal As Variant, Optional HigherVal As Variant)
+Private Function IExpressions_Be( _
+ByVal beType As flBe, _
+Optional ByVal TesingInput As String = "", _
+Optional ByVal LowerVal As Variant, _
+Optional ByVal HigherVal As Variant)
     Dim beStr As String
     Dim funcStr As String
     
@@ -195,7 +199,11 @@ Private Function IExpressions_Be(beType As flBe, Optional TesingInput As String 
     IExpressions_Be = beStr
 End Function
 
-Private Function IExpressions_Have(haveType As flHave, Optional TesingInput As String = "", Optional LowerVal As Variant, Optional HigherVal As Variant)
+Private Function IExpressions_Have( _
+ByVal haveType As flHave, _
+Optional ByVal TesingInput As String = "", _
+Optional ByVal LowerVal As Variant, _
+Optional ByVal HigherVal As Variant)
     Dim haveStr As String
     Dim funcStr As String
     
@@ -240,7 +248,7 @@ Private Function IExpressions_Have(haveType As flHave, Optional TesingInput As S
 
 End Function
 
-Private Function IExpressions_buildFluentPath(test As ITest, FluentPath As String, tempFluentPath As String) As String
+Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentPath As String, ByVal tempFluentPath As String) As String
     If IsNull(test.Result) Then
         test.Result = TypeName(test.Result)
     End If
@@ -263,7 +271,7 @@ Private Function IExpressions_buildFluentPath(test As ITest, FluentPath As Strin
     IExpressions_buildFluentPath = tempFluentPath
 End Function
 
-Private Function IExpressions_getFunctionExpr(test As ITest)
+Private Function IExpressions_getFunctionExpr(ByVal test As ITest)
     Dim tempFluentPath As String
     
     With test
@@ -334,7 +342,7 @@ Private Function IExpressions_getFunctionExpr(test As ITest)
     IExpressions_getFunctionExpr = tempFluentPath
 End Function
 
-Private Function IExpressions_getFluentPath(FluentPath As String, test As ITest, Optional notShould As Boolean = False)
+Private Function IExpressions_getFluentPath(ByVal FluentPath As String, ByVal test As ITest, Optional ByVal notShould As Boolean = False)
     Dim LowerVal As Variant
     Dim HigherVal As Variant
     Dim tempFluentPath As String
@@ -452,7 +460,7 @@ Private Function IExpressions_ToString(ByVal nv As Variant) As String
         
 End Function
 
-Private Function IExpressions_DatastructureIsEmpty(v As Variant) As Boolean
+Private Function IExpressions_DatastructureIsEmpty(ByVal v As Variant) As Boolean
     Dim elem As Variant
     Dim counter As Long
     Dim b As Boolean
@@ -486,7 +494,7 @@ Private Function IExpressions_DatastructureIsEmpty(v As Variant) As Boolean
     IExpressions_DatastructureIsEmpty = b
 End Function
 
-Private Function IExpressions_InputToStringRecur(v As Variant) As String
+Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
     Dim temp As String
     Dim elem As Variant
     Dim emptyDS As Boolean
@@ -533,7 +541,7 @@ Private Function IExpressions_InputToStringRecur(v As Variant) As String
     IExpressions_InputToStringRecur = temp
 End Function
 
-Private Function IExpressions_getResultNumber(Result As Variant)
+Private Function IExpressions_getResultNumber(ByVal Result As Variant)
     Dim resultNumber As Variant
     
     resultNumber = Null
@@ -547,7 +555,7 @@ Private Function IExpressions_getResultNumber(Result As Variant)
     IExpressions_getResultNumber = resultNumber
 End Function
 
-Private Function IExpressions_datastructureInCollection(dsName As String, col As Collection)
+Private Function IExpressions_datastructureInCollection(ByVal dsName As String, ByVal col As Collection)
     Dim elem As Variant
     Dim b As Boolean
     
