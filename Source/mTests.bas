@@ -3,6 +3,8 @@ Option Explicit
 
 Private mCounter As Long
 Private mTestCounter As Long
+Private posTestCount As Long
+Private negTestCount As Long
 
 Public Enum hw
     helloWorld
@@ -63,6 +65,8 @@ Public Sub runMainTests()
     Debug.Assert validateTestDictCounters(testFluent.Meta.Tests.TestDictCounter)
     
 '    negFluentOfStr = getFluentOfCounts(negTestFluent)
+
+    Debug.Assert posTestCount = negTestCount
     
     With posTestFluent.Meta
         For i = 1 To .Tests.Count
@@ -579,11 +583,44 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(10).Should.Be.Between(9, 11)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of(10).Should.Be.Between(9.1, 11.1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Be.Between(11, 9)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Be.Between(11.1, 9.1)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(1, 3)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(0, 2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(2, 2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(3, 1)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(2, 0)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(9, 10, 11)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(10)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(9, 11, 13)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(11)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Be.OneOf() 'intentionally empty
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         ' //Object and data structure tests
         
@@ -1316,11 +1353,23 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of("abc").Should.Be.Alphabetic
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of("123").Should.Be.Alphabetic
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of(123).Should.Be.Numeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of("abc").Should.Be.Numeric
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of("abc123").Should.Be.Alphanumeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("abc").Should.Be.Alphanumeric
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("123").Should.Be.Alphanumeric
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(CStr(Excel.Evaluate("1 / 0"))).Should.Be.EqualTo("Error 2007")
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -2169,14 +2218,16 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
     End With
     
     Debug.Print "Positive tests finished"
-    printTestCount (mTestCounter)
+    posTestCount = mTestCounter
     mTestCounter = 0
+    printTestCount (posTestCount)
     
     Set positiveDocumentationTests = testFluent
     
 End Function
 
 Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
+    
     'Dim testFluent As cFluentOf
     Dim test As ITest
     Dim col As Collection
@@ -2371,9 +2422,6 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.GreaterThanOrEqualTo(11.1)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(11)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(9)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
@@ -2395,11 +2443,44 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(9, 11)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(9.1, 11.1)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(11, 9)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(11.1, 9.1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(1, 3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(0, 2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(2, 2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(3, 1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(2, 0)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(10)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(9, 10, 11)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(9, 11, 13)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(11)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf()  'intentionally empty
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         ' //Object and data structure tests
         
@@ -3134,13 +3215,25 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of("abc").ShouldNot.Be.Alphabetic
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) '
+        
+        fluent.TestValue = testFluent.Of("123").ShouldNot.Be.Alphabetic
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(123).ShouldNot.Be.Numeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of("abc").ShouldNot.Be.Numeric
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of("abc123").ShouldNot.Be.Alphanumeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("abc").ShouldNot.Be.Alphanumeric
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("123").ShouldNot.Be.Alphanumeric
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(CStr(Excel.Evaluate("1 / 0"))).ShouldNot.Be.EqualTo("Error 2007")
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3988,8 +4081,9 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
     End With
     
     Debug.Print "Negative tests finished"
-    printTestCount (mTestCounter)
+    negTestCount = mTestCounter
     mTestCounter = 0
+    printTestCount (negTestCount)
     
     Set negativeDocumentationTests = testFluent
     
