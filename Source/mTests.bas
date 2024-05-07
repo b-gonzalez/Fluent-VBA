@@ -580,6 +580,12 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(10.1).Should.Be.LessThanOrEqualTo(9.1)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of(10).Should.Be.Between(10, 10)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).Should.Be.Between(9.99, 10.01)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of(10).Should.Be.Between(9, 11)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
@@ -1353,13 +1359,25 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of("abc").Should.Be.Alphabetic
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of("abc!@#").Should.Be.Alphabetic
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of("123").Should.Be.Alphabetic
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("!@#").Should.Be.Alphabetic
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(123).Should.Be.Numeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of("123!@#").Should.Be.Numeric
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of("abc").Should.Be.Numeric
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("!@#").Should.Be.Numeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of("abc123").Should.Be.Alphanumeric
@@ -1369,6 +1387,9 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of("123").Should.Be.Alphanumeric
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("!@#").Should.Be.Alphanumeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(CStr(Excel.Evaluate("1 / 0"))).Should.Be.EqualTo("Error 2007")
@@ -2440,6 +2461,12 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.LessThanOrEqualTo(9.1)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(10, 10)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(9.99, 10.01)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(9, 11)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
@@ -3215,15 +3242,27 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of("abc").ShouldNot.Be.Alphabetic
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) '
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("abc!@#").ShouldNot.Be.Alphabetic
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of("123").ShouldNot.Be.Alphabetic
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("!@#").ShouldNot.Be.Alphabetic
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(123).ShouldNot.Be.Numeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of("123!@#").ShouldNot.Be.Numeric
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+                
         fluent.TestValue = testFluent.Of("abc").ShouldNot.Be.Numeric
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("!@#").ShouldNot.Be.Numeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of("abc123").ShouldNot.Be.Alphanumeric
@@ -3233,6 +3272,9 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of("123").ShouldNot.Be.Alphanumeric
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of("!@#").ShouldNot.Be.Alphanumeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(CStr(Excel.Evaluate("1 / 0"))).ShouldNot.Be.EqualTo("Error 2007")

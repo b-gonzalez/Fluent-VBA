@@ -511,7 +511,6 @@ Optional ByVal NegateValue As Boolean = False) As Variant
     funcVal = Null
     
     If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) Then
-'        tempTestVal = Len(CStr(testingValue))
         funcVal = _
         (IHaveTestFuncs_MinLengthOf(testingValue, LowerVal, updateFluentPath:=False) And _
         IHaveTestFuncs_MaxLengthOf(testingValue, HigherVal, updateFluentPath:=False))
