@@ -16,48 +16,82 @@ Public Sub runMainTests()
     Dim testFluent As IFluentOf
     Dim testFluentResult As IFluentOf
     Dim events As zUdeTests
-    Dim posTestFluent As IFluentOf
-    Dim negTestFluent As IFluentOf
     Dim nulTestFluent As IFluentOf
-    Dim col As Collection
-    Dim i As Long
-    Dim posFluentOfStr As String
-    Dim negFluentOfStr As String
     Dim tempCounter As Long
-    Dim tempDict As Scripting.Dictionary
     
     Set fluent = New cFluent
-    Set testFluent = New cFluentOf
     Set testFluentResult = New cFluentOf
-    Set events = New zUdeTests
     
-    Set events.setFluent = fluent
-    Set events.setFluentOf = testFluent
-    Set events.setFluentEventOfResult = testFluentResult
+    Set testFluent = getAndInitTestFluent
     
-'    With fluent.Meta.Printing
-'        .TestName = "Result"
-'        .PassedMessage = "Success"
-'        .FailedMessage = "Failure"
-'    End With
+    Set events = getAndInitEvent(fluent, testFluent, testFluentResult)
+    
+    Call runEqualPosNegTests(fluent, testFluent, testFluentResult)
+
+    tempCounter = mCounter
+
+    Set fluent = New cFluent
+    Set testFluent = New cFluentOf
+    
+    mCounter = 0
+    
+    Set nulTestFluent = runNullTests(fluent, testFluent, testFluentResult)
+    
+    mCounter = tempCounter + nulTestFluent.Meta.Tests.Count
+    
+    Set fluent = New cFluent
+    
+    mCounter = mCounter + MiscTests(fluent)
+    
+    Debug.Print "All tests Finished"
+    Call printTestCount(mCounter)
+    
+    Call resetAndCheckCounters(events, fluent, testFluent)
+    
+'testFluent.Meta.Printing.PrintToSheet
+    
+End Sub
+
+Private Function getAndInitTestFluent() As IFluentOf
+    Dim testFluent As IFluentOf
+    
+    Set testFluent = New cFluentOf
     
     With testFluent.Meta.Printing
         .PassedMessage = "Success"
         .FailedMessage = "Failure"
         .UnexpectedMessage = "What?"
     End With
+    
+    Set getAndInitTestFluent = testFluent
+End Function
 
+Private Function getAndInitEvent(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As zUdeTests
+    Dim events As zUdeTests
+    
+    Set events = New zUdeTests
+    
+    Set events.setFluent = fluent
+    Set events.setFluentOf = testFluent
+    Set events.setFluentEventOfResult = testFluentResult
+    
+    Set getAndInitEvent = events
+End Function
+
+Private Sub runEqualPosNegTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
+    Dim posTestFluent As IFluentOf
+    Dim negTestFluent As IFluentOf
+    Dim i As Long
+    
     fluent.Meta.Printing.Category = "Fluent - EqualityTests"
     testFluent.Meta.Printing.Name = "Test Fluent - abc 123"
     testFluent.Meta.Printing.Category = "Test Fluent - EqualityTests"
     Call EqualityTests(fluent, testFluent, testFluentResult)
-'
+
     fluent.Meta.Printing.Category = "Fluent - positiveDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - positiveDocumentationTests"
     Set posTestFluent = positiveDocumentationTests(fluent, testFluent, testFluentResult)
     Debug.Assert validateTestDictCounters(testFluent.Meta.Tests.TestDictCounter)
-    
-'    posFluentOfStr = getFluentOfCounts(posTestFluent)
     
     fluent.Meta.Printing.Category = "Fluent - negativeDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - negativeDocumentationTests"
@@ -75,34 +109,23 @@ Public Sub runMainTests()
     End With
     
     Debug.Assert validateNegativeCounters(testFluent)
+End Sub
 
-    tempCounter = mCounter
+Private Function runNullTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
+    Dim nulTestFluent As IFluentOf
+    Dim tempDict As Scripting.Dictionary
     
-'testFluent.Meta.Printing.PrintToSheet
-
-    Set fluent = New cFluent
-    Set testFluent = New cFluentOf
-
-    mCounter = 0
     fluent.Meta.Printing.Category = "Fluent - nullDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - nullDocumentationTests"
-    testFluent.Meta.Printing.Name = "abc 123"
     Set nulTestFluent = nullDocumentationTests(fluent, testFluent, testFluentResult)
     Set tempDict = testFluent.Meta.Tests.TestDictCounter
     tempDict("OneOf") = 1 '//intentionally passing since this method cannot be checked for nulls
     Debug.Assert validateTestDictCounters(tempDict, counter:=1) '// set to 1 to account for intentionally passed OneOf method.
     
-    mCounter = tempCounter
-    
-    mCounter = mCounter + nulTestFluent.Meta.Tests.Count
-    
-    Set fluent = New cFluent
-    
-    mCounter = mCounter + MiscTests(fluent)
+    Set runNullTests = nulTestFluent
+End Function
 
-    Debug.Print "All tests Finished"
-    Call printTestCount(mCounter)
-    
+Private Sub resetAndCheckCounters(events As zUdeTests, fluent As IFluent, testFluent As IFluentOf)
     mCounter = 0
     
     mTestCounter = 0
@@ -110,9 +133,6 @@ Public Sub runMainTests()
     Debug.Assert events.CheckTestCounters
 
     Debug.Assert checkResetCounters(fluent, testFluent)
-    
-'testFluent.Meta.Printing.PrintToSheet
-    
 End Sub
 
 Private Sub printTestCount(testCount As Long)
@@ -4131,7 +4151,7 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
     
 End Function
 
-Public Function nullDocumentationTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
+Public Function nullDocumentationTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
     Dim col As Collection
     Dim d As Dictionary
     Dim arr As Variant
