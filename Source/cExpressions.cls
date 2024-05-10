@@ -504,7 +504,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
     Select Case True
         Case IsArray(v) And IExpressions_DatastructureIsEmpty(v)
             temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
-        Case IsObject(v) Or IsArray(v)
+        Case IExpressions_IsDataStructure(v) Or IsArray(v)
             If IsArray(v) Then
                 temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
             Else
@@ -513,8 +513,10 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
             
             If Not TypeOf v Is Dictionary Then
                 For Each elem In v
-                    If IsObject(elem) Or IsArray(elem) Then
+                    If IExpressions_IsDataStructure(elem) Or IsArray(elem) Then
                         temp = temp & IExpressions_InputToStringRecur(elem) & ", "
+                    ElseIf IsObject(elem) Then
+                        temp = temp & TypeName(elem)
                     Else
                         temp = temp & elem & ", "
                     End If
