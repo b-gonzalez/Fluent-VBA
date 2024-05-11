@@ -78,7 +78,7 @@ function get-word {
         #This section requires "Trust access to the VBA project object model" to be enabled.
         #If it is not enabled this section will fail.
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls") {
+            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike "mInit.bas") {
                 $doc.VBProject.VBComponents.Import($macro.FullName)
             }
         }
@@ -202,7 +202,7 @@ function get-powerpoint {
         #This section requires "Trust access to the VBA project object model" to be enabled.
         #If it is not enabled this section will fail.
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls") {
+            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike "mInit.bas") {
                 $presentation.VBProject.VBComponents.Import($macro.FullName)
             }
         }
@@ -323,7 +323,7 @@ function get-access {
         $acc.VBE.ActiveVBProject.name = "fluent_vba"
     
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls") {
+            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike "mInit.bas") {
                 $acc.VBE.ActiveVBProject.VBComponents.Import($macro.FullName)
                 $acc.VBE.ActiveVBProject.VBComponents($acc.VBE.ActiveVBProject.VBComponents.Count).Name = $macro.BaseName
                 $acc.DoCmd.RunCommand($acCmdCompileAndSaveAllModules)

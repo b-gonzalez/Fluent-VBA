@@ -1365,11 +1365,11 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(TypeOf col Is Collection).Should.EvaluateTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        Set d = New Dictionary
+        Set d = New Scripting.Dictionary
         fluent.TestValue = testFluent.Of(TypeName(d) = "Dictionary").Should.EvaluateTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(TypeOf d Is Dictionary).Should.EvaluateTo(True)
+        fluent.TestValue = testFluent.Of(TypeOf d Is Scripting.Dictionary).Should.EvaluateTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         '//Testing errors is possible if they're put in strings
@@ -3250,11 +3250,11 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(TypeOf col Is Collection).ShouldNot.EvaluateTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        Set d = New Dictionary
+        Set d = New Scripting.Dictionary
         fluent.TestValue = testFluent.Of(TypeName(d) = "Dictionary").ShouldNot.EvaluateTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(TypeOf d Is Dictionary).ShouldNot.EvaluateTo(True)
+        fluent.TestValue = testFluent.Of(TypeOf d Is Scripting.Dictionary).ShouldNot.EvaluateTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         '//Testing errors is possible if they're put in strings
@@ -4153,7 +4153,7 @@ End Function
 
 Public Function nullDocumentationTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
     Dim col As Collection
-    Dim d As Dictionary
+    Dim d As Scripting.Dictionary
     Dim arr As Variant
     Dim test As ITest
     Dim nullBool As Boolean
