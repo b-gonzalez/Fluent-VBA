@@ -523,8 +523,10 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                 Next elem
             Else
                 For Each elem In v.Keys
-                    If IsObject(v(elem)) Or IsArray(v(elem)) Then
+                    If IExpressions_IsDataStructure(v(elem)) Or IsArray(v(elem)) Then
                         temp = temp & elem & ": " & IExpressions_InputToStringRecur(v(elem)) & ", "
+                    ElseIf IsObject(v(elem)) Then
+                        temp = temp & elem & ": " & TypeName(v(elem)) & ", "
                     Else
                         temp = temp & elem & ": " & v(elem) & ", "
                     End If
