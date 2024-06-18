@@ -9,7 +9,13 @@ Source/*Todo*
 *.doccls
 *.zip
 Distribution/
-**/test**
-/**test**
 Templates/
 .vscode/
+
+# test files and folders
+
+*test*
+/**test**
+
+*TestTest*
+/**TestTest**
