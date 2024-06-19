@@ -65,11 +65,11 @@ Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
 End Sub
 
 Private Sub addValueConditColors( _
-ByVal lo As Excel.ListObject, _
-ByVal passedMsg As String, _
-ByVal failedMsg As String, _
-ByVal unexpectedMsg As String)
+    ByVal lo As Excel.ListObject, _
+    ByVal passedMsg As String, _
+    ByVal failedMsg As String, _
+    ByVal unexpectedMsg As String)
 End Sub
 
-Private Function ArrayFromTests(col As Collection, tp As TestProperty)
+Private Function ArrayFromTests(col As Collection, tp As TestProperty) As Variant()
 End Function

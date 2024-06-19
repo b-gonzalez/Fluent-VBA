@@ -10,26 +10,26 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Public Function Contain( _
-ByVal testingValue As Variant, _
-ByVal testingInput As String, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+    ByVal testingValue As Variant, _
+    ByVal testingInput As String, _
+    Optional ByVal NegateValue As Boolean = False) As Variant
 End Function
 
 Public Function StartWith( _
-ByVal testingValue As Variant, _
-ByVal testingInput As String, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+    ByVal testingValue As Variant, _
+    ByVal testingInput As String, _
+    Optional ByVal NegateValue As Boolean = False) As Variant
 End Function
 
 Public Function EndWith( _
-ByVal testingValue As Variant, _
-ByVal testingInput As String, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+    ByVal testingValue As Variant, _
+    ByVal testingInput As String, _
+    Optional ByVal NegateValue As Boolean = False) As Variant
 End Function
 
 Public Function EvaluateTo( _
-ByVal testingValue As Variant, _
-ByVal testingInput As Variant, _
-Optional ByVal NegateValue = False) As Variant
+    ByVal testingValue As Variant, _
+    ByVal testingInput As Variant, _
+    Optional ByVal NegateValue As Boolean = False) As Variant
 End Function
 
