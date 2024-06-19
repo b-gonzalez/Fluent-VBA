@@ -144,7 +144,7 @@ Private Function IExpressions_Be( _
 ByVal beType As flBe, _
 Optional ByVal TesingInput As String = "", _
 Optional ByVal LowerVal As Variant, _
-Optional ByVal HigherVal As Variant)
+Optional ByVal HigherVal As Variant) As String
     Dim beStr As String
     Dim funcStr As String
     
@@ -203,7 +203,7 @@ Private Function IExpressions_Have( _
 ByVal haveType As flHave, _
 Optional ByVal TesingInput As String = "", _
 Optional ByVal LowerVal As Variant, _
-Optional ByVal HigherVal As Variant)
+Optional ByVal HigherVal As Variant) As String
     Dim haveStr As String
     Dim funcStr As String
     
@@ -271,7 +271,7 @@ Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentP
     IExpressions_buildFluentPath = tempFluentPath
 End Function
 
-Private Function IExpressions_getFunctionExpr(ByVal test As ITest)
+Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
     Dim tempFluentPath As String
     
     With test
@@ -342,7 +342,7 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest)
     IExpressions_getFunctionExpr = tempFluentPath
 End Function
 
-Private Function IExpressions_getFluentPath(ByVal FluentPath As String, ByVal test As ITest, Optional ByVal notShould As Boolean = False)
+Private Function IExpressions_getFluentPath(ByVal FluentPath As String, ByVal test As ITest, Optional ByVal notShould As Boolean = False) As String
     Dim LowerVal As Variant
     Dim HigherVal As Variant
     Dim tempFluentPath As String
@@ -446,11 +446,15 @@ Private Function IExpressions_ToString(ByVal nv As Variant) As String
             tempNVTS = TypeName(nv)
         Case Not TypeOf nv Is Object
             tempNVTS = CStr(nv)
-        Case TypeOf nv Is ErrObject
+        Case TypeOf nv Is VBA.ErrObject
             tempNVTS = TypeName(nv)
         Case TypeOf nv Is Object
             If IExpressions_IsDataStructure(nv) Then
-                tempNVTS = IExpressions_InputToStringRecur(nv)
+                If pMeta.Tests.Algorithm = flRecursive Then
+                    tempNVTS = IExpressions_InputToStringRecur(nv)
+                ElseIf pMeta.Tests.Algorithm = flIterative Then
+                    tempNVTS = IExpressions_inputToStringIter(nv)
+                End If
             ElseIf Not nv Is Nothing Then
                 tempNVTS = TypeName(nv)
             End If
@@ -545,7 +549,187 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
     IExpressions_InputToStringRecur = temp
 End Function
 
-Private Function IExpressions_getResultNumber(ByVal Result As Variant)
+Function IExpressions_inputToStringIter(v As Variant) As String
+    Dim elem As Variant
+    Dim tempCol As Collection
+    Dim tempCount As Long
+    Dim finalCol As Collection
+    Dim elemStr As String
+    Dim temp As String
+    Dim vCounter As String
+    
+    Set tempCol = New Collection
+    tempCount = 1
+    
+    vCounter = IExpressions_getDsCount(v)
+    
+    temp = IExpressions_getDsType(v)
+    
+    tempCol.Add temp
+    
+    For Each elem In v
+'        If TypeName(elem) <> "Collection" And TypeName(elem) <> "Dictionary" And Not IsArray(elem) Then
+        If Not IExpressions_IsDataStructure(elem) Then
+            
+            'This section is needed in case v is a dictionary
+            'if so, then elem will be a key. And that key is
+            'concatenated with a colon and the corresponding
+            'value or object it is associated with
+            
+            If TypeName(v) <> "Dictionary" Then
+                If IsObject(elem) Then
+                    tempCol.Add TypeName(elem)
+                Else
+                    tempCol.Add elem
+                End If
+            Else
+                tempCol.Add elem & ": "
+                tempCol.Add v(elem)
+            End If
+        Else
+            tempCol.Add elem
+        End If
+        
+        If tempCount <> vCounter Then
+            tempCol.Add ", "
+        ElseIf tempCount = vCounter Then
+            tempCol.Add ")"
+        End If
+        
+        tempCount = tempCount + 1
+    Next elem
+    
+    If tempCol.Count > 1 Then
+        Set finalCol = IExpressions_getNestedElementsFromCollection(tempCol)
+    ElseIf tempCol.Count = 1 Then
+        'If tempCol.count equals 1, that means that the data structure
+        'has no elements except for the typename of the data structure
+        'and an open parentheses. So all you need to set finalCol to
+        'tempCol and add a closing parentheses
+        
+        Set finalCol = tempCol
+        finalCol.Add ")"
+    End If
+    
+    For Each elem In finalCol
+        elemStr = elemStr & elem
+    Next elem
+    
+    IExpressions_inputToStringIter = elemStr
+    
+End Function
+
+Function IExpressions_getNestedElementsFromCollection(col As Collection)
+    Dim elem As Variant
+    Dim elem2 As Variant
+    Dim counter As Long
+    Dim tempCol As Collection
+    Dim hasDataStructure As Boolean
+    Dim d As Object
+    
+    Set tempCol = col
+    
+    Do
+        counter = 1
+        hasDataStructure = False
+        
+        For Each elem In tempCol
+            If IExpressions_IsDataStructure(elem) Then
+                hasDataStructure = True
+                
+                tempCol.Add getDsType(elem), before:=counter
+                
+                'counter needs to get incremented every time an element is added
+                'to tempCol or when the loop continues to the next element
+                counter = counter + 1
+                
+                For Each elem2 In elem
+                    If TypeName(elem) <> "Dictionary" Then
+                    
+                        'counter incremented towards end of if statement
+                        tempCol.Add elem2, before:=counter
+                    Else
+                        Set d = elem
+
+                        If IExpressions_IsDataStructure(d(elem2)) Then
+                            tempCol.Add elem2 & ": ", before:=counter
+                            counter = counter + 1
+                            
+                            'counter incremented towards end of if statement
+                            tempCol.Add d(elem2), before:=counter
+                        Else
+                            'counter incremented towards end of if statement
+                            tempCol.Add elem2 & ": " & d(elem2), before:=counter
+                        End If
+                    End If
+                
+                    counter = counter + 1
+                    
+                    tempCol.Add ", ", before:=counter
+                    
+                    counter = counter + 1
+                Next elem2
+                
+                'After the loop exits, an extra comma
+                'is added. This first remove statement
+                'removes the extra comma.
+                
+                tempCol.Remove (counter - 1)
+                
+                tempCol.Add ")", before:=counter
+                
+                'This second remove statement remove the
+                'nested data structure whose elements
+                'were just iterated through
+                
+                tempCol.Remove (counter - 1)
+                
+                'After the nested datastructure was iterated
+                'through and removed, the for loop needs to
+                'be exited so that the counter can be reset
+                'to 1
+                
+                Exit For
+            End If
+            
+            counter = counter + 1
+        Next elem
+    Loop While hasDataStructure
+    
+    Set IExpressions_getNestedElementsFromCollection = tempCol
+End Function
+
+Function IExpressions_getDsCount(dataStructure) As Long
+    Dim counter As Long
+    Dim elem As Variant
+    
+    counter = 0
+    
+    For Each elem In dataStructure
+        counter = counter + 1
+    Next elem
+    
+    IExpressions_getDsCount = counter
+End Function
+
+Function IExpressions_getDsType(v As Variant) As String
+    Dim counter As Long
+    Dim elem As Variant
+    Dim temp As String
+    
+    If IsArray(v) Then
+        temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
+    ElseIf TypeName(v) = "Collection" Or TypeName(v) = "Dictioanary" Then
+        temp = TypeName(v) & "("
+    ElseIf IsObject(v) Then
+        temp = TypeName(v)
+    End If
+    
+    IExpressions_getDsType = temp
+End Function
+
+
+Private Function IExpressions_getResultNumber(ByVal Result As Variant) As Long
     Dim resultNumber As Variant
     
     resultNumber = Null
@@ -559,7 +743,7 @@ Private Function IExpressions_getResultNumber(ByVal Result As Variant)
     IExpressions_getResultNumber = resultNumber
 End Function
 
-Private Function IExpressions_datastructureInCollection(ByVal dsName As String, ByVal col As Collection)
+Private Function IExpressions_datastructureInCollection(ByVal dsName As String, ByVal col As Collection) As Boolean
     Dim elem As Variant
     Dim b As Boolean
     
@@ -575,21 +759,21 @@ Private Function IExpressions_datastructureInCollection(ByVal dsName As String, 
     IExpressions_datastructureInCollection = b
 End Function
 
-Private Function IExpressions_IsDataStructure(ByVal DataStructure As Variant)
+Private Function IExpressions_IsDataStructure(ByVal dataStructure As Variant) As Boolean
     Dim dsTypeName As String
     Dim tempBool As Boolean
     Dim fluentBool As Boolean
     Dim elem As Variant
     Dim tempErr As Long
     
-    dsTypeName = TypeName(DataStructure)
+    dsTypeName = TypeName(dataStructure)
     tempBool = False
     
-    If IsArray(DataStructure) Then
+    If IsArray(dataStructure) Then
         tempBool = True
     ElseIf IExpressions_datastructureInCollection(dsTypeName, pMeta.DataStructures) Then
         On Error Resume Next
-            For Each elem In DataStructure
+            For Each elem In dataStructure
                 Exit For
             Next elem
             

@@ -20,10 +20,12 @@ Private pResult As Variant
 Private pCol As Collection
 Private pCount As Long
 Private pTestDictCounter As Scripting.Dictionary
+Private pAlgorithm As flAlgorithm
 
 Public Sub Class_Initialize()
     Set pCol = New Collection
     pCount = 0
+    pAlgorithm = flRecursive
 End Sub
 
 Public Property Set TestDictCounter(value As Scripting.Dictionary)
@@ -46,6 +48,14 @@ End Property
 Public Property Get NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = pCol.[_NewEnum]
+End Property
+
+Public Property Let Algorithm(value As flAlgorithm)
+    pAlgorithm = value
+End Property
+
+Public Property Get Algorithm() As flAlgorithm
+    Algorithm = pAlgorithm
 End Property
 
 Public Property Get Count() As Long

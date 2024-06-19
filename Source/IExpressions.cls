@@ -76,24 +76,27 @@ Public Function Should(ByVal shouldType As flShould, Optional ByVal testingInput
 End Function
 
 Public Function Be(ByVal beType As flBe, _
-Optional ByVal TesingInput As String = "", _
-Optional ByVal LowerVal As Variant, _
-Optional ByVal HigherVal As Variant)
+    Optional ByVal TesingInput As String = "", _
+    Optional ByVal LowerVal As Variant, _
+    Optional ByVal HigherVal As Variant) As String
 End Function
 
 Public Function Have(ByVal haveType As flHave, _
-Optional ByVal TesingInput As String = "", _
-Optional ByVal LowerVal As Variant, _
-Optional ByVal HigherVal As Variant)
+    Optional ByVal TesingInput As String = "", _
+    Optional ByVal LowerVal As Variant, _
+    Optional ByVal HigherVal As Variant) As String
 End Function
 
 Public Function buildFluentPath(ByVal test As ITest, ByVal FluentPath As String, ByVal tempFluentPath As String) As String
 End Function
 
-Public Function getFunctionExpr(ByVal test As ITest)
+Public Function getFunctionExpr(ByVal test As ITest) As String
 End Function
 
-Public Function getFluentPath(ByVal FluentPath As String, ByVal test As ITest, Optional ByVal notShould As Boolean = False)
+Public Function getFluentPath( _
+    ByVal FluentPath As String, _
+    ByVal test As ITest, _
+    Optional ByVal notShould As Boolean = False) As String
 End Function
 
 Public Sub addFluentPathNew(ByVal test As ITest, ByVal NegateValue As Boolean)
@@ -108,14 +111,27 @@ End Function
 Public Function InputToStringRecur(ByVal v As Variant) As String
 End Function
 
-Public Function getResultNumber(ByVal Result As Variant)
+Public Function getResultNumber(ByVal Result As Variant) As Long
 End Function
 
-Public Function IsDataStructure(ByVal DataStructure As Variant)
+Public Function IsDataStructure(ByVal dataStructure As Variant) As Boolean
 End Function
 
 Public Function getTestDictCounter() As Scripting.Dictionary
 End Function
 
-Private Function datastructureInCollection(ByVal dsName As String, ByVal col As Collection)
+Private Function datastructureInCollection(ByVal dsName As String, ByVal col As Collection) As Boolean
 End Function
+
+Public Function inputToStringIter(v As Variant) As String
+End Function
+
+Private Function getNestedElementsFromCollection(col As Collection)
+End Function
+
+Private Function getDsCount(dataStructure As Variant) As Long
+End Function
+
+Private Function getDsType(v As Variant) As String
+End Function
+
