@@ -62,8 +62,8 @@ Private Function IBe_OneOf(ParamArray All() As Variant) As Variant
     IBe_OneOf = Not pBeTestFuncs.OneOf(pNotBeValue, False, All)
 End Function
 
-Private Function IBe_InDataStructure(ByVal DataStructure As Variant, Optional ByVal method As flAlgorithm = flRecursive) As Variant
-    IBe_InDataStructure = Not pBeTestFuncs.InDataStructure(pNotBeValue, DataStructure, method, True, updateFluentPath:=True)
+Private Function IBe_InDataStructure(ByVal dataStructure As Variant, Optional ByVal method As flAlgorithm = flRecursive) As Variant
+    IBe_InDataStructure = Not pBeTestFuncs.InDataStructure(pNotBeValue, dataStructure, method, True, updateFluentPath:=True)
 End Function
 
 Private Function IBe_InDataStructures(ByVal method As flAlgorithm, ParamArray DataStructures() As Variant) As Variant
@@ -86,8 +86,8 @@ Private Function IBe_Erroneous() As Variant
     IBe_Erroneous = Not pBeTestFuncs.Erroneous(pNotBeValue, True)
 End Function
 
-Private Function IBe_IdenticalTo(ByVal DataStructure As Variant) As Variant
+Private Function IBe_IdenticalTo(ByVal dataStructure As Variant) As Variant
 '    Dim temp As Variant
 '    temp = args
-    IBe_IdenticalTo = Not pBeTestFuncs.IdenticalTo(pNotBeValue, True, DataStructure, True)
+    IBe_IdenticalTo = Not pBeTestFuncs.IdenticalTo(pNotBeValue, True, dataStructure, True)
 End Function

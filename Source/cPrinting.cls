@@ -95,7 +95,7 @@ Private Property Get IPrinting_FluentPath() As String
     IPrinting_FluentPath = pFluentPath
 End Property
 
-Private Function IPrinting_ArrayFromTests(col As Collection, tp As TestProperty)
+Private Function IPrinting_ArrayFromTests(col As Collection, tp As TestProperty) As Variant()
     Dim test As ITest
     Dim testDev As ITestDev
     Dim elem As Variant

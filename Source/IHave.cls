@@ -37,14 +37,14 @@ Public Function SameTypeAs(ByVal All As Variant) As Variant
 
 End Function
 
-Public Function ExactSameElementsAs(ByVal DataStructure As Variant) As Variant
+Public Function ExactSameElementsAs(ByVal dataStructure As Variant) As Variant
     
 End Function
 
-Public Function SameUniqueElementsAs(ByVal DataStructure As Variant) As Variant
+Public Function SameUniqueElementsAs(ByVal dataStructure As Variant) As Variant
     
 End Function
 
-Public Function SameElementsAs(ByVal DataStructure As Variant) As Variant
+Public Function SameElementsAs(ByVal dataStructure As Variant) As Variant
     
 End Function

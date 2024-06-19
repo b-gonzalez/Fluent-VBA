@@ -57,16 +57,16 @@ Private Function IHave_SameTypeAs(ByVal All As Variant) As Variant
     IHave_SameTypeAs = Not pHaveTestFuncs.SameTypeAs(pNotHaveVal, All, True)
 End Function
 
-Private Function IHave_ExactSameElementsAs(ByVal DataStructure As Variant) As Variant
+Private Function IHave_ExactSameElementsAs(ByVal dataStructure As Variant) As Variant
 '    Dim temp As Variant
 '    temp = args
-    IHave_ExactSameElementsAs = Not pHaveTestFuncs.ExactSameElementsAs(pNotHaveVal, True, True, DataStructure)
+    IHave_ExactSameElementsAs = Not pHaveTestFuncs.ExactSameElementsAs(pNotHaveVal, True, True, dataStructure)
 End Function
 
-Private Function IHave_SameUniqueElementsAs(ByVal DataStructure As Variant) As Variant
-    IHave_SameUniqueElementsAs = Not pHaveTestFuncs.SameUniqueElementsAs(pNotHaveVal, True, DataStructure)
+Private Function IHave_SameUniqueElementsAs(ByVal dataStructure As Variant) As Variant
+    IHave_SameUniqueElementsAs = Not pHaveTestFuncs.SameUniqueElementsAs(pNotHaveVal, True, dataStructure)
 End Function
 
-Public Function IHave_SameElementsAs(ByVal DataStructure As Variant) As Variant
-    IHave_SameElementsAs = Not pHaveTestFuncs.SameElementsAs(pNotHaveVal, True, DataStructure)
+Public Function IHave_SameElementsAs(ByVal dataStructure As Variant) As Variant
+    IHave_SameElementsAs = Not pHaveTestFuncs.SameElementsAs(pNotHaveVal, True, dataStructure)
 End Function

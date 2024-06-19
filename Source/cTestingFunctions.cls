@@ -79,7 +79,7 @@ End Function
 
 Private Function IBeTestFuncs_InDataStructure( _
 ByVal testingValue As Variant, _
-ByVal DataStructure As Variant, _
+ByVal dataStructure As Variant, _
 Optional ByVal method As flAlgorithm = flRecursive, _
 Optional ByVal NegateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
@@ -91,13 +91,13 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     funcVal = Null
     
-    If pExpressions.IsDataStructure(DataStructure) Then
+    If pExpressions.IsDataStructure(dataStructure) Then
         tempBool = False
     
         If method = flRecursive Then
-            Set col = IBeTestFuncs_getNestedElementsRecur(DataStructure)
+            Set col = IBeTestFuncs_getNestedElementsRecur(dataStructure)
         ElseIf method = flIterative Then
-            Set col = IBeTestFuncs_getNestedElementsIter(DataStructure)
+            Set col = IBeTestFuncs_getNestedElementsIter(dataStructure)
         End If
             
         For Each elem In col
@@ -113,12 +113,12 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     IBeTestFuncs_InDataStructure = funcVal
     
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("InDataStructure", funcVal, CBool(NegateValue), testingValue, DataStructure)
+        Call pExpressions.addToTestAndFluentPath("InDataStructure", funcVal, CBool(NegateValue), testingValue, dataStructure)
     End If
     
 End Function
 
-Private Function IBeTestFuncs_getNestedElementsRecur(ByVal DataStructure As Variant, Optional ByRef col As Collection = Nothing) As Collection
+Private Function IBeTestFuncs_getNestedElementsRecur(ByVal dataStructure As Variant, Optional ByRef col As Collection = Nothing) As Collection
     Dim elem As Variant
     Dim tempDataStructure As Variant
     
@@ -127,14 +127,14 @@ Private Function IBeTestFuncs_getNestedElementsRecur(ByVal DataStructure As Vari
         Set col = New Collection
     End If
     
-    If pExpressions.IsDataStructure(DataStructure) Then
-        If TypeName(DataStructure) = "Dictionary" Then
-            tempDataStructure = DataStructure.Items
+    If pExpressions.IsDataStructure(dataStructure) Then
+        If TypeName(dataStructure) = "Dictionary" Then
+            tempDataStructure = dataStructure.Items
         Else
-            If IsObject(DataStructure) Then
-                Set tempDataStructure = DataStructure
+            If IsObject(dataStructure) Then
+                Set tempDataStructure = dataStructure
             Else
-                tempDataStructure = DataStructure
+                tempDataStructure = dataStructure
             End If
         End If
         
@@ -152,7 +152,7 @@ Private Function IBeTestFuncs_getNestedElementsRecur(ByVal DataStructure As Vari
     Set IBeTestFuncs_getNestedElementsRecur = col
 End Function
 
-Private Function IBeTestFuncs_getNestedElementsIter(ByVal DataStructure As Variant) As Collection
+Private Function IBeTestFuncs_getNestedElementsIter(ByVal dataStructure As Variant) As Collection
     Dim elem As Variant
     Dim col As Collection
     Dim tempDataStructure As Variant
@@ -161,13 +161,13 @@ Private Function IBeTestFuncs_getNestedElementsIter(ByVal DataStructure As Varia
 
     Set col = New Collection
 
-    If TypeName(DataStructure) = "Dictionary" Then
-        tempDataStructure = DataStructure.Items
+    If TypeName(dataStructure) = "Dictionary" Then
+        tempDataStructure = dataStructure.Items
     Else
-        If IsObject(DataStructure) Then
-            Set tempDataStructure = DataStructure
+        If IsObject(dataStructure) Then
+            Set tempDataStructure = dataStructure
         Else
-            tempDataStructure = DataStructure
+            tempDataStructure = dataStructure
         End If
     End If
 
@@ -525,7 +525,7 @@ End Function
 Private Function IShouldTestFuncs_EvaluateTo( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Variant, _
-Optional ByVal NegateValue = False) As Variant
+Optional ByVal NegateValue As Boolean = False) As Variant
     Dim funcVal As Variant
     
     funcVal = Null
@@ -625,10 +625,10 @@ Private Function IBeTestFuncs_Alphanumeric(ByVal testingValue As Variant, Option
     Call pExpressions.addToTestAndFluentPath("Alphanumeric", funcVal, CBool(NegateValue), testingValue)
 End Function
 
-Private Function IBeTestFuncs_Erroneous(ByVal testingValue As Variant, Optional ByVal NegateValue = False) As Variant
+Private Function IBeTestFuncs_Erroneous(ByVal testingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
     Dim tempTestingVal As Variant
     Dim tempErrType As Variant
-    Dim tempErrObj As ErrObject
+    Dim tempErrObj As VBA.ErrObject
     Dim funcVal As Variant
     
     funcVal = Null
@@ -636,7 +636,7 @@ Private Function IBeTestFuncs_Erroneous(ByVal testingValue As Variant, Optional 
     tempTestingVal = False
     
     If TypeName(testingValue) = "ErrObject" Or TypeName(testingValue) = "String" Then
-        If TypeOf testingValue Is ErrObject Then
+        If TypeOf testingValue Is VBA.ErrObject Then
             Set tempErrObj = testingValue
             tempTestingVal = (tempErrObj.Number <> 0)
         ElseIf TypeName(testingValue) = "String" Then
@@ -663,15 +663,15 @@ End Function
 Private Function IHaveTestFuncs_ErrorNumberOf( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Long, _
-Optional ByVal NegateValue = False) As Variant
+Optional ByVal NegateValue As Boolean = False) As Variant
     Dim temp As Variant
-    Dim tempErrObj As ErrObject
+    Dim tempErrObj As VBA.ErrObject
     Dim funcVal As Variant
     
     funcVal = Null
         
     If TypeName(testingValue) = "ErrObject" Or TypeName(testingValue) = "String" Then
-        If TypeOf testingValue Is ErrObject Then
+        If TypeOf testingValue Is VBA.ErrObject Then
             Set tempErrObj = testingValue
             temp = tempErrObj.Number
         ElseIf TypeName(testingValue) = "String" Then
@@ -693,15 +693,15 @@ End Function
 Private Function IHaveTestFuncs_ErrorDescriptionOf( _
 ByVal testingValue As Variant, _
 ByVal testingInput As String, _
-Optional ByVal NegateValue = False) As Variant
+Optional ByVal NegateValue As Boolean = False) As Variant
     Dim tempTestVal As Variant
-    Dim tempErrObj As ErrObject
+    Dim tempErrObj As VBA.ErrObject
     Dim funcVal As Variant
     
     funcVal = Null
         
     If TypeName(testingValue) = "ErrObject" Or TypeName(testingValue) = "String" Then
-        If TypeOf testingValue Is ErrObject Then
+        If TypeOf testingValue Is VBA.ErrObject Then
             Set tempErrObj = testingValue
             tempTestVal = tempErrObj.Description
         ElseIf TypeName(testingValue) = "String" Then
@@ -724,7 +724,7 @@ End Function
 Private Function IHaveTestFuncs_SameTypeAs( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Variant, _
-Optional ByVal NegateValue = False, _
+Optional ByVal NegateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim t1 As String
     Dim t2 As String
