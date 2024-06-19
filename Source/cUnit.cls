@@ -56,7 +56,11 @@ Private Property Set IUnit_testValue(ByVal value As Variant)
 End Property
 
 Private Property Get IUnit_testValue() As Variant
-    IUnit_testValue = pUnitVal
+    If IsObject(pUnitVal) Then
+        Set IUnit_testValue = pUnitVal
+    Else
+        IUnit_testValue = pUnitVal
+    End If
 End Property
 
 Private Function getShould() As cShould
