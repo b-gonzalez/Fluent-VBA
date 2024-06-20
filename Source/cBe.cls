@@ -61,12 +61,12 @@ Private Function IBe_OneOf(ParamArray All() As Variant) As Variant
     IBe_OneOf = pBeTestFuncs.OneOf(pBeValue, False, All)
 End Function
 
-Private Function IBe_InDataStructure(ByVal dataStructure As Variant, Optional ByVal method As flAlgorithm = flRecursive) As Variant
-    IBe_InDataStructure = pBeTestFuncs.InDataStructure(pBeValue, dataStructure, method, updateFluentPath:=True)
+Private Function IBe_InDataStructure(ByVal dataStructure As Variant) As Variant
+    IBe_InDataStructure = pBeTestFuncs.InDataStructure(pBeValue, dataStructure, updateFluentPath:=True)
 End Function
 
-Private Function IBe_InDataStructures(ByVal method As flAlgorithm, ParamArray DataStructures() As Variant) As Variant
-    IBe_InDataStructures = pBeTestFuncs.InDataStructures(pBeValue, method, False, DataStructures)
+Private Function IBe_InDataStructures(ParamArray DataStructures() As Variant) As Variant
+    IBe_InDataStructures = pBeTestFuncs.InDataStructures(pBeValue, False, DataStructures)
 End Function
 
 Private Function IBe_Alphabetic() As Variant

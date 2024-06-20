@@ -62,12 +62,12 @@ Private Function IBe_OneOf(ParamArray All() As Variant) As Variant
     IBe_OneOf = Not pBeTestFuncs.OneOf(pNotBeValue, False, All)
 End Function
 
-Private Function IBe_InDataStructure(ByVal dataStructure As Variant, Optional ByVal method As flAlgorithm = flRecursive) As Variant
-    IBe_InDataStructure = Not pBeTestFuncs.InDataStructure(pNotBeValue, dataStructure, method, True, updateFluentPath:=True)
+Private Function IBe_InDataStructure(ByVal dataStructure As Variant) As Variant
+    IBe_InDataStructure = Not pBeTestFuncs.InDataStructure(pNotBeValue, dataStructure, True, updateFluentPath:=True)
 End Function
 
-Private Function IBe_InDataStructures(ByVal method As flAlgorithm, ParamArray DataStructures() As Variant) As Variant
-    IBe_InDataStructures = Not pBeTestFuncs.InDataStructures(pNotBeValue, method, True, DataStructures)
+Private Function IBe_InDataStructures(ParamArray DataStructures() As Variant) As Variant
+    IBe_InDataStructures = Not pBeTestFuncs.InDataStructures(pNotBeValue, True, DataStructures)
 End Function
 
 Private Function IBe_Alphabetic() As Variant

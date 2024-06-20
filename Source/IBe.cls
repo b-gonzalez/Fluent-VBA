@@ -37,11 +37,11 @@ Public Function GreaterThanOrEqualTo(ByVal value As Double) As Variant
 
 End Function
 
-Public Function InDataStructure(ByVal dataStructure As Variant, Optional ByVal method As flAlgorithm = flRecursive) As Variant
+Public Function InDataStructure(ByVal dataStructure As Variant) As Variant
 
 End Function
 
-Public Function InDataStructures(ByVal method As flAlgorithm, ParamArray DataStructures() As Variant) As Variant
+Public Function InDataStructures(ParamArray DataStructures() As Variant) As Variant
 
 End Function
 
