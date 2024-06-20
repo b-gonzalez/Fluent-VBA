@@ -11,7 +11,6 @@ Option Explicit
 
 Public Function InDataStructures( _
     ByVal testingValue As Variant, _
-    ByVal method As flAlgorithm, _
     ByVal NegateValue As Boolean, _
     ByVal testingInput As Variant) As Variant
 End Function
@@ -19,7 +18,6 @@ End Function
 Public Function InDataStructure( _
     ByVal testingValue As Variant, _
     ByVal dataStructure As Variant, _
-    Optional ByVal method As flAlgorithm = flRecursive, _
     Optional ByVal NegateValue As Boolean = False, _
     Optional ByVal updateFluentPath As Boolean = False) As Variant
 End Function

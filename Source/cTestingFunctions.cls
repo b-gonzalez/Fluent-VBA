@@ -54,7 +54,6 @@ End Property
 
 Private Function IBeTestFuncs_InDataStructures( _
 ByVal testingValue As Variant, _
-ByVal method As flAlgorithm, _
 ByVal NegateValue As Boolean, _
 ByVal testingInput As Variant) As Variant
     Dim col As VBA.Collection
@@ -67,7 +66,7 @@ ByVal testingInput As Variant) As Variant
         If pExpressions.IsDataStructure(testingInput(i)) Then
             Set col = IBeTestFuncs_getNestedElementsRecur(testingInput)
         
-            funcVal = IBeTestFuncs_InDataStructure(testingValue, col, method, NegateValue, updateFluentPath:=False)
+            funcVal = IBeTestFuncs_InDataStructure(testingValue, col, NegateValue, updateFluentPath:=False)
         End If
     Next i
     
@@ -80,7 +79,6 @@ End Function
 Private Function IBeTestFuncs_InDataStructure( _
 ByVal testingValue As Variant, _
 ByVal dataStructure As Variant, _
-Optional ByVal method As flAlgorithm = flRecursive, _
 Optional ByVal NegateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim elem As Variant
@@ -88,8 +86,11 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim tempBool As Boolean
     Dim strTestingVal As String
     Dim funcVal As Variant
+    Dim method As flAlgorithm
     
     funcVal = Null
+    
+    method = pMeta.Tests.Algorithm
     
     If pExpressions.IsDataStructure(dataStructure) Then
         tempBool = False
