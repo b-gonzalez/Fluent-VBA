@@ -26,6 +26,10 @@ Private pNegateValue As Boolean
 Private pCategory As String
 Private pTestName As String
 Private pResultNumber As Long
+Private pTestValueRecur As String
+Private pTestValueIter As String
+Private pTestInputRecur As String
+Private pTestInputIter As String
 
 Private Property Let ITest_testingValue(ByVal value As Variant)
     pTestingValue = value
@@ -153,4 +157,36 @@ End Property
 
 Private Property Get ITestDev_ResultNumber() As Long
     ITestDev_ResultNumber = pResultNumber
+End Property
+
+Public Property Let ITestDev_TestValueRecur(value As String)
+    pTestValueRecur = value
+End Property
+
+Public Property Get ITestDev_TestValueRecur() As String
+    ITestDev_TestValueRecur = pTestValueRecur
+End Property
+
+Public Property Let ITestDev_TestValueIter(value As String)
+    pTestValueIter = value
+End Property
+
+Public Property Get ITestDev_TestValueIter() As String
+    ITestDev_TestValueIter = pTestValueIter
+End Property
+
+Public Property Let ITestDev_TestInputRecur(value As String)
+    pTestInputRecur = value
+End Property
+
+Public Property Get ITestDev_TestInputRecur() As String
+    ITestDev_TestInputRecur = pTestInputRecur
+End Property
+
+Public Property Let ITestDev_TestInputIter(value As String)
+    pTestInputIter = value
+End Property
+
+Public Property Get ITestDev_TestInputIter() As String
+    ITestDev_TestInputIter = pTestInputIter
 End Property

@@ -21,6 +21,7 @@ Private pCol As Collection
 Private pCount As Long
 Private pTestDictCounter As Scripting.Dictionary
 Private pAlgorithm As flAlgorithm
+Private pToStrDev As Boolean
 
 Public Sub Class_Initialize()
     Set pCol = New Collection
@@ -56,6 +57,14 @@ End Property
 
 Public Property Get Algorithm() As flAlgorithm
     Algorithm = pAlgorithm
+End Property
+
+Public Property Let ToStrDev(value As Boolean)
+    pToStrDev = value
+End Property
+
+Public Property Get ToStrDev() As Boolean
+    ToStrDev = pToStrDev
 End Property
 
 Public Property Get Count() As Long
