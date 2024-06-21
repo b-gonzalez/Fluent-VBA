@@ -45,6 +45,7 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     Dim test As ITest
     Dim testDev As ITestDev
     Dim shouldBool As String
+    Dim algo As flAlgorithm
     
     Set test = New cTest
     Set testDev = test
@@ -72,8 +73,6 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     
     If pPrinting.Category <> "" Then iPrint.CategorySet = True
     If pPrinting.Name <> "" Then iPrint.NameSet = True
-    
-    testDev.NegateValue = NegateValue
         
     If TypeName(testingValue) <> "Nothing" Then
         If TypeOf testingValue Is Object  Then
@@ -110,13 +109,35 @@ Private Sub IExpressions_addToTestAndFluentPath( _
         .StrTestValue = IExpressions_ToString(.testingValue)
     End With
     
-    'Add conditional logic here that casts the test object using
-    'ITestDev, sees if the ToStrDev property is enabled. If so,
-    'it will read the the Tests object's Algorithm property to
-    'determine whether to assign the StrTestValue or StrTestInput
-    'to the recursive or iterative properties. And also change the
-    'algorithm property, call the to string functions again, and
-    'then reset the property to what it was originally.
+    '//TestDev
+    
+    With pMeta.Tests
+        If .ToStrDev Then
+            algo = .Algorithm
+            
+            If algo = flRecursive Then
+                testDev.TestValueRecur = test.StrTestValue
+                testDev.TestInputRecur = test.StrTestInput
+                
+                pMeta.Tests.Algorithm = flIterative
+                
+                testDev.TestValueIter = IExpressions_ToString(test.testingValue)
+                testDev.TestInputIter = IExpressions_ToString(test.testingInput)
+            ElseIf algo = flIterative Then
+                testDev.TestValueIter = test.StrTestValue
+                testDev.TestInputIter = test.StrTestInput
+                
+                pMeta.Tests.Algorithm = flRecursive
+                
+                testDev.TestValueRecur = IExpressions_ToString(test.testingValue)
+                testDev.TestInputRecur = IExpressions_ToString(test.testingInput)
+            End If
+        End If
+    End With
+    
+    pMeta.Tests.Algorithm = algo
+    
+    testDev.NegateValue = NegateValue
     
     Call IExpressions_addFluentPathNew(test, NegateValue)
 
@@ -503,7 +524,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                     If IExpressions_IsDataStructure(elem) Or IsArray(elem) Then
                         temp = temp & IExpressions_InputToStringRecur(elem) & ", "
                     ElseIf IsObject(elem) Then
-                        temp = temp & TypeName(elem)
+                        temp = temp & TypeName(elem) & ", "
                     Else
                         temp = temp & elem & ", "
                     End If
@@ -540,6 +561,7 @@ Function IExpressions_inputToStringIter(v As Variant) As String
     Dim elemStr As String
     Dim temp As String
     Dim vCounter As String
+    Dim dsCount As Long
     
     Set tempCol = New Collection
     tempCount = 1
@@ -569,10 +591,16 @@ Function IExpressions_inputToStringIter(v As Variant) As String
                 tempCol.Add v(elem)
             End If
         Else
-            tempCol.Add elem
+            dsCount = IExpressions_getDsCount(elem)
+            
+            If dsCount > 0 Then
+                tempCol.Add elem
+            ElseIf dsCount = 0 Then
+                tempCol.Add getDsType(elem) & ")"
+            End If
         End If
         
-        If tempCount <> vCounter Then
+        If tempCount < vCounter Then
             tempCol.Add ", "
         ElseIf tempCount = vCounter Then
             tempCol.Add ")"
@@ -602,7 +630,6 @@ Function IExpressions_inputToStringIter(v As Variant) As String
 End Function
 
 Function IExpressions_getNestedElementsFromCollection(col As Collection)
-    'getNestedElementsFromCollection2
     Dim elem As Variant
     Dim elem2 As Variant
     Dim counter As Long
@@ -709,7 +736,7 @@ Function IExpressions_getDsType(v As Variant) As String
     
     If IsArray(v) Then
         temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
-    ElseIf TypeName(v) = "Collection" Or TypeName(v) = "Dictionary" Then
+    ElseIf IExpressions_IsDataStructure(v) Then
         temp = TypeName(v) & "("
     ElseIf IsObject(v) Then
         temp = TypeName(v)

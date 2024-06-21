@@ -57,10 +57,12 @@ Private Function getAndInitTestFluent() As IFluentOf
     
     Set testFluent = New cFluentOf
     
-    With testFluent.Meta.Printing
-        .PassedMessage = "Success"
-        .FailedMessage = "Failure"
-        .UnexpectedMessage = "What?"
+    With testFluent.Meta
+        .Printing.PassedMessage = "Success"
+        .Printing.FailedMessage = "Failure"
+        .Printing.UnexpectedMessage = "What?"
+        
+        .Tests.ToStrDev = True
     End With
     
     Set getAndInitTestFluent = testFluent
@@ -144,6 +146,12 @@ Private Sub printTestCount(testCount As Long)
 End Sub
 
 Private Sub TrueAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
+    Dim td As ITestDev
+    Dim inputIter As String
+    Dim inputRecur As String
+    Dim valueIter As String
+    Dim valueRecur As String
+
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
     
@@ -157,9 +165,28 @@ Private Sub TrueAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf,
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
+    
+    With testFluent.Meta.Tests
+        Set td = .Item(.Count)
+    End With
+
+    inputIter = td.TestInputIter
+    inputRecur = td.TestInputRecur
+    valueIter = td.TestValueIter
+    valueRecur = td.TestValueRecur
+    
+    Debug.Assert _
+    inputIter = inputRecur And _
+    valueIter = valueRecur
 End Sub
 
 Private Sub FalseAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
+    Dim td As ITestDev
+    Dim inputIter As String
+    Dim inputRecur As String
+    Dim valueIter As String
+    Dim valueRecur As String
+    
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
     
@@ -173,6 +200,19 @@ Private Sub FalseAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf
         testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
+    
+    With testFluent.Meta.Tests
+        Set td = .Item(.Count)
+    End With
+
+    inputIter = td.TestInputIter
+    inputRecur = td.TestInputRecur
+    valueIter = td.TestValueIter
+    valueRecur = td.TestValueRecur
+    
+    Debug.Assert _
+    inputIter = inputRecur And _
+    valueIter = valueRecur
 End Sub
 
 Private Sub NullAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
@@ -2412,7 +2452,6 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
 End Function
 
 Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
-    
     'Dim testFluent As cFluentOf
     Dim test As ITest
     Dim col As Collection
