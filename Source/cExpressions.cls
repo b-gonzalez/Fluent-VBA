@@ -110,6 +110,14 @@ Private Sub IExpressions_addToTestAndFluentPath( _
         .StrTestValue = IExpressions_ToString(.testingValue)
     End With
     
+    'Add conditional logic here that casts the test object using
+    'ITestDev, sees if the ToStrDev property is enabled. If so,
+    'it will read the the Tests object's Algorithm property to
+    'determine whether to assign the StrTestValue or StrTestInput
+    'to the recursive or iterative properties. And also change the
+    'algorithm property, call the to string functions again, and
+    'then reset the property to what it was originally.
+    
     Call IExpressions_addFluentPathNew(test, NegateValue)
 
 End Sub
@@ -594,6 +602,7 @@ Function IExpressions_inputToStringIter(v As Variant) As String
 End Function
 
 Function IExpressions_getNestedElementsFromCollection(col As Collection)
+    'getNestedElementsFromCollection2
     Dim elem As Variant
     Dim elem2 As Variant
     Dim counter As Long
@@ -634,7 +643,8 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection)
                     tempCol.Add elem2, before:=counter
                 Else
                     Set d = elem
-                    If TypeName(d(elem2)) = "Collection" Or TypeName(d(elem2)) = "Dictionary" Or IsArray(d(elem2)) Then
+'                    If TypeName(d(elem2)) = "Collection" Or TypeName(d(elem2)) = "Dictionary" Or IsArray(d(elem2)) Then
+                    If IExpressions_IsDataStructure(d(elem2)) Then
                         tempCol.Add elem2 & ": ", before:=counter
                         counter = counter + 1
                         
