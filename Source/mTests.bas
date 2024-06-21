@@ -5082,11 +5082,22 @@ End Function
 Private Function MiscTests(fluent As IFluent)
     Dim testCount As Long
     
+    'test to ensure fluent object's default TestValue value is equal to empty
     Debug.Assert fluent.Should.Be.EqualTo(Empty)
+    
+    'test to ensure fluent object's TestValue property can return a value
+    fluent.TestValue = fluent.TestValue
+    Debug.Assert fluent.Should.Be.EqualTo(Empty)
+    
+    'test to ensure fluent object's TestValue property can return an object
+    Set fluent.TestValue = New Collection
+    Set fluent.TestValue = fluent.TestValue
+    Debug.Assert fluent.Should.Be.Something
     
     Debug.Print "Misc tests finished"
     testCount = fluent.Meta.Tests.Count
     printTestCount (testCount)
+    
     Debug.Print
     
     MiscTests = testCount
