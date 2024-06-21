@@ -110,7 +110,6 @@ Private Sub IExpressions_addToTestAndFluentPath( _
         .StrTestValue = IExpressions_ToString(.testingValue)
     End With
     
-    
     Call IExpressions_addFluentPathNew(test, NegateValue)
 
 End Sub
@@ -416,31 +415,11 @@ Private Function IExpressions_ToString(ByVal nv As Variant) As String
     Set col = New Collection
     
     Select Case True
-        Case IsArray(nv)
-            For Each elem In nv
-                    If TypeName(elem) = "Nothing" Or TypeName(elem) = "Null" Then
-                        col.Add TypeName(elem)
-                    ElseIf TypeOf elem Is Object  Or IsArray(elem) Then
-                        If IExpressions_IsDataStructure(elem) Then
-                            col.Add IExpressions_InputToStringRecur(elem)
-                        ElseIf Not elem Is Nothing Then
-                            col.Add TypeName(elem)
-                        End If
-                    Else
-                        col.Add elem
-                    End If
-                counter = counter + 1
-            Next elem
-            
-            
-            If counter > 0 Then
-                ReDim strArgs(1 To col.Count)
-                    
-                For i = 1 To col.Count
-                    strArgs(i) = col(i)
-                Next i
-                
-                tempNVTS = Join(strArgs, ", ")
+        Case IExpressions_IsDataStructure(nv)
+            If pMeta.Tests.Algorithm = flRecursive Then
+                tempNVTS = IExpressions_InputToStringRecur(nv)
+            ElseIf pMeta.Tests.Algorithm = flIterative Then
+                tempNVTS = IExpressions_inputToStringIter(nv)
             End If
         Case IsNull(nv)
             tempNVTS = TypeName(nv)
@@ -449,14 +428,10 @@ Private Function IExpressions_ToString(ByVal nv As Variant) As String
         Case TypeOf nv Is VBA.ErrObject
             tempNVTS = TypeName(nv)
         Case TypeOf nv Is Object
-            If IExpressions_IsDataStructure(nv) Then
-                If pMeta.Tests.Algorithm = flRecursive Then
-                    tempNVTS = IExpressions_InputToStringRecur(nv)
-                ElseIf pMeta.Tests.Algorithm = flIterative Then
-                    tempNVTS = IExpressions_inputToStringIter(nv)
-                End If
-            ElseIf Not nv Is Nothing Then
+            If Not nv Is Nothing Then
                 tempNVTS = TypeName(nv)
+            Else
+                tempNVTS = "Nothing"
             End If
     End Select
     
