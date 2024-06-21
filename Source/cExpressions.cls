@@ -568,7 +568,6 @@ Function IExpressions_inputToStringIter(v As Variant) As String
     tempCol.Add temp
     
     For Each elem In v
-'        If TypeName(elem) <> "Collection" And TypeName(elem) <> "Dictionary" And Not IsArray(elem) Then
         If Not IExpressions_IsDataStructure(elem) Then
             
             'This section is needed in case v is a dictionary
@@ -623,78 +622,84 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection)
     Dim elem As Variant
     Dim elem2 As Variant
     Dim counter As Long
+    Dim elemCount As Long
+    Dim elemCounter As Long
     Dim tempCol As Collection
     Dim hasDataStructure As Boolean
     Dim d As Object
     
     Set tempCol = col
+    counter = 1
+    elemCounter = 1
     
     Do
-        counter = 1
         hasDataStructure = False
+
+        If IsObject(tempCol(counter)) Then
+            Set elem = tempCol(counter)
+        Else
+            elem = tempCol(counter)
+        End If
         
-        For Each elem In tempCol
-            If IExpressions_IsDataStructure(elem) Then
-                hasDataStructure = True
+        If IExpressions_IsDataStructure(elem) Then
+            hasDataStructure = True
+            
+            tempCol.Add getDsType(elem), before:=counter
+            
+            'counter needs to get incremented every time an element is added
+            'to tempCol or when the loop continues to the next element
+            counter = counter + 1
+            
+            elemCount = getDsCount(elem)
+            
+            For Each elem2 In elem
+                If TypeName(elem) <> "Dictionary" Then
                 
-                tempCol.Add getDsType(elem), before:=counter
-                
-                'counter needs to get incremented every time an element is added
-                'to tempCol or when the loop continues to the next element
+                    'counter incremented towards end of if statement
+                    tempCol.Add elem2, before:=counter
+                Else
+                    Set d = elem
+                    If TypeName(d(elem2)) = "Collection" Or TypeName(d(elem2)) = "Dictionary" Or IsArray(d(elem2)) Then
+                        tempCol.Add elem2 & ": ", before:=counter
+                        counter = counter + 1
+                        
+                        'counter incremented towards end of if statement
+                        tempCol.Add d(elem2), before:=counter
+                    Else
+                        'counter incremented towards end of if statement
+                        tempCol.Add elem2 & ": " & d(elem2), before:=counter
+                    End If
+                End If
+            
                 counter = counter + 1
                 
-                For Each elem2 In elem
-                    If TypeName(elem) <> "Dictionary" Then
-                    
-                        'counter incremented towards end of if statement
-                        tempCol.Add elem2, before:=counter
-                    Else
-                        Set d = elem
-
-                        If IExpressions_IsDataStructure(d(elem2)) Then
-                            tempCol.Add elem2 & ": ", before:=counter
-                            counter = counter + 1
-                            
-                            'counter incremented towards end of if statement
-                            tempCol.Add d(elem2), before:=counter
-                        Else
-                            'counter incremented towards end of if statement
-                            tempCol.Add elem2 & ": " & d(elem2), before:=counter
-                        End If
-                    End If
+                If elemCounter < elemCount Then
                 
-                    counter = counter + 1
-                    
                     tempCol.Add ", ", before:=counter
-                    
-                    counter = counter + 1
-                Next elem2
                 
-                'After the loop exits, an extra comma
-                'is added. This first remove statement
-                'removes the extra comma.
+                ElseIf elemCounter >= elemCount Then
                 
-                tempCol.Remove (counter - 1)
+                    tempCol.Add ")", before:=counter
                 
-                tempCol.Add ")", before:=counter
+                End If
                 
-                'This second remove statement remove the
-                'nested data structure whose elements
-                'were just iterated through
+                elemCounter = elemCounter + 1
                 
-                tempCol.Remove (counter - 1)
-                
-                'After the nested datastructure was iterated
-                'through and removed, the for loop needs to
-                'be exited so that the counter can be reset
-                'to 1
-                
-                Exit For
-            End If
+                counter = counter + 1
+            Next elem2
             
-            counter = counter + 1
-        Next elem
-    Loop While hasDataStructure
+            tempCol.Remove counter
+
+            counter = 0
+            
+            elemCounter = 1
+
+        End If
+        
+        counter = counter + 1
+
+        If counter >= tempCol.Count And hasDataStructure = False Then Exit Do
+    Loop While counter < tempCol.Count
     
     Set IExpressions_getNestedElementsFromCollection = tempCol
 End Function
@@ -719,7 +724,7 @@ Function IExpressions_getDsType(v As Variant) As String
     
     If IsArray(v) Then
         temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
-    ElseIf TypeName(v) = "Collection" Or TypeName(v) = "Dictioanary" Then
+    ElseIf TypeName(v) = "Collection" Or TypeName(v) = "Dictionary" Then
         temp = TypeName(v) & "("
     ElseIf IsObject(v) Then
         temp = TypeName(v)
