@@ -30,7 +30,7 @@ function get-officeFiles {
         $distFiles = Get-ChildItem -Path .\Distribution -File
 
         foreach ($file in $srcFiles) {
-            if ($file.Extension -eq ".doccls" -or $file.Extension -eq ".doccls" -or $file.Name -like "mTodo.bas") {
+            if ($file.Extension -eq ".doccls" -or $file.Extension -eq ".doccls" -or $file.Name -like "mTodo.bas" -or $file.Name -like "TestTestinputToStrIter.bas") {
                 $file.Delete()
             }
         }
