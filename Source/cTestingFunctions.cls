@@ -63,7 +63,7 @@ ByVal testingInput As Variant) As Variant
     funcVal = Null
     
     For i = LBound(testingInput) To UBound(testingInput)
-        If pExpressions.IsDataStructure(testingInput(i)) Then
+        If pMeta.Tests.IsDataStructure(testingInput(i)) Then
             Set col = IBeTestFuncs_getNestedElementsRecur(testingInput)
         
             funcVal = IBeTestFuncs_InDataStructure(testingValue, col, NegateValue, updateFluentPath:=False)
@@ -92,7 +92,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     method = pMeta.Tests.Algorithm
     
-    If pExpressions.IsDataStructure(dataStructure) Then
+    If pMeta.Tests.IsDataStructure(dataStructure) Then
         tempBool = False
     
         If method = flRecursive Then
@@ -128,7 +128,7 @@ Private Function IBeTestFuncs_getNestedElementsRecur(ByVal dataStructure As Vari
         Set col = New Collection
     End If
     
-    If pExpressions.IsDataStructure(dataStructure) Then
+    If pMeta.Tests.IsDataStructure(dataStructure) Then
         If TypeName(dataStructure) = "Dictionary" Then
             tempDataStructure = dataStructure.Items
         Else
@@ -140,7 +140,7 @@ Private Function IBeTestFuncs_getNestedElementsRecur(ByVal dataStructure As Vari
         End If
         
         For Each elem In tempDataStructure
-            If pExpressions.IsDataStructure(elem) Then
+            If pMeta.Tests.IsDataStructure(elem) Then
                 Set col = IBeTestFuncs_getNestedElementsRecur(elem, col)
             Else
                 col.Add elem
@@ -179,7 +179,7 @@ Private Function IBeTestFuncs_getNestedElementsIter(ByVal dataStructure As Varia
     Do
         hasDataStructures = False
         For i = 1 To col.Count
-            If pExpressions.IsDataStructure(col(i)) Then
+            If pMeta.Tests.IsDataStructure(col(i)) Then
                 hasDataStructures = True
                 For Each elem In col(i)
                     col.Add elem
@@ -280,8 +280,8 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     tempBool = False
     
-    If Not IsObject(testingValue) And Not pExpressions.IsDataStructure(testingValue) And _
-    Not IsObject(testingInput) And Not pExpressions.IsDataStructure(testingInput) Then
+    If Not IsObject(testingValue) And Not pMeta.Tests.IsDataStructure(testingValue) And _
+    Not IsObject(testingInput) And Not pMeta.Tests.IsDataStructure(testingInput) Then
         If IsNull(testingValue) Or IsNull(testingInput) Then
             tempBool = (TypeName(testingValue) = TypeName(testingInput))
             
@@ -752,7 +752,7 @@ ByVal updateFluentPath As Boolean) As Variant
     
     funcVal = Null
         
-    If pExpressions.IsDataStructure(testingValue) And pExpressions.IsDataStructure(testingInput) Then
+    If pMeta.Tests.IsDataStructure(testingValue) And pMeta.Tests.IsDataStructure(testingInput) Then
         funcVal = _
         IBeTestFuncs_EqualTo( _
             pExpressions.InputToStringRecur(testingValue), _
@@ -781,7 +781,7 @@ ByVal testingInput As Variant) As Variant
     
     funcVal = Null
         
-    If pExpressions.IsDataStructure(testingValue) And pExpressions.IsDataStructure(testingInput) Then
+    If pMeta.Tests.IsDataStructure(testingValue) And pMeta.Tests.IsDataStructure(testingInput) Then
         Set col = New Collection
         Set col2 = New Collection
         
@@ -814,7 +814,7 @@ ByVal testingInput As Variant) As Variant
     
     funcVal = Null
         
-    If pExpressions.IsDataStructure(testingValue) And pExpressions.IsDataStructure(testingInput) Then
+    If pMeta.Tests.IsDataStructure(testingValue) And pMeta.Tests.IsDataStructure(testingInput) Then
         Set d = New Scripting.Dictionary
         tempStr = ""
         
@@ -859,7 +859,7 @@ ByVal testingInput As Variant) As Variant
     
     funcVal = Null
         
-    If pExpressions.IsDataStructure(testingValue) And pExpressions.IsDataStructure(testingInput) Then
+    If pMeta.Tests.IsDataStructure(testingValue) And pMeta.Tests.IsDataStructure(testingInput) Then
         i = 1
         elem = Empty
         Set d = New Scripting.Dictionary

@@ -104,6 +104,50 @@ Public Property Get DataStructures() As Collection
     Set DataStructures = pDataStructures
 End Property
 
+Public Function datastructureInCollection(ByVal dsName As String, ByVal col As Collection) As Boolean
+    Dim elem As Variant
+    Dim b As Boolean
+    
+    b = False
+    
+    For Each elem In col
+        If elem = dsName Then
+            b = True
+            Exit For
+        End If
+    Next elem
+    
+    datastructureInCollection = b
+End Function
+
+Public Function IsDataStructure(ByVal dataStructure As Variant) As Boolean
+    Dim dsTypeName As String
+    Dim tempBool As Boolean
+    Dim fluentBool As Boolean
+    Dim elem As Variant
+    Dim tempErr As Long
+    
+    dsTypeName = TypeName(dataStructure)
+    tempBool = False
+    
+    If IsArray(dataStructure) Then
+        tempBool = True
+    ElseIf datastructureInCollection(dsTypeName, pDataStructures) Then
+        On Error Resume Next
+            For Each elem In dataStructure
+                Exit For
+            Next elem
+            
+            tempErr = Err.Number
+            
+            tempBool = (tempErr = 0)
+            
+        On Error GoTo 0
+    End If
+    
+    IsDataStructure = tempBool
+End Function
+
 Public Sub ResetCounter()
     pCount = 0
 End Sub
