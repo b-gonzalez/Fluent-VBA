@@ -23,7 +23,7 @@ Private pTestDictCounter As Scripting.Dictionary
 Private pAlgorithm As flAlgorithm
 Private pToStrDev As Boolean
 
-Public Sub Class_Initialize()
+Private Sub Class_Initialize()
     Set pCol = New Collection
     pCount = 0
     pAlgorithm = flRecursive
