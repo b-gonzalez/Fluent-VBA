@@ -4517,7 +4517,7 @@ Private Function MiscTests(fluent As IFluent)
     
     With fluent.Meta
         Debug.Assert .Tests(.Tests.Count).StrTestValue = "Hello"
-        Debug.Assert .Tests(.Tests.Count).StrTestInput = "Queue(Hello)"
+        Debug.Assert .Tests(.Tests.Count).StrTestInput = "Queue('Hello')"
     End With
     
     Debug.Print "Misc tests finished"

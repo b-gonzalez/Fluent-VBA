@@ -525,6 +525,8 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                         temp = temp & IExpressions_InputToStringRecur(elem) & ", "
                     ElseIf IsObject(elem) Then
                         temp = temp & TypeName(elem) & ", "
+                    ElseIf TypeName(elem) = "String" Then
+                        temp = temp & "'" & elem & "'" & ", "
                     Else
                         temp = temp & elem & ", "
                     End If
@@ -535,6 +537,8 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                         temp = temp & elem & ": " & IExpressions_InputToStringRecur(v(elem)) & ", "
                     ElseIf IsObject(v(elem)) Then
                         temp = temp & elem & ": " & TypeName(v(elem)) & ", "
+                    ElseIf TypeName(v(elem)) = "String" Then
+                        temp = temp & elem & ": " & "'" & TypeName(v(elem)) & "'" & ", "
                     Else
                         temp = temp & elem & ": " & v(elem) & ", "
                     End If
@@ -583,6 +587,8 @@ Function IExpressions_inputToStringIter(v As Variant) As String
             If TypeName(v) <> "Dictionary" Then
                 If IsObject(elem) Then
                     tempCol.Add TypeName(elem)
+                ElseIf TypeName(elem) = "String" Then
+                    tempCol.Add "'" & elem & "'"
                 Else
                     tempCol.Add elem
                 End If
@@ -665,9 +671,13 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection)
             
             For Each elem2 In elem
                 If TypeName(elem) <> "Dictionary" Then
-                
+                    If TypeName(elem2) = "String" Then
+                        tempCol.Add "'" & elem2 & "'", before:=counter
+                    Else
+                        tempCol.Add elem2, before:=counter
+                    End If
+                    
                     'counter incremented towards end of if statement
-                    tempCol.Add elem2, before:=counter
                 Else
                     Set d = elem
 '                    If TypeName(d(elem2)) = "Collection" Or TypeName(d(elem2)) = "Dictionary" Or IsArray(d(elem2)) Then
@@ -677,6 +687,9 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection)
                         
                         'counter incremented towards end of if statement
                         tempCol.Add d(elem2), before:=counter
+                    ElseIf TypeName(d(elem2)) = "String" Then
+                        'counter incremented towards end of if statement
+                        tempCol.Add elem2 & ": " & "'" & d(elem2) & "'", before:=counter
                     Else
                         'counter incremented towards end of if statement
                         tempCol.Add elem2 & ": " & d(elem2), before:=counter
