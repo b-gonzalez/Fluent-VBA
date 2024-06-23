@@ -788,7 +788,7 @@ Private Function IExpressions_IsDataStructure(ByVal dataStructure As Variant) As
     
     If IsArray(dataStructure) Then
         tempBool = True
-    ElseIf IExpressions_datastructureInCollection(dsTypeName, pMeta.DataStructures) Then
+    ElseIf IExpressions_datastructureInCollection(dsTypeName, pMeta.Tests.DataStructures) Then
         On Error Resume Next
             For Each elem In dataStructure
                 Exit For

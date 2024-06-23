@@ -23,10 +23,23 @@ Private pTestDictCounter As Scripting.Dictionary
 Private pAlgorithm As flAlgorithm
 Private pToStrDev As Boolean
 
+Private pApproximateEqual As Boolean
+Private pEpsilon As Double
+Private pDataStructures As Collection
+
+Private Const defaultEpsilon As Double = 0.000001
+
 Private Sub Class_Initialize()
     Set pCol = New Collection
     pCount = 0
     pAlgorithm = flRecursive
+    
+    pEpsilon = defaultEpsilon
+    Set pDataStructures = New Collection
+    
+    pDataStructures.Add "Dictionary"
+    pDataStructures.Add "Collection"
+    pDataStructures.Add "ArrayList"
 End Sub
 
 Public Property Set TestDictCounter(value As Scripting.Dictionary)
@@ -69,6 +82,26 @@ End Property
 
 Public Property Get Count() As Long
     Count = pCount
+End Property
+
+Public Property Let ApproximateEqual(ByVal value As Boolean)
+    pApproximateEqual = value
+End Property
+
+Public Property Get ApproximateEqual() As Boolean
+    ApproximateEqual = pApproximateEqual
+End Property
+
+Public Property Let Epsilon(ByVal value As Double)
+    pEpsilon = value
+End Property
+
+Public Property Get Epsilon() As Double
+    Epsilon = pEpsilon
+End Property
+
+Public Property Get DataStructures() As Collection
+    Set DataStructures = pDataStructures
 End Property
 
 Public Sub ResetCounter()
