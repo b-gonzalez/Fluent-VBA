@@ -104,6 +104,16 @@ Public Property Get DataStructures() As Collection
     Set DataStructures = pDataStructures
 End Property
 
+Public Sub AddDataStructure(dataStructure As Variant)
+    Dim dsType As String
+    
+    dsType = TypeName(dataStructure)
+    
+    If IsIterable(dataStructure) And Not datastructureInCollection(dsType, pDataStructures) Then
+        pDataStructures.Add dsType
+    End If
+End Sub
+
 Public Function datastructureInCollection(ByVal dsName As String, ByVal col As Collection) As Boolean
     Dim elem As Variant
     Dim b As Boolean
@@ -133,19 +143,29 @@ Public Function IsDataStructure(ByVal dataStructure As Variant) As Boolean
     If IsArray(dataStructure) Then
         tempBool = True
     ElseIf datastructureInCollection(dsTypeName, pDataStructures) Then
-        On Error Resume Next
-            For Each elem In dataStructure
-                Exit For
-            Next elem
-            
-            tempErr = Err.Number
-            
-            tempBool = (tempErr = 0)
-            
-        On Error GoTo 0
+        tempBool = IsIterable(dataStructure)
     End If
     
     IsDataStructure = tempBool
+End Function
+
+Public Function IsIterable(ByVal dataStructure As Variant)
+    Dim tempBool As Boolean
+    Dim elem As Variant
+    Dim tempErr As Long
+    
+    On Error Resume Next
+        For Each elem In dataStructure
+            Exit For
+        Next elem
+        
+        tempErr = Err.Number
+        
+        tempBool = (tempErr = 0)
+        
+    On Error GoTo 0
+    
+    IsIterable = tempBool
 End Function
 
 Public Sub ResetCounter()

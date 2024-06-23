@@ -135,6 +135,10 @@ Private Sub resetAndCheckCounters(events As zUdeTests, fluent As IFluent, testFl
     mCounter = 0
     
     mTestCounter = 0
+    
+    mMiscNegTests = 0
+    
+    mMiscPosTests = 0
 
     Debug.Assert events.CheckTestCounters
 
@@ -4482,6 +4486,8 @@ End Function
 
 Private Function MiscTests(fluent As IFluent)
     Dim testCount As Long
+    Dim q As Object
+    Dim elem As Variant
 
     'test to ensure fluent object's default TestValue value is equal to empty
     Debug.Assert fluent.Should.Be.EqualTo(Empty)
@@ -4495,11 +4501,28 @@ Private Function MiscTests(fluent As IFluent)
     Set fluent.TestValue = fluent.TestValue
     Debug.Assert fluent.Should.Be.Something
     
+    'test to ensure that addDataStructure is working with non-default datastructure
+    
+    Set q = CreateObject("system.collections.Queue")
+    
+    q.Enqueue ("Hello")
+    
+    fluent.Meta.Tests.AddDataStructure q
+    
+    fluent.TestValue = "Hello"
+    
+    fluent.Should.Be.InDataStructure q
+    
+    'test to ensure that StrTestValue and StrTestInput are working with non-default datastructure
+    
+    With fluent.Meta
+        Debug.Assert .Tests(.Tests.Count).StrTestValue = "Hello"
+        Debug.Assert .Tests(.Tests.Count).StrTestInput = "Queue(Hello)"
+    End With
+    
     Debug.Print "Misc tests finished"
     testCount = fluent.Meta.Tests.Count
     printTestCount (testCount)
-    
-    Debug.Print
     
     MiscTests = testCount
 End Function
