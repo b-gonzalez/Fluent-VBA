@@ -444,7 +444,7 @@ Private Function IExpressions_ToString(ByVal nv As Variant) As String
     Set col = New Collection
     
     Select Case True
-        Case IExpressions_IsDataStructure(nv)
+        Case pMeta.Tests.IsDataStructure(nv)
             If pMeta.Tests.Algorithm = flRecursive Then
                 tempNVTS = IExpressions_InputToStringRecur(nv)
             ElseIf pMeta.Tests.Algorithm = flIterative Then
@@ -512,7 +512,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
     Select Case True
         Case IsArray(v) And IExpressions_DatastructureIsEmpty(v)
             temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
-        Case IExpressions_IsDataStructure(v) Or IsArray(v)
+        Case pMeta.Tests.IsDataStructure(v) Or IsArray(v)
             If IsArray(v) Then
                 temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
             Else
@@ -521,7 +521,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
             
             If Not TypeOf v Is Dictionary Then
                 For Each elem In v
-                    If IExpressions_IsDataStructure(elem) Or IsArray(elem) Then
+                    If pMeta.Tests.IsDataStructure(elem) Or IsArray(elem) Then
                         temp = temp & IExpressions_InputToStringRecur(elem) & ", "
                     ElseIf IsObject(elem) Then
                         temp = temp & TypeName(elem) & ", "
@@ -531,7 +531,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                 Next elem
             Else
                 For Each elem In v.Keys
-                    If IExpressions_IsDataStructure(v(elem)) Or IsArray(v(elem)) Then
+                    If pMeta.Tests.IsDataStructure(v(elem)) Or IsArray(v(elem)) Then
                         temp = temp & elem & ": " & IExpressions_InputToStringRecur(v(elem)) & ", "
                     ElseIf IsObject(v(elem)) Then
                         temp = temp & elem & ": " & TypeName(v(elem)) & ", "
@@ -573,7 +573,7 @@ Function IExpressions_inputToStringIter(v As Variant) As String
     tempCol.Add temp
     
     For Each elem In v
-        If Not IExpressions_IsDataStructure(elem) Then
+        If Not pMeta.Tests.IsDataStructure(elem) Then
             
             'This section is needed in case v is a dictionary
             'if so, then elem will be a key. And that key is
@@ -652,7 +652,7 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection)
             elem = tempCol(counter)
         End If
         
-        If IExpressions_IsDataStructure(elem) Then
+        If pMeta.Tests.IsDataStructure(elem) Then
             hasDataStructure = True
             
             tempCol.Add getDsType(elem), before:=counter
@@ -671,7 +671,7 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection)
                 Else
                     Set d = elem
 '                    If TypeName(d(elem2)) = "Collection" Or TypeName(d(elem2)) = "Dictionary" Or IsArray(d(elem2)) Then
-                    If IExpressions_IsDataStructure(d(elem2)) Then
+                    If pMeta.Tests.IsDataStructure(d(elem2)) Then
                         tempCol.Add elem2 & ": ", before:=counter
                         counter = counter + 1
                         
@@ -736,7 +736,7 @@ Function IExpressions_getDsType(v As Variant) As String
     
     If IsArray(v) Then
         temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
-    ElseIf IExpressions_IsDataStructure(v) Then
+    ElseIf pMeta.Tests.IsDataStructure(v) Then
         temp = TypeName(v) & "("
     ElseIf IsObject(v) Then
         temp = TypeName(v)
@@ -758,50 +758,6 @@ Private Function IExpressions_getResultNumber(ByVal Result As Variant) As Long
     End If
     
     IExpressions_getResultNumber = resultNumber
-End Function
-
-Private Function IExpressions_datastructureInCollection(ByVal dsName As String, ByVal col As Collection) As Boolean
-    Dim elem As Variant
-    Dim b As Boolean
-    
-    b = False
-    
-    For Each elem In col
-        If elem = dsName Then
-            b = True
-            Exit For
-        End If
-    Next elem
-    
-    IExpressions_datastructureInCollection = b
-End Function
-
-Private Function IExpressions_IsDataStructure(ByVal dataStructure As Variant) As Boolean
-    Dim dsTypeName As String
-    Dim tempBool As Boolean
-    Dim fluentBool As Boolean
-    Dim elem As Variant
-    Dim tempErr As Long
-    
-    dsTypeName = TypeName(dataStructure)
-    tempBool = False
-    
-    If IsArray(dataStructure) Then
-        tempBool = True
-    ElseIf IExpressions_datastructureInCollection(dsTypeName, pMeta.Tests.DataStructures) Then
-        On Error Resume Next
-            For Each elem In dataStructure
-                Exit For
-            Next elem
-            
-            tempErr = Err.Number
-            
-            tempBool = (tempErr = 0)
-            
-        On Error GoTo 0
-    End If
-    
-    IExpressions_IsDataStructure = tempBool
 End Function
 
 Private Function IExpressions_getTestDictCounter() As Scripting.Dictionary

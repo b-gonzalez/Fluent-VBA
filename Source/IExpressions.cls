@@ -114,13 +114,7 @@ End Function
 Public Function getResultNumber(ByVal Result As Variant) As Long
 End Function
 
-Public Function IsDataStructure(ByVal dataStructure As Variant) As Boolean
-End Function
-
 Public Function getTestDictCounter() As Scripting.Dictionary
-End Function
-
-Private Function datastructureInCollection(ByVal dsName As String, ByVal col As Collection) As Boolean
 End Function
 
 Public Function inputToStringIter(v As Variant) As String
