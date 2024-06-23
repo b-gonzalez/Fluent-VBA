@@ -301,71 +301,56 @@ Private Sub EqualityTests(fluent As IFluent, testFluent As IFluentOf, testFluent
         
         '//Approximate equality tests
     
-        testFluent.Meta.ApproximateEqual = True
+        testFluent.Meta.Tests.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("TRUE").Should.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("TRUE").Should.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("FALSE").Should.Be.EqualTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("FALSE").Should.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("TRUE").ShouldNot.Be.EqualTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("TRUE").ShouldNot.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("FALSE").ShouldNot.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("FALSE").ShouldNot.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("true").Should.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("true").Should.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("false").Should.Be.EqualTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("false").Should.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("true").ShouldNot.Be.EqualTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("true").ShouldNot.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("false").ShouldNot.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("false").ShouldNot.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.ApproximateEqual = False
+        testFluent.Meta.Tests.ApproximateEqual = False
         
         '//Null and Empty tests
         
@@ -1145,11 +1130,10 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
         ' //Approximate equality tests
-        testFluent.Meta.ApproximateEqual = True
+        testFluent.Meta.Tests.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("10").Should.Be.EqualTo(10)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("True").Should.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
@@ -1157,7 +1141,6 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         '//the default can be modified by setting a value
         '//for the epsilon property in the Meta object.
         
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of(5.0000001).Should.Be.EqualTo(5)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
@@ -2856,11 +2839,10 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
 
     
         ' //Approximate equality tests
-        testFluent.Meta.ApproximateEqual = True
+        testFluent.Meta.Tests.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("10").ShouldNot.Be.EqualTo(10)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("True").ShouldNot.Be.EqualTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
@@ -2868,7 +2850,6 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         '//the default can be modified by setting a value
         '//for the epsilon property in the Meta object.
         
-        testFluent.Meta.ApproximateEqual = True
         fluent.TestValue = testFluent.Of(5.0000001).ShouldNot.Be.EqualTo(5)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         

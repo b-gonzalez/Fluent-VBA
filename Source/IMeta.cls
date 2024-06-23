@@ -9,23 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Let ApproximateEqual(ByVal value As Boolean)
-End Property
-
-Public Property Get ApproximateEqual() As Boolean
-End Property
-
-Public Property Let Epsilon(ByVal value As Double)
-End Property
-
-Public Property Get Epsilon() As Double
-End Property
-
 Public Property Get Printing() As IPrinting
 End Property
 
 Public Property Get Tests() As cTests
-End Property
-
-Public Property Get DataStructures() As Collection
 End Property

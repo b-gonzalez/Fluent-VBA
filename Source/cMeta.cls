@@ -11,33 +11,13 @@ Option Explicit
 
 Implements IMeta
 
-Private pTestName As String
-Private pApproximateEqual As Boolean
-Private pEpsilon As Double
-Private pTestCount As Long
-Private pCategory As String
 Private pPrinting As IPrinting
-Private pFluentPath As String
 Private pTests As cTests
-Private pDataStructures As Collection
 
-Private Const defaultEpsilon As Double = 0.000001
-
-Private Property Let IMeta_ApproximateEqual(ByVal value As Boolean)
-    pApproximateEqual = value
-End Property
-
-Private Property Get IMeta_ApproximateEqual() As Boolean
-    IMeta_ApproximateEqual = pApproximateEqual
-End Property
-
-Private Property Let IMeta_Epsilon(ByVal value As Double)
-    pEpsilon = value
-End Property
-
-Private Property Get IMeta_Epsilon() As Double
-    IMeta_Epsilon = pEpsilon
-End Property
+Private Sub Class_Initialize()
+    Set pPrinting = New cPrinting
+    Set pTests = New cTests
+End Sub
 
 Private Property Get IMeta_Printing() As IPrinting
     Set IMeta_Printing = pPrinting
@@ -46,18 +26,3 @@ End Property
 Private Property Get IMeta_Tests() As cTests
     Set IMeta_Tests = pTests
 End Property
-
-Public Property Get IMeta_DataStructures() As Collection
-    Set IMeta_DataStructures = pDataStructures
-End Property
-
-Private Sub Class_Initialize()
-    IMeta_Epsilon = defaultEpsilon
-    Set pPrinting = New cPrinting
-    Set pTests = New cTests
-    Set pDataStructures = New Collection
-    
-    pDataStructures.Add "Dictionary"
-    pDataStructures.Add "Collection"
-    pDataStructures.Add "ArrayList"
-End Sub

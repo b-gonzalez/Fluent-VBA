@@ -290,10 +290,10 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
         Else
             tempBool = (testingValue = testingInput)
             
-            If pMeta.ApproximateEqual Then
+            If pMeta.Tests.ApproximateEqual Then
                 If TypeName(testingValue) <> TypeName(testingInput) Then
                     If IsNumeric(testingValue) And IsNumeric(testingInput) Then
-                        tempBool = (Abs(testingValue - testingInput) <= pMeta.Epsilon)
+                        tempBool = (Abs(testingValue - testingInput) <= pMeta.Tests.Epsilon)
                     ElseIf VarType(testingValue) = vbString Or VarType(testingInput) = vbString Then
                         tempBool = (StrComp(CStr(testingValue), CStr(testingInput), vbTextCompare) = 0)
                     End If
