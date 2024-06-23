@@ -3,6 +3,8 @@ Option Explicit
 
 Private mCounter As Long
 Private mTestCounter As Long
+Private mMiscPosTests As Long
+Private mMiscNegTests As Long
 Private posTestCount As Long
 Private negTestCount As Long
 
@@ -44,7 +46,8 @@ Public Sub runMainTests()
     mCounter = mCounter + MiscTests(fluent)
     
     Debug.Print "All tests Finished"
-    Call printTestCount(mCounter)
+    
+    Call printTestCount(mCounter + mMiscNegTests + mMiscPosTests)
     
     Call resetAndCheckCounters(events, fluent, testFluent)
     
@@ -64,6 +67,7 @@ Private Function getAndInitTestFluent() As IFluentOf
         
         .Tests.ToStrDev = True
     End With
+    
     
     Set getAndInitTestFluent = testFluent
 End Function
@@ -166,18 +170,20 @@ Private Sub TrueAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf,
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
     
-    With testFluent.Meta.Tests
-        Set td = .Item(.Count)
-    End With
-
-    inputIter = td.TestInputIter
-    inputRecur = td.TestInputRecur
-    valueIter = td.TestValueIter
-    valueRecur = td.TestValueRecur
+    If testFluent.Meta.Tests.ToStrDev Then
+        With testFluent.Meta.Tests
+            Set td = .Item(.Count)
+        End With
     
-    Debug.Assert _
-    inputIter = inputRecur And _
-    valueIter = valueRecur
+        inputIter = td.TestInputIter
+        inputRecur = td.TestInputRecur
+        valueIter = td.TestValueIter
+        valueRecur = td.TestValueRecur
+        
+        Debug.Assert _
+        inputIter = inputRecur And _
+        valueIter = valueRecur
+    End If
 End Sub
 
 Private Sub FalseAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
@@ -201,18 +207,20 @@ Private Sub FalseAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf
         testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
     
-    With testFluent.Meta.Tests
-        Set td = .Item(.Count)
-    End With
-
-    inputIter = td.TestInputIter
-    inputRecur = td.TestInputRecur
-    valueIter = td.TestValueIter
-    valueRecur = td.TestValueRecur
+    If testFluent.Meta.Tests.ToStrDev Then
+        With testFluent.Meta.Tests
+            Set td = .Item(.Count)
+        End With
     
-    Debug.Assert _
-    inputIter = inputRecur And _
-    valueIter = valueRecur
+        inputIter = td.TestInputIter
+        inputRecur = td.TestInputRecur
+        valueIter = td.TestValueIter
+        valueRecur = td.TestValueRecur
+        
+        Debug.Assert _
+        inputIter = inputRecur And _
+        valueIter = valueRecur
+    End If
 End Sub
 
 Private Sub NullAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
@@ -443,6 +451,9 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
     Dim fluentBool As Boolean
     Dim valueBool As Boolean
     Dim inputBool As Boolean
+    Dim tfRecur As IFluentOf
+    Dim tfIter As IFluentOf
+    Dim b As Boolean
     
     With fluent.Meta.Tests
         fluent.TestValue = testFluent.Of(10).Should.Be.EqualTo(10)
@@ -706,16 +717,29 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(col).Should.Be.Something
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-'with flRecursive
 
-        testFluent.Meta.Tests.Algorithm = flRecursive
+'InDataStructure
+
+        Set tfRecur = New cFluentOf
+        Set tfIter = New cFluentOf
+        
+        tfRecur.Meta.Tests.Algorithm = flRecursive
+        tfIter.Meta.Tests.Algorithm = flIterative
         
         arr = Array()
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructure(arr) = tfIter.Of(10).Should.Be.InDataStructure(arr)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(False) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         arr = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructure(arr) = tfIter.Of(10).Should.Be.InDataStructure(arr)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         ReDim arr(1, 1)
@@ -723,7 +747,11 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         arr(0, 1) = 10
         arr(1, 0) = 11
         arr(1, 1) = 12
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructure(arr) = tfIter.Of(10).Should.Be.InDataStructure(arr)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         ReDim arr(1, 1, 1)
@@ -735,24 +763,41 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         arr(1, 0, 1) = 11
         arr(1, 1, 0) = 12
         arr(1, 1, 1) = 13
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructure(arr) = tfIter.Of(10).Should.Be.InDataStructure(arr)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        
         arr = Array(9, Array(10, Array(11)))
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructure(arr) = tfIter.Of(10).Should.Be.InDataStructure(arr)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set col = New Collection
         col.Add 9
         col.Add 10
         col.Add 11
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col) 'with implicit recur
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructure(col) = tfIter.Of(10).Should.Be.InDataStructure(col)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set col = New Collection
         col.Add 9
         col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col) 'with implicit recur
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructure(col) = tfIter.Of(10).Should.Be.InDataStructure(col)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         Set col = Nothing
         
@@ -760,14 +805,22 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         d.Add 1, 9
         d.Add 2, 10
         d.Add 3, 11
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d) 'with implicit recur
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructure(d) = tfIter.Of(10).Should.Be.InDataStructure(d)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         Set d = Nothing
         
         Set d = New Scripting.Dictionary
         d.Add 1, 9
         d.Add 2, Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d) 'with implicit recur
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructure(d) = tfIter.Of(10).Should.Be.InDataStructure(d)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         Set d = Nothing
         
@@ -775,7 +828,11 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         d.Add 9, 1
         d.Add 10, 2
         d.Add 11, 3
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d.Keys)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d.Keys) 'with implicit recur
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructure(d.Keys) = tfIter.Of(10).Should.Be.InDataStructure(d.Keys)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         Set d = Nothing
         
@@ -783,95 +840,21 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(al)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(al) 'with implicit recur
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-'with flIterative
-
-        testFluent.Meta.Tests.Algorithm = flIterative
-
-        arr = Array()
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        arr = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        ReDim arr(1, 1)
-        arr(0, 0) = 9
-        arr(0, 1) = 10
-        arr(1, 0) = 11
-        arr(1, 1) = 12
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        ReDim arr(1, 1, 1)
-        arr(0, 0, 0) = 6
-        arr(0, 0, 1) = 7
-        arr(0, 1, 0) = 8
-        arr(0, 1, 1) = 9
-        arr(1, 0, 0) = 10
-        arr(1, 0, 1) = 11
-        arr(1, 1, 0) = 12
-        arr(1, 1, 1) = 13
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        arr = Array(9, Array(10, Array(11)))
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 9
-        col.Add 10
-        col.Add 11
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 9
-        col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set col = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, 10
-        d.Add 3, 11
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 9, 1
-        d.Add 10, 2
-        d.Add 11, 3
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d.Keys)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(al)
+        b = tfRecur.Of(10).Should.Be.InDataStructure(al) = tfIter.Of(10).Should.Be.InDataStructure(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-'implicit recursive
-
-        testFluent.Meta.Tests.Algorithm = flRecursive
+'InDataStructures
         
         arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr2)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr2) 'with implicit recur
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(arr2) = tfIter.Of(10).Should.Be.InDataStructures(arr2)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set al = CreateObject("System.Collections.Arraylist")
@@ -880,7 +863,11 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+            
         ReDim arr(1, 1)
         arr(0, 0) = 12
         arr(0, 1) = 13
@@ -889,12 +876,20 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         arr2 = Array(9, 10, 11)
         fluent.TestValue = testFluent.Of(12).Should.Be.InDataStructures(arr, arr2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(12).Should.Be.InDataStructures(arr, arr2) = tfIter.Of(12).Should.Be.InDataStructures(arr, arr2)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
         ReDim arr(1, 1, 1)
@@ -909,17 +904,9 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         arr2 = Array(15, 16, 17)
         fluent.TestValue = testFluent.Of(9).Should.Be.InDataStructures(arr, arr2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        arr = Array(9, Array(10, Array(11)))
-        arr2 = Array(15, 16, 17)
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr, arr2)
+        b = tfRecur.Of(9).Should.Be.InDataStructures(arr, arr2) = tfIter.Of(9).Should.Be.InDataStructures(arr, arr2)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set al = CreateObject("System.Collections.Arraylist")
@@ -927,6 +914,30 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        arr = Array(9, Array(10, Array(11)))
+        arr2 = Array(15, 16, 17)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr, arr2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(arr, arr2) = tfIter.Of(10).Should.Be.InDataStructures(arr, arr2)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set al = CreateObject("System.Collections.Arraylist")
+        al.Add 9
+        al.Add 10
+        al.Add 11
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
         Set col = New Collection
@@ -935,12 +946,20 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         col.Add 14
         fluent.TestValue = testFluent.Of(13).Should.Be.InDataStructures(col)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(13).Should.Be.InDataStructures(col) = tfIter.Of(13).Should.Be.InDataStructures(col)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set col = New Collection
@@ -951,12 +970,20 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         arr2 = Array(15, 16, 17)
         fluent.TestValue = testFluent.Of(16).Should.Be.InDataStructures(arr, col, arr2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        b = tfRecur.Of(16).Should.Be.InDataStructures(arr, col, arr2) = tfIter.Of(16).Should.Be.InDataStructures(arr, col, arr2)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+                        
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set col = New Collection
@@ -964,12 +991,20 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         col.Add Array(10, Array(11))
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(col)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(col) = tfIter.Of(10).Should.Be.InDataStructures(col)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         Set col = Nothing
         
@@ -979,12 +1014,20 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         col.Add Array(10, Array(11))
         fluent.TestValue = testFluent.Of(14).Should.Be.InDataStructures(col, arr)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(14).Should.Be.InDataStructures(col, arr) = tfIter.Of(14).Should.Be.InDataStructures(col, arr)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         Set col = Nothing
     
@@ -994,12 +1037,20 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         d.Add 3, 11
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(d)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(d) = tfIter.Of(10).Should.Be.InDataStructures(d)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         Set d = Nothing
         
@@ -1009,12 +1060,20 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         d.Add 3, 11
         fluent.TestValue = testFluent.Of(2).Should.Be.InDataStructures(d.Items, d.Keys)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(2).Should.Be.InDataStructures(d.Items, d.Keys) = tfIter.Of(2).Should.Be.InDataStructures(d.Items, d.Keys)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set d = Nothing
@@ -1023,12 +1082,20 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         d.Add 2, Array(10, Array(11))
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(d)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(d) = tfIter.Of(10).Should.Be.InDataStructures(d)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         Set d = Nothing
         
@@ -1038,12 +1105,20 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         al.Add 11
         fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         arr = Array(6, Array(7, Array(8)))
@@ -1053,21 +1128,9 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         al.Add 11
         fluent.TestValue = testFluent.Of(8).Should.Be.InDataStructures(al, arr)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-
-'explicit recursive
-
-        testFluent.Meta.Tests.Algorithm = flRecursive
-        
-        arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr2)
+        b = tfRecur.Of(8).Should.Be.InDataStructures(al, arr) = tfIter.Of(8).Should.Be.InDataStructures(al, arr)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set al = CreateObject("System.Collections.Arraylist")
@@ -1076,385 +1139,10 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        ReDim arr(1, 1)
-        arr(0, 0) = 12
-        arr(0, 1) = 13
-        arr(1, 0) = 14
-        arr(1, 1) = 15
-        arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(12).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        ReDim arr(1, 1, 1)
-        arr(0, 0, 0) = 6
-        arr(0, 0, 1) = 7
-        arr(0, 1, 0) = 8
-        arr(0, 1, 1) = 9
-        arr(1, 0, 0) = 10
-        arr(1, 0, 1) = 11
-        arr(1, 1, 0) = 12
-        arr(1, 1, 1) = 13
-        arr2 = Array(15, 16, 17)
-        fluent.TestValue = testFluent.Of(9).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        arr = Array(9, Array(10, Array(11)))
-        arr2 = Array(15, 16, 17)
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        Set col = New Collection
-        col.Add 12
-        col.Add 13
-        col.Add 14
-        fluent.TestValue = testFluent.Of(13).Should.Be.InDataStructures(col)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 12
-        col.Add 13
-        col.Add 14
-        arr = Array(9, Array(10, Array(11)))
-        arr2 = Array(15, 16, 17)
-        fluent.TestValue = testFluent.Of(16).Should.Be.InDataStructures(arr, col, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 9
-        col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(col)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set col = Nothing
-        
-        arr = Array(12, 13, 14)
-        Set col = New Collection
-        col.Add 9
-        col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(14).Should.Be.InDataStructures(col, arr)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set col = Nothing
-    
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, 10
-        d.Add 3, 11
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(d)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, 10
-        d.Add 3, 11
-        fluent.TestValue = testFluent.Of(2).Should.Be.InDataStructures(d.Items, d.Keys)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set d = Nothing
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(d)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        arr = Array(6, Array(7, Array(8)))
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(8).Should.Be.InDataStructures(al, arr)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-'iterative
-
-        testFluent.Meta.Tests.Algorithm = flIterative
-        
-        arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        ReDim arr(1, 1)
-        arr(0, 0) = 12
-        arr(0, 1) = 13
-        arr(1, 0) = 14
-        arr(1, 1) = 15
-        arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(12).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        ReDim arr(1, 1, 1)
-        arr(0, 0, 0) = 6
-        arr(0, 0, 1) = 7
-        arr(0, 1, 0) = 8
-        arr(0, 1, 1) = 9
-        arr(1, 0, 0) = 10
-        arr(1, 0, 1) = 11
-        arr(1, 1, 0) = 12
-        arr(1, 1, 1) = 13
-        arr2 = Array(15, 16, 17)
-        fluent.TestValue = testFluent.Of(9).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        arr = Array(9, Array(10, Array(11)))
-        arr2 = Array(15, 16, 17)
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        Set col = New Collection
-        col.Add 12
-        col.Add 13
-        col.Add 14
-        fluent.TestValue = testFluent.Of(13).Should.Be.InDataStructures(col)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 12
-        col.Add 13
-        col.Add 14
-        arr = Array(9, Array(10, Array(11)))
-        arr2 = Array(15, 16, 17)
-        fluent.TestValue = testFluent.Of(16).Should.Be.InDataStructures(arr, col, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 9
-        col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(col)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set col = Nothing
-        
-        arr = Array(12, 13, 14)
-        Set col = New Collection
-        col.Add 9
-        col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(14).Should.Be.InDataStructures(col, arr)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set col = Nothing
-    
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, 10
-        d.Add 3, 11
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(d)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, 10
-        d.Add 3, 11
-        fluent.TestValue = testFluent.Of(2).Should.Be.InDataStructures(d.Items, d.Keys)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set d = Nothing
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(d)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        arr = Array(6, Array(7, Array(8)))
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(8).Should.Be.InDataStructures(al, arr)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-
-
-
 
         ' //Approximate equality tests
         testFluent.Meta.ApproximateEqual = True
@@ -2443,7 +2131,7 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
     End With
     
     Debug.Print "Positive tests finished"
-    posTestCount = mTestCounter
+    posTestCount = mTestCounter + mMiscPosTests
     mTestCounter = 0
     printTestCount (posTestCount)
     
@@ -2466,6 +2154,12 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
     Dim fluentBool As Boolean
     Dim valueBool As Boolean
     Dim inputBool As Boolean
+    Dim tfRecur As IFluentOf
+    Dim tfIter As IFluentOf
+    Dim b As Boolean
+    
+    
+    
     
     With fluent.Meta.Tests
     
@@ -2730,25 +2424,41 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Something
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-'with flRecursive
+'InDataStructure
 
-        testFluent.Meta.Tests.Algorithm = flRecursive
+        Set tfRecur = New cFluentOf
+        Set tfIter = New cFluentOf
+        
+        tfRecur.Meta.Tests.Algorithm = flRecursive
+        tfIter.Meta.Tests.Algorithm = flIterative
         
         arr = Array()
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(arr) = tfIter.Of(10).ShouldNot.Be.InDataStructure(arr)
+        mMiscNegTests = mMiscNegTests + 1
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(False) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         
         arr = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(arr) = tfIter.Of(10).ShouldNot.Be.InDataStructure(arr)
+        mMiscNegTests = mMiscNegTests + 1
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         
         ReDim arr(1, 1)
         arr(0, 0) = 9
         arr(0, 1) = 10
         arr(1, 0) = 11
         arr(1, 1) = 12
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(arr) = tfIter.Of(10).ShouldNot.Be.InDataStructure(arr)
+        mMiscNegTests = mMiscNegTests + 1
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         
         ReDim arr(1, 1, 1)
         arr(0, 0, 0) = 6
@@ -2759,165 +2469,134 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         arr(1, 0, 1) = 11
         arr(1, 1, 0) = 12
         arr(1, 1, 1) = 13
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(arr) = tfIter.Of(10).ShouldNot.Be.InDataStructure(arr)
+        mMiscNegTests = mMiscNegTests + 1
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+        
         
         arr = Array(9, Array(10, Array(11)))
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(arr) = tfIter.Of(10).ShouldNot.Be.InDataStructure(arr)
+        mMiscNegTests = mMiscNegTests + 1
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         
         Set col = New Collection
         col.Add 9
         col.Add 10
         col.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col) 'with implicit recur
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(col) = tfIter.Of(10).ShouldNot.Be.InDataStructure(col)
+        mMiscNegTests = mMiscNegTests + 1
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         
         Set col = New Collection
         col.Add 9
         col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col) 'with implicit recur
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(col) = tfIter.Of(10).ShouldNot.Be.InDataStructure(col)
+        mMiscNegTests = mMiscNegTests + 1
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         Set col = Nothing
         
         Set d = New Scripting.Dictionary
         d.Add 1, 9
         d.Add 2, 10
         d.Add 3, 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d) 'with implicit recur
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(d) = tfIter.Of(10).ShouldNot.Be.InDataStructure(d)
+        mMiscNegTests = mMiscNegTests + 1
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         Set d = Nothing
         
         Set d = New Scripting.Dictionary
         d.Add 1, 9
         d.Add 2, Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d) 'with implicit recur
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(d) = tfIter.Of(10).ShouldNot.Be.InDataStructure(d)
+        mMiscNegTests = mMiscNegTests + 1
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         Set d = Nothing
         
         Set d = New Scripting.Dictionary
         d.Add 9, 1
         d.Add 10, 2
         d.Add 11, 3
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d.Keys)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d.Keys) 'with implicit recur
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(d.Keys) = tfIter.Of(10).ShouldNot.Be.InDataStructure(d.Keys)
+        mMiscNegTests = mMiscNegTests + 1
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         Set d = Nothing
         
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al) 'with implicit recur
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-'with flRecursive
-
-        testFluent.Meta.Tests.Algorithm = flIterative
-
-        arr = Array()
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        arr = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        ReDim arr(1, 1)
-        arr(0, 0) = 9
-        arr(0, 1) = 10
-        arr(1, 0) = 11
-        arr(1, 1) = 12
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        ReDim arr(1, 1, 1)
-        arr(0, 0, 0) = 6
-        arr(0, 0, 1) = 7
-        arr(0, 1, 0) = 8
-        arr(0, 1, 1) = 9
-        arr(1, 0, 0) = 10
-        arr(1, 0, 1) = 11
-        arr(1, 1, 0) = 12
-        arr(1, 1, 1) = 13
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        arr = Array(9, Array(10, Array(11)))
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 9
-        col.Add 10
-        col.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 9
-        col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set col = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, 10
-        d.Add 3, 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 9, 1
-        d.Add 10, 2
-        d.Add 11, 3
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d.Keys)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(al) = tfIter.Of(10).ShouldNot.Be.InDataStructure(al)
+        mMiscNegTests = mMiscNegTests + 1
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-'implicit recursive
+'InDataStructures
 
         arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(arr2) 'with implicit recur
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(arr2) = tfIter.Of(10).ShouldNot.Be.InDataStructures(arr2)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+            
         ReDim arr(1, 1)
         arr(0, 0) = 12
         arr(0, 1) = 13
         arr(1, 0) = 14
         arr(1, 1) = 15
         arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(12).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        fluent.TestValue = testFluent.Of(12).ShouldNot.Be.InDataStructures(arr, arr2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(12).ShouldNot.Be.InDataStructures(arr, arr2) = tfIter.Of(12).ShouldNot.Be.InDataStructures(arr, arr2)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     
         ReDim arr(1, 1, 1)
         arr(0, 0, 0) = 6
@@ -2929,222 +2608,43 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         arr(1, 1, 0) = 12
         arr(1, 1, 1) = 13
         arr2 = Array(15, 16, 17)
-        fluent.TestValue = testFluent.Of(9).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        fluent.TestValue = testFluent.Of(9).ShouldNot.Be.InDataStructures(arr, arr2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(9).ShouldNot.Be.InDataStructures(arr, arr2) = tfIter.Of(9).ShouldNot.Be.InDataStructures(arr, arr2)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+    
         arr = Array(9, Array(10, Array(11)))
-        arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(arr, arr2)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        Set col = New Collection
-        col.Add 12
-        col.Add 13
-        col.Add 14
-        fluent.TestValue = testFluent.Of(13).ShouldNot.Be.InDataStructures(col)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 12
-        col.Add 13
-        col.Add 14
-        arr = Array(9, Array(10, Array(11)))
-        arr2 = Array(9, 10, 16)
-        fluent.TestValue = testFluent.Of(16).ShouldNot.Be.InDataStructures(arr, col, arr2)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 9
-        col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(col)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set col = Nothing
-        
-        arr = Array(12, 13, 14)
-        Set col = New Collection
-        col.Add 9
-        col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(14).ShouldNot.Be.InDataStructures(col, arr)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set col = Nothing
-    
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, 10
-        d.Add 3, 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, 10
-        d.Add 3, 11
-        fluent.TestValue = testFluent.Of(2).ShouldNot.Be.InDataStructures(d.Items, d.Keys)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        arr = Array(6, Array(7, Array(8)))
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(8).ShouldNot.Be.InDataStructures(al, arr)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-'explicit recursive
-
-        testFluent.Meta.Tests.Algorithm = flRecursive
-
-        arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        ReDim arr(1, 1)
-        arr(0, 0) = 12
-        arr(0, 1) = 13
-        arr(1, 0) = 14
-        arr(1, 1) = 15
-        arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(12).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        ReDim arr(1, 1, 1)
-        arr(0, 0, 0) = 6
-        arr(0, 0, 1) = 7
-        arr(0, 1, 0) = 8
-        arr(0, 1, 1) = 9
-        arr(1, 0, 0) = 10
-        arr(1, 0, 1) = 11
-        arr(1, 1, 0) = 12
-        arr(1, 1, 1) = 13
         arr2 = Array(15, 16, 17)
-        fluent.TestValue = testFluent.Of(9).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        arr = Array(9, Array(10, Array(11)))
-        arr2 = Array(9, 10, 11)
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(arr, arr2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(arr, arr2) = tfIter.Of(10).ShouldNot.Be.InDataStructures(arr, arr2)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     
         Set col = New Collection
         col.Add 12
@@ -3152,312 +2652,183 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         col.Add 14
         fluent.TestValue = testFluent.Of(13).ShouldNot.Be.InDataStructures(col)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        b = tfRecur.Of(13).ShouldNot.Be.InDataStructures(col) = tfIter.Of(13).ShouldNot.Be.InDataStructures(col)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+    
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         
         Set col = New Collection
         col.Add 12
         col.Add 13
         col.Add 14
         arr = Array(9, Array(10, Array(11)))
-        arr2 = Array(9, 10, 16)
-        fluent.TestValue = testFluent.Of(16).ShouldNot.Be.InDataStructures(arr, col, arr2)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 9
-        col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(col)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set col = Nothing
-        
-        arr = Array(12, 13, 14)
-        Set col = New Collection
-        col.Add 9
-        col.Add Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(14).ShouldNot.Be.InDataStructures(col, arr)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set col = Nothing
-    
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, 10
-        d.Add 3, 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, 10
-        d.Add 3, 11
-        fluent.TestValue = testFluent.Of(2).ShouldNot.Be.InDataStructures(d.Items, d.Keys)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set d = New Scripting.Dictionary
-        d.Add 1, 9
-        d.Add 2, Array(10, Array(11))
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        arr = Array(6, Array(7, Array(8)))
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(8).ShouldNot.Be.InDataStructures(al, arr)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-'explicit iterative
-
-        testFluent.Meta.Tests.Algorithm = flIterative
-
-        arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        ReDim arr(1, 1)
-        arr(0, 0) = 12
-        arr(0, 1) = 13
-        arr(1, 0) = 14
-        arr(1, 1) = 15
-        arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(12).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        ReDim arr(1, 1, 1)
-        arr(0, 0, 0) = 6
-        arr(0, 0, 1) = 7
-        arr(0, 1, 0) = 8
-        arr(0, 1, 1) = 9
-        arr(1, 0, 0) = 10
-        arr(1, 0, 1) = 11
-        arr(1, 1, 0) = 12
-        arr(1, 1, 1) = 13
         arr2 = Array(15, 16, 17)
-        fluent.TestValue = testFluent.Of(9).Should.Be.InDataStructures(arr, arr2)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        arr = Array(9, Array(10, Array(11)))
-        arr2 = Array(9, 10, 11)
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(arr, arr2)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        Set col = New Collection
-        col.Add 12
-        col.Add 13
-        col.Add 14
-        fluent.TestValue = testFluent.Of(13).ShouldNot.Be.InDataStructures(col)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set al = CreateObject("System.Collections.Arraylist")
-        al.Add 9
-        al.Add 10
-        al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        Set col = New Collection
-        col.Add 12
-        col.Add 13
-        col.Add 14
-        arr = Array(9, Array(10, Array(11)))
-        arr2 = Array(9, 10, 16)
         fluent.TestValue = testFluent.Of(16).ShouldNot.Be.InDataStructures(arr, col, arr2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        b = tfRecur.Of(16).ShouldNot.Be.InDataStructures(arr, col, arr2) = tfIter.Of(16).ShouldNot.Be.InDataStructures(arr, col, arr2)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+
+
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+
         Set col = New Collection
         col.Add 9
         col.Add Array(10, Array(11))
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(col)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(col) = tfIter.Of(10).ShouldNot.Be.InDataStructures(col)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         Set col = Nothing
-        
+
         arr = Array(12, 13, 14)
         Set col = New Collection
         col.Add 9
         col.Add Array(10, Array(11))
         fluent.TestValue = testFluent.Of(14).ShouldNot.Be.InDataStructures(col, arr)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        b = tfRecur.Of(14).ShouldNot.Be.InDataStructures(col, arr) = tfIter.Of(14).ShouldNot.Be.InDataStructures(col, arr)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         Set col = Nothing
-    
+
         Set d = New Scripting.Dictionary
         d.Add 1, 9
         d.Add 2, 10
         d.Add 3, 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(d) = tfIter.Of(10).ShouldNot.Be.InDataStructures(d)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        Set d = Nothing
-        
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        Set d = Nothing ''
+
         Set d = New Scripting.Dictionary
         d.Add 1, 9
         d.Add 2, 10
         d.Add 3, 11
         fluent.TestValue = testFluent.Of(2).ShouldNot.Be.InDataStructures(d.Items, d.Keys)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        b = tfRecur.Of(2).ShouldNot.Be.InDataStructures(d.Items, d.Keys) = tfIter.Of(2).ShouldNot.Be.InDataStructures(d.Items, d.Keys)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+
         Set d = Nothing
-        
         Set d = New Scripting.Dictionary
         d.Add 1, 9
         d.Add 2, Array(10, Array(11))
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(d) = tfIter.Of(10).ShouldNot.Be.InDataStructures(d)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
         Set d = Nothing
-        
+
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
         fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+
         arr = Array(6, Array(7, Array(8)))
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
@@ -3465,13 +2836,23 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         al.Add 11
         fluent.TestValue = testFluent.Of(8).ShouldNot.Be.InDataStructures(al, arr)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+        b = tfRecur.Of(8).ShouldNot.Be.InDataStructures(al, arr) = tfIter.Of(8).ShouldNot.Be.InDataStructures(al, arr)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
+
         Set al = CreateObject("System.Collections.Arraylist")
         al.Add 9
         al.Add 10
         al.Add 11
-        fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
+        mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+        fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+
 
     
         ' //Approximate equality tests
@@ -4460,7 +3841,7 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
     End With
     
     Debug.Print "Negative tests finished"
-    negTestCount = mTestCounter
+    negTestCount = mTestCounter + mMiscNegTests
     mTestCounter = 0
     printTestCount (negTestCount)
     
@@ -5120,7 +4501,7 @@ End Function
 
 Private Function MiscTests(fluent As IFluent)
     Dim testCount As Long
-    
+
     'test to ensure fluent object's default TestValue value is equal to empty
     Debug.Assert fluent.Should.Be.EqualTo(Empty)
     
