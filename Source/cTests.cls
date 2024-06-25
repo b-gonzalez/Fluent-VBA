@@ -9,8 +9,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-'Implements ITests
-
 Public Event TestPassed(ByVal test As ITest)
 Public Event TestFailed(ByVal test As ITest)
 Public Event TestCompleted(ByVal test As ITest)
@@ -28,19 +26,6 @@ Private pEpsilon As Double
 Private pDataStructures As Collection
 
 Private Const defaultEpsilon As Double = 0.000001
-
-Private Sub Class_Initialize()
-    Set pCol = New Collection
-    pCount = 0
-    pAlgorithm = flRecursive
-    
-    pEpsilon = defaultEpsilon
-    Set pDataStructures = New Collection
-    
-    pDataStructures.Add "Dictionary"
-    pDataStructures.Add "Collection"
-    pDataStructures.Add "ArrayList"
-End Sub
 
 Public Property Set TestDictCounter(value As Scripting.Dictionary)
     Set pTestDictCounter = value
@@ -149,7 +134,7 @@ Public Function IsDataStructure(ByVal dataStructure As Variant) As Boolean
     IsDataStructure = tempBool
 End Function
 
-Public Function IsIterable(ByVal dataStructure As Variant)
+Public Function IsIterable(ByVal dataStructure As Variant) As Boolean
     Dim tempBool As Boolean
     Dim elem As Variant
     Dim tempErr As Long
@@ -168,10 +153,6 @@ Public Function IsIterable(ByVal dataStructure As Variant)
     IsIterable = tempBool
 End Function
 
-Public Sub ResetCounter()
-    pCount = 0
-End Sub
-
 Public Sub CheckTest(test As ITest)
     pResult = test.Result
     
@@ -188,4 +169,66 @@ Public Sub CheckTest(test As ITest)
     Else
         RaiseEvent TestUnexpected(test)
     End If
+End Sub
+
+Public Sub resetTestDictCounter()
+    Set pTestDictCounter = getTestDictCounter(pTestDictCounter)
+End Sub
+
+Public Sub ResetCounter()
+    pCount = 0
+End Sub
+
+Private Function getTestDictCounter(TestDictCounter As Scripting.Dictionary) As Scripting.Dictionary
+    Dim initElem As Scripting.Dictionary
+    
+    Set initElem = New Scripting.Dictionary
+    
+    Set TestDictCounter("Alphabetic") = New Scripting.Dictionary
+    Set TestDictCounter("Alphanumeric") = New Scripting.Dictionary
+    Set TestDictCounter("Between") = New Scripting.Dictionary
+    Set TestDictCounter("Contain") = New Scripting.Dictionary
+    Set TestDictCounter("EndWith") = New Scripting.Dictionary
+    Set TestDictCounter("EqualTo") = New Scripting.Dictionary
+    Set TestDictCounter("Erroneous") = New Scripting.Dictionary
+    Set TestDictCounter("ErrorDescriptionOf") = New Scripting.Dictionary
+    Set TestDictCounter("ErrorNumberOf") = New Scripting.Dictionary
+    Set TestDictCounter("EvaluateTo") = New Scripting.Dictionary
+    Set TestDictCounter("ExactSameElementsAs") = New Scripting.Dictionary
+    Set TestDictCounter("GreaterThan") = New Scripting.Dictionary
+    Set TestDictCounter("GreaterThanOrEqualTo") = New Scripting.Dictionary
+    Set TestDictCounter("IdenticalTo") = New Scripting.Dictionary
+    Set TestDictCounter("InDataStructure") = New Scripting.Dictionary
+    Set TestDictCounter("InDataStructures") = New Scripting.Dictionary
+    Set TestDictCounter("LengthBetween") = New Scripting.Dictionary
+    Set TestDictCounter("LengthOf") = New Scripting.Dictionary
+    Set TestDictCounter("LessThan") = New Scripting.Dictionary
+    Set TestDictCounter("LessThanOrEqualTo") = New Scripting.Dictionary
+    Set TestDictCounter("MaxLengthOf") = New Scripting.Dictionary
+    Set TestDictCounter("MinLengthOf") = New Scripting.Dictionary
+    Set TestDictCounter("Numeric") = New Scripting.Dictionary
+    Set TestDictCounter("OneOf") = New Scripting.Dictionary
+    Set TestDictCounter("SameElementsAs") = New Scripting.Dictionary
+    Set TestDictCounter("SameTypeAs") = New Scripting.Dictionary
+    Set TestDictCounter("SameUniqueElementsAs") = New Scripting.Dictionary
+    Set TestDictCounter("Something") = New Scripting.Dictionary
+    Set TestDictCounter("StartWith") = New Scripting.Dictionary
+
+    Set getTestDictCounter = TestDictCounter
+End Function
+
+Private Sub Class_Initialize()
+    Set pCol = New Collection
+    pCount = 0
+    
+    pAlgorithm = flRecursive
+    pEpsilon = defaultEpsilon
+    Set pTestDictCounter = New Scripting.Dictionary
+    Set pTestDictCounter = getTestDictCounter(pTestDictCounter)
+    
+    Set pDataStructures = New Collection
+    
+    pDataStructures.Add "Dictionary"
+    pDataStructures.Add "Collection"
+    pDataStructures.Add "ArrayList"
 End Sub

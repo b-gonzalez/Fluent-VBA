@@ -727,14 +727,23 @@ ByVal testingValue As Variant, _
 ByVal testingInput As Variant, _
 Optional ByVal NegateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
-    Dim t1 As String
-    Dim t2 As String
+    Dim t1 As Variant
+    Dim t2 As Variant
     Dim funcVal As Variant
     
     funcVal = Null
     
-    t1 = TypeName(testingValue)
-    t2 = TypeName(testingInput)
+    If Not IsNull(testingValue) Then
+        t1 = TypeName(testingValue)
+    Else
+        t1 = testingValue
+    End If
+    
+    If Not IsNull(testingInput) Then
+        t2 = TypeName(testingInput)
+    Else
+        t2 = testingInput
+    End If
     
     funcVal = IBeTestFuncs_EqualTo(t1, t2, updateFluentPath:=False)
     

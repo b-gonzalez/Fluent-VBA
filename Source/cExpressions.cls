@@ -12,10 +12,11 @@ Option Explicit
 Implements IExpressions
 
 Private pTestDictCounter As Scripting.Dictionary
+Private pTestDictInfo As Scripting.Dictionary
 Private pPrinting As IPrinting
 Private iPrint As IPrintExpr
-Private pTests As cTests
 Private pMeta As IMeta
+Private pTests As cTests
 
 Private Const NOT_IMPLEMENTED_ERROR As Long = 514
 
@@ -30,7 +31,7 @@ End Property
 
 Private Property Set IExpressions_setMeta(ByVal value As cMeta)
     Set pMeta = value
-    Set pMeta.Tests.TestDictCounter = pTestDictCounter
+    Set pTestDictCounter = pMeta.Tests.TestDictCounter
 End Property
 
 Private Sub IExpressions_addToTestAndFluentPath( _
@@ -407,7 +408,21 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue
     Set testDev = test
     
     If pTestDictCounter.Exists(test.functionName) Then
-        pTestDictCounter(test.functionName) = pTestDictCounter(test.functionName) + 1
+        Set pTestDictInfo = pTestDictCounter(test.functionName)
+        
+        pTestDictInfo("count") = pTestDictInfo("count") + 1
+        
+        If Not IsNull(test.Result) Then
+            If test.Result Then
+                pTestDictInfo("passed") = pTestDictInfo("passed") + 1
+            Else
+                 pTestDictInfo("failed") = pTestDictInfo("failed") + 1
+            End If
+        Else
+            pTestDictInfo("unexpected") = pTestDictInfo("unexpected") + 1
+        End If
+        
+        Set pTestDictCounter(test.functionName) = pTestDictInfo
     Else
         Err.Raise Number:=NOT_IMPLEMENTED_ERROR, Description:="Test name not implemented in TestDictCounter"
     End If
@@ -507,21 +522,13 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
     Dim elem As Variant
     Dim emptyDS As Boolean
 
-    temp = ""
+    temp = IExpressions_getDsType(v)
 
     Select Case True
-        Case IsArray(v) And IExpressions_DatastructureIsEmpty(v)
-            temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
-        Case pMeta.Tests.IsDataStructure(v) Or IsArray(v)
-            If IsArray(v) Then
-                temp = Left(TypeName(v), Len(TypeName(v)) - 2) & "("
-            Else
-                temp = TypeName(v) & "("
-            End If
-            
+        Case pMeta.Tests.IsDataStructure(v) And Not IExpressions_DatastructureIsEmpty(v)
             If Not TypeOf v Is Dictionary Then
                 For Each elem In v
-                    If pMeta.Tests.IsDataStructure(elem) Or IsArray(elem) Then
+                    If pMeta.Tests.IsDataStructure(elem) Then
                         temp = temp & IExpressions_InputToStringRecur(elem) & ", "
                     ElseIf IsObject(elem) Then
                         temp = temp & TypeName(elem) & ", "
@@ -533,7 +540,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                 Next elem
             Else
                 For Each elem In v.Keys
-                    If pMeta.Tests.IsDataStructure(v(elem)) Or IsArray(v(elem)) Then
+                    If pMeta.Tests.IsDataStructure(v(elem)) Then
                         temp = temp & elem & ": " & IExpressions_InputToStringRecur(v(elem)) & ", "
                     ElseIf IsObject(v(elem)) Then
                         temp = temp & elem & ": " & TypeName(v(elem)) & ", "
@@ -602,7 +609,7 @@ Function IExpressions_inputToStringIter(v As Variant) As String
             If dsCount > 0 Then
                 tempCol.Add elem
             ElseIf dsCount = 0 Then
-                tempCol.Add getDsType(elem) & ")"
+                tempCol.Add IExpressions_getDsType(elem) & ")"
             End If
         End If
         
@@ -635,7 +642,7 @@ Function IExpressions_inputToStringIter(v As Variant) As String
     
 End Function
 
-Function IExpressions_getNestedElementsFromCollection(col As Collection)
+Function IExpressions_getNestedElementsFromCollection(col As Collection) As Collection
     Dim elem As Variant
     Dim elem2 As Variant
     Dim counter As Long
@@ -661,13 +668,13 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection)
         If pMeta.Tests.IsDataStructure(elem) Then
             hasDataStructure = True
             
-            tempCol.Add getDsType(elem), before:=counter
+            tempCol.Add IExpressions_getDsType(elem), before:=counter
             
             'counter needs to get incremented every time an element is added
             'to tempCol or when the loop continues to the next element
             counter = counter + 1
             
-            elemCount = getDsCount(elem)
+            elemCount = IExpressions_getDsCount(elem)
             
             For Each elem2 In elem
                 If TypeName(elem) <> "Dictionary" Then
@@ -680,7 +687,7 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection)
                     'counter incremented towards end of if statement
                 Else
                     Set d = elem
-'                    If TypeName(d(elem2)) = "Collection" Or TypeName(d(elem2)) = "Dictionary" Or IsArray(d(elem2)) Then
+                    
                     If pMeta.Tests.IsDataStructure(d(elem2)) Then
                         tempCol.Add elem2 & ": ", before:=counter
                         counter = counter + 1
@@ -729,7 +736,7 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection)
     Set IExpressions_getNestedElementsFromCollection = tempCol
 End Function
 
-Function IExpressions_getDsCount(dataStructure) As Long
+Function IExpressions_getDsCount(dataStructure As Variant) As Long
     Dim counter As Long
     Dim elem As Variant
     
@@ -773,44 +780,6 @@ Private Function IExpressions_getResultNumber(ByVal Result As Variant) As Long
     IExpressions_getResultNumber = resultNumber
 End Function
 
-Private Function IExpressions_getTestDictCounter() As Scripting.Dictionary
-    Dim TestDictCounter As Scripting.Dictionary
-
-    Set TestDictCounter = New Scripting.Dictionary
-
-    TestDictCounter.Add "Alphabetic", 0
-    TestDictCounter.Add "Alphanumeric", 0
-    TestDictCounter.Add "Between", 0
-    TestDictCounter.Add "Contain", 0
-    TestDictCounter.Add "EndWith", 0
-    TestDictCounter.Add "EqualTo", 0
-    TestDictCounter.Add "Erroneous", 0
-    TestDictCounter.Add "ErrorDescriptionOf", 0
-    TestDictCounter.Add "ErrorNumberOf", 0
-    TestDictCounter.Add "EvaluateTo", 0
-    TestDictCounter.Add "ExactSameElementsAs", 0
-    TestDictCounter.Add "GreaterThan", 0
-    TestDictCounter.Add "GreaterThanOrEqualTo", 0
-    TestDictCounter.Add "IdenticalTo", 0
-    TestDictCounter.Add "InDataStructure", 0
-    TestDictCounter.Add "InDataStructures", 0
-    TestDictCounter.Add "LengthBetween", 0
-    TestDictCounter.Add "LengthOf", 0
-    TestDictCounter.Add "LessThan", 0
-    TestDictCounter.Add "LessThanOrEqualTo", 0
-    TestDictCounter.Add "MaxLengthOf", 0
-    TestDictCounter.Add "MinLengthOf", 0
-    TestDictCounter.Add "Numeric", 0
-    TestDictCounter.Add "OneOf", 0
-    TestDictCounter.Add "SameElementsAs", 0
-    TestDictCounter.Add "SameTypeAs", 0
-    TestDictCounter.Add "SameUniqueElementsAs", 0
-    TestDictCounter.Add "Something", 0
-    TestDictCounter.Add "StartWith", 0
-
-    Set IExpressions_getTestDictCounter = TestDictCounter
-End Function
-
-Private Sub Class_Initialize()
-    Set pTestDictCounter = IExpressions_getTestDictCounter
-End Sub
+'Private Sub Class_Initialize()
+'
+'End Sub

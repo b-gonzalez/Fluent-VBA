@@ -114,13 +114,10 @@ End Function
 Public Function getResultNumber(ByVal Result As Variant) As Long
 End Function
 
-Public Function getTestDictCounter() As Scripting.Dictionary
-End Function
-
 Public Function inputToStringIter(v As Variant) As String
 End Function
 
-Private Function getNestedElementsFromCollection(col As Collection)
+Private Function getNestedElementsFromCollection(col As Collection) As Collection
 End Function
 
 Private Function getDsCount(dataStructure As Variant) As Long
@@ -128,4 +125,3 @@ End Function
 
 Private Function getDsType(v As Variant) As String
 End Function
-
