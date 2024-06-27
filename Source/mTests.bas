@@ -8,6 +8,8 @@ Private mMiscNegTests As Long
 Private posTestCount As Long
 Private negTestCount As Long
 
+Private mEvents As zUdeTests
+
 Public Enum hw
     helloWorld
     goodbyeWorld
@@ -27,9 +29,11 @@ Public Sub runMainTests()
     
     Set testFluent = getAndInitTestFluent
     
-    Set events = getAndInitEvent(fluent, testFluent, testFluentResult)
+    Set mEvents = getAndInitEvent(fluent, testFluent, testFluentResult)
     
     Call runEqualPosNegTests(fluent, testFluent, testFluentResult)
+    
+'    testFluent.Meta.Printing.PrintToSheet
 
     tempCounter = mCounter
 
@@ -42,7 +46,7 @@ Public Sub runMainTests()
     
     mCounter = tempCounter + nulTestFluent.Meta.Tests.Count
     
-
+'    nulTestFluent.Meta.Printing.PrintToSheet
 
     tempCounter = mCounter
 
@@ -56,14 +60,16 @@ Public Sub runMainTests()
     mCounter = tempCounter + emptyTestFluent.Meta.Tests.Count
     
     Set fluent = New cFluent
-    
+
     mCounter = mCounter + MiscTests(fluent)
+    
+'    emptyTestFluent.Meta.Printing.PrintToSheet
     
     Debug.Print "All tests Finished"
     
     Call printTestCount(mCounter + mMiscNegTests + mMiscPosTests)
     
-    Call resetAndCheckCounters(events, fluent, testFluent)
+    Call resetAndCheckCounters(mEvents, fluent, testFluent)
     
 End Sub
 
@@ -85,15 +91,15 @@ Private Function getAndInitTestFluent() As IFluentOf
 End Function
 
 Private Function getAndInitEvent(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As zUdeTests
-    Dim events As zUdeTests
+'    Dim events As zUdeTests
     
-    Set events = New zUdeTests
+    Set mEvents = New zUdeTests
     
-    Set events.setFluent = fluent
-    Set events.setFluentOf = testFluent
-    Set events.setFluentEventOfResult = testFluentResult
+    Set mEvents.setFluent = fluent
+    Set mEvents.setFluentOf = testFluent
+    Set mEvents.setFluentEventOfResult = testFluentResult
     
-    Set getAndInitEvent = events
+    Set getAndInitEvent = mEvents
 End Function
 
 Private Sub runEqualPosNegTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
@@ -5517,8 +5523,24 @@ Private Function MiscTests(fluent As IFluent)
     Dim testCount As Long
     Dim q As Object
     Dim elem As Variant
+    
+    Set mEvents.setFluentEventDuplicate = fluent
 
     'test to ensure fluent object's default TestValue value is equal to empty
+    Debug.Assert Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
+    
+    'test to ensure that a duplicate test event is not raised since skipDupCheck
+    'is set to true
+    
+    With fluent.Meta.Tests
+        .SkipDupCheck = True
+            Debug.Assert Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
+        .SkipDupCheck = False
+    End With
+    
+    'test to ensure that a duplicate test event is raised since skipDupCheck
+    'is set to false
+    
     Debug.Assert Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
     
     'test to ensure fluent object's TestValue property can return a value

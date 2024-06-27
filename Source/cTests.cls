@@ -13,6 +13,7 @@ Public Event TestPassed(ByVal test As ITest)
 Public Event TestFailed(ByVal test As ITest)
 Public Event TestCompleted(ByVal test As ITest)
 Public Event TestUnexpected(ByVal test As ITest)
+Public Event DuplicateTest(ByVal test As ITest)
 
 Private pResult As Variant
 Private pCol As Collection
@@ -24,6 +25,8 @@ Private pToStrDev As Boolean
 Private pApproximateEqual As Boolean
 Private pEpsilon As Double
 Private pDataStructures As Collection
+Private pFluentPathDict As Scripting.Dictionary
+Private pSkipDupCheck As Boolean
 
 Private Const defaultEpsilon As Double = 0.000001
 
@@ -87,6 +90,14 @@ End Property
 
 Public Property Get DataStructures() As Collection
     Set DataStructures = pDataStructures
+End Property
+
+Public Property Let SkipDupCheck(value As Boolean)
+    pSkipDupCheck = value
+End Property
+
+Public Property Get SkipDupCheck() As Boolean
+    SkipDupCheck = pSkipDupCheck
 End Property
 
 Public Sub AddDataStructure(dataStructure As Variant)
@@ -169,6 +180,12 @@ Public Sub CheckTest(test As ITest)
     ElseIf IsNull(test.Result) Or IsEmpty(test.Result) Then
         RaiseEvent TestUnexpected(test)
     End If
+    
+    If pFluentPathDict.Exists(test.FluentPath) And Not pSkipDupCheck Then
+        RaiseEvent DuplicateTest(test)
+    Else
+        pFluentPathDict(test.FluentPath) = 0
+    End If
 End Sub
 
 Public Sub resetTestDictCounter()
@@ -225,6 +242,8 @@ Private Sub Class_Initialize()
     pEpsilon = defaultEpsilon
     Set pTestDictCounter = New Scripting.Dictionary
     Set pTestDictCounter = getTestDictCounter(pTestDictCounter)
+    
+    Set pFluentPathDict = New Scripting.Dictionary
     
     Set pDataStructures = New Collection
     

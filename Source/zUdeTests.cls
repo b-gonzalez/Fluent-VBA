@@ -19,19 +19,25 @@ Private WithEvents pTestOf As cTests
 Attribute pTestOf.VB_VarHelpID = -1
 Private WithEvents pTestOfResults As cTests
 Attribute pTestOfResults.VB_VarHelpID = -1
+Private WithEvents pTestDuplicate As cTests
+Attribute pTestDuplicate.VB_VarHelpID = -1
 
 Private pFluentEvent As IFluent
 Private pFluentEventOf As IFluentOf
 Private pFluentEventOfResult As IFluentOf
+Private pFluentEventDuplicate As IFluent
+
 Private testCount As Long
 Private TestOfCount As Long
 Private TestOfResultsCount As Long
+Private TestDuplicateCount As Long
 Private i As Long
 
 Private Sub Class_Initialize()
     testCount = 0
     TestOfCount = 0
     TestOfResultsCount = 0
+    TestDuplicateCount = 0
 End Sub
 
 Public Property Set setFluent(ByVal value As IFluent)
@@ -47,6 +53,11 @@ End Property
 Public Property Set setFluentEventOfResult(ByVal value As IFluentOf)
     Set pFluentEventOfResult = value
     Set pTestOfResults = pFluentEventOfResult.Meta.Tests
+End Property
+
+Public Property Set setFluentEventDuplicate(ByVal value As IFluent)
+    Set pFluentEventDuplicate = value
+    Set pTestDuplicate = pFluentEventDuplicate.Meta.Tests
 End Property
 
 Private Sub pTestOf_TestPassed(ByVal test As ITest)
@@ -101,7 +112,8 @@ Public Function CheckTestCounters()
     b = ( _
     TestOfResultsCount > 0 And _
     testCount > 0 And _
-    TestOfCount > 0)
+    TestOfCount > 0 And _
+    TestDuplicateCount = 1)
 
     CheckTestCounters = b
 End Function
