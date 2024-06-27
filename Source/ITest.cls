@@ -86,3 +86,15 @@ End Property
 
 Public Property Get TestName() As String
 End Property
+
+Public Property Let TestValueSet(ByVal value As Boolean)
+End Property
+
+Public Property Get TestValueSet() As Boolean
+End Property
+
+Public Property Let HasEmpty(ByVal value As Boolean)
+End Property
+
+Public Property Get HasEmpty() As Boolean
+End Property

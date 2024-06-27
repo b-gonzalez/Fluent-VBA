@@ -166,7 +166,7 @@ Public Sub CheckTest(test As ITest)
         RaiseEvent TestPassed(test)
     ElseIf test.Result = False Then
         RaiseEvent TestFailed(test)
-    Else
+    ElseIf IsNull(test.Result) Or IsEmpty(test.Result) Then
         RaiseEvent TestUnexpected(test)
     End If
 End Sub

@@ -23,6 +23,12 @@ End Property
 Public Property Get TestValue() As Variant
 End Property
 
+Public Property Let TestValueSet(value As Boolean)
+End Property
+
+Public Function SetDefaultFuncVal() As Variant
+End Function
+
 Public Property Set setMeta(ByVal value As cMeta)
 End Property
 
