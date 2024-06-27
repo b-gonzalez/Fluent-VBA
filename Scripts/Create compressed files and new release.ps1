@@ -52,4 +52,4 @@ function get-AndPublishPackage {
 
 $lastTagNum = get-TagNumbers
 Write-Output "Latest tag number: $lastTagNum"
-get-AndPublishPackage -oldTagNumber $lastTagNum -newTagNumber "2.1.0"
+get-AndPublishPackage -oldTagNumber $lastTagNum -newTagNumber "2.1.1"
