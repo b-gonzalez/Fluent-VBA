@@ -51,12 +51,17 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     Set test = New cTest
     Set testDev = test
     
+    test.TestValueSet = True
+    
     If IsNull(Result) Then
 '        result = TypeName(result)
         test.HasNull = True
+    ElseIf IsEmpty(Result) Then
+        test.HasEmpty = True
+        test.TestValueSet = False
     End If
 
-    If NegateValue Then
+    If NegateValue And Not IsNull(Result) And Not IsEmpty(Result) Then
         Result = Not Result
     End If
 
@@ -278,7 +283,7 @@ Optional ByVal HigherVal As Variant) As String
 End Function
 
 Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentPath As String, ByVal tempFluentPath As String) As String
-    If IsNull(test.Result) Then
+    If Information.IsNull(test.Result) Or Information.IsEmpty(test.Result) Then
         test.Result = TypeName(test.Result)
     End If
 
@@ -320,7 +325,8 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
             Case "ErrorDescriptionOf"
                 tempFluentPath = IExpressions_Have(ErrorDescriptionOf_, .testingInput)
             Case "EqualTo"
-                tempFluentPath = IExpressions_Be(EqualTo_, .testingInput)
+'                tempFluentPath = IExpressions_Be(EqualTo_, .StrTestInput)
+                tempFluentPath = IExpressions_Be(EqualTo_, .StrTestInput)
             Case "EndWith"
                 tempFluentPath = IExpressions_Should(EndWith_, .testingInput)
             Case "EvaluateTo"
@@ -465,7 +471,7 @@ Private Function IExpressions_ToString(ByVal nv As Variant) As String
             ElseIf pMeta.Tests.Algorithm = flIterative Then
                 tempNVTS = IExpressions_inputToStringIter(nv)
             End If
-        Case IsNull(nv)
+        Case IsNull(nv) Or IsEmpty(nv)
             tempNVTS = TypeName(nv)
         Case Not TypeOf nv Is Object
             tempNVTS = CStr(nv)
@@ -771,7 +777,7 @@ Private Function IExpressions_getResultNumber(ByVal Result As Variant) As Long
     
     resultNumber = Null
     
-    If IsNull(Result) Then
+    If IsNull(Result) Or IsEmpty(Result) Then
         resultNumber = 1
     ElseIf TypeName(Result) = "Boolean" Then
         resultNumber = CLng(Result)

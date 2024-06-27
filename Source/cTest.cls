@@ -30,6 +30,8 @@ Private pTestValueRecur As String
 Private pTestValueIter As String
 Private pTestInputRecur As String
 Private pTestInputIter As String
+Private pTestValueSet As Boolean
+Private pHasEmpty As Boolean
 
 Private Property Let ITest_testingValue(ByVal value As Variant)
     pTestingValue = value
@@ -141,6 +143,22 @@ End Property
 
 Private Property Get ITest_TestName() As String
     ITest_TestName = pTestName
+End Property
+
+Private Property Let ITest_TestValueSet(ByVal value As Boolean)
+    pTestValueSet = value
+End Property
+
+Private Property Get ITest_TestValueSet() As Boolean
+    ITest_TestValueSet = pTestValueSet
+End Property
+
+Private Property Let ITest_HasEmpty(ByVal value As Boolean)
+    pHasEmpty = value
+End Property
+
+Private Property Get ITest_HasEmpty() As Boolean
+    ITest_HasEmpty = pHasEmpty
 End Property
 
 Private Property Let ITestDev_negateValue(ByVal value As Boolean)

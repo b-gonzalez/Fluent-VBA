@@ -19,6 +19,11 @@ Private pNotHaveSet As ISetTestFuncsAndValue
 Private pTestingFunctions As ITestingFunctions
 Private pShouldFunctions As IShouldTestFuncs
 Private pShouldNotVal As Variant
+Private pNegate As INegate
+
+Private Sub Class_Initialize()
+    Set pNegate = New cNegate
+End Sub
 
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
     Set pTestingFunctions = value
@@ -67,17 +72,29 @@ Private Property Get IShould_be() As IBe
 End Property
 
 Private Function IShould_Contain(ByVal value As String) As Variant
-    IShould_Contain = Not pShouldFunctions.Contain(pShouldNotVal, value, True)
+    Dim Result As Variant
+    Result = pShouldFunctions.Contain(pShouldNotVal, value, True)
+    Result = pNegate.NegateIfBool(Result)
+    IShould_Contain = Result
 End Function
 
 Private Function IShould_StartWith(ByVal value As String) As Variant
-    IShould_StartWith = Not pShouldFunctions.StartWith(pShouldNotVal, value, True)
+    Dim Result As Variant
+    Result = pShouldFunctions.StartWith(pShouldNotVal, value, True)
+    Result = pNegate.NegateIfBool(Result)
+    IShould_StartWith = Result
 End Function
 
 Private Function IShould_EndWith(ByVal value As String) As Variant
-    IShould_EndWith = Not pShouldFunctions.EndWith(pShouldNotVal, value, True)
+    Dim Result As Variant
+    Result = pShouldFunctions.EndWith(pShouldNotVal, value, True)
+    Result = pNegate.NegateIfBool(Result)
+    IShould_EndWith = Result
 End Function
 
 Private Function IShould_EvaluateTo(ByVal value As Variant) As Variant
-    IShould_EvaluateTo = Not pShouldFunctions.EvaluateTo(pShouldNotVal, value, True)
+    Dim Result As Variant
+    Result = pShouldFunctions.EvaluateTo(pShouldNotVal, value, True)
+    Result = pNegate.NegateIfBool(Result)
+    IShould_EvaluateTo = Result
 End Function

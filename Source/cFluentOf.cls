@@ -21,13 +21,19 @@ Private Property Get IFluentOf_Meta() As IMeta
     Set IFluentOf_Meta = pMeta
 End Property
 
-Private Function IFluentOf_Of(Optional ByVal All As Variant = Empty) As cUnit
-    If IsObject(All) Then
-        Set pFluentOfVal = All
-        Set pUnit.TestValue = pFluentOfVal
+Private Function IFluentOf_Of(Optional ByVal All As Variant) As cUnit
+    Dim tf As ITestingFunctions
+    If Not IsMissing(All) Or IsArray(All) Then
+        If IsObject(All) Then
+            Set pFluentOfVal = All
+            Set pUnit.TestValue = pFluentOfVal
+        Else
+            pFluentOfVal = All
+            pUnit.TestValue = pFluentOfVal
+        End If
     Else
-        pFluentOfVal = All
-        pUnit.TestValue = pFluentOfVal
+        Set tf = pUnit.TestingFunctions
+        tf.TestValueSet = False
     End If
     
     Set IFluentOf_Of = pUnit

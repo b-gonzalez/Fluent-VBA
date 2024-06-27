@@ -15,6 +15,11 @@ Implements ISetTestFuncsAndValue
 Private pNotHaveVal As Variant
 Private pHaveTestFuncs As IHaveTestFuncs
 Private pTestingFunctions As ITestingFunctions
+Private pNegate As INegate
+
+Private Sub Class_Initialize()
+    Set pNegate = New cNegate
+End Sub
 
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
     Set pTestingFunctions = value
@@ -30,43 +35,71 @@ Private Property Set ISetTestFuncsAndValue_testValue(ByVal value As Variant)
 End Property
 
 Private Function IHave_LengthOf(ByVal value As Long) As Variant
-    IHave_LengthOf = Not pHaveTestFuncs.LengthOf(pNotHaveVal, value, True)
+    Dim Result As Variant
+    Result = pHaveTestFuncs.LengthOf(pNotHaveVal, value, True)
+    Result = pNegate.NegateIfBool(Result)
+    IHave_LengthOf = Result
 End Function
 
 Private Function IHave_MaxLengthOf(ByVal value As Long) As Variant
-    IHave_MaxLengthOf = Not pHaveTestFuncs.MaxLengthOf(pNotHaveVal, value, True, updateFluentPath:=True)
+    Dim Result As Variant
+    Result = pHaveTestFuncs.MaxLengthOf(pNotHaveVal, value, True, updateFluentPath:=True)
+    Result = pNegate.NegateIfBool(Result)
+    IHave_MaxLengthOf = Result
 End Function
 
 Private Function IHave_MinLengthOf(ByVal value As Long) As Variant
-    IHave_MinLengthOf = Not pHaveTestFuncs.MinLengthOf(pNotHaveVal, value, True, updateFluentPath:=True)
+    Dim Result As Variant
+    Result = pHaveTestFuncs.MinLengthOf(pNotHaveVal, value, True, updateFluentPath:=True)
+    Result = pNegate.NegateIfBool(Result)
+    IHave_MinLengthOf = Result
 End Function
 
 Private Function IHave_LengthBetween(ByVal lowVal As Long, ByVal highVal As Long) As Variant
-    IHave_LengthBetween = Not pHaveTestFuncs.LengthBetween(pNotHaveVal, lowVal, highVal, True)
+    Dim Result As Variant
+    Result = pHaveTestFuncs.LengthBetween(pNotHaveVal, lowVal, highVal, True)
+    Result = pNegate.NegateIfBool(Result)
+    IHave_LengthBetween = Result
 End Function
 
 Private Function IHave_ErrorNumberOf(ByVal value As Long) As Variant
-    IHave_ErrorNumberOf = Not pHaveTestFuncs.ErrorNumberOf(pNotHaveVal, value, True)
+    Dim Result As Variant
+    Result = pHaveTestFuncs.ErrorNumberOf(pNotHaveVal, value, True)
+    Result = pNegate.NegateIfBool(Result)
+    IHave_ErrorNumberOf = Result
 End Function
 
 Private Function IHave_ErrorDescriptionOf(ByVal value As String) As Variant
-    IHave_ErrorDescriptionOf = Not pHaveTestFuncs.ErrorDescriptionOf(pNotHaveVal, value, True)
+    Dim Result As Variant
+    Result = pHaveTestFuncs.ErrorDescriptionOf(pNotHaveVal, value, True)
+    Result = pNegate.NegateIfBool(Result)
+    IHave_ErrorDescriptionOf = Result
 End Function
 
 Private Function IHave_SameTypeAs(ByVal All As Variant) As Variant
-    IHave_SameTypeAs = Not pHaveTestFuncs.SameTypeAs(pNotHaveVal, All, True)
+    Dim Result As Variant
+    Result = pHaveTestFuncs.SameTypeAs(pNotHaveVal, All, True)
+    Result = pNegate.NegateIfBool(Result)
+    IHave_SameTypeAs = Result
 End Function
 
 Private Function IHave_ExactSameElementsAs(ByVal dataStructure As Variant) As Variant
-'    Dim temp As Variant
-'    temp = args
-    IHave_ExactSameElementsAs = Not pHaveTestFuncs.ExactSameElementsAs(pNotHaveVal, True, True, dataStructure)
+    Dim Result As Variant
+    Result = pHaveTestFuncs.ExactSameElementsAs(pNotHaveVal, True, True, dataStructure)
+    Result = pNegate.NegateIfBool(Result)
+    IHave_ExactSameElementsAs = Result
 End Function
 
 Private Function IHave_SameUniqueElementsAs(ByVal dataStructure As Variant) As Variant
-    IHave_SameUniqueElementsAs = Not pHaveTestFuncs.SameUniqueElementsAs(pNotHaveVal, True, dataStructure)
+    Dim Result As Variant
+    Result = pHaveTestFuncs.SameUniqueElementsAs(pNotHaveVal, True, dataStructure)
+    Result = pNegate.NegateIfBool(Result)
+    IHave_SameUniqueElementsAs = Result
 End Function
 
 Public Function IHave_SameElementsAs(ByVal dataStructure As Variant) As Variant
-    IHave_SameElementsAs = Not pHaveTestFuncs.SameElementsAs(pNotHaveVal, True, dataStructure)
+    Dim Result As Variant
+    Result = pHaveTestFuncs.SameElementsAs(pNotHaveVal, True, dataStructure)
+    Result = pNegate.NegateIfBool(Result)
+    IHave_SameElementsAs = Result
 End Function
