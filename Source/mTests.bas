@@ -5562,12 +5562,12 @@ Private Function MiscTests(fluent As IFluent)
     
     fluent.TestValue = "Hello"
     
-    fluent.Should.Be.InDataStructure q
+    Debug.Assert fluent.Should.Be.InDataStructure(q)
     
     'test to ensure that StrTestValue and StrTestInput are working with non-default datastructure
     
     With fluent.Meta
-        Debug.Assert .Tests(.Tests.Count).StrTestValue = "Hello"
+        Debug.Assert .Tests(.Tests.Count).StrTestValue = "'Hello'"
         Debug.Assert .Tests(.Tests.Count).StrTestInput = "Queue('Hello')"
     End With
     

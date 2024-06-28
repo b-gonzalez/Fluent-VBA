@@ -474,6 +474,7 @@ Private Function IExpressions_ToString(ByVal nv As Variant) As String
         Case IsNull(nv) Or IsEmpty(nv)
             tempNVTS = TypeName(nv)
         Case Not TypeOf nv Is Object
+            If TypeName(nv) = "String" Then nv = "'" & nv & "'"
             tempNVTS = CStr(nv)
         Case TypeOf nv Is VBA.ErrObject
             tempNVTS = TypeName(nv)

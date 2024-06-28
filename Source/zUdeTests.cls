@@ -30,6 +30,7 @@ Private pFluentEventDuplicate As IFluent
 Private testCount As Long
 Private TestOfCount As Long
 Private TestOfResultsCount As Long
+Private TestOfDuplicateCount As Long
 Private TestDuplicateCount As Long
 Private i As Long
 
@@ -38,6 +39,7 @@ Private Sub Class_Initialize()
     TestOfCount = 0
     TestOfResultsCount = 0
     TestDuplicateCount = 0
+    TestOfDuplicateCount = 0
 End Sub
 
 Public Property Set setFluent(ByVal value As IFluent)
@@ -79,6 +81,10 @@ Private Sub pTestOf_TestUnexpected(ByVal test As ITest)
     Debug.Assert test.Result = "Null" And test.HasNull
 End Sub
 
+'Private Sub pTestOf_DuplicateTest(ByVal test As ITest)
+'    TestOfDuplicateCount = TestOfDuplicateCount + 1
+'End Sub
+
 Private Sub pTest_TestPassed(ByVal test As ITest)
     Debug.Assert pFluentEvent.Meta.Tests.Result = test.Result
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath
@@ -104,6 +110,10 @@ End Sub
 
 Private Sub pTestOfResults_TestCompleted(ByVal test As ITest)
     TestOfResultsCount = TestOfResultsCount + 1
+End Sub
+
+Private Sub pTestDuplicate_DuplicateTest(ByVal test As ITest)
+    TestDuplicateCount = TestDuplicateCount + 1
 End Sub
 
 Public Function CheckTestCounters()
