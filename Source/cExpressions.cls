@@ -497,7 +497,7 @@ Private Function IExpressions_DatastructureIsEmpty(ByVal v As Variant) As Boolea
     Dim temp As Variant
 
     Select Case True
-        Case TypeOf v Is Dictionary Or TypeOf v Is Collection
+        Case TypeOf v Is Scripting.Dictionary Or TypeOf v Is Collection
             b = (v.Count = 0)
         
         Case IsArray(v)
@@ -533,7 +533,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
 
     Select Case True
         Case pMeta.Tests.IsDataStructure(v) And Not IExpressions_DatastructureIsEmpty(v)
-            If Not TypeOf v Is Dictionary Then
+            If Not TypeOf v Is Scripting.Dictionary Then
                 For Each elem In v
                     If pMeta.Tests.IsDataStructure(elem) Then
                         temp = temp & IExpressions_InputToStringRecur(elem) & ", "
@@ -598,7 +598,7 @@ Function IExpressions_inputToStringIter(v As Variant) As String
             'concatenated with a colon and the corresponding
             'value or object it is associated with
             
-            If TypeName(v) <> "Dictionary" Then
+            If Not TypeOf v Is Scripting.Dictionary Then
                 If IsObject(elem) Then
                     tempCol.Add TypeName(elem)
                 ElseIf TypeName(elem) = "String" Then
@@ -684,7 +684,7 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection) As Coll
             elemCount = IExpressions_getDsCount(elem)
             
             For Each elem2 In elem
-                If TypeName(elem) <> "Dictionary" Then
+                If Not TypeOf elem Is Scripting.Dictionary Then
                     If TypeName(elem2) = "String" Then
                         tempCol.Add "'" & elem2 & "'", before:=counter
                     Else

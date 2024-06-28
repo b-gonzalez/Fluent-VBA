@@ -151,7 +151,7 @@ Private Function IBeTestFuncs_getNestedElementsRecur(ByVal dataStructure As Vari
     End If
     
     If pMeta.Tests.IsDataStructure(dataStructure) Then
-        If TypeName(dataStructure) = "Dictionary" Then
+        If TypeOf dataStructure Is Scripting.Dictionary Then
             tempDataStructure = dataStructure.Items
         Else
             If IsObject(dataStructure) Then
@@ -184,7 +184,7 @@ Private Function IBeTestFuncs_getNestedElementsIter(ByVal dataStructure As Varia
 
     Set col = New Collection
 
-    If TypeName(dataStructure) = "Dictionary" Then
+    If TypeOf dataStructure Is Scripting.Dictionary Then
         tempDataStructure = dataStructure.Items
     Else
         If IsObject(dataStructure) Then
