@@ -573,6 +573,14 @@ Private Function IBeTestFuncs_Alphabetic(ByVal testingValue As Variant, Optional
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
     If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) And pTestValueSet Then
+        If pMeta.Tests.CleanStrings Then
+            testingValue = Replace(testingValue, " ", "")
+        
+            If InStr(1, testingValue, """") = 1 Then
+                testingValue = Replace(testingValue, """", "")
+            End If
+        End If
+    
         For i = 1 To Len(testingValue)
             tempChar = Mid$(testingValue, i, 1)
             
@@ -598,6 +606,14 @@ Private Function IBeTestFuncs_Numeric(ByVal testingValue As Variant, Optional By
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
     If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) And pTestValueSet Then
+        If pMeta.Tests.CleanStrings Then
+            testingValue = Replace(testingValue, " ", "")
+        
+            If InStr(1, testingValue, """") = 1 Then
+                testingValue = Replace(testingValue, """", "")
+            End If
+        End If
+        
         For i = 1 To Len(testingValue)
             tempChar = Mid$(testingValue, i, 1)
             If tempChar Like "[0-9]" Then
@@ -626,6 +642,14 @@ Private Function IBeTestFuncs_Alphanumeric(ByVal testingValue As Variant, Option
     b = False
     
     If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) And pTestValueSet Then
+        If pMeta.Tests.CleanStrings Then
+            testingValue = Replace(testingValue, " ", "")
+        
+            If InStr(1, testingValue, """") = 1 Then
+                testingValue = Replace(testingValue, """", "")
+            End If
+        End If
+        
         For i = 1 To Len(testingValue)
             tempChar = Mid$(testingValue, i, 1)
             If tempChar Like "[A-Za-z]" Then
