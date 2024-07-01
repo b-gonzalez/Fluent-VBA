@@ -73,6 +73,20 @@ Private Property Set ITestingFunctions_Expressions(ByVal value As IExpressions)
     Set pExpressions = value
 End Property
 
+Private Function ITestingFunctions_GetCleanedString(value As Variant) As String
+    Dim tempVal As String
+    
+    tempVal = value
+    
+    tempVal = Replace(tempVal, " ", "")
+    
+    If InStr(1, tempVal, """") = 1 Then
+        tempVal = Replace(tempVal, """", "")
+    End If
+    
+    ITestingFunctions_GetCleanedString = tempVal
+End Function
+
 Private Function IBeTestFuncs_InDataStructures( _
     ByVal testingValue As Variant, _
     ByVal NegateValue As Boolean, _
@@ -574,11 +588,7 @@ Private Function IBeTestFuncs_Alphabetic(ByVal testingValue As Variant, Optional
         
     If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) And pTestValueSet Then
         If pMeta.Tests.CleanStrings Then
-            testingValue = Replace(testingValue, " ", "")
-        
-            If InStr(1, testingValue, """") = 1 Then
-                testingValue = Replace(testingValue, """", "")
-            End If
+            testingValue = ITestingFunctions_GetCleanedString(testingValue)
         End If
     
         For i = 1 To Len(testingValue)
@@ -607,11 +617,7 @@ Private Function IBeTestFuncs_Numeric(ByVal testingValue As Variant, Optional By
         
     If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) And pTestValueSet Then
         If pMeta.Tests.CleanStrings Then
-            testingValue = Replace(testingValue, " ", "")
-        
-            If InStr(1, testingValue, """") = 1 Then
-                testingValue = Replace(testingValue, """", "")
-            End If
+            testingValue = ITestingFunctions_GetCleanedString(testingValue)
         End If
         
         For i = 1 To Len(testingValue)
@@ -643,11 +649,7 @@ Private Function IBeTestFuncs_Alphanumeric(ByVal testingValue As Variant, Option
     
     If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) And pTestValueSet Then
         If pMeta.Tests.CleanStrings Then
-            testingValue = Replace(testingValue, " ", "")
-        
-            If InStr(1, testingValue, """") = 1 Then
-                testingValue = Replace(testingValue, """", "")
-            End If
+            testingValue = ITestingFunctions_GetCleanedString(testingValue)
         End If
         
         For i = 1 To Len(testingValue)

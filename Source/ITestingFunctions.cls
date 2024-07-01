@@ -34,3 +34,6 @@ End Property
 
 Public Property Set Expressions(ByVal value As IExpressions)
 End Property
+
+Public Function GetCleanedString(value As Variant) As String
+End Function
