@@ -24,8 +24,8 @@ Public Sub runMainTests()
     Dim emptyTestFluent As IFluentOf
     Dim tempCounter As Long
     
-    Set fluent = New cFluent
-    Set testFluentResult = New cFluentOf
+    Set fluent = MakeFluent
+    Set testFluentResult = MakeFluentOf
     
     Set testFluent = getAndInitTestFluent
     
@@ -37,8 +37,8 @@ Public Sub runMainTests()
 
     tempCounter = mCounter
 
-    Set fluent = New cFluent
-    Set testFluent = New cFluentOf
+    Set fluent = MakeFluent
+    Set testFluent = MakeFluentOf
     
     mCounter = 0
     
@@ -50,8 +50,8 @@ Public Sub runMainTests()
 
     tempCounter = mCounter
 
-    Set fluent = New cFluent
-    Set testFluent = New cFluentOf
+    Set fluent = MakeFluent
+    Set testFluent = MakeFluentOf
 
     mCounter = 0
 
@@ -59,7 +59,7 @@ Public Sub runMainTests()
 
     mCounter = tempCounter + emptyTestFluent.Meta.Tests.Count
     
-    Set fluent = New cFluent
+    Set fluent = MakeFluent
 
     mCounter = mCounter + MiscTests(fluent)
     
@@ -76,7 +76,7 @@ End Sub
 Private Function getAndInitTestFluent() As IFluentOf
     Dim testFluent As IFluentOf
     
-    Set testFluent = New cFluentOf
+    Set testFluent = MakeFluentOf
     
     With testFluent.Meta
         .Printing.PassedMessage = "Success"
@@ -868,8 +868,8 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
 
 'InDataStructure
 
-        Set tfRecur = New cFluentOf
-        Set tfIter = New cFluentOf
+        Set tfRecur = MakeFluentOf
+        Set tfIter = MakeFluentOf
         
         tfRecur.Meta.Tests.Algorithm = flRecursive
         tfIter.Meta.Tests.Algorithm = flIterative
@@ -2769,8 +2769,8 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         
 'InDataStructure
 
-        Set tfRecur = New cFluentOf
-        Set tfIter = New cFluentOf
+        Set tfRecur = MakeFluentOf
+        Set tfIter = MakeFluentOf
         
         tfRecur.Meta.Tests.Algorithm = flRecursive
         tfIter.Meta.Tests.Algorithm = flIterative
