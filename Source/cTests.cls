@@ -27,6 +27,7 @@ Private pEpsilon As Double
 Private pDataStructures As Collection
 Private pFluentPathDict As Scripting.Dictionary
 Private pSkipDupCheck As Boolean
+Private pCleanStrings As Boolean
 
 Private Const defaultEpsilon As Double = 0.000001
 
@@ -98,6 +99,14 @@ End Property
 
 Public Property Get SkipDupCheck() As Boolean
     SkipDupCheck = pSkipDupCheck
+End Property
+
+Public Property Let CleanStrings(value As Boolean)
+    pCleanStrings = value
+End Property
+
+Public Property Get CleanStrings() As Boolean
+    CleanStrings = pCleanStrings
 End Property
 
 Public Sub AddDataStructure(dataStructure As Variant)

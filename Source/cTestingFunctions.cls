@@ -73,6 +73,20 @@ Private Property Set ITestingFunctions_Expressions(ByVal value As IExpressions)
     Set pExpressions = value
 End Property
 
+Private Function ITestingFunctions_GetCleanedString(value As Variant) As String
+    Dim tempVal As String
+    
+    tempVal = value
+    
+    tempVal = Replace(tempVal, " ", "")
+    
+    If InStr(1, tempVal, """") = 1 Then
+        tempVal = Replace(tempVal, """", "")
+    End If
+    
+    ITestingFunctions_GetCleanedString = tempVal
+End Function
+
 Private Function IBeTestFuncs_InDataStructures( _
     ByVal testingValue As Variant, _
     ByVal NegateValue As Boolean, _
@@ -573,6 +587,10 @@ Private Function IBeTestFuncs_Alphabetic(ByVal testingValue As Variant, Optional
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
     If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) And pTestValueSet Then
+        If pMeta.Tests.CleanStrings Then
+            testingValue = ITestingFunctions_GetCleanedString(testingValue)
+        End If
+    
         For i = 1 To Len(testingValue)
             tempChar = Mid$(testingValue, i, 1)
             
@@ -598,6 +616,10 @@ Private Function IBeTestFuncs_Numeric(ByVal testingValue As Variant, Optional By
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
     If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) And pTestValueSet Then
+        If pMeta.Tests.CleanStrings Then
+            testingValue = ITestingFunctions_GetCleanedString(testingValue)
+        End If
+        
         For i = 1 To Len(testingValue)
             tempChar = Mid$(testingValue, i, 1)
             If tempChar Like "[0-9]" Then
@@ -626,6 +648,10 @@ Private Function IBeTestFuncs_Alphanumeric(ByVal testingValue As Variant, Option
     b = False
     
     If Not IsObject(testingValue) And Not IsArray(testingValue) And Not IsNull(testingValue) And pTestValueSet Then
+        If pMeta.Tests.CleanStrings Then
+            testingValue = ITestingFunctions_GetCleanedString(testingValue)
+        End If
+        
         For i = 1 To Len(testingValue)
             tempChar = Mid$(testingValue, i, 1)
             If tempChar Like "[A-Za-z]" Then
