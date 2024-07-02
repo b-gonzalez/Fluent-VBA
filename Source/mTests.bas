@@ -8,7 +8,7 @@ Private mMiscNegTests As Long
 Private posTestCount As Long
 Private negTestCount As Long
 
-Private mEvents As zUdeTests
+Private mEvents As zEvents
 
 Public Enum hw
     helloWorld
@@ -19,7 +19,7 @@ Public Sub runMainTests()
     Dim fluent As IFluent
     Dim testFluent As IFluentOf
     Dim testFluentResult As IFluentOf
-    Dim events As zUdeTests
+    Dim events As zEvents
     Dim nulTestFluent As IFluentOf
     Dim emptyTestFluent As IFluentOf
     Dim tempCounter As Long
@@ -90,10 +90,9 @@ Private Function getAndInitTestFluent() As IFluentOf
     Set getAndInitTestFluent = testFluent
 End Function
 
-Private Function getAndInitEvent(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As zUdeTests
-'    Dim events As zUdeTests
+Private Function getAndInitEvent(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As zEvents
     
-    Set mEvents = New zUdeTests
+    Set mEvents = New zEvents
     
     Set mEvents.setFluent = fluent
     Set mEvents.setFluentOf = testFluent
@@ -226,7 +225,7 @@ Private Function runEmptyTests(fluent As IFluent, testFluent As IFluentOf, testF
     Set runEmptyTests = emptyTestFluent
 End Function
 
-Private Sub resetAndCheckCounters(events As zUdeTests, fluent As IFluent, testFluent As IFluentOf)
+Private Sub resetAndCheckCounters(events As zEvents, fluent As IFluent, testFluent As IFluentOf)
     mCounter = 0
     
     mTestCounter = 0
