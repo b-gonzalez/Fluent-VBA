@@ -110,45 +110,61 @@ Private Sub runEqualPosNegTests(fluent As IFluent, testFluent As IFluentOf, test
     Dim negDict As Scripting.Dictionary
     Dim elem As Variant
     Dim i As Long
+    Dim equalTestingInfo As ITestingFunctionsInfo
+    Dim positiveTestingInfo As ITestingFunctionsInfo
+    Dim negativeTestingInfo As ITestingFunctionsInfo
+    Dim equalTestingInfoDict As Scripting.Dictionary
+    Dim positiveTestingInfoDict As Scripting.Dictionary
+    Dim negativeTestingInfoDict As Scripting.Dictionary
     
     fluent.Meta.Printing.Category = "Fluent - EqualityTests"
     testFluent.Meta.Printing.Name = "Test Fluent - abc 123"
     testFluent.Meta.Printing.Category = "Test Fluent - EqualityTests"
     Set equalTestFluent = EqualityDocumentationTests(fluent, testFluent, testFluentResult)
-    Set equalDict = equalTestFluent.Meta.Tests.TestDictCounter
+    Set equalTestingInfo = equalTestFluent.Meta.Tests.testingInfo
+    Set equalTestingInfoDict = equalTestingInfo.TestFuncInfoToDict
     
-'    Call printTestDictInfo(equalDict)
-    
+'    Call equalTestingInfo.validateTfiDictCounters(equalTestingInfoDict)
+
+'    Call equalTestingInfo.printTestFunInfo
+'
 '    Stop
     
     'The equality tests cannot use validateTestDict counter since it will fail since they
     'only run the equality tests
     
-    testFluent.Meta.Tests.resetTestDictCounter
+    testFluent.Meta.Tests.resetTestingInfo
 
     fluent.Meta.Printing.Category = "Fluent - positiveDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - positiveDocumentationTests"
     Set posTestFluent = positiveDocumentationTests(fluent, testFluent, testFluentResult)
-    Set posDict = posTestFluent.Meta.Tests.TestDictCounter
-    Debug.Assert validateTestDictCounters(posDict)
     
-'    Call printTestDictInfo(posDict, "PositiveDocumentationTests")
-'
+    Set positiveTestingInfo = posTestFluent.Meta.Tests.testingInfo
+    Set positiveTestingInfoDict = positiveTestingInfo.TestFuncInfoToDict
+    
+    Debug.Assert positiveTestingInfo.validateTfiDictCounters(positiveTestingInfoDict)
+
+'    Call positiveTestingInfo.printTestFunInfo
 '    Stop
     
-    testFluent.Meta.Tests.resetTestDictCounter
+    testFluent.Meta.Tests.resetTestingInfo
     
     fluent.Meta.Printing.Category = "Fluent - negativeDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - negativeDocumentationTests"
     Set negTestFluent = negativeDocumentationTests(fluent, testFluent, testFluentResult)
-    Set negDict = negTestFluent.Meta.Tests.TestDictCounter
-    Debug.Assert validateTestDictCounters(negDict)
     
-'    Call printTestDictInfo(negDict, "NegativeDocumentationTests")
-'
+    Set negativeTestingInfo = negTestFluent.Meta.Tests.testingInfo
+    Set negativeTestingInfoDict = negativeTestingInfo.TestFuncInfoToDict
+    
+    Debug.Assert negativeTestingInfo.validateTfiDictCounters(negativeTestingInfoDict)
+    
 '    Stop
     
-    Debug.Assert CompareDictionaries(posDict, negDict)
+    Debug.Assert testFluent.Meta.Tests.testingInfo.TestFuncInfoDictsAreIdentical(positiveTestingInfoDict, negativeTestingInfoDict)
+    
+'    Call negativeTestingInfo.printTestFunInfo
+'
+'    Stop
     
 '    negFluentOfStr = getFluentOfCounts(negTestFluent)
 
@@ -166,6 +182,8 @@ End Sub
 Private Function runNullTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
     Dim nulTestFluent As IFluentOf
     Dim tempDict As Scripting.Dictionary
+    Dim posNullTestInfo As ITestingFunctionsInfo
+    Dim negNullTestInfo As ITestingFunctionsInfo
     Dim posNullDict As Scripting.Dictionary
     Dim negNullDict As Scripting.Dictionary
     
@@ -176,30 +194,26 @@ Private Function runNullTests(fluent As IFluent, testFluent As IFluentOf, testFl
     fluent.Meta.Printing.Category = "Fluent - nullDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - positiveNullDocumentationTests"
     Set nulTestFluent = positiveNullDocumentationTests(fluent, testFluent, testFluentResult)
-    Set posNullDict = testFluent.Meta.Tests.TestDictCounter
-       
-    Set posNullDict("OneOf") = tempDict '//intentionally passing since this method cannot be checked for nulls
-    Set posNullDict("SameTypeAs") = tempDict '//intentionally passing since this method cannot be checked for nulls
+    Set posNullTestInfo = nulTestFluent.Meta.Tests.testingInfo
+    Set posNullDict = posNullTestInfo.TestFuncInfoToDict
     
-    Debug.Assert validateTestDictCounters(posNullDict)
+    Debug.Assert posNullTestInfo.validateTfiDictCounters(posNullDict, 2) 'set to 2 for OneOf and SameTypeAs which do not have null tests
     
-'    Call printTestDictInfo(posNullDict, "posNullDict")
+'    Stop
     
-    nulTestFluent.Meta.Tests.resetTestDictCounter
+    nulTestFluent.Meta.Tests.resetTestingInfo
     
     fluent.Meta.Printing.Category = "Fluent - nullDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - negativeNullDocumentationTests"
     Set nulTestFluent = negativeNullDocumentationTests(fluent, testFluent, testFluentResult)
-    Set negNullDict = testFluent.Meta.Tests.TestDictCounter
+    Set negNullTestInfo = nulTestFluent.Meta.Tests.testingInfo
+    Set negNullDict = negNullTestInfo.TestFuncInfoToDict
     
-    Set negNullDict("OneOf") = tempDict '//intentionally passing since this method cannot be checked for nulls
-    Set negNullDict("SameTypeAs") = tempDict '//intentionally passing since this method cannot be checked for nulls
-
-    Debug.Assert validateTestDictCounters(negNullDict)
+    Debug.Assert negNullTestInfo.validateTfiDictCounters(negNullDict, 2) 'set to 2 for OneOf and SameTypeAs which do not have null tests
     
-'    Call printTestDictInfo(negNullDict, "negNullTests")
+'    Stop
     
-    Debug.Assert CompareDictionaries(posNullDict, negNullDict)
+    Debug.Assert nulTestFluent.Meta.Tests.testingInfo.TestFuncInfoDictsAreIdentical(posNullDict, negNullDict)
     
     Set runNullTests = nulTestFluent
 End Function
@@ -214,13 +228,6 @@ Private Function runEmptyTests(fluent As IFluent, testFluent As IFluentOf, testF
     fluent.Meta.Printing.Category = "Fluent - emptyDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - emptyDocumentationTests"
     Set emptyTestFluent = emptyDocumentationTests(fluent, testFluent, testFluentResult)
-    Set emptyDict = testFluent.Meta.Tests.TestDictCounter
-    
-'    Call printTestDictInfo(emptyDict, "EmptyTests")
-'
-'    Stop
-    
-    Debug.Assert validateTestDictCounters(emptyDict) '// set to 2 to account to intentionally pass OneOf and SameTypeAs methods.
     
     Set runEmptyTests = emptyTestFluent
 End Function
@@ -6811,25 +6818,6 @@ Public Function getFluentOfCounts(fluentOf As IFluentOf)
     getFluentOfCounts = temp
 End Function
 
-Private Function validateTestDictCounters(d As Scripting.Dictionary, Optional counter As Long = 0)
-    Dim elem As Variant
-    Dim b As Boolean
-    Dim testDictInfo As Scripting.Dictionary
-    Dim temp As Variant
-    
-    For Each elem In d.Keys
-        Set testDictInfo = d(elem)
-        
-        If testDictInfo("count") > 0 Then
-            counter = counter + 1
-        Else
-            MsgBox "Validate test dict counter was not successful for: " & elem
-        End If
-    Next elem
-    
-    validateTestDictCounters = (d.Count = counter)
-End Function
-
 Private Function validateNegativeCounters(testFluent As IFluentOf) As Boolean
     Dim d As Scripting.Dictionary
     Dim test As ITest
@@ -6861,63 +6849,3 @@ Private Function validateNegativeCounters(testFluent As IFluentOf) As Boolean
     
     validateNegativeCounters = (d.Count = counter)
 End Function
-
-Public Function CompareDictionaries(d1 As Scripting.Dictionary, d2 As Scripting.Dictionary)
-    Dim b As Boolean
-    Dim elem As Variant
-    Dim counter As Long
-    Dim testDictInfo1 As Scripting.Dictionary
-    Dim testDictInfo2 As Scripting.Dictionary
-    
-    b = False
-    
-    If d1.Count = d2.Count Then
-        For Each elem In d1.Keys
-            Set testDictInfo1 = d1(elem)
-            If d2.Exists(elem) Then
-                Set testDictInfo2 = d2(elem)
-                
-                If testDictInfo1("count") = testDictInfo2("count") Then
-                    counter = counter + 1
-                End If
-            End If
-        Next elem
-    End If
-    
-    CompareDictionaries = counter > 0 And counter = d1.Count And counter = d2.Count
-End Function
-
-Private Sub printTestDictInfo(d As Scripting.Dictionary, Name As String)
-    Dim elem As Variant
-    Dim tempDict As Scripting.Dictionary
-    Dim tempStr As String
-    
-    Debug.Print "Test info for " & Name & ": "
-    
-    tempStr = vbTab & vbTab
-    
-    For Each elem In d.Keys
-        Set tempDict = d(elem)
-        
-        If tempDict("count") > 0 Then
-            Debug.Print vbTab & elem
-            tempStr = tempStr & "Count: " & tempDict("count") & "; "
-            
-            If tempDict("passed") > 0 Then tempStr = tempStr & "Passed: " & tempDict("passed")
-            
-            If tempDict("failed") > 0 Then tempStr = tempStr & "; "
-            
-            If tempDict("failed") > 0 Then tempStr = tempStr & "Failed: " & tempDict("failed")
-            
-            If tempDict("passed") > 0 Or tempDict("failed") > 0 Then tempStr = tempStr & "; "
-            
-            If tempDict("unexpected") > 0 Then tempStr = tempStr & "Unexpected: " & tempDict("unexpected")
-            
-            Debug.Print tempStr
-            
-'            Debug.Print vbNewLine
-        End If
-        
-        tempStr = vbTab & vbTab
-    Next elem
-End Sub
