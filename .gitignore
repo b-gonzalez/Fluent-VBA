@@ -14,7 +14,7 @@ Templates/
 
 # test files and folders
 
-*test*
+# *test*
 /**test**
 
 *TestTest*
