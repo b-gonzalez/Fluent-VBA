@@ -11,12 +11,13 @@ Option Explicit
 
 Implements IExpressions
 
-Private pTestDictCounter As Scripting.Dictionary
-Private pTestDictInfo As Scripting.Dictionary
+Private pTestingInfo As ITestingFunctionsInfo
+Private pTestingSubInfo As ITestingFunctionsSubInfo
 Private pPrinting As IPrinting
 Private iPrint As IPrintExpr
 Private pMeta As IMeta
 Private pTests As cTests
+Private pTestDictCounter As Scripting.Dictionary
 
 Private Const NOT_IMPLEMENTED_ERROR As Long = 514
 
@@ -31,7 +32,8 @@ End Property
 
 Private Property Set IExpressions_setMeta(ByVal value As cMeta)
     Set pMeta = value
-    Set pTestDictCounter = pMeta.Tests.TestDictCounter
+    Set pTestDictCounter = pMeta.Tests.testingInfo.TestFuncInfoToDict
+    Set pTestingInfo = pMeta.Tests.testingInfo
 End Property
 
 Private Sub IExpressions_addToTestAndFluentPath( _
@@ -414,21 +416,19 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue
     Set testDev = test
     
     If pTestDictCounter.Exists(test.functionName) Then
-        Set pTestDictInfo = pTestDictCounter(test.functionName)
+        Set pTestingSubInfo = pTestingInfo.getTestingFunction(test.functionName)
         
-        pTestDictInfo("count") = pTestDictInfo("count") + 1
+        pTestingSubInfo.Count = pTestingSubInfo.Count + 1
         
         If Not IsNull(test.Result) Then
             If test.Result Then
-                pTestDictInfo("passed") = pTestDictInfo("passed") + 1
+                pTestingSubInfo.Passed = pTestingSubInfo.Passed + 1
             Else
-                 pTestDictInfo("failed") = pTestDictInfo("failed") + 1
+                pTestingSubInfo.Failed = pTestingSubInfo.Failed + 1
             End If
         Else
-            pTestDictInfo("unexpected") = pTestDictInfo("unexpected") + 1
+            pTestingSubInfo.Unexpected = pTestingSubInfo.Unexpected + 1
         End If
-        
-        Set pTestDictCounter(test.functionName) = pTestDictInfo
     Else
         Err.Raise Number:=NOT_IMPLEMENTED_ERROR, Description:="Test name not implemented in TestDictCounter"
     End If

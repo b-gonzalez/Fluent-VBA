@@ -29,6 +29,8 @@ Private pFluentPathDict As Scripting.Dictionary
 Private pSkipDupCheck As Boolean
 Private pCleanStrings As Boolean
 
+Private pTestingInfo As ITestingFunctionsInfo
+
 Private Const defaultEpsilon As Double = 0.000001
 
 Public Property Set TestDictCounter(value As Scripting.Dictionary)
@@ -197,50 +199,16 @@ Public Sub CheckTest(test As ITest)
     End If
 End Sub
 
-Public Sub resetTestDictCounter()
-    Set pTestDictCounter = getTestDictCounter(pTestDictCounter)
+Public Sub resetTestingInfo()
+    pTestingInfo.initTestingFunctionsInfo
 End Sub
 
 Public Sub ResetCounter()
     pCount = 0
 End Sub
 
-Private Function getTestDictCounter(TestDictCounter As Scripting.Dictionary) As Scripting.Dictionary
-    Dim initElem As Scripting.Dictionary
-    
-    Set initElem = New Scripting.Dictionary
-    
-    Set TestDictCounter("Alphabetic") = New Scripting.Dictionary
-    Set TestDictCounter("Alphanumeric") = New Scripting.Dictionary
-    Set TestDictCounter("Between") = New Scripting.Dictionary
-    Set TestDictCounter("Contain") = New Scripting.Dictionary
-    Set TestDictCounter("EndWith") = New Scripting.Dictionary
-    Set TestDictCounter("EqualTo") = New Scripting.Dictionary
-    Set TestDictCounter("Erroneous") = New Scripting.Dictionary
-    Set TestDictCounter("ErrorDescriptionOf") = New Scripting.Dictionary
-    Set TestDictCounter("ErrorNumberOf") = New Scripting.Dictionary
-    Set TestDictCounter("EvaluateTo") = New Scripting.Dictionary
-    Set TestDictCounter("ExactSameElementsAs") = New Scripting.Dictionary
-    Set TestDictCounter("GreaterThan") = New Scripting.Dictionary
-    Set TestDictCounter("GreaterThanOrEqualTo") = New Scripting.Dictionary
-    Set TestDictCounter("IdenticalTo") = New Scripting.Dictionary
-    Set TestDictCounter("InDataStructure") = New Scripting.Dictionary
-    Set TestDictCounter("InDataStructures") = New Scripting.Dictionary
-    Set TestDictCounter("LengthBetween") = New Scripting.Dictionary
-    Set TestDictCounter("LengthOf") = New Scripting.Dictionary
-    Set TestDictCounter("LessThan") = New Scripting.Dictionary
-    Set TestDictCounter("LessThanOrEqualTo") = New Scripting.Dictionary
-    Set TestDictCounter("MaxLengthOf") = New Scripting.Dictionary
-    Set TestDictCounter("MinLengthOf") = New Scripting.Dictionary
-    Set TestDictCounter("Numeric") = New Scripting.Dictionary
-    Set TestDictCounter("OneOf") = New Scripting.Dictionary
-    Set TestDictCounter("SameElementsAs") = New Scripting.Dictionary
-    Set TestDictCounter("SameTypeAs") = New Scripting.Dictionary
-    Set TestDictCounter("SameUniqueElementsAs") = New Scripting.Dictionary
-    Set TestDictCounter("Something") = New Scripting.Dictionary
-    Set TestDictCounter("StartWith") = New Scripting.Dictionary
-
-    Set getTestDictCounter = TestDictCounter
+Public Function testingInfo() As ITestingFunctionsInfo
+    Set testingInfo = pTestingInfo
 End Function
 
 Private Sub Class_Initialize()
@@ -249,8 +217,8 @@ Private Sub Class_Initialize()
     
     pAlgorithm = flRecursive
     pEpsilon = defaultEpsilon
-    Set pTestDictCounter = New Scripting.Dictionary
-    Set pTestDictCounter = getTestDictCounter(pTestDictCounter)
+'    Set pTestDictCounter = New Scripting.Dictionary
+'    Set pTestDictCounter = getTestDictCounter(pTestDictCounter)
     
     Set pFluentPathDict = New Scripting.Dictionary
     
@@ -259,4 +227,6 @@ Private Sub Class_Initialize()
     pDataStructures.Add "Dictionary"
     pDataStructures.Add "Collection"
     pDataStructures.Add "ArrayList"
+    
+    Set pTestingInfo = New cTestingFunctionsInfo
 End Sub
