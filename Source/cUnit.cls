@@ -48,6 +48,12 @@ End Property
 Private Property Let IUnit_testValue(ByVal value As Variant)
     pTestingFunctions.TestValue = value
     pUnitVal = pTestingFunctions.TestValue
+    
+    With pMeta.Tests
+        If .CleanTestValStr Or .CleanTestStrings Then
+            pTestingFunctions.TestValueClean = value
+        End If
+    End With
 End Property
 
 Private Property Set IUnit_testValue(ByVal value As Variant)

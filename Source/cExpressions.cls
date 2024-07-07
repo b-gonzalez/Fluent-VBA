@@ -43,7 +43,9 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     ByVal testingValue As Variant, _
     Optional ByVal testingInput As Variant, _
     Optional ByVal LowerVal As Variant, _
-    Optional ByVal HigherVal As Variant)
+    Optional ByVal HigherVal As Variant, _
+    Optional cleanedTestValue As Variant, _
+    Optional cleanedTestInput As Variant)
     
     Dim test As ITest
     Dim testDev As ITestDev
@@ -75,6 +77,8 @@ Private Sub IExpressions_addToTestAndFluentPath( _
         .HigherVal = Empty
         .StrTestInput = ""
         .StrTestValue = ""
+        .cleanedTestValue = ""
+        .cleanedTestInput = ""
         .Category = pPrinting.Category
         .TestName = pPrinting.Name
     End With
@@ -108,6 +112,18 @@ Private Sub IExpressions_addToTestAndFluentPath( _
         test.HigherVal = HigherVal
     End If
     
+    If Not IsMissing(cleanedTestValue) Then
+        If TypeName(cleanedTestValue) = "String" Then
+            If test.testingValue <> cleanedTestValue Then test.cleanedTestValue = cleanedTestValue
+        End If
+    End If
+    
+    If Not IsMissing(cleanedTestInput) Then
+        If TypeName(cleanedTestInput) = "String" Then
+            If test.testingInput <> cleanedTestInput Then test.cleanedTestInput = cleanedTestInput
+        End If
+    End If
+    
     If Not IsMissing(LowerVal) And Not IsMissing(HigherVal) Then
         test.testingInput = Array(CStr(LowerVal), CStr(HigherVal))
     End If
@@ -116,6 +132,8 @@ Private Sub IExpressions_addToTestAndFluentPath( _
         .StrTestInput = IExpressions_ToString(.testingInput)
         .StrTestValue = IExpressions_ToString(.testingValue)
     End With
+    
+
     
     '//TestDev
     
@@ -285,96 +303,109 @@ Optional ByVal HigherVal As Variant) As String
 End Function
 
 Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentPath As String, ByVal tempFluentPath As String) As String
+    Dim finalFluentPath As String
+    
     If Information.IsNull(test.Result) Or Information.IsEmpty(test.Result) Then
         test.Result = TypeName(test.Result)
     End If
 
     With test
-        If .StrTestInput = "" Then
-            tempFluentPath = FluentPath & _
-            "Testing value: " & .StrTestValue & ";" & _
+        finalFluentPath = FluentPath & _
+            "Testing value: " & .StrTestValue & ";"
+            
+            If pMeta.Tests.CleanTestValStr Then
+                If .cleanedTestValue <> "" Then finalFluentPath = finalFluentPath & " Cleaned test value: `" & .cleanedTestValue & "`;"
+            End If
+
+            If .StrTestInput <> "" Then finalFluentPath = finalFluentPath & " Testing input: " & .StrTestInput & ";"
+            
+            If pMeta.Tests.CleanTestInputStr Then
+                If .cleanedTestInput <> "" Then finalFluentPath = finalFluentPath & " Cleaned test input: `" & .cleanedTestInput & "`;"
+            End If
+
+        finalFluentPath = finalFluentPath & _
             " Expectation: Testing value " & tempFluentPath & ";" & _
             " Result: " & .Result
-        Else
-            tempFluentPath = FluentPath & _
-            "Testing value: " & .StrTestValue & ";" & _
-            " Testing input: " & .StrTestInput & ";" & _
-            " Expectation: Testing value " & tempFluentPath & ";" & _
-            " Result: " & .Result
-        End If
     End With
     
-    IExpressions_buildFluentPath = tempFluentPath
+    IExpressions_buildFluentPath = finalFluentPath
 End Function
 
 Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
     Dim tempFluentPath As String
+    Dim testingInput As String
     
-    With test
-        Select Case .functionName
-            Case "Alphabetic"
-                tempFluentPath = IExpressions_Be(Alphabetic_)
-            Case "Alphanumeric"
-                tempFluentPath = IExpressions_Be(Alphanumeric_)
-            Case "Between"
-                tempFluentPath = IExpressions_Be(Between_, LowerVal:=.LowerVal, HigherVal:=.HigherVal)
-            Case "Contain"
-                tempFluentPath = IExpressions_Should(Contain_, .testingInput)
-            Case "Erroneous"
-                tempFluentPath = IExpressions_Be(Erroneous_)
-            Case "ErrorNumberOf"
-                tempFluentPath = IExpressions_Have(ErrorNumberOf_, .testingInput)
-            Case "ErrorDescriptionOf"
-                tempFluentPath = IExpressions_Have(ErrorDescriptionOf_, .testingInput)
-            Case "EqualTo"
-'                tempFluentPath = IExpressions_Be(EqualTo_, .StrTestInput)
-                tempFluentPath = IExpressions_Be(EqualTo_, .StrTestInput)
-            Case "EndWith"
-                tempFluentPath = IExpressions_Should(EndWith_, .testingInput)
-            Case "EvaluateTo"
-                tempFluentPath = IExpressions_Should(EvaluateTo_, .StrTestInput)
-            Case "ExactSameElementsAs"
-                tempFluentPath = IExpressions_Have(ExactSameElementsAs_, .StrTestInput)
-            Case "GreaterThan"
-                tempFluentPath = IExpressions_Be(GreaterThan_, .testingInput)
-            Case "GreaterThanOrEqualTo"
-                tempFluentPath = IExpressions_Be(GreaterThanOrEqualTo_, .testingInput)
-            Case "IdenticalTo"
-                tempFluentPath = IExpressions_Be(IdenticalTo_, .StrTestInput)
-            Case "InDataStructure"
-                tempFluentPath = IExpressions_Be(InDataStructure_, .StrTestInput)
-            Case "InDataStructures"
-                tempFluentPath = IExpressions_Be(InDataStructures_, .StrTestInput)
-            Case "LengthBetween"
-                tempFluentPath = IExpressions_Have(LengthBetween_, .StrTestInput)
-            Case "LengthOf"
-                tempFluentPath = IExpressions_Have(LengthOf_, .testingInput)
-            Case "LessThan"
-                tempFluentPath = IExpressions_Be(LessThan_, .testingInput)
-            Case "LessThanOrEqualTo"
-                tempFluentPath = IExpressions_Be(LessThanOrEqualTo_, .testingInput)
-            Case "MaxLengthOf"
-                tempFluentPath = IExpressions_Have(MaxLengthOf_, .testingInput)
-            Case "MinLengthOf"
-                tempFluentPath = IExpressions_Have(MinLengthOf_, .testingInput)
-            Case "Numeric"
-                tempFluentPath = IExpressions_Be(Numeric_)
-            Case "OneOf"
-                tempFluentPath = IExpressions_Be(OneOf_, .StrTestInput)
-            Case "SameElementsAs"
-                tempFluentPath = IExpressions_Have(SameElementsAs_, .StrTestInput)
-            Case "SameTypeAs"
-                tempFluentPath = IExpressions_Have(SameTypeAs_, .StrTestInput)
-            Case "SameUniqueElementsAs"
-                tempFluentPath = IExpressions_Have(SameUniqueElementsAs_, .StrTestInput)
-            Case "Something"
-                tempFluentPath = IExpressions_Be(Something_)
-            Case "StartWith"
-                tempFluentPath = IExpressions_Should(StartWith_, .testingInput)
-            Case Else
-                Err.Raise NOT_IMPLEMENTED_ERROR, "Function not implemented"
-        End Select
-    End With
+    tempFluentPath = ""
+    testingInput = ""
+    
+    If TypeName(test.testingInput) = "String" Then
+        testingInput = "`" & test.StrTestInput & "`"
+    Else
+        testingInput = test.StrTestInput
+    End If
+    
+    Select Case test.functionName
+        Case "Alphabetic"
+            tempFluentPath = IExpressions_Be(Alphabetic_)
+        Case "Alphanumeric"
+            tempFluentPath = IExpressions_Be(Alphanumeric_)
+        Case "Between"
+            tempFluentPath = IExpressions_Be(Between_, LowerVal:=test.LowerVal, HigherVal:=test.HigherVal)
+        Case "Contain"
+            tempFluentPath = IExpressions_Should(Contain_, testingInput)
+        Case "Erroneous"
+            tempFluentPath = IExpressions_Be(Erroneous_)
+        Case "ErrorNumberOf"
+            tempFluentPath = IExpressions_Have(ErrorNumberOf_, testingInput)
+        Case "ErrorDescriptionOf"
+            tempFluentPath = IExpressions_Have(ErrorDescriptionOf_, testingInput)
+        Case "EqualTo"
+            tempFluentPath = IExpressions_Be(EqualTo_, testingInput)
+        Case "EndWith"
+            tempFluentPath = IExpressions_Should(EndWith_, testingInput)
+        Case "EvaluateTo"
+            tempFluentPath = IExpressions_Should(EvaluateTo_, testingInput)
+        Case "ExactSameElementsAs"
+            tempFluentPath = IExpressions_Have(ExactSameElementsAs_, testingInput)
+        Case "GreaterThan"
+            tempFluentPath = IExpressions_Be(GreaterThan_, testingInput)
+        Case "GreaterThanOrEqualTo"
+            tempFluentPath = IExpressions_Be(GreaterThanOrEqualTo_, testingInput)
+        Case "IdenticalTo"
+            tempFluentPath = IExpressions_Be(IdenticalTo_, testingInput)
+        Case "InDataStructure"
+            tempFluentPath = IExpressions_Be(InDataStructure_, testingInput)
+        Case "InDataStructures"
+            tempFluentPath = IExpressions_Be(InDataStructures_, testingInput)
+        Case "LengthBetween"
+            tempFluentPath = IExpressions_Have(LengthBetween_, LowerVal:=test.LowerVal, HigherVal:=test.HigherVal)
+        Case "LengthOf"
+            tempFluentPath = IExpressions_Have(LengthOf_, testingInput)
+        Case "LessThan"
+            tempFluentPath = IExpressions_Be(LessThan_, testingInput)
+        Case "LessThanOrEqualTo"
+            tempFluentPath = IExpressions_Be(LessThanOrEqualTo_, testingInput)
+        Case "MaxLengthOf"
+            tempFluentPath = IExpressions_Have(MaxLengthOf_, testingInput)
+        Case "MinLengthOf"
+            tempFluentPath = IExpressions_Have(MinLengthOf_, testingInput)
+        Case "Numeric"
+            tempFluentPath = IExpressions_Be(Numeric_)
+        Case "OneOf"
+            tempFluentPath = IExpressions_Be(OneOf_, testingInput)
+        Case "SameElementsAs"
+            tempFluentPath = IExpressions_Have(SameElementsAs_, testingInput)
+        Case "SameTypeAs"
+            tempFluentPath = IExpressions_Have(SameTypeAs_, testingInput)
+        Case "SameUniqueElementsAs"
+            tempFluentPath = IExpressions_Have(SameUniqueElementsAs_, testingInput)
+        Case "Something"
+            tempFluentPath = IExpressions_Be(Something_)
+        Case "StartWith"
+            tempFluentPath = IExpressions_Should(StartWith_, testingInput)
+        Case Else
+            Err.Raise NOT_IMPLEMENTED_ERROR, "Function not implemented"
+    End Select
     
     IExpressions_getFunctionExpr = tempFluentPath
 End Function
@@ -789,6 +820,19 @@ Private Function IExpressions_getResultNumber(ByVal Result As Variant) As Long
     End If
     
     IExpressions_getResultNumber = resultNumber
+End Function
+
+Public Function IExpressions_CleanString(TestStr As Variant, CleanDict As Scripting.Dictionary) As String
+    Dim elem As Variant
+    Dim tempStr As Variant
+    
+    tempStr = TestStr
+    
+    For Each elem In CleanDict.Keys
+        tempStr = Replace(tempStr, elem, CleanDict(elem))
+    Next elem
+    
+    IExpressions_CleanString = tempStr
 End Function
 
 'Private Sub Class_Initialize()

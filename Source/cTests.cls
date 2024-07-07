@@ -27,7 +27,11 @@ Private pEpsilon As Double
 Private pDataStructures As Collection
 Private pFluentPathDict As Scripting.Dictionary
 Private pSkipDupCheck As Boolean
-Private pCleanStrings As Boolean
+Private pCleanTestValStr As Boolean
+Private pCleanTestInputStr As Boolean
+Private pCleanTestStrings As Boolean
+
+Private pCleanStringDict As Scripting.Dictionary
 
 Private pTestingInfo As ITestingFunctionsInfo
 
@@ -103,12 +107,35 @@ Public Property Get SkipDupCheck() As Boolean
     SkipDupCheck = pSkipDupCheck
 End Property
 
-Public Property Let CleanStrings(value As Boolean)
-    pCleanStrings = value
+Public Property Let CleanTestValStr(value As Boolean)
+    pCleanTestValStr = value
 End Property
 
-Public Property Get CleanStrings() As Boolean
-    CleanStrings = pCleanStrings
+Public Property Get CleanTestValStr() As Boolean
+    CleanTestValStr = pCleanTestValStr
+End Property
+
+Public Property Let CleanTestInputStr(value As Boolean)
+    pCleanTestInputStr = value
+End Property
+
+Public Property Get CleanTestInputStr() As Boolean
+    CleanTestInputStr = pCleanTestInputStr
+End Property
+
+Public Property Let CleanTestStrings(value As Boolean)
+    pCleanTestStrings = value
+    
+    pCleanTestValStr = value
+    pCleanTestInputStr = value
+End Property
+
+Public Property Get CleanTestStrings() As Boolean
+    CleanTestStrings = pCleanTestStrings
+End Property
+
+Public Property Get CleanStringDict() As Scripting.Dictionary
+    Set CleanStringDict = pCleanStringDict
 End Property
 
 Public Sub AddDataStructure(dataStructure As Variant)
@@ -118,6 +145,16 @@ Public Sub AddDataStructure(dataStructure As Variant)
     
     If IsIterable(dataStructure) And Not datastructureInCollection(dsType, pDataStructures) Then
         pDataStructures.Add dsType
+    End If
+End Sub
+
+Public Sub AddToCleanStringDict(key As String, Optional value As String = "", Optional replaceIfExists As Boolean = False)
+    If replaceIfExists Then
+        CleanStringDict(key) = value
+    Else
+        If Not CleanStringDict.Exists(key) Then
+            CleanStringDict.Add key, value
+        End If
     End If
 End Sub
 
@@ -222,11 +259,17 @@ Private Sub Class_Initialize()
     
     Set pFluentPathDict = New Scripting.Dictionary
     
+    Set pTestingInfo = New cTestingFunctionsInfo
+    
+    Set pCleanStringDict = New Scripting.Dictionary
+    
+    pCleanStringDict.Add " ", ""
+    pCleanStringDict.Add """", ""
+    
     Set pDataStructures = New Collection
     
     pDataStructures.Add "Dictionary"
     pDataStructures.Add "Collection"
     pDataStructures.Add "ArrayList"
     
-    Set pTestingInfo = New cTestingFunctionsInfo
 End Sub
