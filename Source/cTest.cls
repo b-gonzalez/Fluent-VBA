@@ -34,6 +34,9 @@ Private pTestValueSet As Boolean
 Private pHasEmpty As Boolean
 Private pCleanedTestValue As String
 Private pCleanedTestInput As String
+Private phasCleanTestValue As Boolean
+Private phasCleanTestInput As Boolean
+Private phasCleanTestStrings As Boolean
 
 Private Property Let ITest_testingValue(ByVal value As Variant)
     pTestingValue = value
@@ -177,6 +180,30 @@ End Property
 
 Public Property Get ITest_CleanedTestInput() As String
     ITest_CleanedTestInput = pCleanedTestInput
+End Property
+
+Public Property Let ITest_HasCleanTestValue(ByVal value As Boolean)
+    phasCleanTestValue = value
+End Property
+
+Public Property Get ITest_HasCleanTestValue() As Boolean
+    ITest_HasCleanTestValue = phasCleanTestValue
+End Property
+
+Public Property Let ITest_HasCleanTestInput(ByVal value As Boolean)
+    phasCleanTestInput = False
+End Property
+
+Public Property Get ITest_HasCleanTestInput() As Boolean
+    ITest_HasCleanTestInput = phasCleanTestInput
+End Property
+
+Public Property Let ITest_HasCleanTestStrings(ByVal value As Boolean)
+    phasCleanTestStrings = value
+End Property
+
+Public Property Get ITest_HasCleanTestStrings() As Boolean
+    ITest_HasCleanTestStrings = phasCleanTestStrings
 End Property
 
 Private Property Let ITestDev_negateValue(ByVal value As Boolean)

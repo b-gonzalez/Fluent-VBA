@@ -141,7 +141,7 @@ End Property
 Public Sub AddDataStructure(dataStructure As Variant)
     Dim dsType As String
     
-    dsType = TypeName(dataStructure)
+    dsType = Information.TypeName(dataStructure)
     
     If IsIterable(dataStructure) And Not datastructureInCollection(dsType, pDataStructures) Then
         pDataStructures.Add dsType
@@ -181,7 +181,7 @@ Public Function IsDataStructure(ByVal dataStructure As Variant) As Boolean
     Dim elem As Variant
     Dim tempErr As Long
     
-    dsTypeName = TypeName(dataStructure)
+    dsTypeName = Information.TypeName(dataStructure)
     tempBool = False
     
     If IsArray(dataStructure) Then
@@ -225,7 +225,7 @@ Public Sub CheckTest(test As ITest)
         RaiseEvent TestPassed(test)
     ElseIf test.Result = False Then
         RaiseEvent TestFailed(test)
-    ElseIf IsNull(test.Result) Or IsEmpty(test.Result) Then
+    ElseIf Information.IsNull(test.Result) Or Information.IsEmpty(test.Result) Then
         RaiseEvent TestUnexpected(test)
     End If
     

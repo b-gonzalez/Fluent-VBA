@@ -62,7 +62,7 @@ Private Property Set IUnit_testValue(ByVal value As Variant)
 End Property
 
 Private Property Get IUnit_testValue() As Variant
-    If IsObject(pUnitVal) Then
+    If Information.IsObject(pUnitVal) Then
         Set IUnit_testValue = pUnitVal
     Else
         IUnit_testValue = pUnitVal
@@ -78,7 +78,7 @@ Private Function getShould() As cShould
     
     Set tempShould.SetTestFunc = pTestingFunctions
     
-    If IsObject(pUnitVal) Then
+    If Information.IsObject(pUnitVal) Then
         Set tempShould.TestValue = pUnitVal
     Else
         tempShould.TestValue = pUnitVal
@@ -95,7 +95,7 @@ Private Function getShouldNot() As cShouldNot
     
     Set tempShouldNot.SetTestFunc = pTestingFunctions
     
-    If IsObject(pUnitVal) Then
+    If Information.IsObject(pUnitVal) Then
         Set tempShouldNot.TestValue = pUnitVal
     Else
         tempShouldNot.TestValue = pUnitVal

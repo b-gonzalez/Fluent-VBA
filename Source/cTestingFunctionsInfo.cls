@@ -43,121 +43,121 @@ Private pStartWith As ITestingFunctionsSubInfo
 
 Private pTestingFunctionsDict As Scripting.Dictionary
 
-Private Function ITestingFunctionsInfo_Alphabetic() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_Alphabetic() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_Alphabetic = pAlphabetic
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_Alphanumeric() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_Alphanumeric() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_Alphanumeric = pAlphanumeric
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_Between() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_Between() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_Between = pBetween
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_Contain() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_Contain() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_Contain = pContain
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_EndWith() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_EndWith() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_EndWith = pEndWith
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_EqualTo() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_EqualTo() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_EqualTo = pEqualTo
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_Erroneous() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_Erroneous() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_Erroneous = pErroneous
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_ErrorDescriptionOf() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_ErrorDescriptionOf() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_ErrorDescriptionOf = pErrorDescriptionOf
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_ErrorNumberOf() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_ErrorNumberOf() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_ErrorNumberOf = pErrorNumberOf
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_EvaluateTo() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_EvaluateTo() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_EvaluateTo = pEvaluateTo
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_ExactSameElementsAs() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_ExactSameElementsAs() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_ExactSameElementsAs = pExactSameElementsAs
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_GreaterThan() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_GreaterThan() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_GreaterThan = pGreaterThan
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_GreaterThanOrEqualTo() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_GreaterThanOrEqualTo() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_GreaterThanOrEqualTo = pGreaterThanOrEqualTo
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_IdenticalTo() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_IdenticalTo() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_IdenticalTo = pIdenticalTo
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_InDataStructure() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_InDataStructure() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_InDataStructure = pInDataStructure
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_InDataStructures() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_InDataStructures() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_InDataStructures = pInDataStructures
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_LengthBetween() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_LengthBetween() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_LengthBetween = pLengthBetween
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_LengthOf() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_LengthOf() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_LengthOf = pLengthOf
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_LessThan() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_LessThan() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_LessThan = pLessThan
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_LessThanOrEqualTo() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_LessThanOrEqualTo() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_LessThanOrEqualTo = pLessThanOrEqualTo
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_MaxLengthOf() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_MaxLengthOf() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_MaxLengthOf = pMaxLengthOf
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_MinLengthOf() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_MinLengthOf() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_MinLengthOf = pMinLengthOf
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_Numeric() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_Numeric() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_Numeric = pNumeric
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_OneOf() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_OneOf() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_OneOf = pOneOf
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_SameElementsAs() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_SameElementsAs() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_SameElementsAs = pSameElementsAs
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_SameTypeAs() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_SameTypeAs() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_SameTypeAs = pSameTypeAs
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_SameUniqueElementsAs() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_SameUniqueElementsAs() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_SameUniqueElementsAs = pSameUniqueElementsAs
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_Something() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_Something() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_Something = pSomething
-End Function
+End Property
 
-Private Function ITestingFunctionsInfo_StartWith() As ITestingFunctionsSubInfo
+Private Property Get ITestingFunctionsInfo_StartWith() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_StartWith = pStartWith
-End Function
+End Property
 
 Private Function ITestingFunctionsInfo_getTestingFunction(functionName As String) As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_getTestingFunction = pTestingFunctionsDict(functionName)

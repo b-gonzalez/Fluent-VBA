@@ -23,8 +23,8 @@ End Property
 
 Private Function IFluentOf_Of(Optional ByVal All As Variant) As cUnit
     Dim tf As ITestingFunctions
-    If Not IsMissing(All) Or IsArray(All) Then
-        If IsObject(All) Then
+    If Not Information.IsMissing(All) Or Information.IsArray(All) Then
+        If Information.IsObject(All) Then
             Set pFluentOfVal = All
             Set pUnit.TestValue = pFluentOfVal
         Else

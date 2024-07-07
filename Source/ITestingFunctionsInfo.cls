@@ -9,92 +9,92 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Function Alphabetic() As ITestingFunctionsSubInfo
-End Function
+Public Property Get Alphabetic() As ITestingFunctionsSubInfo
+End Property
 
-Public Function Alphanumeric() As ITestingFunctionsSubInfo
-End Function
+Public Property Get Alphanumeric() As ITestingFunctionsSubInfo
+End Property
 
-Public Function Between() As ITestingFunctionsSubInfo
-End Function
+Public Property Get Between() As ITestingFunctionsSubInfo
+End Property
 
-Public Function Contain() As ITestingFunctionsSubInfo
-End Function
+Public Property Get Contain() As ITestingFunctionsSubInfo
+End Property
 
-Public Function EndWith() As ITestingFunctionsSubInfo
-End Function
+Public Property Get EndWith() As ITestingFunctionsSubInfo
+End Property
 
-Public Function EqualTo() As ITestingFunctionsSubInfo
-End Function
+Public Property Get EqualTo() As ITestingFunctionsSubInfo
+End Property
 
-Public Function Erroneous() As ITestingFunctionsSubInfo
-End Function
+Public Property Get Erroneous() As ITestingFunctionsSubInfo
+End Property
 
-Public Function ErrorDescriptionOf() As ITestingFunctionsSubInfo
-End Function
+Public Property Get ErrorDescriptionOf() As ITestingFunctionsSubInfo
+End Property
 
-Public Function ErrorNumberOf() As ITestingFunctionsSubInfo
-End Function
+Public Property Get ErrorNumberOf() As ITestingFunctionsSubInfo
+End Property
 
-Public Function EvaluateTo() As ITestingFunctionsSubInfo
-End Function
+Public Property Get EvaluateTo() As ITestingFunctionsSubInfo
+End Property
 
-Public Function ExactSameElementsAs() As ITestingFunctionsSubInfo
-End Function
+Public Property Get ExactSameElementsAs() As ITestingFunctionsSubInfo
+End Property
 
-Public Function GreaterThan() As ITestingFunctionsSubInfo
-End Function
+Public Property Get GreaterThan() As ITestingFunctionsSubInfo
+End Property
 
-Public Function GreaterThanOrEqualTo() As ITestingFunctionsSubInfo
-End Function
+Public Property Get GreaterThanOrEqualTo() As ITestingFunctionsSubInfo
+End Property
 
-Public Function IdenticalTo() As ITestingFunctionsSubInfo
-End Function
+Public Property Get IdenticalTo() As ITestingFunctionsSubInfo
+End Property
 
-Public Function InDataStructure() As ITestingFunctionsSubInfo
-End Function
+Public Property Get InDataStructure() As ITestingFunctionsSubInfo
+End Property
 
-Public Function InDataStructures() As ITestingFunctionsSubInfo
-End Function
+Public Property Get InDataStructures() As ITestingFunctionsSubInfo
+End Property
 
-Public Function LengthBetween() As ITestingFunctionsSubInfo
-End Function
+Public Property Get LengthBetween() As ITestingFunctionsSubInfo
+End Property
 
-Public Function LengthOf() As ITestingFunctionsSubInfo
-End Function
+Public Property Get LengthOf() As ITestingFunctionsSubInfo
+End Property
 
-Public Function LessThan() As ITestingFunctionsSubInfo
-End Function
+Public Property Get LessThan() As ITestingFunctionsSubInfo
+End Property
 
-Public Function LessThanOrEqualTo() As ITestingFunctionsSubInfo
-End Function
+Public Property Get LessThanOrEqualTo() As ITestingFunctionsSubInfo
+End Property
 
-Public Function MaxLengthOf() As ITestingFunctionsSubInfo
-End Function
+Public Property Get MaxLengthOf() As ITestingFunctionsSubInfo
+End Property
 
-Public Function MinLengthOf() As ITestingFunctionsSubInfo
-End Function
+Public Property Get MinLengthOf() As ITestingFunctionsSubInfo
+End Property
 
-Public Function Numeric() As ITestingFunctionsSubInfo
-End Function
+Public Property Get Numeric() As ITestingFunctionsSubInfo
+End Property
 
-Public Function OneOf() As ITestingFunctionsSubInfo
-End Function
+Public Property Get OneOf() As ITestingFunctionsSubInfo
+End Property
 
-Public Function SameElementsAs() As ITestingFunctionsSubInfo
-End Function
+Public Property Get SameElementsAs() As ITestingFunctionsSubInfo
+End Property
 
-Public Function SameTypeAs() As ITestingFunctionsSubInfo
-End Function
+Public Property Get SameTypeAs() As ITestingFunctionsSubInfo
+End Property
 
-Public Function SameUniqueElementsAs() As ITestingFunctionsSubInfo
-End Function
+Public Property Get SameUniqueElementsAs() As ITestingFunctionsSubInfo
+End Property
 
-Public Function Something() As ITestingFunctionsSubInfo
-End Function
+Public Property Get Something() As ITestingFunctionsSubInfo
+End Property
 
-Public Function StartWith() As ITestingFunctionsSubInfo
-End Function
+Public Property Get StartWith() As ITestingFunctionsSubInfo
+End Property
 
 Public Sub initTestingFunctionsInfo()
 End Sub

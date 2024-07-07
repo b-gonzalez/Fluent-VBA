@@ -44,7 +44,7 @@ Private Property Get IShould_have() As IHave
     Set pHaveSet.SetTestFunc = pTestingFunctions
 '    pHaveSet.TestValue = pShouldVal
 
-    If IsObject(pShouldVal) Then
+    If Information.IsObject(pShouldVal) Then
         Set pHaveSet.TestValue = pShouldVal
     Else
         pHaveSet.TestValue = pShouldVal
@@ -61,7 +61,7 @@ Private Property Get IShould_be() As IBe
     Set pBeSet = pBe
     Set pBeSet.SetTestFunc = pTestingFunctions
     
-    If IsObject(pShouldVal) Then
+    If Information.IsObject(pShouldVal) Then
         Set pBeSet.TestValue = pShouldVal
     Else
         pBeSet.TestValue = pShouldVal

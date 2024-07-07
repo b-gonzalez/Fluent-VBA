@@ -40,7 +40,7 @@ Private Property Let IFluent_TestValue(ByVal All As Variant)
 End Property
 
 Private Property Get IFluent_TestValue() As Variant
-    If IsObject(pFluentVal) Then
+    If Information.IsObject(pFluentVal) Then
         Set IFluent_TestValue = pUnit.TestValue
     Else
         IFluent_TestValue = pUnit.TestValue

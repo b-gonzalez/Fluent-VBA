@@ -110,3 +110,21 @@ End Property
 
 Public Property Get cleanedTestInput() As String
 End Property
+
+Public Property Let HasCleanTestValue(ByVal value As Boolean)
+End Property
+
+Public Property Get HasCleanTestValue() As Boolean
+End Property
+
+Public Property Let HasCleanTestInput(ByVal value As Boolean)
+End Property
+
+Public Property Get HasCleanTestInput() As Boolean
+End Property
+
+Public Property Let HasCleanTestStrings(ByVal value As Boolean)
+End Property
+
+Public Property Get HasCleanTestStrings() As Boolean
+End Property

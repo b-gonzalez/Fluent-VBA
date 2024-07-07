@@ -1376,21 +1376,21 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         arr = Array()
-        fluent.TestValue = testFluent.Of(TypeName(arr) = "Variant()").Should.EvaluateTo(True)
+        fluent.TestValue = testFluent.Of(Information.TypeName(arr) = "Variant()").Should.EvaluateTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(IsArray(arr)).Should.EvaluateTo(True)
+        fluent.TestValue = testFluent.Of(Information.IsArray(arr)).Should.EvaluateTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set col = New Collection
-        fluent.TestValue = testFluent.Of(TypeName(col) = "Collection").Should.EvaluateTo(True)
+        fluent.TestValue = testFluent.Of(Information.TypeName(col) = "Collection").Should.EvaluateTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(TypeOf col Is Collection).Should.EvaluateTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set d = New Scripting.Dictionary
-        fluent.TestValue = testFluent.Of(TypeName(d) = "Dictionary").Should.EvaluateTo(True)
+        fluent.TestValue = testFluent.Of(Information.TypeName(d) = "Dictionary").Should.EvaluateTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(TypeOf d Is Scripting.Dictionary).Should.EvaluateTo(True)
@@ -3282,21 +3282,21 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         arr = Array()
-        fluent.TestValue = testFluent.Of(TypeName(arr) = "Variant()").ShouldNot.EvaluateTo(True)
+        fluent.TestValue = testFluent.Of(Information.TypeName(arr) = "Variant()").ShouldNot.EvaluateTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(IsArray(arr)).ShouldNot.EvaluateTo(True)
+        fluent.TestValue = testFluent.Of(Information.IsArray(arr)).ShouldNot.EvaluateTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set col = New Collection
-        fluent.TestValue = testFluent.Of(TypeName(col) = "Collection").ShouldNot.EvaluateTo(True)
+        fluent.TestValue = testFluent.Of(Information.TypeName(col) = "Collection").ShouldNot.EvaluateTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(TypeOf col Is Collection).ShouldNot.EvaluateTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         Set d = New Scripting.Dictionary
-        fluent.TestValue = testFluent.Of(TypeName(d) = "Dictionary").ShouldNot.EvaluateTo(True)
+        fluent.TestValue = testFluent.Of(Information.TypeName(d) = "Dictionary").ShouldNot.EvaluateTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(TypeOf d Is Scripting.Dictionary).ShouldNot.EvaluateTo(True)
