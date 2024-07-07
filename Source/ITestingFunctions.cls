@@ -17,6 +17,9 @@ End Enum
 Public Property Let TestValue(ByVal value As Variant)
 End Property
 
+Public Property Let TestValueClean(ByVal value As Variant)
+End Property
+
 Public Property Set TestValue(ByVal value As Variant)
 End Property
 
@@ -36,4 +39,10 @@ Public Property Set Expressions(ByVal value As IExpressions)
 End Property
 
 Public Function GetCleanedString(value As Variant) As String
+End Function
+
+Public Function GetTempTestValue(testingValue As Variant) As Variant
+End Function
+
+Public Function GetTempTestInput(testingInput As Variant) As Variant
 End Function

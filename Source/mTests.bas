@@ -1414,7 +1414,7 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of("!@#").Should.Be.Alphabetic
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.CleanStrings = True
+        testFluent.Meta.Tests.CleanTestStrings = True
         
         fluent.TestValue = testFluent.Of("abc def").Should.Be.Alphabetic
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -1467,7 +1467,7 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(""" !@# """).Should.Be.Alphabetic
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.CleanStrings = False
+        testFluent.Meta.Tests.CleanTestStrings = False
         
         fluent.TestValue = testFluent.Of(123).Should.Be.Numeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -1484,7 +1484,7 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of("!@#").Should.Be.Numeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.CleanStrings = True
+        testFluent.Meta.Tests.CleanTestStrings = True
         
         fluent.TestValue = testFluent.Of("123 456").Should.Be.Numeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -1525,7 +1525,7 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(""" !@# """).Should.Be.Numeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.CleanStrings = False
+        testFluent.Meta.Tests.CleanTestStrings = False
         
         fluent.TestValue = testFluent.Of("abc123").Should.Be.Alphanumeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -1539,7 +1539,7 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of("!@#").Should.Be.Alphanumeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.CleanStrings = True
+        testFluent.Meta.Tests.CleanTestStrings = True
         
         fluent.TestValue = testFluent.Of("abc 123").Should.Be.Alphanumeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -1580,7 +1580,7 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(""" !@# """).Should.Be.Alphanumeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.CleanStrings = False
+        testFluent.Meta.Tests.CleanTestStrings = False
         
         fluent.TestValue = testFluent.Of(CStr(Excel.Evaluate("1 / 0"))).Should.Be.EqualTo("Error 2007")
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3319,7 +3319,7 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         
-        testFluent.Meta.Tests.CleanStrings = True
+        testFluent.Meta.Tests.CleanTestStrings = True
         
         
         fluent.TestValue = testFluent.Of("abc def").ShouldNot.Be.Alphabetic
@@ -3373,7 +3373,7 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(""" !@# """).ShouldNot.Be.Alphabetic
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.CleanStrings = False
+        testFluent.Meta.Tests.CleanTestStrings = False
         
         fluent.TestValue = testFluent.Of(123).ShouldNot.Be.Numeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3390,7 +3390,7 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of("!@#").ShouldNot.Be.Numeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.CleanStrings = True
+        testFluent.Meta.Tests.CleanTestStrings = True
         
         fluent.TestValue = testFluent.Of("123 456").ShouldNot.Be.Numeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3431,7 +3431,7 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(""" !@# """).ShouldNot.Be.Numeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.CleanStrings = False
+        testFluent.Meta.Tests.CleanTestStrings = False
         
         fluent.TestValue = testFluent.Of("abc123").ShouldNot.Be.Alphanumeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3445,7 +3445,7 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of("!@#").ShouldNot.Be.Alphanumeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.CleanStrings = True
+        testFluent.Meta.Tests.CleanTestStrings = True
         
         fluent.TestValue = testFluent.Of("abc 123").ShouldNot.Be.Alphanumeric
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3486,7 +3486,7 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(""" !@# """).ShouldNot.Be.Alphanumeric
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.CleanStrings = False
+        testFluent.Meta.Tests.CleanTestStrings = False
         
         fluent.TestValue = testFluent.Of(CStr(Excel.Evaluate("1 / 0"))).ShouldNot.Be.EqualTo("Error 2007")
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -6743,9 +6743,74 @@ Private Function MiscTests(fluent As IFluent)
     'test to ensure that StrTestValue and StrTestInput are working with non-default datastructure
     
     With fluent.Meta
-        Debug.Assert .Tests(.Tests.Count).StrTestValue = "'Hello'"
-        Debug.Assert .Tests(.Tests.Count).StrTestInput = "Queue('Hello')"
+        Debug.Assert .Tests(.Tests.Count).StrTestValue = "`Hello`"
+        Debug.Assert .Tests(.Tests.Count).StrTestInput = "Queue(`Hello`)"
     End With
+    
+    'Clean string tests
+    
+    fluent.Meta.Tests.CleanTestValStr = True
+    
+    fluent.TestValue = """abc"""
+    
+    Debug.Assert fluent.Should.Be.EqualTo("abc")
+    
+    fluent.Meta.Tests.CleanTestValStr = False
+    fluent.Meta.Tests.CleanTestInputStr = True
+    
+    fluent.TestValue = "abc"
+
+    Debug.Assert fluent.Should.Be.EqualTo("""abc""")
+    
+    fluent.Meta.Tests.CleanTestValStr = True
+    fluent.Meta.Tests.CleanTestInputStr = True
+
+    fluent.TestValue = """abc"""
+    
+    fluent.Meta.Tests.CleanTestValStr = False
+    fluent.Meta.Tests.CleanTestInputStr = False
+    
+    fluent.Meta.Tests.CleanTestStrings = True
+
+    fluent.TestValue = """abc"""
+
+    Debug.Assert fluent.Should.Be.EqualTo("""abc""")
+    
+    'Add to clean strings tests
+    
+    fluent.Meta.Tests.AddToCleanStringDict ("'")
+
+    fluent.Meta.Tests.CleanTestValStr = True
+    
+    fluent.TestValue = "'abc def'"
+
+    Debug.Assert fluent.Should.Be.EqualTo("abcdef")
+
+    fluent.Meta.Tests.CleanTestValStr = False
+    fluent.Meta.Tests.CleanTestInputStr = True
+    
+    fluent.TestValue = "abcdef"
+    
+    Debug.Assert fluent.Should.Be.EqualTo("'abc def'")
+
+    fluent.Meta.Tests.CleanTestValStr = False
+    fluent.Meta.Tests.CleanTestInputStr = True
+    
+    fluent.Meta.Tests.AddToCleanStringDict " ", "_", True
+    
+    fluent.Meta.Tests.CleanTestValStr = True
+    fluent.Meta.Tests.CleanTestInputStr = False
+    
+    fluent.TestValue = "'abc def'"
+    
+    Debug.Assert fluent.Should.Be.EqualTo("abc_def")
+    
+    fluent.Meta.Tests.CleanTestValStr = False
+    fluent.Meta.Tests.CleanTestInputStr = True
+    
+    fluent.TestValue = "abc_def"
+    
+    Debug.Assert fluent.Should.Be.EqualTo("'abc def'")
     
     Debug.Print "Misc tests finished"
     

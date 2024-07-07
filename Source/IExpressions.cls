@@ -69,7 +69,9 @@ Public Sub addToTestAndFluentPath( _
     ByVal testingValue As Variant, _
     Optional ByVal testingInput As Variant, _
     Optional ByVal LowerVal As Variant, _
-    Optional ByVal HigherVal As Variant)
+    Optional ByVal HigherVal As Variant, _
+    Optional cleanedTestValue As Variant, _
+    Optional cleanedTestInput As Variant)
 End Sub
 
 Public Function Should(ByVal shouldType As flShould, Optional ByVal testingInput As Variant) As String
@@ -124,4 +126,7 @@ Private Function getDsCount(dataStructure As Variant) As Long
 End Function
 
 Private Function getDsType(v As Variant) As String
+End Function
+
+Public Function CleanString(TestStr As Variant, CleanDict As Scripting.Dictionary) As String
 End Function

@@ -98,3 +98,15 @@ End Property
 
 Public Property Get HasEmpty() As Boolean
 End Property
+
+Public Property Let cleanedTestValue(value As String)
+End Property
+
+Public Property Get cleanedTestValue() As String
+End Property
+
+Public Property Let cleanedTestInput(value As String)
+End Property
+
+Public Property Get cleanedTestInput() As String
+End Property
