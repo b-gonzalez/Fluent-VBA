@@ -125,7 +125,7 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     End If
     
     If Not IsMissing(LowerVal) And Not IsMissing(HigherVal) Then
-        test.testingInput = Array(CStr(LowerVal), CStr(HigherVal))
+        test.testingInput = Array(LowerVal, HigherVal)
     End If
     
     With test
@@ -290,11 +290,11 @@ Optional ByVal HigherVal As Variant) As String
     
     haveStr = haveStr & funcStr
     
-    If Not IsMissing(TesingInput) And IsMissing(LowerVal) And IsMissing(HigherVal) Then
+    If TesingInput <> "" And IsMissing(LowerVal) And IsMissing(HigherVal) Then
         haveStr = haveStr & " " & TesingInput
     End If
     
-    If IsMissing(TesingInput) And Not IsMissing(LowerVal) And Not IsMissing(HigherVal) Then
+    If TesingInput = "" And Not IsMissing(LowerVal) And Not IsMissing(HigherVal) Then
         haveStr = haveStr & " " & LowerVal & " and " & HigherVal
     End If
 
@@ -411,16 +411,16 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
 End Function
 
 Private Function IExpressions_getFluentPath(ByVal FluentPath As String, ByVal test As ITest, Optional ByVal notShould As Boolean = False) As String
-    Dim LowerVal As Variant
-    Dim HigherVal As Variant
+'    Dim LowerVal As Variant
+'    Dim HigherVal As Variant
     Dim tempFluentPath As String
     
     tempFluentPath = ""
     
-    If test.LowerVal <> Empty And test.HigherVal <> Empty Then
-        LowerVal = test.LowerVal
-        HigherVal = test.HigherVal
-    End If
+'    If test.LowerVal <> Empty And test.HigherVal <> Empty Then
+'        LowerVal = test.LowerVal
+'        HigherVal = test.HigherVal
+'    End If
 
     tempFluentPath = IExpressions_getFunctionExpr(test)
     
@@ -506,9 +506,7 @@ Private Function IExpressions_ToString(ByVal nv As Variant) As String
             tempNVTS = TypeName(nv)
         Case Not TypeOf nv Is Object
             If TypeName(nv) = "String" Then
-                If InStr(1, nv, """") = 0 Then
-                    nv = "'" & nv & "'"
-                End If
+                nv = "`" & nv & "`"
             End If
             tempNVTS = CStr(nv)
         Case TypeOf nv Is VBA.ErrObject
@@ -575,7 +573,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                     ElseIf IsObject(elem) Then
                         temp = temp & TypeName(elem) & ", "
                     ElseIf TypeName(elem) = "String" Then
-                        temp = temp & "'" & elem & "'" & ", "
+                        temp = temp & "`" & elem & "`" & ", "
                     Else
                         temp = temp & elem & ", "
                     End If
@@ -587,7 +585,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                     ElseIf IsObject(v(elem)) Then
                         temp = temp & elem & ": " & TypeName(v(elem)) & ", "
                     ElseIf TypeName(v(elem)) = "String" Then
-                        temp = temp & elem & ": " & "'" & TypeName(v(elem)) & "'" & ", "
+                        temp = temp & elem & ": " & "`" & TypeName(v(elem)) & "`" & ", "
                     Else
                         temp = temp & elem & ": " & v(elem) & ", "
                     End If
@@ -637,7 +635,7 @@ Function IExpressions_inputToStringIter(v As Variant) As String
                 If IsObject(elem) Then
                     tempCol.Add TypeName(elem)
                 ElseIf TypeName(elem) = "String" Then
-                    tempCol.Add "'" & elem & "'"
+                    tempCol.Add "`" & elem & "`"
                 Else
                     tempCol.Add elem
                 End If
@@ -721,7 +719,7 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection) As Coll
             For Each elem2 In elem
                 If Not TypeOf elem Is Scripting.Dictionary Then
                     If TypeName(elem2) = "String" Then
-                        tempCol.Add "'" & elem2 & "'", before:=counter
+                        tempCol.Add "`" & elem2 & "`", before:=counter
                     Else
                         tempCol.Add elem2, before:=counter
                     End If
@@ -738,7 +736,7 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection) As Coll
                         tempCol.Add d(elem2), before:=counter
                     ElseIf TypeName(d(elem2)) = "String" Then
                         'counter incremented towards end of if statement
-                        tempCol.Add elem2 & ": " & "'" & d(elem2) & "'", before:=counter
+                        tempCol.Add elem2 & ": " & "`" & d(elem2) & "`", before:=counter
                     Else
                         'counter incremented towards end of if statement
                         tempCol.Add elem2 & ": " & d(elem2), before:=counter
