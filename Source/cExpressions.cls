@@ -32,8 +32,8 @@ End Property
 
 Private Property Set IExpressions_setMeta(ByVal value As cMeta)
     Set pMeta = value
-    Set pTestDictCounter = pMeta.Tests.testingInfo.TestFuncInfoToDict
-    Set pTestingInfo = pMeta.Tests.testingInfo
+    Set pTestDictCounter = pMeta.Tests.TestingInfo.TestFuncInfoToDict
+    Set pTestingInfo = pMeta.Tests.TestingInfo
 End Property
 
 Private Sub IExpressions_addToTestAndFluentPath( _
@@ -324,13 +324,13 @@ Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentP
         finalFluentPath = FluentPath & _
             "Testing value: " & .StrTestValue & ";"
             
-            If pMeta.Tests.CleanTestValStr Then
+            If pMeta.Tests.TestStrings.CleanTestValStr Then
                 If .cleanedTestValue <> "" Then finalFluentPath = finalFluentPath & " Cleaned test value: `" & .cleanedTestValue & "`;"
             End If
 
             If .StrTestInput <> "" Then finalFluentPath = finalFluentPath & " Testing input: " & .StrTestInput & ";"
             
-            If pMeta.Tests.CleanTestInputStr Then
+            If pMeta.Tests.TestStrings.CleanTestInputStr Then
                 If .cleanedTestInput <> "" Then finalFluentPath = finalFluentPath & " Cleaned test input: `" & .cleanedTestInput & "`;"
             End If
 
@@ -425,17 +425,10 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
 End Function
 
 Private Function IExpressions_getFluentPath(ByVal FluentPath As String, ByVal test As ITest, Optional ByVal notShould As Boolean = False) As String
-'    Dim LowerVal As Variant
-'    Dim HigherVal As Variant
     Dim tempFluentPath As String
     
     tempFluentPath = ""
     
-'    If test.LowerVal <> Empty And test.HigherVal <> Empty Then
-'        LowerVal = test.LowerVal
-'        HigherVal = test.HigherVal
-'    End If
-
     tempFluentPath = IExpressions_getFunctionExpr(test)
     
     If notShould Then

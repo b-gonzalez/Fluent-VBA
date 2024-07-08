@@ -11,9 +11,7 @@ Option Explicit
 
 Implements IUnit
 
-'Private pShould As cShould
 Private pShouldSet As ISetTestFuncsAndValue
-'Private pShouldNot As cShouldNot
 Private pShouldNotSet As ISetTestFuncsAndValue
 Private pTestingFunctions As ITestingFunctions
 Private pMeta As IMeta
@@ -24,12 +22,10 @@ Private pUnitVal As Variant
 Private pTestCount As Long
 
 Public Property Get Should() As IShould
-'    Set pShould = getShould
     Set Should = getShould
 End Property
 
 Public Property Get ShouldNot() As IShould
-'    Set pShouldNot = getShouldNot
     Set ShouldNot = getShouldNot
 End Property
 
@@ -49,7 +45,7 @@ Private Property Let IUnit_testValue(ByVal value As Variant)
     pTestingFunctions.TestValue = value
     pUnitVal = pTestingFunctions.TestValue
     
-    With pMeta.Tests
+    With pMeta.Tests.TestStrings
         If .CleanTestValStr Or .CleanTestStrings Then
             pTestingFunctions.TestValueClean = value
         End If
