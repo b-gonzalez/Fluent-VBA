@@ -127,6 +127,3 @@ End Function
 
 Private Function getDsType(v As Variant) As String
 End Function
-
-Public Function CleanString(TestStr As Variant, CleanDict As Scripting.Dictionary) As String
-End Function

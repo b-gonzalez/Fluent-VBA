@@ -12,5 +12,8 @@ Option Explicit
 Public Property Get Printing() As IPrinting
 End Property
 
+Public Property Get Utilities() As IUtilities
+End Property
+
 Public Property Get Tests() As cTests
 End Property

@@ -2,12 +2,18 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "INegate"
+Attribute VB_Name = "IUtilities"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
+Public Function CleanString(TestStr As Variant, Optional CleanDict As Scripting.Dictionary = Nothing) As String
+End Function
+
 Public Function NegateIfBool(Result As Variant) As Variant
 End Function
+
+Public Property Set CleanStringDict(value As Scripting.Dictionary)
+End Property
