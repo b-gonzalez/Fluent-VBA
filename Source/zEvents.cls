@@ -81,10 +81,6 @@ Private Sub pTestOf_TestUnexpected(ByVal test As ITest)
     Debug.Assert test.Result = "Null" And test.HasNull
 End Sub
 
-'Private Sub pTestOf_DuplicateTest(ByVal test As ITest)
-'    TestOfDuplicateCount = TestOfDuplicateCount + 1
-'End Sub
-
 Private Sub pTest_TestPassed(ByVal test As ITest)
     Debug.Assert pFluentEvent.Meta.Tests.Result = test.Result
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath

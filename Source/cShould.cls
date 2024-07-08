@@ -42,7 +42,6 @@ Private Property Get IShould_have() As IHave
     
     Set pHaveSet = pHave
     Set pHaveSet.SetTestFunc = pTestingFunctions
-'    pHaveSet.TestValue = pShouldVal
 
     If Information.IsObject(pShouldVal) Then
         Set pHaveSet.TestValue = pShouldVal

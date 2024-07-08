@@ -10,41 +10,31 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Public Function LengthOf(ByVal value As Long) As Variant
-
 End Function
 
 Public Function MaxLengthOf(ByVal value As Long) As Variant
-
 End Function
 
 Public Function MinLengthOf(ByVal value As Long) As Variant
-
 End Function
 
 Public Function LengthBetween(ByVal LowValue As Long, ByVal HighValue As Long) As Variant
-
 End Function
 
 Public Function ErrorNumberOf(ByVal value As Long) As Variant
-
 End Function
 
 Public Function ErrorDescriptionOf(ByVal value As String) As Variant
-
 End Function
 
 Public Function SameTypeAs(ByVal All As Variant) As Variant
-
 End Function
 
 Public Function ExactSameElementsAs(ByVal dataStructure As Variant) As Variant
-    
 End Function
 
 Public Function SameUniqueElementsAs(ByVal dataStructure As Variant) As Variant
-    
 End Function
 
 Public Function SameElementsAs(ByVal dataStructure As Variant) As Variant
-    
 End Function

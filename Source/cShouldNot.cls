@@ -19,11 +19,9 @@ Private pNotHaveSet As ISetTestFuncsAndValue
 Private pTestingFunctions As ITestingFunctions
 Private pShouldFunctions As IShouldTestFuncs
 Private pShouldNotVal As Variant
-'Private pNegate As INegate
 Private pUtilities As IUtilities
 
 Private Sub Class_Initialize()
-'    Set pNegate = New cNegate
     Set pUtilities = New cUtilities
 End Sub
 

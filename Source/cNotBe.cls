@@ -17,11 +17,9 @@ Private pNotBeValue As Variant
 Private pTestingFunctions As ITestingFunctions
 Private pBeTestFuncs As IBeTestFuncs
 Private pResult As Variant
-'Private pNegate As INegate
 Private pUtilities As IUtilities
 
 Private Sub Class_Initialize()
-'    Set pNegate = New cNegate
     Set pUtilities = New cUtilities
 End Sub
 

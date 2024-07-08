@@ -231,7 +231,6 @@ Private Sub ITestingFunctionsInfo_PrintTestFunInfo()
     
             Debug.Print tempStr
     
-'            Debug.Print vbNewLine
         End If
         
         tempStr = vbTab & vbTab
@@ -277,7 +276,6 @@ End Function
 
 Private Function ITestingFunctionsInfo_validateTfiDictCounters(tfiDict As Scripting.Dictionary, Optional counter As Long = 0) As Boolean
     Dim b As Boolean
-'    Dim counter As Long
     Dim elem As Variant
     Dim testFuncSubInfo As ITestingFunctionsSubInfo
     

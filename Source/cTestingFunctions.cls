@@ -20,7 +20,6 @@ Private pPrinting As cPrinting
 Private iPrint As IPrintExpr
 Private pApproximateEqual As Boolean
 Private pEpsilon As Double
-'Private pExprDict As Scripting.Dictionary
 
 Private pTestDictCounter As Scripting.Dictionary
 
@@ -64,9 +63,7 @@ Private Function ITestingFunctions_SetDefaultFuncVal() As Variant
     Else
         val = Empty
     End If
-    
-'    pTestValueSet = False
-
+        
     ITestingFunctions_SetDefaultFuncVal = val
 End Function
 
@@ -678,7 +675,6 @@ Optional ByVal NegateValue As Boolean = False) As Variant
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
         tempTestInput = ITestingFunctions_getTempTestInput(testingInput)
         
-'        funcVal = (Excel.Evaluate(testingValue) = testingInput)
         funcVal = (Excel.Evaluate(tempTestValue) = tempTestInput)
     End If
     
@@ -857,7 +853,6 @@ Optional ByVal NegateValue As Boolean = False) As Variant
         ElseIf Information.TypeName(testingValue) = "String" Then
             On Error Resume Next
                 tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
-'                temp = Excel.Evaluate(testingValue)
                 temp = Excel.Evaluate(tempTestValue)
                 Call Err.Raise(testingInput)
                 temp = Err.Number
