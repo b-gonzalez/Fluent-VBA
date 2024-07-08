@@ -49,7 +49,8 @@ Private Property Get ITestingFunctions_TestValue() As Variant
 End Property
 
 Public Property Let ITestingFunctions_TestValueClean(ByVal value As Variant)
-    pTestValueClean = pExpressions.CleanString(value, pMeta.Tests.CleanStringDict)
+'    pTestValueClean = pMeta.Utilities.CleanString(value, pMeta.Tests.CleanStringDict)
+    pTestValueClean = pMeta.Utilities.CleanString(value)
 End Property
 
 Private Property Let ITestingFunctions_TestValueSet(value As Boolean)
@@ -118,7 +119,8 @@ Private Function ITestingFunctions_getTempTestInput(testingInput As Variant) As 
         
         With pMeta.Tests
             If .CleanTestInputStr Or .CleanTestStrings Then
-                tempTestingInput = pExpressions.CleanString(testingInput, .CleanStringDict)
+'                tempTestingInput = pMeta.Utilities.CleanString(testingInput, .CleanStringDict)
+                tempTestingInput = pMeta.Utilities.CleanString(testingInput)
             End If
         End With
         

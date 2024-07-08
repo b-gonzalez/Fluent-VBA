@@ -6812,6 +6812,22 @@ Private Function MiscTests(fluent As IFluent)
     
     Debug.Assert fluent.Should.Be.EqualTo("'abc def'")
     
+    'Explicit clean strings using cUtilities
+    
+    fluent.Meta.Tests.CleanTestStrings = False
+    
+    fluent.TestValue = """abc"""
+    
+    fluent.TestValue = fluent.Meta.Utilities.CleanString(fluent.TestValue)
+    
+    Debug.Assert fluent.Should.Be.EqualTo("abc")
+    
+    fluent.TestValue = "bcd"
+    
+    fluent.TestValue = fluent.Meta.Utilities.CleanString(fluent.TestValue)
+    
+    Debug.Assert fluent.Should.Be.EqualTo(fluent.Meta.Utilities.CleanString("""bcd"""))
+    
     Debug.Print "Misc tests finished"
     
     testCount = fluent.Meta.Tests.Count

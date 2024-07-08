@@ -140,9 +140,9 @@ End Property
 
 Public Sub AddDataStructure(dataStructure As Variant)
     Dim dsType As String
-    
+
     dsType = Information.TypeName(dataStructure)
-    
+
     If IsIterable(dataStructure) And Not datastructureInCollection(dsType, pDataStructures) Then
         pDataStructures.Add dsType
     End If

@@ -834,19 +834,6 @@ Private Function IExpressions_getResultNumber(ByVal Result As Variant) As Long
     IExpressions_getResultNumber = resultNumber
 End Function
 
-Public Function IExpressions_CleanString(TestStr As Variant, CleanDict As Scripting.Dictionary) As String
-    Dim elem As Variant
-    Dim tempStr As Variant
-    
-    tempStr = TestStr
-    
-    For Each elem In CleanDict.Keys
-        tempStr = Replace(tempStr, elem, CleanDict(elem))
-    Next elem
-    
-    IExpressions_CleanString = tempStr
-End Function
-
 'Private Sub Class_Initialize()
 '
 'End Sub
