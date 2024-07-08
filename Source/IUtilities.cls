@@ -9,11 +9,5 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Function CleanString(TestStr As Variant, Optional CleanDict As Scripting.Dictionary = Nothing) As String
-End Function
-
 Public Function NegateIfBool(Result As Variant) As Variant
 End Function
-
-Public Property Set CleanStringDict(value As Scripting.Dictionary)
-End Property

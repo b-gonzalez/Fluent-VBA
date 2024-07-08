@@ -32,5 +32,5 @@ Private Sub Class_Initialize()
     Set pTests = New cTests
     Set pUtilities = New cUtilities
     
-    Set pUtilities.CleanStringDict = pTests.CleanStringDict
+'    Set pUtilities.CleanStringDict = pTests.CleanStringDict
 End Sub
