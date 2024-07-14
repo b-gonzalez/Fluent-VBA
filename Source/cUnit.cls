@@ -46,7 +46,7 @@ Private Property Let IUnit_testValue(ByVal value As Variant)
     pUnitVal = pTestingFunctions.TestValue
     
     With pMeta.Tests.TestStrings
-        If .CleanTestValStr Or .CleanTestStrings Then
+        If .CleanTestValueStr Or .CleanTestStrings Then
             pTestingFunctions.TestValueClean = value
         End If
     End With

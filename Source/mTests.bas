@@ -6747,25 +6747,25 @@ Private Function MiscTests(fluent As IFluent)
     
     'Clean string tests
     
-    fluent.Meta.Tests.TestStrings.CleanTestValStr = True
+    fluent.Meta.Tests.TestStrings.CleanTestValueStr = True
     
     fluent.TestValue = """abc"""
     
     Debug.Assert fluent.Should.Be.EqualTo("abc")
     
-    fluent.Meta.Tests.TestStrings.CleanTestValStr = False
+    fluent.Meta.Tests.TestStrings.CleanTestValueStr = False
     fluent.Meta.Tests.TestStrings.CleanTestInputStr = True
     
     fluent.TestValue = "abc"
 
     Debug.Assert fluent.Should.Be.EqualTo("""abc""")
     
-    fluent.Meta.Tests.TestStrings.CleanTestValStr = True
+    fluent.Meta.Tests.TestStrings.CleanTestValueStr = True
     fluent.Meta.Tests.TestStrings.CleanTestInputStr = True
 
     fluent.TestValue = """abc"""
     
-    fluent.Meta.Tests.TestStrings.CleanTestValStr = False
+    fluent.Meta.Tests.TestStrings.CleanTestValueStr = False
     fluent.Meta.Tests.TestStrings.CleanTestInputStr = False
     
     fluent.Meta.Tests.TestStrings.CleanTestStrings = True
@@ -6778,32 +6778,32 @@ Private Function MiscTests(fluent As IFluent)
     
     fluent.Meta.Tests.TestStrings.AddToCleanStringDict ("'")
 
-    fluent.Meta.Tests.TestStrings.CleanTestValStr = True
+    fluent.Meta.Tests.TestStrings.CleanTestValueStr = True
     
     fluent.TestValue = "'abc def'"
 
     Debug.Assert fluent.Should.Be.EqualTo("abcdef")
 
-    fluent.Meta.Tests.TestStrings.CleanTestValStr = False
+    fluent.Meta.Tests.TestStrings.CleanTestValueStr = False
     fluent.Meta.Tests.TestStrings.CleanTestInputStr = True
     
     fluent.TestValue = "abcdef"
     
     Debug.Assert fluent.Should.Be.EqualTo("'abc def'")
 
-    fluent.Meta.Tests.TestStrings.CleanTestValStr = False
+    fluent.Meta.Tests.TestStrings.CleanTestValueStr = False
     fluent.Meta.Tests.TestStrings.CleanTestInputStr = True
     
     fluent.Meta.Tests.TestStrings.AddToCleanStringDict " ", "_", True
     
-    fluent.Meta.Tests.TestStrings.CleanTestValStr = True
+    fluent.Meta.Tests.TestStrings.CleanTestValueStr = True
     fluent.Meta.Tests.TestStrings.CleanTestInputStr = False
     
     fluent.TestValue = "'abc def'"
     
     Debug.Assert fluent.Should.Be.EqualTo("abc_def")
     
-    fluent.Meta.Tests.TestStrings.CleanTestValStr = False
+    fluent.Meta.Tests.TestStrings.CleanTestValueStr = False
     fluent.Meta.Tests.TestStrings.CleanTestInputStr = True
     
     fluent.TestValue = "abc_def"
@@ -6820,7 +6820,7 @@ Private Function MiscTests(fluent As IFluent)
     
     Debug.Assert fluent.Should.Be.EqualTo("abc")
     
-    fluent.TestValue = "bcd"
+    fluent.TestValue = """bcd"""
     
     fluent.TestValue = fluent.Meta.Tests.TestStrings.CleanString(fluent.TestValue)
     

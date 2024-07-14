@@ -323,7 +323,7 @@ Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentP
         finalFluentPath = FluentPath & _
             "Testing value: " & .StrTestValue & ";"
             
-            If pMeta.Tests.TestStrings.CleanTestValStr Then
+            If pMeta.Tests.TestStrings.CleanTestValueStr Then
                 If .cleanedTestValue <> "" Then
                     finalFluentPath = finalFluentPath & " Cleaned test value: " & pMeta.ToString.WrapIfString(.cleanedTestValue)
                 End If

@@ -96,7 +96,7 @@ Private Function ITestingFunctions_getTempTestValue(testingValue As Variant) As 
         tempTestValue = testingValue
         
         With pMeta.Tests.TestStrings
-            If .CleanTestValStr Or .CleanTestStrings Then
+            If .CleanTestValueStr Or .CleanTestStrings Then
                 tempTestValue = pTestValueClean
             End If
         End With

@@ -9,10 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Let CleanTestValStr(value As Boolean)
+Public Property Let CleanTestValueStr(value As Boolean)
 End Property
 
-Public Property Get CleanTestValStr() As Boolean
+Public Property Get CleanTestValueStr() As Boolean
 End Property
 
 Public Property Let CleanTestInputStr(value As Boolean)

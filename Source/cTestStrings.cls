@@ -11,14 +11,14 @@ Option Explicit
 
 Implements ITestStrings
 
-Private pCleanTestValStr As Boolean
+Private pCleanTestValueStr As Boolean
 Private pCleanTestInputStr As Boolean
 Private pCleanTestStrings As Boolean
 
 Private pCleanStringDict As Scripting.Dictionary
 
 Private Sub Class_Initialize()
-    pCleanTestValStr = False
+    pCleanTestValueStr = False
     pCleanTestInputStr = False
     pCleanTestStrings = False
 
@@ -29,12 +29,12 @@ Private Sub Class_Initialize()
     
 End Sub
 
-Private Property Let ITestStrings_CleanTestValStr(value As Boolean)
-    pCleanTestValStr = value
+Private Property Let ITestStrings_CleanTestValueStr(value As Boolean)
+    pCleanTestValueStr = value
 End Property
 
-Private Property Get ITestStrings_CleanTestValStr() As Boolean
-    ITestStrings_CleanTestValStr = pCleanTestValStr
+Private Property Get ITestStrings_CleanTestValueStr() As Boolean
+    ITestStrings_CleanTestValueStr = pCleanTestValueStr
 End Property
 
 Private Property Let ITestStrings_CleanTestInputStr(value As Boolean)
@@ -48,7 +48,7 @@ End Property
 Private Property Let ITestStrings_CleanTestStrings(value As Boolean)
     pCleanTestStrings = value
     
-    pCleanTestValStr = value
+    pCleanTestValueStr = value
     pCleanTestInputStr = value
 End Property
 
