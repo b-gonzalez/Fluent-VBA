@@ -951,8 +951,8 @@ ByVal updateFluentPath As Boolean) As Variant
     If pMeta.Tests.IsDataStructure(testingValue) And pMeta.Tests.IsDataStructure(testingInput) And pTestValueSet Then
         funcVal = _
         IBeTestFuncs_EqualTo( _
-            pExpressions.InputToStringRecur(testingValue), _
-            pExpressions.InputToStringRecur(testingInput), _
+            pExpressions.InputToString(testingValue), _
+            pExpressions.InputToString(testingInput), _
             updateFluentPath:=False _
         )
     End If
@@ -1014,7 +1014,7 @@ ByVal testingInput As Variant) As Variant
         tempStr = ""
         
         For Each elem In testingValue
-            tempStr = pExpressions.ToString(elem)
+            tempStr = pExpressions.InputToString(elem)
             If Not d.Exists(tempStr) Then
                 d.Add tempStr, Empty
             End If
@@ -1023,7 +1023,7 @@ ByVal testingInput As Variant) As Variant
         tempStr = ""
         
         For Each elem In testingInput
-            tempStr = pExpressions.ToString(elem)
+            tempStr = pExpressions.InputToString(elem)
             If Not d.Exists(tempStr) Then
                 d.Add tempStr, Empty
             Else
@@ -1061,24 +1061,24 @@ ByVal testingInput As Variant) As Variant
         tempStr = ""
         
         For Each elem In testingValue
-            tempStr = pExpressions.ToString(elem)
+            tempStr = pExpressions.InputToString(elem)
             
             If d.Exists(tempStr) Then
                 d(tempStr) = d(tempStr) + 1
             Else
-                d.Add pExpressions.ToString(elem), i
+                d.Add pExpressions.InputToString(elem), i
             End If
         Next elem
         
         tempStr = ""
         
         For Each elem In testingInput
-            tempStr = pExpressions.ToString(elem)
+            tempStr = pExpressions.InputToString(elem)
             
             If d2.Exists(tempStr) Then
                 d2(tempStr) = d2(tempStr) + 1
             Else
-                d2.Add pExpressions.ToString(elem), i
+                d2.Add pExpressions.InputToString(elem), i
             End If
         Next elem
         

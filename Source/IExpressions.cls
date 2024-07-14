@@ -104,7 +104,7 @@ End Function
 Public Sub addFluentPathNew(ByVal test As ITest, ByVal NegateValue As Boolean)
 End Sub
 
-Public Function ToString(ByVal nv As Variant) As String
+Public Function InputToString(ByVal nv As Variant) As String
 End Function
 
 Public Function DatastructureIsEmpty(ByVal v As Variant) As Boolean

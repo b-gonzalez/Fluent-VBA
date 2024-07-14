@@ -21,13 +21,13 @@ Private pCount As Long
 Private pTestDictCounter As Scripting.Dictionary
 Private pAlgorithm As flAlgorithm
 Private pToStrDev As Boolean
-
 Private pApproximateEqual As Boolean
 Private pEpsilon As Double
 Private pDataStructures As Collection
 Private pFluentPathDict As Scripting.Dictionary
 Private pSkipDupCheck As Boolean
 Private pTestStrings As ITestStrings
+Private pWrapChar As String
 
 Private pTestingInfo As ITestingFunctionsInfo
 
@@ -109,6 +109,14 @@ End Property
 
 Public Property Get TestStrings() As ITestStrings
     Set TestStrings = pTestStrings
+End Property
+
+Public Property Let WrapChar(value As String)
+    pWrapChar = value
+End Property
+
+Public Property Get WrapChar() As String
+    WrapChar = pWrapChar
 End Property
 
 Public Sub AddDataStructure(dataStructure As Variant)

@@ -14,6 +14,7 @@ Implements IMeta
 Private pPrinting As IPrinting
 Private pTests As cTests
 Private pUtilities As IUtilities
+Private pToString As IToString
 
 Private Property Get IMeta_Printing() As IPrinting
     Set IMeta_Printing = pPrinting
@@ -23,14 +24,19 @@ Private Property Get IMeta_Tests() As cTests
     Set IMeta_Tests = pTests
 End Property
 
-Public Property Get IMeta_Utilities() As IUtilities
+Private Property Get IMeta_Utilities() As IUtilities
     Set IMeta_Utilities = pUtilities
 End Property
 
+Private Property Get IMeta_ToString() As IToString
+    Set IMeta_ToString = pToString
+End Property
+
 Private Sub Class_Initialize()
+    Dim util As cUtilities
+    
     Set pPrinting = New cPrinting
     Set pTests = New cTests
     Set pUtilities = New cUtilities
-    
-'    Set pUtilities.CleanStringDict = pTests.CleanStringDict
+    Set pToString = New cToString
 End Sub

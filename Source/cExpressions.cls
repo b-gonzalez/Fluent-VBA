@@ -141,8 +141,8 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     End If
     
     With test
-        .StrTestInput = IExpressions_ToString(.testingInput)
-        .StrTestValue = IExpressions_ToString(.testingValue)
+        .StrTestInput = IExpressions_InputToString(.testingInput)
+        .StrTestValue = IExpressions_InputToString(.testingValue)
     End With
     
     '//TestDev
@@ -157,16 +157,16 @@ Private Sub IExpressions_addToTestAndFluentPath( _
                 
                 pMeta.Tests.Algorithm = flIterative
                 
-                testDev.TestValueIter = IExpressions_ToString(test.testingValue)
-                testDev.TestInputIter = IExpressions_ToString(test.testingInput)
+                testDev.TestValueIter = IExpressions_InputToString(test.testingValue)
+                testDev.TestInputIter = IExpressions_InputToString(test.testingInput)
             ElseIf algo = flIterative Then
                 testDev.TestValueIter = test.StrTestValue
                 testDev.TestInputIter = test.StrTestInput
                 
                 pMeta.Tests.Algorithm = flRecursive
                 
-                testDev.TestValueRecur = IExpressions_ToString(test.testingValue)
-                testDev.TestInputRecur = IExpressions_ToString(test.testingInput)
+                testDev.TestValueRecur = IExpressions_InputToString(test.testingValue)
+                testDev.TestInputRecur = IExpressions_InputToString(test.testingInput)
             End If
         End If
     End With
@@ -324,13 +324,17 @@ Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentP
             "Testing value: " & .StrTestValue & ";"
             
             If pMeta.Tests.TestStrings.CleanTestValStr Then
-                If .cleanedTestValue <> "" Then finalFluentPath = finalFluentPath & " Cleaned test value: `" & .cleanedTestValue & "`;"
+                If .cleanedTestValue <> "" Then
+                    finalFluentPath = finalFluentPath & " Cleaned test value: " & pMeta.ToString.WrapIfString(.cleanedTestValue)
+                End If
             End If
 
             If .StrTestInput <> "" Then finalFluentPath = finalFluentPath & " Testing input: " & .StrTestInput & ";"
             
             If pMeta.Tests.TestStrings.CleanTestInputStr Then
-                If .cleanedTestInput <> "" Then finalFluentPath = finalFluentPath & " Cleaned test input: `" & .cleanedTestInput & "`;"
+                If .cleanedTestInput <> "" Then
+                    finalFluentPath = finalFluentPath & " Cleaned test input: " & pMeta.ToString.WrapIfString(.cleanedTestInput)
+                End If
             End If
 
         finalFluentPath = finalFluentPath & _
@@ -349,7 +353,7 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
     testingInput = ""
     
     If Information.TypeName(test.testingInput) = "String" Then
-        testingInput = "`" & test.StrTestInput & "`"
+        testingInput = pMeta.ToString.WrapIfString(test.StrTestInput)
     Else
         testingInput = test.StrTestInput
     End If
@@ -485,7 +489,7 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue
     
 End Sub
 
-Private Function IExpressions_ToString(ByVal nv As Variant) As String
+Private Function IExpressions_InputToString(ByVal nv As Variant) As String
     Dim strArgs() As String
     Dim strObj As String
     Dim tempNVTS As String
@@ -509,7 +513,7 @@ Private Function IExpressions_ToString(ByVal nv As Variant) As String
             tempNVTS = Information.TypeName(nv)
         Case Not TypeOf nv Is Object
             If Information.TypeName(nv) = "String" Then
-                nv = "`" & nv & "`"
+                nv = pMeta.ToString.WrapIfString(nv)
             End If
             tempNVTS = CStr(nv)
         Case TypeOf nv Is VBA.ErrObject
@@ -522,7 +526,7 @@ Private Function IExpressions_ToString(ByVal nv As Variant) As String
             End If
     End Select
     
-    IExpressions_ToString = tempNVTS
+    IExpressions_InputToString = tempNVTS
         
 End Function
 
@@ -576,7 +580,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                     ElseIf Information.IsObject(elem) Then
                         temp = temp & Information.TypeName(elem) & ", "
                     ElseIf Information.TypeName(elem) = "String" Then
-                        temp = temp & "`" & elem & "`" & ", "
+                        temp = temp & pMeta.ToString.WrapIfString(elem) & ", "
                     Else
                         temp = temp & elem & ", "
                     End If
@@ -588,7 +592,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                     ElseIf Information.IsObject(v(elem)) Then
                         temp = temp & elem & ": " & Information.TypeName(v(elem)) & ", "
                     ElseIf Information.TypeName(v(elem)) = "String" Then
-                        temp = temp & elem & ": " & "`" & Information.TypeName(v(elem)) & "`" & ", "
+                        temp = temp & elem & ": " & pMeta.ToString.WrapIfString(Information.TypeName(v(elem))) & ", "
                     Else
                         temp = temp & elem & ": " & v(elem) & ", "
                     End If
@@ -638,7 +642,7 @@ Function IExpressions_inputToStringIter(v As Variant) As String
                 If Information.IsObject(elem) Then
                     tempCol.Add Information.TypeName(elem)
                 ElseIf Information.TypeName(elem) = "String" Then
-                    tempCol.Add "`" & elem & "`"
+                    tempCol.Add pMeta.ToString.WrapIfString(elem)
                 Else
                     tempCol.Add elem
                 End If
@@ -722,7 +726,7 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection) As Coll
             For Each elem2 In elem
                 If Not TypeOf elem Is Scripting.Dictionary Then
                     If Information.TypeName(elem2) = "String" Then
-                        tempCol.Add "`" & elem2 & "`", before:=counter
+                        tempCol.Add pMeta.ToString.WrapIfString(elem2), before:=counter
                     Else
                         tempCol.Add elem2, before:=counter
                     End If
@@ -739,7 +743,7 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection) As Coll
                         tempCol.Add d(elem2), before:=counter
                     ElseIf Information.TypeName(d(elem2)) = "String" Then
                         'counter incremented towards end of if statement
-                        tempCol.Add elem2 & ": " & "`" & d(elem2) & "`", before:=counter
+                        tempCol.Add elem2 & ": " & pMeta.ToString.WrapIfString(d(elem2)), before:=counter
                     Else
                         'counter incremented towards end of if statement
                         tempCol.Add elem2 & ": " & d(elem2), before:=counter
