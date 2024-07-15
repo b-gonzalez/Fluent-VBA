@@ -352,11 +352,7 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
     tempFluentPath = ""
     testingInput = ""
     
-    If Information.TypeName(test.testingInput) = "String" Then
-        testingInput = pMeta.ToString.WrapIfString(test.StrTestInput)
-    Else
-        testingInput = test.StrTestInput
-    End If
+    testingInput = test.StrTestInput
     
     Select Case test.functionName
         Case "Alphabetic"
