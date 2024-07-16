@@ -68,6 +68,7 @@ function get-word {
         $word = New-Object -ComObject word.application
         $doc = $word.documents.add()
         $wdFormatFlatXMLMacroEnabled = 13
+        $wdFormatXMLTemplateMacroEnabled = 15
         $doc.SaveAs($distPath, $wdFormatFlatXMLMacroEnabled)
     
         $Major = 0
@@ -75,10 +76,12 @@ function get-word {
 
         $doc.VBProject.name = "fluent_vba"
 
+        $testFileModle = "FluentAndFluentOf.bas"
+
         #This section requires "Trust access to the VBA project object model" to be enabled.
         #If it is not enabled this section will fail.
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike "mInit.bas") {
+            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike $testFileModle) {
                 $doc.VBProject.VBComponents.Import($macro.FullName)
             }
         }
@@ -89,13 +92,15 @@ function get-word {
             }
         }
 
-        $mInit = $macros | Where-Object name -Contains "mInit.bas"
+        $mInit = $macros | Where-Object name -Contains $testFileModle
 
         $doc2 = $word.documents.add()
         $doc2.SaveAs($testPath, $wdFormatFlatXMLMacroEnabled)
         $doc2.VBProject.name = "fluent_vba_test"
         $doc2.VBProject.VBComponents.Import($mInit.FullName) | Out-Null
-
+        $doc2.Save()
+        
+        $doc.SaveAs($distPath, $wdFormatXMLTemplateMacroEnabled)
 
     }
     catch {
@@ -198,11 +203,13 @@ function get-powerpoint {
         $Minor = 0
 
         $presentation.VBProject.name = "fluent_vba"
+
+        $testFileModle = "FluentAndFluentOf.bas"
     
         #This section requires "Trust access to the VBA project object model" to be enabled.
         #If it is not enabled this section will fail.
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike "mInit.bas") {
+            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike $testFileModle) {
                 $presentation.VBProject.VBComponents.Import($macro.FullName)
             }
         }
@@ -212,7 +219,7 @@ function get-powerpoint {
             }
         }
 
-        $mInit = $macros | Where-Object name -Contains "mInit.bas"
+        $mInit = $macros | Where-Object name -Contains $testFileModle
 
         $pres2 = $powerpoint.Presentations.Add()
         $pres2.SaveAs($testPath, $ppSaveAsOpenXMLPresentationMacroEnabled)
@@ -321,9 +328,11 @@ function get-access {
         $Minor = 0
 
         $acc.VBE.ActiveVBProject.name = "fluent_vba"
+
+        $testFileModle = "FluentAndFluentOf.bas"
     
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike "mInit.bas") {
+            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike $testFileModle) {
                 $acc.VBE.ActiveVBProject.VBComponents.Import($macro.FullName)
                 $acc.VBE.ActiveVBProject.VBComponents($acc.VBE.ActiveVBProject.VBComponents.Count).Name = $macro.BaseName
                 $acc.DoCmd.RunCommand($acCmdCompileAndSaveAllModules)
@@ -339,7 +348,7 @@ function get-access {
 
         $acc.CloseCurrentDatabase()
 
-        $mInit = $macros | Where-Object name -Contains "mInit.bas"
+        $mInit = $macros | Where-Object name -Contains $testFileModle
 
         $acc.NewCurrentDataBase($testPath, $acFileFormatAccess2007)
         $acc.VBE.ActiveVBProject.name = "fluent_vba_test"
@@ -440,11 +449,13 @@ function get-excel {
         $Minor = 0
 
         $workbook.VBProject.name = "fluent_vba"
+
+        $testFileModle = "FluentAndFluentOf.bas"
     
         #This section requires "Trust access to the VBA project object model" to be enabled.
         #If it is not enabled this section will fail.
         foreach ($macro in $macros) {
-            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike "mInit.bas") {
+            if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike $testFileModle) {
                 $workbook.VBProject.VBComponents.Import($macro.FullName) | Out-Null
             }
         }
@@ -455,7 +466,7 @@ function get-excel {
             }
         }
 
-        $mInit = $macros | Where-Object name -Contains "mInit.bas"
+        $mInit = $macros | Where-Object name -Contains $testFileModle
 
         $wb2 = $excel.Workbooks.Add()
         $wb2.SaveAs($testPath, $xlOpenXMLWorkbookMacroEnabled)
