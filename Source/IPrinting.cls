@@ -73,3 +73,6 @@ End Sub
 
 Private Function ArrayFromTests(col As Collection, tp As TestProperty) As Variant()
 End Function
+
+Private Function getTestMessageFromResultNumber(ResultNumber As Long)
+End Function

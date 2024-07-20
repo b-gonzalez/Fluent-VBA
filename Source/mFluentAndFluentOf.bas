@@ -1,4 +1,4 @@
-Attribute VB_Name = "FluentAndFluentOf"
+Attribute VB_Name = "mFluentAndFluentOf"
 Option Explicit
 
 Sub FluentAndFluentOfExample()

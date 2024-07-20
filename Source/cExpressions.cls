@@ -442,7 +442,7 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue
     Dim FluentPath As String
     Dim finalFluentPath As String
     Dim fluentElement As Long
-    Dim resultNumber As Long
+    Dim ResultNumber As Long
     Dim testDev As ITestDev
     
     FluentPath = ""
@@ -467,9 +467,9 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue
         Err.Raise Number:=NOT_IMPLEMENTED_ERROR, Description:="Test name not implemented in TestDictCounter"
     End If
     
-    testDev.resultNumber = IExpressions_getResultNumber(test.Result)
+    testDev.ResultNumber = IExpressions_getResultNumber(test.Result)
     
-    FluentPath = FluentPath & testDev.resultNumber & "="
+    FluentPath = FluentPath & testDev.ResultNumber & "="
     
     FluentPath = IExpressions_getFluentPath(FluentPath, test, NegateValue)
     
@@ -810,17 +810,17 @@ End Function
 
 
 Private Function IExpressions_getResultNumber(ByVal Result As Variant) As Long
-    Dim resultNumber As Variant
+    Dim ResultNumber As Variant
     
-    resultNumber = Null
+    ResultNumber = Null
     
     If Information.IsNull(Result) Or Information.IsEmpty(Result) Then
-        resultNumber = 1
+        ResultNumber = 1
     ElseIf Information.TypeName(Result) = "Boolean" Then
-        resultNumber = CLng(Result)
+        ResultNumber = CLng(Result)
     End If
     
-    IExpressions_getResultNumber = resultNumber
+    IExpressions_getResultNumber = ResultNumber
 End Function
 
 'Private Sub Class_Initialize()

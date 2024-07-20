@@ -15,10 +15,10 @@ End Property
 Public Property Get NegateValue() As Boolean
 End Property
 
-Public Property Let resultNumber(ByVal value As Long)
+Public Property Let ResultNumber(ByVal value As Long)
 End Property
 
-Public Property Get resultNumber() As Long
+Public Property Get ResultNumber() As Long
 End Property
 
 Public Property Let TestValueRecur(value As String)

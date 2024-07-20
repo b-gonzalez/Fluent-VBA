@@ -113,11 +113,11 @@ Private Function IPrinting_ArrayFromTests(col As Collection, tp As TestProperty)
             Case TestProperty.TestCategory
                 arr(i, 1) = test.Category
             Case TestProperty.TestInfo
-                arr(i, 1) = test.FluentPath
+                arr(i, 1) = IPrinting_getTestMessageFromResultNumber(testDev.ResultNumber) & " - " & test.FluentPath
             Case TestProperty.TestName
                 arr(i, 1) = test.TestName
             Case TestProperty.TestResultNumber
-                arr(i, 1) = testDev.resultNumber
+                arr(i, 1) = testDev.ResultNumber
         End Select
         i = i + 1
     Next elem
@@ -158,8 +158,8 @@ Private Sub IPrinting_PrintToImmediate()
         If test.TestName <> "" Then
             temp = temp & test.TestName & " - "
         End If
-        
-        temp = temp & testDev.resultNumber & " - " & test.FluentPath
+
+        temp = temp & IPrinting_getTestMessageFromResultNumber(testDev.ResultNumber) & " - " & test.FluentPath
         
         Debug.Print temp
         
@@ -338,6 +338,21 @@ Private Sub IPrinting_addValueConditColors(ByVal lo As Excel.ListObject, ByVal p
         lo.Range.AutoFilter Field:=index
     On Error GoTo 0
 End Sub
+
+Private Function IPrinting_getTestMessageFromResultNumber(ResultNumber As Long)
+    Dim tempMessage As String
+    
+    Select Case ResultNumber
+        Case -1
+            tempMessage = pPassedMessage
+        Case 0
+            tempMessage = pFailedMessage
+        Case 1
+            tempMessage = pUnexpectedMessage
+    End Select
+    
+    IPrinting_getTestMessageFromResultNumber = tempMessage
+End Function
 
 Private Sub Class_Initialize()
     pPassedMessage = "PASSED"
