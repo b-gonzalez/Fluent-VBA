@@ -76,7 +76,7 @@ function get-word {
 
         $doc.VBProject.name = "fluent_vba"
 
-        $testFileModle = "FluentAndFluentOf.bas"
+        $testFileModle = "mFluentAndFluentOf.bas"
 
         #This section requires "Trust access to the VBA project object model" to be enabled.
         #If it is not enabled this section will fail.
@@ -204,7 +204,7 @@ function get-powerpoint {
 
         $presentation.VBProject.name = "fluent_vba"
 
-        $testFileModle = "FluentAndFluentOf.bas"
+        $testFileModle = "mFluentAndFluentOf.bas"
     
         #This section requires "Trust access to the VBA project object model" to be enabled.
         #If it is not enabled this section will fail.
@@ -329,7 +329,7 @@ function get-access {
 
         $acc.VBE.ActiveVBProject.name = "fluent_vba"
 
-        $testFileModle = "FluentAndFluentOf.bas"
+        $testFileModle = "mFluentAndFluentOf.bas"
     
         foreach ($macro in $macros) {
             if ($macro.Extension -ne ".doccls" -and $macro.Name -notlike $testFileModle) {
@@ -450,7 +450,7 @@ function get-excel {
 
         $workbook.VBProject.name = "fluent_vba"
 
-        $testFileModle = "FluentAndFluentOf.bas"
+        $testFileModle = "mFluentAndFluentOf.bas"
     
         #This section requires "Trust access to the VBA project object model" to be enabled.
         #If it is not enabled this section will fail.
