@@ -81,7 +81,7 @@ To get started with Fluent VBA you can see the [getting started page](https://gi
 
 # Contacting me
 
-You can contact me at b.gonzalez.programming@gmail.com. Feel free to contact me regarding bug fixes, contributions (see more below), or other topics.
+You can contact me at b.gonzalez.programming@gmail.com.
 
 # Contributing to Fluent VBA
 
