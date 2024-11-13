@@ -6,6 +6,7 @@ Scripts/Output/
 Scripts/*test*
 Source/*Module*
 Source/*Todo*
+Source/*Expect*
 *.doccls
 *.zip
 Distribution/
