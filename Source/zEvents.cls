@@ -63,12 +63,12 @@ Public Property Set setFluentEventDuplicate(ByVal value As IFluent)
 End Property
 
 Private Sub pTestOf_TestPassed(ByVal test As ITest)
-    Debug.Assert pFluentEventOf.Meta.Tests.Result = test.Result
+    Debug.Assert pFluentEventOf.Meta.Tests.result = test.result
     Debug.Assert pFluentEventOf.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
 Private Sub pTestOf_TestFailed(ByVal test As ITest)
-    Debug.Assert pFluentEventOf.Meta.Tests.Result = test.Result
+    Debug.Assert pFluentEventOf.Meta.Tests.result = test.result
     Debug.Assert pFluentEventOf.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
@@ -78,16 +78,16 @@ Private Sub pTestOf_TestCompleted(ByVal test As ITest)
 End Sub
 
 Private Sub pTestOf_TestUnexpected(ByVal test As ITest)
-    Debug.Assert test.Result = "Null" And test.HasNull
+    Debug.Assert test.result = "Null" And test.HasNull
 End Sub
 
 Private Sub pTest_TestPassed(ByVal test As ITest)
-    Debug.Assert pFluentEvent.Meta.Tests.Result = test.Result
+    Debug.Assert pFluentEvent.Meta.Tests.result = test.result
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
 Private Sub pTest_TestFailed(ByVal test As ITest)
-    Debug.Assert pFluentEvent.Meta.Tests.Result = test.Result
+    Debug.Assert pFluentEvent.Meta.Tests.result = test.result
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 

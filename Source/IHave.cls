@@ -38,3 +38,14 @@ End Function
 
 Public Function SameElementsAs(ByVal dataStructure As Variant) As Variant
 End Function
+
+Public Function Procedure( _
+    procName As String, _
+    callType As VBA.VbCallType _
+) As Variant
+End Function
+
+Public Function Elements( _
+    ParamArray args() As Variant _
+)
+End Function

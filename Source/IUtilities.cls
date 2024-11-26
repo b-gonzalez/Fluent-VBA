@@ -9,5 +9,5 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Function NegateIfBool(Result As Variant) As Variant
+Public Function NegateIfBool(result As Variant) As Variant
 End Function

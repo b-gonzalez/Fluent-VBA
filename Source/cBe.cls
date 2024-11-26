@@ -53,8 +53,8 @@ Private Function IBe_Something() As Variant
     IBe_Something = pBeTestFuncs.Something(pBeValue)
 End Function
 
-Private Function IBe_Between(ByVal LowerVal As Double, ByVal HigherVal As Double) As Variant
-    IBe_Between = pBeTestFuncs.Between(pBeValue, LowerVal, HigherVal)
+Private Function IBe_Between(ByVal lowerVal As Double, ByVal higherVal As Double) As Variant
+    IBe_Between = pBeTestFuncs.Between(pBeValue, lowerVal, higherVal)
 End Function
 
 Private Function IBe_OneOf(ParamArray All() As Variant) As Variant

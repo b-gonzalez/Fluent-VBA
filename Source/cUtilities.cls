@@ -11,13 +11,13 @@ Option Explicit
 
 Implements IUtilities
 
-Private Function IUtilities_NegateIfBool(Result As Variant) As Variant
+Private Function IUtilities_NegateIfBool(result As Variant) As Variant
     Dim tempResult As Variant
     
-    tempResult = Result
+    tempResult = result
     
-    If Not Information.IsEmpty(Result) And Not Information.IsNull(Result) Then
-        tempResult = Not Result
+    If Not Information.IsEmpty(result) And Not Information.IsNull(result) Then
+        tempResult = Not result
     End If
     
     IUtilities_NegateIfBool = tempResult

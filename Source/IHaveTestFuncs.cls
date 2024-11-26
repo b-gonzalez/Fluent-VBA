@@ -12,66 +12,79 @@ Option Explicit
 Public Function LengthOf( _
     ByVal testingValue As Variant, _
     ByVal testingInput As Long, _
-    Optional ByVal NegateValue As Boolean = False) As Variant
+    Optional ByVal negateValue As Boolean = False) As Variant
 End Function
 
 Public Function MaxLengthOf( _
     ByVal testingValue As Variant, _
     ByVal testingInput As Long, _
-    Optional ByVal NegateValue As Boolean = False, _
+    Optional ByVal negateValue As Boolean = False, _
     Optional ByVal updateFluentPath As Boolean = False) As Variant
 End Function
 
 Public Function MinLengthOf( _
     ByVal testingValue As Variant, _
     ByVal testingInput As Long, _
-    Optional ByVal NegateValue As Boolean = False, _
+    Optional ByVal negateValue As Boolean = False, _
     Optional ByVal updateFluentPath As Boolean = False) As Variant
 End Function
 
 Public Function LengthBetween( _
     ByVal testingValue As Variant, _
-    ByVal LowerVal As Double, _
-    ByVal HigherVal As Double, _
-    Optional ByVal NegateValue As Boolean = False) As Variant
+    ByVal lowerVal As Double, _
+    ByVal higherVal As Double, _
+    Optional ByVal negateValue As Boolean = False) As Variant
 End Function
 
 Public Function ErrorNumberOf( _
     ByVal testingValue As Variant, _
     ByVal testingInput As Long, _
-    Optional ByVal NegateValue As Boolean = False) As Variant
+    Optional ByVal negateValue As Boolean = False) As Variant
 End Function
 
 Public Function ErrorDescriptionOf( _
     ByVal testingValue As Variant, _
     ByVal testingInput As String, _
-    Optional ByVal NegateValue As Boolean = False) As Variant
+    Optional ByVal negateValue As Boolean = False) As Variant
 End Function
 
 Public Function SameTypeAs( _
     ByVal testingValue As Variant, _
     ByVal testingInput As Variant, _
-    Optional ByVal NegateValue As Boolean = False, _
+    Optional ByVal negateValue As Boolean = False, _
     Optional ByVal updateFluentPath As Boolean = False) As Variant
 End Function
 
 Public Function ExactSameElementsAs( _
     ByVal testingValue As Variant, _
-    ByVal NegateValue As Boolean, _
+    ByVal negateValue As Boolean, _
     ByVal updateFluentPath As Boolean, _
     ByVal testingInput As Variant) As Variant
 End Function
 
 Public Function SameUniqueElementsAs( _
     ByVal testingValue As Variant, _
-    ByVal NegateValue As Boolean, _
+    ByVal negateValue As Boolean, _
     ByVal testingInput As Variant) As Variant
 End Function
 
 Public Function SameElementsAs( _
     ByVal testingValue As Variant, _
-    ByVal NegateValue As Boolean, _
+    ByVal negateValue As Boolean, _
     ByVal testingInput As Variant) As Variant
 End Function
 
+Public Function Procedure( _
+    ByVal testingValue As Variant, _
+    ByVal procName As String, _
+    ByVal callType As VBA.VbCallType, _
+    ByVal negateValue As Boolean _
+) As Variant
+End Function
 
+Public Function Elements( _
+    ByVal testingValue As Variant, _
+    ByRef testingInputArgs() As Variant, _
+    ByVal negateValue As Boolean _
+    ) As Variant
+End Function

@@ -17,7 +17,7 @@ Public Function Alphanumeric() As Variant
 
 End Function
 
-Public Function Between(ByVal LowerVal As Double, ByVal HigherVal As Double) As Variant
+Public Function Between(ByVal lowerVal As Double, ByVal higherVal As Double) As Variant
 
 End Function
 

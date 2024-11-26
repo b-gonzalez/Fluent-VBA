@@ -29,7 +29,8 @@ Private Function IToString_WrapIfString(value As Variant) As Variant
     tempVal = value
     
     If TypeName(tempVal) = "String" Then
-        If Left(tempVal, 1) <> pWrapChar And Right(tempVal, 1) <> pWrapChar Then
+'        If Left(tempVal, 1) <> pWrapChar And Right(tempVal, 1) <> pWrapChar Then
+        If VBA.Left(tempVal, 1) <> pWrapChar And VBA.Right(tempVal, 1) <> pWrapChar Then
             tempVal = VBA.Chr(pWrapChar) & tempVal & VBA.Chr(pWrapChar)
         End If
     End If

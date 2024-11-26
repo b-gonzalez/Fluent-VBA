@@ -15,6 +15,7 @@ Private pAlphabetic As ITestingFunctionsSubInfo
 Private pAlphanumeric As ITestingFunctionsSubInfo
 Private pBetween As ITestingFunctionsSubInfo
 Private pContain As ITestingFunctionsSubInfo
+Private pElements As ITestingFunctionsSubInfo
 Private pEndWith As ITestingFunctionsSubInfo
 Private pEqualTo As ITestingFunctionsSubInfo
 Private pErroneous As ITestingFunctionsSubInfo
@@ -35,6 +36,7 @@ Private pMaxLengthOf As ITestingFunctionsSubInfo
 Private pMinLengthOf As ITestingFunctionsSubInfo
 Private pNumeric As ITestingFunctionsSubInfo
 Private pOneOf As ITestingFunctionsSubInfo
+Private pProcedure As ITestingFunctionsInfo
 Private pSameElementsAs As ITestingFunctionsSubInfo
 Private pSameTypeAs As ITestingFunctionsSubInfo
 Private pSameUniqueElementsAs As ITestingFunctionsSubInfo
@@ -57,6 +59,10 @@ End Property
 
 Private Property Get ITestingFunctionsInfo_Contain() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_Contain = pContain
+End Property
+
+Private Property Get ITestingFunctionsInfo_Elements() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfo_Elements = pElements
 End Property
 
 Private Property Get ITestingFunctionsInfo_EndWith() As ITestingFunctionsSubInfo
@@ -139,6 +145,10 @@ Private Property Get ITestingFunctionsInfo_OneOf() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_OneOf = pOneOf
 End Property
 
+Private Property Get ITestingFunctionsInfo_Procedure() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfo_Procedure = pProcedure
+End Property
+
 Private Property Get ITestingFunctionsInfo_SameElementsAs() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_SameElementsAs = pSameElementsAs
 End Property
@@ -168,6 +178,7 @@ Private Sub ITestingFunctionsInfo_populateDictWithTestFuncInfo()
     pTestingFunctionsDict.Add "Alphanumeric", pAlphanumeric
     pTestingFunctionsDict.Add "Between", pBetween
     pTestingFunctionsDict.Add "Contain", pContain
+    pTestingFunctionsDict.Add "Elements", pElements
     pTestingFunctionsDict.Add "EndWith", pEndWith
     pTestingFunctionsDict.Add "EqualTo", pEqualTo
     pTestingFunctionsDict.Add "Erroneous", pErroneous
@@ -188,6 +199,7 @@ Private Sub ITestingFunctionsInfo_populateDictWithTestFuncInfo()
     pTestingFunctionsDict.Add "MinLengthOf", pMinLengthOf
     pTestingFunctionsDict.Add "Numeric", pNumeric
     pTestingFunctionsDict.Add "OneOf", pOneOf
+    pTestingFunctionsDict.Add "Procedure", pProcedure
     pTestingFunctionsDict.Add "SameElementsAs", pSameElementsAs
     pTestingFunctionsDict.Add "SameTypeAs", pSameTypeAs
     pTestingFunctionsDict.Add "SameUniqueElementsAs", pSameUniqueElementsAs

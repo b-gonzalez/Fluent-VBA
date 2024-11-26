@@ -32,16 +32,8 @@ Private pTestingInfo As ITestingFunctionsInfo
 
 Private Const defaultEpsilon As Double = 0.000001
 
-Public Property Set TestDictCounter(value As Scripting.Dictionary)
-    Set pTestDictCounter = value
-End Property
-
-Public Property Get TestDictCounter() As Scripting.Dictionary
-    Set TestDictCounter = pTestDictCounter
-End Property
-
-Public Property Get Result() As Boolean
-    Result = pResult
+Public Property Get result() As Boolean
+    result = pResult
 End Property
 
 Public Property Get Item(OneBasedIndex As Long) As ITest
@@ -175,7 +167,7 @@ Public Function IsIterable(ByVal dataStructure As Variant) As Boolean
 End Function
 
 Public Sub CheckTest(test As ITest)
-    pResult = test.Result
+    pResult = test.result
     
     pCol.Add test
     
@@ -183,11 +175,11 @@ Public Sub CheckTest(test As ITest)
     
     RaiseEvent TestCompleted(test)
     
-    If test.Result = True Then
+    If test.result = True Then
         RaiseEvent TestPassed(test)
-    ElseIf test.Result = False Then
+    ElseIf test.result = False Then
         RaiseEvent TestFailed(test)
-    ElseIf Information.IsNull(test.Result) Or Information.IsEmpty(test.Result) Then
+    ElseIf Information.IsNull(test.result) Or Information.IsEmpty(test.result) Then
         RaiseEvent TestUnexpected(test)
     End If
     

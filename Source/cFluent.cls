@@ -47,6 +47,36 @@ Private Property Get IFluent_TestValue() As Variant
     End If
 End Property
 
+Public Property Get Should() As IShould
+    Set Should = IFluent_Should
+End Property
+
+Public Property Get ShouldNot() As IShould
+    Set ShouldNot = IFluent_ShouldNot
+End Property
+
+Public Property Get Meta() As IMeta
+    Set Meta = IFluent_Meta
+End Property
+
+Public Property Set TestValue(ByVal All As Variant)
+    Set IFluent_TestValue = All
+End Property
+
+Public Property Let TestValue(ByVal All As Variant)
+    IFluent_TestValue = All
+End Property
+
+Public Property Get TestValue() As Variant
+    If Information.IsObject(pFluentVal) Then
+        Set TestValue = IFluent_TestValue
+    Else
+        TestValue = IFluent_TestValue
+    End If
+End Property
+
+
+
 Private Sub Class_Initialize()
     Set pUnit = New cUnit
     Set pUnitShould = pUnit

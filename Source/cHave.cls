@@ -67,6 +67,21 @@ Private Function IHave_SameUniqueElementsAs(ByVal dataStructure As Variant) As V
     IHave_SameUniqueElementsAs = pHaveTestFuncs.SameUniqueElementsAs(pHaveVal, False, dataStructure)
 End Function
 
-Public Function IHave_SameElementsAs(ByVal dataStructure As Variant) As Variant
+Private Function IHave_SameElementsAs(ByVal dataStructure As Variant) As Variant
     IHave_SameElementsAs = pHaveTestFuncs.SameElementsAs(pHaveVal, False, dataStructure)
+End Function
+
+Private Function IHave_Procedure( _
+    procName As String, _
+    callType As VBA.VbCallType _
+) As Variant
+    IHave_Procedure = pHaveTestFuncs.Procedure(pHaveVal, procName, callType, False)
+End Function
+
+Private Function IHave_Elements(ParamArray args() As Variant)
+    Dim tempArgs() As Variant
+    
+    tempArgs = args
+    
+    IHave_Elements = pHaveTestFuncs.Elements(pHaveVal, tempArgs, False)
 End Function

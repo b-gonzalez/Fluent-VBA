@@ -20,6 +20,7 @@ End Enum
 
 Public Enum flHave
     [_first] = 101
+    Elements_
     ErrorDescriptionOf_
     ErrorNumberOf_
     ExactSameElementsAs_
@@ -27,6 +28,7 @@ Public Enum flHave
     LengthOf_
     MaxLengthOf_
     MinLengthOf_
+    Procedure_
     SameElementsAs_
     SameTypeAs_
     SameUniqueElementsAs_ = 111
@@ -64,14 +66,16 @@ End Property
 
 Public Sub addToTestAndFluentPath( _
     ByVal functionName As String, _
-    ByVal Result As Variant, _
-    ByVal NegateValue As Boolean, _
+    ByVal result As Variant, _
+    ByVal negateValue As Boolean, _
     ByVal testingValue As Variant, _
     Optional ByVal testingInput As Variant, _
-    Optional ByVal LowerVal As Variant, _
-    Optional ByVal HigherVal As Variant, _
-    Optional cleanedTestValue As Variant, _
-    Optional cleanedTestInput As Variant)
+    Optional ByVal lowerVal As Variant, _
+    Optional ByVal higherVal As Variant, _
+    Optional ByVal cleanedTestValue As Variant, _
+    Optional ByVal cleanedTestInput As Variant, _
+    Optional ByVal Actual As Variant _
+)
 End Sub
 
 Public Function Should(ByVal shouldType As flShould, Optional ByVal testingInput As Variant) As String
@@ -79,14 +83,14 @@ End Function
 
 Public Function Be(ByVal beType As flBe, _
     Optional ByVal TesingInput As String = "", _
-    Optional ByVal LowerVal As Variant, _
-    Optional ByVal HigherVal As Variant) As String
+    Optional ByVal lowerVal As Variant, _
+    Optional ByVal higherVal As Variant) As String
 End Function
 
 Public Function Have(ByVal haveType As flHave, _
     Optional ByVal TesingInput As String = "", _
-    Optional ByVal LowerVal As Variant, _
-    Optional ByVal HigherVal As Variant) As String
+    Optional ByVal lowerVal As Variant, _
+    Optional ByVal higherVal As Variant) As String
 End Function
 
 Public Function buildFluentPath(ByVal test As ITest, ByVal FluentPath As String, ByVal tempFluentPath As String) As String
@@ -101,7 +105,7 @@ Public Function getFluentPath( _
     Optional ByVal notShould As Boolean = False) As String
 End Function
 
-Public Sub addFluentPathNew(ByVal test As ITest, ByVal NegateValue As Boolean)
+Public Sub addFluentPathNew(ByVal test As ITest, ByVal negateValue As Boolean)
 End Sub
 
 Public Function InputToString(ByVal nv As Variant) As String
@@ -113,7 +117,7 @@ End Function
 Public Function InputToStringRecur(ByVal v As Variant) As String
 End Function
 
-Public Function getResultNumber(ByVal Result As Variant) As Long
+Public Function getResultNumber(ByVal result As Variant) As Long
 End Function
 
 Public Function inputToStringIter(v As Variant) As String

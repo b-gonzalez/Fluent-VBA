@@ -61,6 +61,10 @@ Public Sub runMainTests()
     
     Set fluent = MakeFluent
 
+    mCounter = mCounter + cleanStringTests(fluent)
+    
+    Set fluent = MakeFluent
+
     mCounter = mCounter + MiscTests(fluent)
     
 '    emptyTestFluent.Meta.Printing.PrintToSheet
@@ -137,6 +141,7 @@ Private Sub runEqualPosNegTests(fluent As IFluent, testFluent As IFluentOf, test
 
     fluent.Meta.Printing.Category = "Fluent - positiveDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - positiveDocumentationTests"
+    Set posTestFluent = twinBasicPositiveDocumentationTests(fluent, testFluent, testFluentResult)
     Set posTestFluent = positiveDocumentationTests(fluent, testFluent, testFluentResult)
     
     Set positiveTestingInfo = posTestFluent.Meta.Tests.TestingInfo
@@ -151,6 +156,7 @@ Private Sub runEqualPosNegTests(fluent As IFluent, testFluent As IFluentOf, test
     
     fluent.Meta.Printing.Category = "Fluent - negativeDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - negativeDocumentationTests"
+    Set negTestFluent = twinBasicNegativeDocumentationTests(fluent, testFluent, testFluentResult)
     Set negTestFluent = negativeDocumentationTests(fluent, testFluent, testFluentResult)
     
     Set negativeTestingInfo = negTestFluent.Meta.Tests.TestingInfo
@@ -220,6 +226,7 @@ End Function
 
 Private Function runEmptyTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
     Dim emptyTestFluent As IFluentOf
+    Dim emptyTestInfo As ITestingFunctionsInfo
     Dim tempDict As Scripting.Dictionary
     Dim emptyDict As Scripting.Dictionary
     
@@ -228,6 +235,10 @@ Private Function runEmptyTests(fluent As IFluent, testFluent As IFluentOf, testF
     fluent.Meta.Printing.Category = "Fluent - emptyDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - emptyDocumentationTests"
     Set emptyTestFluent = emptyDocumentationTests(fluent, testFluent, testFluentResult)
+    Set emptyTestInfo = emptyTestFluent.Meta.Tests.TestingInfo
+    Set emptyDict = emptyTestInfo.TestFuncInfoToDict
+    
+    Debug.Assert emptyTestInfo.validateTfiDictCounters(emptyDict)
     
     Set runEmptyTests = emptyTestFluent
 End Function
@@ -269,10 +280,10 @@ Private Sub TrueAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf,
     With fluent.Meta.Tests
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
-        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
-        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
-        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
-        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        Debug.Assert testFluentResult.Of(.result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
     
     If testFluent.Meta.Tests.ToStrDev Then
@@ -306,10 +317,10 @@ Private Sub FalseAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf
     With fluent.Meta.Tests
         Debug.Assert fluent.Should.Be.EqualTo(False)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
-        Debug.Assert testFluentResult.Of(.Result).Should.Be.EqualTo(True)
-        Debug.Assert testFluentResult.Of(.Result).ShouldNot.Be.EqualTo(False)
-        testFluentResult.Of(.Result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
-        testFluentResult.Of(.Result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        Debug.Assert testFluentResult.Of(.result).Should.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.result).ShouldNot.Be.EqualTo(False)
+        testFluentResult.Of(.result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
+        testFluentResult.Of(.result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
     
     If testFluent.Meta.Tests.ToStrDev Then
@@ -344,6 +355,9 @@ Private Sub NullAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf,
 End Sub
 
 Private Sub EmptyAssertAndRaiseEvents(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf)
+    
+    Debug.Assert fluent.Should.Be.EqualTo(Empty)
+    
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
     
@@ -513,18 +527,18 @@ Private Function EqualityDocumentationTests(fluent As IFluent, testFluent As IFl
     End With
     
     For Each test In fluent.Meta.Tests
-        Debug.Assert test.Result
+        Debug.Assert test.result
     Next test
     
     For i = 1 To fluent.Meta.Tests.Count
-        Debug.Assert fluent.Meta.Tests(i).Result
+        Debug.Assert fluent.Meta.Tests(i).result
     Next i
     
     i = 1
     
     With testFluent.Meta
         For Each test In .Tests
-            resultBool = test.Result = .Tests(i).Result
+            resultBool = test.result = .Tests(i).result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
             valueBool = test.testingValue = .Tests(i).testingValue
             inputBool = test.testingInput = .Tests(i).testingInput
@@ -1588,35 +1602,44 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of("1 / 0").Should.Be.Erroneous
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        On Error Resume Next
-            Debug.Print 1 / 0
-            
-            fluent.TestValue = testFluent.Of(Err).Should.Be.Erroneous
-        On Error GoTo 0
+''Below test commented out due to bugs in the twin basic compiler. Test moved to TwinBasicPositive sub
         
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+'        On Error Resume Next
+'            Debug.Print 1 / 0
+'
+'            fluent.TestValue = testFluent.Of(Err).Should.Be.Erroneous
+'        On Error GoTo 0
+'
+'        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+''Below test commented out due to bugs in the twin basic compiler. Test moved to TwinBasicPositive sub
+
         
-        fluent.TestValue = testFluent.Of("1 / 0").Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+'        fluent.TestValue = testFluent.Of("1 / 0").Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+'        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+''Below test commented out due to bugs in the twin basic compiler. Test moved to TwinBasicPositive sub
         
-        On Error Resume Next
-            Debug.Print 1 / 0
-            
-            fluent.TestValue = testFluent.Of(Err).Should.Have.ErrorDescriptionOf("Division by zero")
-        On Error GoTo 0
+'        On Error Resume Next
+'            Debug.Print 1 / 0
+'
+'            fluent.TestValue = testFluent.Of(Err).Should.Have.ErrorDescriptionOf("Division by zero")
+'        On Error GoTo 0
         
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+'        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of("1 / 0").Should.Have.ErrorNumberOf(2007)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        On Error Resume Next
-            Debug.Print 1 / 0
-            
-            fluent.TestValue = testFluent.Of(Err).Should.Have.ErrorNumberOf(11)
-        On Error GoTo 0
+''Below test commented out due to bugs in the twin basic compiler. Test moved to TwinBasicPositive sub
         
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+'        On Error Resume Next
+'            Debug.Print 1 / 0
+'
+'            fluent.TestValue = testFluent.Of(Err).Should.Have.ErrorNumberOf(11)
+'        On Error GoTo 0
+'
+'        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of(CBool(True)).Should.Have.SameTypeAs(CBool(True))
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -2412,23 +2435,52 @@ Private Function positiveDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
+        fluent.TestValue = testFluent.Of(testFluent).Should.Have.Procedure("Of", VbMethod)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        col.Add 1
+        col.Add 2
+        col.Add 3
+        
+        fluent.TestValue = testFluent.Of(col).Should.Have.Elements(1)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).Should.Have.Elements(2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).Should.Have.Elements(3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).Should.Have.Elements(1, 2)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).Should.Have.Elements(2, 3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).Should.Have.Elements(1, 3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).Should.Have.Elements(1, 2, 3)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
     End With
     
     For Each test In fluent.Meta.Tests
-        Debug.Assert test.Result
+        Debug.Assert test.result
     Next test
     
     For i = 1 To fluent.Meta.Tests.Count
-        Debug.Assert fluent.Meta.Tests(i).Result
+        Debug.Assert fluent.Meta.Tests(i).result
     Next i
     
     i = 1
     
     With testFluent.Meta
         For Each test In .Tests
-            resultBool = test.Result = .Tests(i).Result
+            resultBool = test.result = .Tests(i).result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
-            valueBool = test.StrTestValue = .Tests(i).StrTestValue
+            valueBool = test.strTestValue = .Tests(i).strTestValue
             inputBool = test.StrTestInput = .Tests(i).StrTestInput
             
             Debug.Assert resultBool And fluentBool And valueBool And inputBool
@@ -3489,38 +3541,46 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         fluent.TestValue = testFluent.Of(CStr(Excel.Evaluate("1 / 0"))).ShouldNot.Be.EqualTo("Error 2007")
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        On Error Resume Next
-            Debug.Print 1 / 0
-            
-            fluent.TestValue = testFluent.Of(Err).ShouldNot.Be.Erroneous
-        On Error GoTo 0
+''Below test commented out due to bugs in the twin basic compiler. Test moved to TwinBasicNegative sub
         
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+'        On Error Resume Next
+'            Debug.Print 1 / 0
+'
+'            fluent.TestValue = testFluent.Of(Err).ShouldNot.Be.Erroneous
+'        On Error GoTo 0
         
-        fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Be.Erroneous
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+'        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+''Below test commented out due to bugs in the twin basic compiler. Test moved to TwinBasicNegative sub
+
+'        fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Be.Erroneous
+'        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
         fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        On Error Resume Next
-            Debug.Print 1 / 0
-            
-            fluent.TestValue = testFluent.Of(Err).ShouldNot.Have.ErrorDescriptionOf("Division by zero")
-        On Error GoTo 0
-        
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+''Below test commented out due to bugs in the twin basic compiler. Test moved to TwinBasicNegative sub
+
+'        On Error Resume Next
+'            Debug.Print 1 / 0
+'
+'            fluent.TestValue = testFluent.Of(Err).ShouldNot.Have.ErrorDescriptionOf("Division by zero")
+'        On Error GoTo 0
+'
+'        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorNumberOf(11)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        On Error Resume Next
-            Debug.Print 1 / 0
-            
-            fluent.TestValue = testFluent.Of(Err).ShouldNot.Have.ErrorNumberOf(11)
-        On Error GoTo 0
+''Below test commented out due to bugs in the twin basic compiler. Test moved to TwinBasicNegative sub
+
+'        On Error Resume Next
+'            Debug.Print 1 / 0
+'
+'            fluent.TestValue = testFluent.Of(Err).ShouldNot.Have.ErrorNumberOf(11)
+'        On Error GoTo 0
         
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+'        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
         fluent.TestValue = testFluent.Of(CBool(True)).ShouldNot.Have.SameTypeAs(CBool(True))
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -4314,24 +4374,53 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
         arr = Array(3, 2, 1)
         fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(arr)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(testFluent).ShouldNot.Have.Procedure("Of", VbMethod)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        Set col = New Collection
+        col.Add 1
+        col.Add 2
+        col.Add 3
+        
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(1)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(1, 2)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(2, 3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(1, 3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(1, 2, 3)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     End With
     
     For Each test In fluent.Meta.Tests
-        Debug.Assert test.Result
+        Debug.Assert test.result
     Next test
     
     For i = 1 To fluent.Meta.Tests.Count
-        Debug.Assert fluent.Meta.Tests(i).Result
+        Debug.Assert fluent.Meta.Tests(i).result
     Next i
     
     i = 1
     
     With testFluent.Meta
         For Each test In .Tests
-            resultBool = test.Result = .Tests(i).Result
+            resultBool = test.result = .Tests(i).result
             fluentBool = test.FluentPath = .Tests(i).FluentPath
-            valueBool = test.StrTestValue = .Tests(i).StrTestValue
+            valueBool = test.strTestValue = .Tests(i).strTestValue
             inputBool = test.StrTestInput = .Tests(i).StrTestInput
             
             Debug.Assert resultBool And fluentBool And valueBool And inputBool
@@ -4347,6 +4436,80 @@ Private Function negativeDocumentationTests(fluent As IFluent, testFluent As IFl
     
     Set negativeDocumentationTests = testFluent
     
+End Function
+
+Public Function twinBasicPositiveDocumentationTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
+    
+    On Error Resume Next
+        Debug.Print 1 / 0
+    
+        fluent.TestValue = testFluent.Of(Err).Should.Be.Erroneous
+    On Error GoTo 0
+    
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of("1 / 0").Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    On Error Resume Next
+        Debug.Print 1 / 0
+    
+        fluent.TestValue = testFluent.Of(Err).Should.Have.ErrorDescriptionOf("Division by zero")
+    On Error GoTo 0
+    
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    On Error Resume Next
+        Debug.Print 1 / 0
+    
+        fluent.TestValue = testFluent.Of(Err).Should.Have.ErrorNumberOf(11)
+    On Error GoTo 0
+    
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Debug.Print "Twin Basic positive tests finished"
+    posTestCount = mTestCounter + mMiscPosTests
+    mTestCounter = 0
+    printTestCount (posTestCount)
+    
+    Set twinBasicPositiveDocumentationTests = testFluent
+    
+End Function
+
+Public Function twinBasicNegativeDocumentationTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
+    On Error Resume Next
+        Debug.Print 1 / 0
+    
+        fluent.TestValue = testFluent.Of(Err).ShouldNot.Be.Erroneous
+    On Error GoTo 0
+    
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    On Error Resume Next
+        Debug.Print 1 / 0
+    
+        fluent.TestValue = testFluent.Of(Err).ShouldNot.Have.ErrorDescriptionOf("Division by zero")
+    On Error GoTo 0
+    
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    On Error Resume Next
+        Debug.Print 1 / 0
+    
+        fluent.TestValue = testFluent.Of(Err).ShouldNot.Have.ErrorNumberOf(11)
+    On Error GoTo 0
+    
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Debug.Print "Twin Basic positive tests finished"
+    negTestCount = mTestCounter + mMiscNegTests
+    mTestCounter = 0
+    printTestCount (negTestCount)
+    
+    Set twinBasicNegativeDocumentationTests = testFluent
 End Function
 
 Public Function positiveNullDocumentationTests(fluent As IFluent, testFluent As IFluentOf, testFluentResult As IFluentOf) As IFluentOf
@@ -5317,6 +5480,12 @@ Public Function positiveNullDocumentationTests(fluent As IFluent, testFluent As 
     
     fluent.TestValue = testFluent.Of(Null).Should.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of("Hello World").Should.Have.Procedure("Of", VbMethod)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(Null).Should.Have.Elements(1, 2, 3)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     For Each test In fluent.Meta.Tests
         Debug.Assert test.HasNull
@@ -5332,7 +5501,7 @@ Public Function positiveNullDocumentationTests(fluent As IFluent, testFluent As 
         For Each test In .Tests
             nullBool = test.HasNull = .Tests(i).HasNull
             fluentBool = test.FluentPath = .Tests(i).FluentPath
-            valueBool = test.StrTestValue = .Tests(i).StrTestValue
+            valueBool = test.strTestValue = .Tests(i).strTestValue
             inputBool = test.StrTestInput = .Tests(i).StrTestInput
 
             Debug.Assert nullBool And fluentBool And valueBool And inputBool
@@ -6316,6 +6485,12 @@ Public Function negativeNullDocumentationTests(fluent As IFluent, testFluent As 
     
     fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of("Hello World").ShouldNot.Have.Procedure("Of", VbMethod)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.Elements(1, 2, 3)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     For Each test In fluent.Meta.Tests
         Debug.Assert test.HasNull
@@ -6331,7 +6506,7 @@ Public Function negativeNullDocumentationTests(fluent As IFluent, testFluent As 
         For Each test In .Tests
             nullBool = test.HasNull = .Tests(i).HasNull
             fluentBool = test.FluentPath = .Tests(i).FluentPath
-            valueBool = test.StrTestValue = .Tests(i).StrTestValue
+            valueBool = test.strTestValue = .Tests(i).strTestValue
             inputBool = test.StrTestInput = .Tests(i).StrTestInput
 
             Debug.Assert nullBool And fluentBool And valueBool And inputBool
@@ -6359,308 +6534,240 @@ Public Function emptyDocumentationTests(fluent As IFluent, testFluent As IFluent
     Dim i As Long
         
     fluent.TestValue = testFluent.Of().Should.Be.EqualTo("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     fluent.TestValue = testFluent.Of().ShouldNot.Be.EqualTo("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructure("Hello World")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure("Hello World")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructures("Hello World")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures("Hello World")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.EqualTo("""Hello world""")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.EqualTo("""Hello world""")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructure("""Hello world""")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure("""Hello world""")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructures("""Hello world""")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures("""Hello world""")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.EqualTo(" ""Hello world"" ")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.EqualTo(" ""Hello world"" ")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(" ""Hello world"" ")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(" ""Hello world"" ")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructures(" ""Hello world"" ")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures(" ""Hello world"" ")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.EqualTo(""" Hello world """)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.EqualTo(""" Hello world """)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(""" Hello world """)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(""" Hello world """)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructures(""" Hello world """)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures(""" Hello world """)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.GreaterThan(10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.GreaterThan(10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Be.GreaterThanOrEqualTo(10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.GreaterThanOrEqualTo(10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.LessThan(10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.LessThan(10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Be.LessThanOrEqualTo(10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.LessThanOrEqualTo(10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Contain("Hello world!")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Contain("Hello world!")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.StartWith("Hello")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.StartWith("Hello")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.EndWith("Hello")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.EndWith("Hello")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Have.LengthOf(2)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Have.LengthOf(2)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Have.MaxLengthOf(2)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Have.MaxLengthOf(2)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Have.MinLengthOf(2)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Have.MinLengthOf(2)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Be.Something
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.Something
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.Between(1, 10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.Between(1, 10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Have.LengthBetween(1, 10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().ShouldNot.Have.LengthBetween(1, 10)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.EvaluateTo(True)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.EvaluateTo(True)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.Alphabetic
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.Alphabetic
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Be.Numeric
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.Numeric
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Be.Alphanumeric
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.Alphanumeric
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Be.Erroneous
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.Erroneous
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of().Should.Have.ErrorNumberOf("2007")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Have.ErrorNumberOf("2007")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.IdenticalTo("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.IdenticalTo("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Have.ExactSameElementsAs("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Have.ExactSameElementsAs("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Have.SameUniqueElementsAs("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Have.SameUniqueElementsAs("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Have.SameElementsAs("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Have.SameElementsAs("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().Should.Be.OneOf("Hello world", 5, True)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
+
     fluent.TestValue = testFluent.Of().ShouldNot.Be.OneOf("Hello world", 5, True)
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+
     fluent.TestValue = testFluent.Of().Should.Have.SameTypeAs("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of().ShouldNot.Have.SameTypeAs("Hello world")
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    fluent.TestValue = testFluent.Of().Should.Have.Procedure("Of", VbMethod)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    fluent.TestValue = testFluent.Of().ShouldNot.Have.Procedure("Of", VbMethod)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of().ShouldNot.Have.Elements(1, 2, 3)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     For Each test In testFluent.Meta.Tests
@@ -6677,7 +6784,7 @@ Public Function emptyDocumentationTests(fluent As IFluent, testFluent As IFluent
         For Each test In .Tests
             emptyBool = test.HasEmpty = .Tests(i).HasEmpty And Not test.TestValueSet = Not .Tests(i).TestValueSet
             fluentBool = test.FluentPath = .Tests(i).FluentPath
-            valueBool = test.StrTestValue = .Tests(i).StrTestValue
+            valueBool = test.strTestValue = .Tests(i).strTestValue
             inputBool = test.StrTestInput = .Tests(i).StrTestInput
 
             Debug.Assert emptyBool And fluentBool And valueBool And inputBool
@@ -6693,59 +6800,8 @@ Public Function emptyDocumentationTests(fluent As IFluent, testFluent As IFluent
     Set emptyDocumentationTests = testFluent
 End Function
 
-Private Function MiscTests(fluent As IFluent)
+Private Function cleanStringTests(fluent As IFluent) As Long
     Dim testCount As Long
-    Dim q As Object
-    Dim elem As Variant
-    
-    Set mEvents.setFluentEventDuplicate = fluent
-
-    'test to ensure fluent object's default TestValue value is equal to empty
-    Debug.Assert Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
-    
-    'test to ensure that a duplicate test event is not raised since skipDupCheck
-    'is set to true
-    
-    With fluent.Meta.Tests
-        .SkipDupCheck = True
-            Debug.Assert Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
-        .SkipDupCheck = False
-    End With
-    
-    'test to ensure that a duplicate test event is raised since skipDupCheck
-    'is set to false
-    
-    Debug.Assert Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
-    
-    'test to ensure fluent object's TestValue property can return a value
-    fluent.TestValue = fluent.TestValue
-    Debug.Assert fluent.Should.Be.EqualTo(Empty)
-    
-    'test to ensure fluent object's TestValue property can return an object
-    Set fluent.TestValue = New Collection
-    Set fluent.TestValue = fluent.TestValue
-    Debug.Assert fluent.Should.Be.Something
-    
-    'test to ensure that addDataStructure is working with non-default datastructure
-    
-    Set q = CreateObject("system.collections.Queue")
-    
-    q.Enqueue ("Hello")
-    
-    fluent.Meta.Tests.AddDataStructure q
-    
-    fluent.TestValue = "Hello"
-    
-    Debug.Assert fluent.Should.Be.InDataStructure(q)
-    
-    'test to ensure that StrTestValue and StrTestInput are working with non-default datastructure
-    
-    With fluent.Meta
-        Debug.Assert .Tests(.Tests.Count).StrTestValue = "`Hello`"
-        Debug.Assert .Tests(.Tests.Count).StrTestInput = "Queue(`Hello`)"
-    End With
-    
-    'Clean string tests
     
     fluent.Meta.Tests.TestStrings.CleanTestValueStr = True
     
@@ -6825,6 +6881,92 @@ Private Function MiscTests(fluent As IFluent)
     fluent.TestValue = fluent.Meta.Tests.TestStrings.CleanString(fluent.TestValue)
     
     Debug.Assert fluent.Should.Be.EqualTo(fluent.Meta.Tests.TestStrings.CleanString("""bcd"""))
+    
+    Debug.Print "Clean string tests finished"
+    
+    testCount = fluent.Meta.Tests.Count
+    printTestCount (testCount)
+    
+    cleanStringTests = testCount
+End Function
+
+Private Function MiscTests(fluent As IFluent) As Long
+    Dim testCount As Long
+    Dim q As Object
+    Dim elem As Variant
+    Dim fluent2 As cFluent
+    
+    Set mEvents.setFluentEventDuplicate = fluent
+
+    'test to ensure fluent object's default TestValue value is equal to empty
+    Debug.Assert Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
+    
+    'test to ensure that a duplicate test event is not raised since skipDupCheck
+    'is set to true
+    
+    With fluent.Meta.Tests
+        .SkipDupCheck = True
+            Debug.Assert Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
+        .SkipDupCheck = False
+    End With
+    
+    'test to ensure that a duplicate test event is raised since skipDupCheck
+    'is set to false
+    
+    Debug.Assert Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
+    
+    'test to ensure fluent object's TestValue property can return a value
+    fluent.TestValue = fluent.TestValue
+    Debug.Assert fluent.Should.Be.EqualTo(Empty)
+    
+    'test to ensure fluent object's TestValue property can return an object
+    Set fluent.TestValue = New Collection
+    Set fluent.TestValue = fluent.TestValue
+    Debug.Assert fluent.Should.Be.Something
+    
+    'test to ensure that addDataStructure is working with non-default datastructure
+    
+    Set q = CreateObject("system.collections.Queue")
+    
+    q.Enqueue ("Hello")
+    
+    fluent.Meta.Tests.AddDataStructure q
+    
+    fluent.TestValue = "Hello"
+    
+    Debug.Assert fluent.Should.Be.InDataStructure(q)
+    
+    'test to ensure that StrTestValue and StrTestInput are working with non-default datastructure
+    
+    With fluent.Meta
+        Debug.Assert .Tests(.Tests.Count).strTestValue = "`Hello`"
+        Debug.Assert .Tests(.Tests.Count).StrTestInput = "Queue(`Hello`)"
+    End With
+    
+    'Procedure bitwise flag tests
+    
+    Set fluent2 = New cFluent
+    
+    Set fluent.TestValue = fluent2
+    
+    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbLet)
+    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbGet)
+    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbSet)
+    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbLet + VbGet)
+    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbLet + VbSet)
+    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbGet + VbSet)
+    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbLet + VbGet + VbSet)
+    
+    '//below tests will all fail since fluent objects do not have a TestValue method
+    
+    Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbMethod)
+    Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbLet + VbMethod)
+    Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbGet + VbMethod)
+    Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbSet + VbMethod)
+    Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbLet + VbGet + VbMethod)
+    Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbLet + VbSet + VbMethod)
+    Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbGet + VbSet + VbMethod)
+    Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbLet + VbGet + VbSet + VbMethod)
     
     Debug.Print "Misc tests finished"
     
@@ -6911,7 +7053,7 @@ Private Function validateNegativeCounters(testFluent As IFluentOf) As Boolean
     
     For Each test In testFluent.Meta.Tests
         Set testDev = test
-        If testDev.NegateValue Then
+        If testDev.negateValue Then
             fn = test.functionName
             If Not d.Exists(fn) Then
                 d.Add fn, 1

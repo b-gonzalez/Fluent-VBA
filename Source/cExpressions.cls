@@ -36,46 +36,33 @@ Private Property Set IExpressions_setMeta(ByVal value As cMeta)
     Set pTestingInfo = pMeta.Tests.TestingInfo
 End Property
 
-Private Sub IExpressions_addToTestAndFluentPath( _
-    ByVal functionName As String, _
-    ByVal Result As Variant, _
-    ByVal NegateValue As Boolean, _
-    ByVal testingValue As Variant, _
-    Optional ByVal testingInput As Variant, _
-    Optional ByVal LowerVal As Variant, _
-    Optional ByVal HigherVal As Variant, _
-    Optional cleanedTestValue As Variant, _
-    Optional cleanedTestInput As Variant)
+Private Function setTestResultProps(ByVal test As ITest, ByVal result As Variant, ByVal negateValue As Boolean) As ITest
     
-    Dim test As ITest
-    Dim testDev As ITestDev
-    Dim shouldBool As String
-    Dim algo As flAlgorithm
-    
-    Set test = New cTest
-    Set testDev = test
-    
-    test.TestValueSet = True
-    
-    If Information.IsNull(Result) Then
+    If Information.IsNull(result) Then
         test.HasNull = True
-    ElseIf Information.IsEmpty(Result) Then
+    ElseIf Information.IsEmpty(result) Then
         test.HasEmpty = True
         test.TestValueSet = False
     End If
 
-    If NegateValue And Not Information.IsNull(Result) And Not Information.IsEmpty(Result) Then
-        Result = Not Result
+    If negateValue And Not Information.IsNull(result) And Not Information.IsEmpty(result) Then
+        result = Not result
     End If
+    
+    test.result = result
+    
+    Set setTestResultProps = test
+End Function
+
+Private Function initTest(ByVal test As ITest, ByVal functionName As String, ByVal pPrinting As IPrinting) As ITest
 
     With test
         .functionName = functionName
-        .Result = Result
         .testingInput = Empty
-        .LowerVal = Empty
-        .HigherVal = Empty
+        .lowerVal = Empty
+        .higherVal = Empty
         .StrTestInput = ""
-        .StrTestValue = ""
+        .strTestValue = ""
         .cleanedTestValue = ""
         .cleanedTestInput = ""
         .Category = pPrinting.Category
@@ -83,11 +70,13 @@ Private Sub IExpressions_addToTestAndFluentPath( _
         .HasCleanTestInput = False
         .HasCleanTestStrings = False
         .HasCleanTestValue = False
+        .Actual = ""
     End With
     
-    If pPrinting.Category <> "" Then iPrint.CategorySet = True
-    If pPrinting.Name <> "" Then iPrint.NameSet = True
-        
+    Set initTest = test
+End Function
+
+Private Function setTestValueTestInput(ByVal test As ITest, ByVal testingValue As Variant, ByVal testingInput As Variant) As ITest
     If Information.TypeName(testingValue) <> "Nothing" Then
         If TypeOf testingValue Is Object  Then
             Set test.testingValue = testingValue
@@ -105,15 +94,21 @@ Private Sub IExpressions_addToTestAndFluentPath( _
             End If
         End If
     End If
-
-    If Not Information.IsMissing(LowerVal) Then
-        test.LowerVal = LowerVal
-    End If
-
-    If Not Information.IsMissing(HigherVal) Then
-        test.HigherVal = HigherVal
-    End If
     
+    Set setTestValueTestInput = test
+End Function
+
+Private Function setLowerValHigherVal(ByVal test As ITest, ByVal lowerVal As Variant, ByVal higherVal As Variant) As ITest
+    test.lowerVal = lowerVal
+
+    test.higherVal = higherVal
+
+    test.testingInput = Array(lowerVal, higherVal)
+    
+    Set setLowerValHigherVal = test
+End Function
+
+Private Function getCleanedTest(ByVal test As ITest, ByVal cleanedTestValue As Variant, ByVal cleanedTestInput As Variant) As ITest
     If Not Information.IsMissing(cleanedTestValue) Then
         If Information.TypeName(cleanedTestValue) = "String" Then
             If test.testingValue <> cleanedTestValue Then
@@ -136,23 +131,26 @@ Private Sub IExpressions_addToTestAndFluentPath( _
         test.HasCleanTestStrings = True
     End If
     
-    If Not Information.IsMissing(LowerVal) And Not Information.IsMissing(HigherVal) Then
-        test.testingInput = Array(LowerVal, HigherVal)
-    End If
+    Set getCleanedTest = test
+End Function
+
+Private Function setStrTestValueStrTestInput(ByVal test As ITest, ByVal Meta As IMeta, ByVal negateValue As Boolean)
+    Dim testDev As ITestDev
+    Dim algo As flAlgorithm
     
     With test
         .StrTestInput = IExpressions_InputToString(.testingInput)
-        .StrTestValue = IExpressions_InputToString(.testingValue)
+        .strTestValue = IExpressions_InputToString(.testingValue)
     End With
     
-    '//TestDev
+    Set testDev = test
     
     With pMeta.Tests
         If .ToStrDev Then
             algo = .Algorithm
             
             If algo = flRecursive Then
-                testDev.TestValueRecur = test.StrTestValue
+                testDev.TestValueRecur = test.strTestValue
                 testDev.TestInputRecur = test.StrTestInput
                 
                 pMeta.Tests.Algorithm = flIterative
@@ -160,7 +158,7 @@ Private Sub IExpressions_addToTestAndFluentPath( _
                 testDev.TestValueIter = IExpressions_InputToString(test.testingValue)
                 testDev.TestInputIter = IExpressions_InputToString(test.testingInput)
             ElseIf algo = flIterative Then
-                testDev.TestValueIter = test.StrTestValue
+                testDev.TestValueIter = test.strTestValue
                 testDev.TestInputIter = test.StrTestInput
                 
                 pMeta.Tests.Algorithm = flRecursive
@@ -173,9 +171,57 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     
     pMeta.Tests.Algorithm = algo
     
-    testDev.NegateValue = NegateValue
+    testDev.negateValue = negateValue
     
-    Call IExpressions_addFluentPathNew(test, NegateValue)
+    Set setStrTestValueStrTestInput = testDev
+End Function
+
+Private Sub IExpressions_addToTestAndFluentPath( _
+    ByVal functionName As String, _
+    ByVal result As Variant, _
+    ByVal negateValue As Boolean, _
+    ByVal testingValue As Variant, _
+    Optional ByVal testingInput As Variant, _
+    Optional ByVal lowerVal As Variant, _
+    Optional ByVal higherVal As Variant, _
+    Optional ByVal cleanedTestValue As Variant, _
+    Optional ByVal cleanedTestInput As Variant, _
+    Optional ByVal Actual As Variant _
+)
+
+    'Consider refactoring to add a method to sets all test properties if not missing.
+    'This can probably consolidate the actual property with the lowerval and higherval
+    'properties into one method. And perhaps similar properties from some of the other
+    'functions as well.
+    
+    Dim test As ITest
+    
+    Set test = New cTest
+    
+    test.TestValueSet = True
+    
+    Set test = setTestResultProps(test, result, negateValue)
+
+    Set test = initTest(test, functionName, pPrinting)
+    
+    If Not Information.IsMissing(Actual) Then
+        test.Actual = Actual
+    End If
+    
+    If pPrinting.Category <> "" Then iPrint.CategorySet = True
+    If pPrinting.Name <> "" Then iPrint.NameSet = True
+
+    Set test = setTestValueTestInput(test, testingValue, testingInput)
+
+    If Not Information.IsMissing(lowerVal) And Not Information.IsMissing(higherVal) Then
+        Set test = setLowerValHigherVal(test, lowerVal, higherVal)
+    End If
+
+    Set test = getCleanedTest(test, cleanedTestValue, cleanedTestInput)
+        
+    Set test = setStrTestValueStrTestInput(test, pMeta, negateValue)
+    
+    Call IExpressions_addFluentPathNew(test, negateValue)
 
 End Sub
 
@@ -207,8 +253,8 @@ End Function
 Private Function IExpressions_Be( _
 ByVal beType As flBe, _
 Optional ByVal TesingInput As String = "", _
-Optional ByVal LowerVal As Variant, _
-Optional ByVal HigherVal As Variant) As String
+Optional ByVal lowerVal As Variant, _
+Optional ByVal higherVal As Variant) As String
     Dim beStr As String
     Dim funcStr As String
     
@@ -252,12 +298,12 @@ Optional ByVal HigherVal As Variant) As String
     
     beStr = beStr & funcStr
     
-    If TesingInput <> "" And Information.IsMissing(LowerVal) And Information.IsMissing(HigherVal) Then
+    If TesingInput <> "" And Information.IsMissing(lowerVal) And Information.IsMissing(higherVal) Then
         beStr = beStr & " " & TesingInput
     End If
     
-    If TesingInput = "" And Not Information.IsMissing(LowerVal) And Not Information.IsMissing(HigherVal) Then
-        beStr = beStr & " " & LowerVal & " and " & HigherVal
+    If TesingInput = "" And Not Information.IsMissing(lowerVal) And Not Information.IsMissing(higherVal) Then
+        beStr = beStr & " " & lowerVal & " and " & higherVal
     End If
 
     IExpressions_Be = beStr
@@ -266,18 +312,22 @@ End Function
 Private Function IExpressions_Have( _
 ByVal haveType As flHave, _
 Optional ByVal TesingInput As String = "", _
-Optional ByVal LowerVal As Variant, _
-Optional ByVal HigherVal As Variant) As String
+Optional ByVal lowerVal As Variant, _
+Optional ByVal higherVal As Variant) As String
     Dim haveStr As String
     Dim funcStr As String
     
     haveStr = "have "
     
     Select Case haveType
+        Case Elements_
+            funcStr = "elements"
         Case ErrorDescriptionOf_
             funcStr = "error description of"
         Case ErrorNumberOf_
             funcStr = "error number of"
+        Case ExactSameElementsAs_
+            funcStr = "exact same elements as"
         Case LengthBetween_
             funcStr = "length between"
         Case LengthOf_
@@ -286,8 +336,8 @@ Optional ByVal HigherVal As Variant) As String
             funcStr = "max length of"
         Case MinLengthOf_
             funcStr = "min length of"
-        Case ExactSameElementsAs_
-            funcStr = "exact same elements as"
+        Case Procedure_
+            funcStr = "procedure"
         Case SameElementsAs_
             funcStr = "same elements as"
         Case SameTypeAs_
@@ -300,12 +350,12 @@ Optional ByVal HigherVal As Variant) As String
     
     haveStr = haveStr & funcStr
     
-    If TesingInput <> "" And Information.IsMissing(LowerVal) And Information.IsMissing(HigherVal) Then
+    If TesingInput <> "" And Information.IsMissing(lowerVal) And Information.IsMissing(higherVal) Then
         haveStr = haveStr & " " & TesingInput
     End If
     
-    If TesingInput = "" And Not Information.IsMissing(LowerVal) And Not Information.IsMissing(HigherVal) Then
-        haveStr = haveStr & " " & LowerVal & " and " & HigherVal
+    If TesingInput = "" And Not Information.IsMissing(lowerVal) And Not Information.IsMissing(higherVal) Then
+        haveStr = haveStr & " " & lowerVal & " and " & higherVal
     End If
 
     IExpressions_Have = haveStr
@@ -315,13 +365,13 @@ End Function
 Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentPath As String, ByVal tempFluentPath As String) As String
     Dim finalFluentPath As String
     
-    If Information.IsNull(test.Result) Or Information.IsEmpty(test.Result) Then
-        test.Result = Information.TypeName(test.Result)
+    If Information.IsNull(test.result) Or Information.IsEmpty(test.result) Then
+        test.result = Information.TypeName(test.result)
     End If
 
     With test
         finalFluentPath = FluentPath & _
-            "Testing value: " & .StrTestValue & ";"
+            "Testing value: " & .strTestValue & ";"
             
             If pMeta.Tests.TestStrings.CleanTestValueStr Then
                 If .cleanedTestValue <> "" Then
@@ -337,9 +387,14 @@ Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentP
                 End If
             End If
 
+'        finalFluentPath = finalFluentPath & _
+'            " Expectation: Testing value " & tempFluentPath & ";" & _
+'            " Result: " & .Result
+
         finalFluentPath = finalFluentPath & _
-            " Expectation: Testing value " & tempFluentPath & ";" & _
-            " Result: " & .Result
+            " Expectation: Testing value " & tempFluentPath & _
+            ";" & IIf(.Actual <> "", " Actual: " & pMeta.ToString.WrapIfString(.Actual) & ";", "") & _
+            " Result: " & .result
     End With
     
     IExpressions_buildFluentPath = finalFluentPath
@@ -360,9 +415,11 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
         Case "Alphanumeric"
             tempFluentPath = IExpressions_Be(Alphanumeric_)
         Case "Between"
-            tempFluentPath = IExpressions_Be(Between_, LowerVal:=test.LowerVal, HigherVal:=test.HigherVal)
+            tempFluentPath = IExpressions_Be(Between_, lowerVal:=test.lowerVal, higherVal:=test.higherVal)
         Case "Contain"
             tempFluentPath = IExpressions_Should(Contain_, testingInput)
+        Case "Elements"
+            tempFluentPath = IExpressions_Have(Elements_, testingInput)
         Case "Erroneous"
             tempFluentPath = IExpressions_Be(Erroneous_)
         Case "ErrorNumberOf"
@@ -388,7 +445,7 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
         Case "InDataStructures"
             tempFluentPath = IExpressions_Be(InDataStructures_, testingInput)
         Case "LengthBetween"
-            tempFluentPath = IExpressions_Have(LengthBetween_, LowerVal:=test.LowerVal, HigherVal:=test.HigherVal)
+            tempFluentPath = IExpressions_Have(LengthBetween_, lowerVal:=test.lowerVal, higherVal:=test.higherVal)
         Case "LengthOf"
             tempFluentPath = IExpressions_Have(LengthOf_, testingInput)
         Case "LessThan"
@@ -403,6 +460,8 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
             tempFluentPath = IExpressions_Be(Numeric_)
         Case "OneOf"
             tempFluentPath = IExpressions_Be(OneOf_, testingInput)
+        Case "Procedure"
+            tempFluentPath = IExpressions_Have(Procedure_, testingInput)
         Case "SameElementsAs"
             tempFluentPath = IExpressions_Have(SameElementsAs_, testingInput)
         Case "SameTypeAs"
@@ -438,7 +497,7 @@ Private Function IExpressions_getFluentPath(ByVal FluentPath As String, ByVal te
     IExpressions_getFluentPath = tempFluentPath
 End Function
 
-Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue As Boolean)
+Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue As Boolean)
     Dim FluentPath As String
     Dim finalFluentPath As String
     Dim fluentElement As Long
@@ -454,8 +513,8 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue
         
         pTestingSubInfo.Count = pTestingSubInfo.Count + 1
         
-        If Not Information.IsNull(test.Result) Then
-            If test.Result Then
+        If Not Information.IsNull(test.result) Then
+            If test.result Then
                 pTestingSubInfo.Passed = pTestingSubInfo.Passed + 1
             Else
                 pTestingSubInfo.Failed = pTestingSubInfo.Failed + 1
@@ -467,11 +526,11 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal NegateValue
         Err.Raise Number:=NOT_IMPLEMENTED_ERROR, Description:="Test name not implemented in TestDictCounter"
     End If
     
-    testDev.ResultNumber = IExpressions_getResultNumber(test.Result)
+    testDev.ResultNumber = IExpressions_getResultNumber(test.result)
     
     FluentPath = FluentPath & testDev.ResultNumber & "="
     
-    FluentPath = IExpressions_getFluentPath(FluentPath, test, NegateValue)
+    FluentPath = IExpressions_getFluentPath(FluentPath, test, negateValue)
     
     finalFluentPath = Trim(Split(FluentPath, "=")(fluentElement))
     
@@ -588,7 +647,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                     ElseIf Information.IsObject(v(elem)) Then
                         temp = temp & elem & ": " & Information.TypeName(v(elem)) & ", "
                     ElseIf Information.TypeName(v(elem)) = "String" Then
-                        temp = temp & elem & ": " & pMeta.ToString.WrapIfString(Information.TypeName(v(elem))) & ", "
+                        temp = temp & elem & ": " & pMeta.ToString.WrapIfString(v(elem)) & ", "
                     Else
                         temp = temp & elem & ": " & v(elem) & ", "
                     End If
@@ -598,8 +657,12 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
             temp = temp & elem & ", "
     End Select
     
-    If Right(temp, 2) = ", " Then
-        temp = Left(temp, Len(temp) - 2)
+'    If Right(temp, 2) = ", " Then
+'        temp = Left(temp, Len(temp) - 2)
+'    End If
+
+    If VBA.Right$(temp, 2) = ", " Then
+        temp = VBA.Left$(temp, Len(temp) - 2)
     End If
 
     temp = temp & ")"
@@ -644,7 +707,8 @@ Function IExpressions_inputToStringIter(v As Variant) As String
                 End If
             Else
                 tempCol.Add elem & ": "
-                tempCol.Add v(elem)
+'                tempCol.Add v(elem)
+                tempCol.Add pMeta.ToString.WrapIfString(v(elem))
             End If
         Else
             dsCount = IExpressions_getDsCount(elem)
@@ -798,7 +862,8 @@ Function IExpressions_getDsType(v As Variant) As String
     Dim temp As String
     
     If Information.IsArray(v) Then
-        temp = Left(Information.TypeName(v), Len(Information.TypeName(v)) - 2) & "("
+'        temp = Left(Information.TypeName(v), Len(Information.TypeName(v)) - 2) & "("
+        temp = VBA.Left$(Information.TypeName(v), Len(Information.TypeName(v)) - 2) & "("
     ElseIf pMeta.Tests.IsDataStructure(v) Then
         temp = Information.TypeName(v) & "("
     ElseIf Information.IsObject(v) Then
@@ -809,15 +874,15 @@ Function IExpressions_getDsType(v As Variant) As String
 End Function
 
 
-Private Function IExpressions_getResultNumber(ByVal Result As Variant) As Long
+Private Function IExpressions_getResultNumber(ByVal result As Variant) As Long
     Dim ResultNumber As Variant
     
     ResultNumber = Null
     
-    If Information.IsNull(Result) Or Information.IsEmpty(Result) Then
+    If Information.IsNull(result) Or Information.IsEmpty(result) Then
         ResultNumber = 1
-    ElseIf Information.TypeName(Result) = "Boolean" Then
-        ResultNumber = CLng(Result)
+    ElseIf Information.TypeName(result) = "Boolean" Then
+        ResultNumber = CLng(result)
     End If
     
     IExpressions_getResultNumber = ResultNumber

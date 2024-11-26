@@ -39,6 +39,20 @@ Private Function IFluentOf_Of(Optional ByVal All As Variant) As cUnit
     Set IFluentOf_Of = pUnit
 End Function
 
+
+
+
+Public Property Get Meta() As IMeta
+    Set Meta = IFluentOf_Meta
+End Property
+
+Public Function Of(Optional ByVal All As Variant) As cUnit
+    Set Of = IFluentOf_Of(All)
+End Function
+
+
+
+
 Private Sub Class_Initialize()
     Set pUnit = New cUnit
     Set pUnitShould = pUnit

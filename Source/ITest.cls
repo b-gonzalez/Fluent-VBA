@@ -27,16 +27,16 @@ End Property
 Public Property Get testingInput() As Variant
 End Property
 
-Public Property Let LowerVal(ByVal value As Double)
+Public Property Let lowerVal(ByVal value As Double)
 End Property
 
-Public Property Get LowerVal() As Double
+Public Property Get lowerVal() As Double
 End Property
 
-Public Property Let HigherVal(ByVal value As Double)
+Public Property Let higherVal(ByVal value As Double)
 End Property
 
-Public Property Get HigherVal() As Double
+Public Property Get higherVal() As Double
 End Property
 
 Public Property Let FluentPath(ByVal value As String)
@@ -45,10 +45,10 @@ End Property
 Public Property Get FluentPath() As String
 End Property
 
-Public Property Let Result(ByVal value As Variant)
+Public Property Let result(ByVal value As Variant)
 End Property
 
-Public Property Get Result() As Variant
+Public Property Get result() As Variant
 End Property
 
 Public Property Let functionName(ByVal value As String)
@@ -57,10 +57,10 @@ End Property
 Public Property Get functionName() As String
 End Property
 
-Public Property Let StrTestValue(ByVal value As String)
+Public Property Let strTestValue(ByVal value As String)
 End Property
 
-Public Property Get StrTestValue() As String
+Public Property Get strTestValue() As String
 End Property
 
 Public Property Let StrTestInput(ByVal value As String)
@@ -127,4 +127,10 @@ Public Property Let HasCleanTestStrings(ByVal value As Boolean)
 End Property
 
 Public Property Get HasCleanTestStrings() As Boolean
+End Property
+
+Public Property Let Actual(value As String)
+End Property
+
+Public Property Get Actual() As String
 End Property

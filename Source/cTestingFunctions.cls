@@ -47,7 +47,7 @@ Private Property Get ITestingFunctions_TestValue() As Variant
     End If
 End Property
 
-Public Property Let ITestingFunctions_TestValueClean(ByVal value As Variant)
+Private Property Let ITestingFunctions_TestValueClean(ByVal value As Variant)
     pTestValueClean = pMeta.Tests.TestStrings.CleanString(value)
 End Property
 
@@ -127,7 +127,7 @@ End Function
 
 Private Function IBeTestFuncs_InDataStructures( _
     ByVal testingValue As Variant, _
-    ByVal NegateValue As Boolean, _
+    ByVal negateValue As Boolean, _
     ByVal testingInput As Variant) As Variant
     
     Dim col As VBA.Collection
@@ -140,20 +140,20 @@ Private Function IBeTestFuncs_InDataStructures( _
         If pMeta.Tests.IsDataStructure(testingInput(i)) Then
             Set col = IBeTestFuncs_getNestedElementsRecur(testingInput)
         
-            funcVal = IBeTestFuncs_InDataStructure(testingValue, col, NegateValue, updateFluentPath:=False)
+            funcVal = IBeTestFuncs_InDataStructure(testingValue, col, negateValue, updateFluentPath:=False)
         End If
     Next i
     
     IBeTestFuncs_InDataStructures = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("InDataStructures", funcVal, CBool(NegateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("InDataStructures", funcVal, CBool(negateValue), testingValue, testingInput)
     
 End Function
 
 Private Function IBeTestFuncs_InDataStructure( _
 ByVal testingValue As Variant, _
 ByVal dataStructure As Variant, _
-Optional ByVal NegateValue As Boolean = False, _
+Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim elem As Variant
     Dim col As Collection
@@ -188,7 +188,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     IBeTestFuncs_InDataStructure = funcVal
     
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("InDataStructure", funcVal, CBool(NegateValue), testingValue, dataStructure)
+        Call pExpressions.addToTestAndFluentPath("InDataStructure", funcVal, CBool(negateValue), testingValue, dataStructure)
     End If
     
 End Function
@@ -267,7 +267,7 @@ Private Function IBeTestFuncs_getNestedElementsIter(ByVal dataStructure As Varia
     Set IBeTestFuncs_getNestedElementsIter = col
 End Function
 
-Private Function IBeTestFuncs_GreaterThan(ByVal testingValue As Variant, ByVal testingInput As Double, Optional ByVal NegateValue As Boolean = False) As Variant
+Private Function IBeTestFuncs_GreaterThan(ByVal testingValue As Variant, ByVal testingInput As Double, Optional ByVal negateValue As Boolean = False) As Variant
     Dim funcVal As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
@@ -278,14 +278,14 @@ Private Function IBeTestFuncs_GreaterThan(ByVal testingValue As Variant, ByVal t
     
     IBeTestFuncs_GreaterThan = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("GreaterThan", funcVal, CBool(NegateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("GreaterThan", funcVal, CBool(negateValue), testingValue, testingInput)
     
 End Function
 
 Private Function IBeTestFuncs_GreaterThanOrEqualTo( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Double, _
-Optional ByVal NegateValue As Boolean = False, _
+Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim funcVal As Variant
     
@@ -298,7 +298,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     IBeTestFuncs_GreaterThanOrEqualTo = funcVal
     
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("GreaterThanOrEqualTo", funcVal, CBool(NegateValue), testingValue, testingInput)
+        Call pExpressions.addToTestAndFluentPath("GreaterThanOrEqualTo", funcVal, CBool(negateValue), testingValue, testingInput)
     End If
         
 End Function
@@ -306,7 +306,7 @@ End Function
 Private Function IBeTestFuncs_LessThan( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Double, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+Optional ByVal negateValue As Boolean = False) As Variant
     Dim funcVal As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
@@ -317,14 +317,14 @@ Optional ByVal NegateValue As Boolean = False) As Variant
     
     IBeTestFuncs_LessThan = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("LessThan", funcVal, CBool(NegateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("LessThan", funcVal, CBool(negateValue), testingValue, testingInput)
 
 End Function
 
 Private Function IBeTestFuncs_LessThanOrEqualTo( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Double, _
-Optional ByVal NegateValue As Boolean = False, _
+Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim funcVal As Variant
     
@@ -337,15 +337,50 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     IBeTestFuncs_LessThanOrEqualTo = funcVal
        
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("LessThanOrEqualTo", funcVal, CBool(NegateValue), testingValue, testingInput)
+        Call pExpressions.addToTestAndFluentPath("LessThanOrEqualTo", funcVal, CBool(negateValue), testingValue, testingInput)
     End If
         
+End Function
+
+'Original function found here:
+'https://stackoverflow.com/a/72108415/16864869
+
+Private Function Roughly(ByVal a As Double, ByVal b As Double, Optional ByVal within As Double = 0.00001) As Boolean
+    Dim d As Double
+    Dim x As Double
+    Dim y As Double
+    Dim z As Double
+    Dim final As Boolean
+    
+    Const TINY As Double = 1.17549435E-38    'SINGLE_MIN
+    
+    final = False
+    
+    x = Abs(a)
+    y = Abs(b)
+    d = Abs(a - b)
+    
+    If a = b Then
+        final = True
+    ElseIf a <> 0 Then
+        If b <> 0 Then
+            z = x + y
+            
+            If z > TINY Then
+                final = d / z < within
+            Else
+                final = d < within * TINY
+            End If
+        End If
+    End If
+        
+    Roughly = final
 End Function
 
 Private Function IBeTestFuncs_EqualTo( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Variant, _
-Optional ByVal NegateValue As Boolean = False, _
+Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim tempBool As Boolean
     Dim funcVal As Variant
@@ -377,7 +412,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
             If pMeta.Tests.ApproximateEqual Then
                 If Information.TypeName(testingValue) <> Information.TypeName(testingInput) Then
                     If IsNumeric(testingValue) And IsNumeric(testingInput) Then
-                        tempBool = (Abs(testingValue - testingInput) <= pMeta.Tests.Epsilon)
+                        tempBool = Roughly(CDbl(testingValue), CDbl(testingInput), pMeta.Tests.Epsilon)
                     ElseIf VarType(testingValue) = vbString Or VarType(testingInput) = vbString Then
                         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
                         tempTestInput = ITestingFunctions_getTempTestInput(testingInput)
@@ -393,7 +428,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     IBeTestFuncs_EqualTo = funcVal
     
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("EqualTo", funcVal, CBool(NegateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
+        Call pExpressions.addToTestAndFluentPath("EqualTo", funcVal, CBool(negateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
     End If
         
 End Function
@@ -401,7 +436,7 @@ End Function
 Private Function IShouldTestFuncs_Contain( _
 ByVal testingValue As Variant, _
 ByVal testingInput As String, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+Optional ByVal negateValue As Boolean = False) As Variant
     Dim funcVal As Variant
     Dim tempTestValue As Variant
     Dim tempTestInput As Variant
@@ -417,14 +452,14 @@ Optional ByVal NegateValue As Boolean = False) As Variant
     
     IShouldTestFuncs_Contain = funcVal
         
-    Call pExpressions.addToTestAndFluentPath("Contain", funcVal, CBool(NegateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
+    Call pExpressions.addToTestAndFluentPath("Contain", funcVal, CBool(negateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
         
 End Function
 
 Private Function IShouldTestFuncs_StartWith( _
 ByVal testingValue As Variant, _
 ByVal testingInput As String, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+Optional ByVal negateValue As Boolean = False) As Variant
     Dim valLength As Long
     Dim funcVal As Variant
     Dim tempTestValue As Variant
@@ -442,14 +477,14 @@ Optional ByVal NegateValue As Boolean = False) As Variant
     
     IShouldTestFuncs_StartWith = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("StartWith", funcVal, CBool(NegateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
+    Call pExpressions.addToTestAndFluentPath("StartWith", funcVal, CBool(negateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
         
 End Function
 
 Private Function IShouldTestFuncs_EndWith( _
 ByVal testingValue As Variant, _
 ByVal testingInput As String, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+Optional ByVal negateValue As Boolean = False) As Variant
     Dim valLength As Long
     Dim funcVal As Variant
     Dim tempTestValue As Variant
@@ -467,14 +502,14 @@ Optional ByVal NegateValue As Boolean = False) As Variant
     
     IShouldTestFuncs_EndWith = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("EndWith", funcVal, CBool(NegateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
+    Call pExpressions.addToTestAndFluentPath("EndWith", funcVal, CBool(negateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
     
 End Function
 
 Private Function IHaveTestFuncs_LengthOf( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Long, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+Optional ByVal negateValue As Boolean = False) As Variant
     Dim funcVal As Variant
     Dim tempTestValue As Variant
     
@@ -488,14 +523,14 @@ Optional ByVal NegateValue As Boolean = False) As Variant
     
     IHaveTestFuncs_LengthOf = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("LengthOf", funcVal, CBool(NegateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue)
+    Call pExpressions.addToTestAndFluentPath("LengthOf", funcVal, CBool(negateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue)
             
 End Function
 
 Private Function IHaveTestFuncs_MaxLengthOf( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Long, _
-Optional ByVal NegateValue As Boolean = False, _
+Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim funcVal As Variant
     Dim tempTestValue As Variant
@@ -512,9 +547,9 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     If updateFluentPath Then
         If tempTestValue <> "" Then
-            Call pExpressions.addToTestAndFluentPath("MaxLengthOf", funcVal, CBool(NegateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue)
+            Call pExpressions.addToTestAndFluentPath("MaxLengthOf", funcVal, CBool(negateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue)
         Else
-            Call pExpressions.addToTestAndFluentPath("MaxLengthOf", funcVal, CBool(NegateValue), testingValue, testingInput)
+            Call pExpressions.addToTestAndFluentPath("MaxLengthOf", funcVal, CBool(negateValue), testingValue, testingInput)
         End If
     End If
             
@@ -523,7 +558,7 @@ End Function
 Private Function IHaveTestFuncs_MinLengthOf( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Long, _
-Optional ByVal NegateValue As Boolean = False, _
+Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim funcVal As Variant
     Dim tempTestValue As Variant
@@ -540,15 +575,15 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
         
     If updateFluentPath Then
         If tempTestValue <> "" Then
-            Call pExpressions.addToTestAndFluentPath("MinLengthOf", funcVal, CBool(NegateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue)
+            Call pExpressions.addToTestAndFluentPath("MinLengthOf", funcVal, CBool(negateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue)
         Else
-            Call pExpressions.addToTestAndFluentPath("MinLengthOf", funcVal, CBool(NegateValue), testingValue, testingInput)
+            Call pExpressions.addToTestAndFluentPath("MinLengthOf", funcVal, CBool(negateValue), testingValue, testingInput)
         End If
     End If
         
 End Function
 
-Private Function IBeTestFuncs_Something(ByVal testingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
+Private Function IBeTestFuncs_Something(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Variant
     Dim funcVal As Variant
     Dim tempTestValue As Variant
     
@@ -560,31 +595,31 @@ Private Function IBeTestFuncs_Something(ByVal testingValue As Variant, Optional 
     
     IBeTestFuncs_Something = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("Something", funcVal, CBool(NegateValue), testingValue)
+    Call pExpressions.addToTestAndFluentPath("Something", funcVal, CBool(negateValue), testingValue)
         
 End Function
 
 Private Function IBeTestFuncs_Between( _
 ByVal testingValue As Variant, _
-ByVal LowerVal As Double, _
-ByVal HigherVal As Double, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+ByVal lowerVal As Double, _
+ByVal higherVal As Double, _
+Optional ByVal negateValue As Boolean = False) As Variant
     Dim funcVal As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
     If Information.IsNumeric(testingValue) And pTestValueSet Then
         funcVal = _
-        (IBeTestFuncs_GreaterThanOrEqualTo(testingValue, LowerVal, updateFluentPath:=False) And _
-        IBeTestFuncs_LessThanOrEqualTo(testingValue, HigherVal, updateFluentPath:=False))
+        (IBeTestFuncs_GreaterThanOrEqualTo(testingValue, lowerVal, updateFluentPath:=False) And _
+        IBeTestFuncs_LessThanOrEqualTo(testingValue, higherVal, updateFluentPath:=False))
     End If
     
     IBeTestFuncs_Between = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("Between", funcVal, CBool(NegateValue), testingValue:=testingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
+    Call pExpressions.addToTestAndFluentPath("Between", funcVal, CBool(negateValue), testingValue:=testingValue, lowerVal:=lowerVal, higherVal:=higherVal)
 End Function
 
-Private Function IBeTestFuncs_OneOf(ByVal testingValue As Variant, ByVal NegateValue As Boolean, ByVal testingInput As Variant) As Variant
+Private Function IBeTestFuncs_OneOf(ByVal testingValue As Variant, ByVal negateValue As Boolean, ByVal testingInput As Variant) As Variant
     Dim i As Long
     Dim tempBool As Boolean
     Dim funcVal As Variant
@@ -624,18 +659,18 @@ Private Function IBeTestFuncs_OneOf(ByVal testingValue As Variant, ByVal NegateV
     If TypeOf testingValue Is Object  Then testingValue = Information.TypeName(testingValue)
     
     If tempTestValue <> "" Then
-        Call pExpressions.addToTestAndFluentPath("OneOf", funcVal, CBool(NegateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue)
+        Call pExpressions.addToTestAndFluentPath("OneOf", funcVal, CBool(negateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue)
     Else
-        Call pExpressions.addToTestAndFluentPath("OneOf", funcVal, CBool(NegateValue), testingValue, testingInput)
+        Call pExpressions.addToTestAndFluentPath("OneOf", funcVal, CBool(negateValue), testingValue, testingInput)
     End If
         
 End Function
 
 Private Function IHaveTestFuncs_LengthBetween( _
 ByVal testingValue As Variant, _
-ByVal LowerVal As Double, _
-ByVal HigherVal As Double, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+ByVal lowerVal As Double, _
+ByVal higherVal As Double, _
+Optional ByVal negateValue As Boolean = False) As Variant
     Dim tempTestVal As Double
     Dim funcVal As Variant
     Dim tempTestValue As Variant
@@ -647,16 +682,16 @@ Optional ByVal NegateValue As Boolean = False) As Variant
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
     
         funcVal = _
-        (IHaveTestFuncs_MinLengthOf(tempTestValue, LowerVal, updateFluentPath:=False) And _
-        IHaveTestFuncs_MaxLengthOf(tempTestValue, HigherVal, updateFluentPath:=False))
+        (IHaveTestFuncs_MinLengthOf(tempTestValue, lowerVal, updateFluentPath:=False) And _
+        IHaveTestFuncs_MaxLengthOf(tempTestValue, higherVal, updateFluentPath:=False))
     End If
     
     IHaveTestFuncs_LengthBetween = funcVal
     
     If tempTestValue <> "" Then
-        Call pExpressions.addToTestAndFluentPath("LengthBetween", funcVal, CBool(NegateValue), testingValue:=testingValue, LowerVal:=LowerVal, HigherVal:=HigherVal, cleanedTestValue:=tempTestValue)
+        Call pExpressions.addToTestAndFluentPath("LengthBetween", funcVal, CBool(negateValue), testingValue:=testingValue, lowerVal:=lowerVal, higherVal:=higherVal, cleanedTestValue:=tempTestValue)
     Else
-        Call pExpressions.addToTestAndFluentPath("LengthBetween", funcVal, CBool(NegateValue), testingValue:=testingValue, LowerVal:=LowerVal, HigherVal:=HigherVal)
+        Call pExpressions.addToTestAndFluentPath("LengthBetween", funcVal, CBool(negateValue), testingValue:=testingValue, lowerVal:=lowerVal, higherVal:=higherVal)
     End If
 
 End Function
@@ -664,7 +699,7 @@ End Function
 Private Function IShouldTestFuncs_EvaluateTo( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Variant, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+Optional ByVal negateValue As Boolean = False) As Variant
     Dim funcVal As Variant
     Dim tempTestValue As Variant
     Dim tempTestInput As Variant
@@ -680,11 +715,11 @@ Optional ByVal NegateValue As Boolean = False) As Variant
     
     IShouldTestFuncs_EvaluateTo = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("EvaluateTo", funcVal, CBool(NegateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
+    Call pExpressions.addToTestAndFluentPath("EvaluateTo", funcVal, CBool(negateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
     
 End Function
 
-Private Function IBeTestFuncs_Alphabetic(ByVal testingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
+Private Function IBeTestFuncs_Alphabetic(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Variant
     Dim i As Long
     Dim tempChar As String
     Dim tempAlph As String
@@ -710,13 +745,13 @@ Private Function IBeTestFuncs_Alphabetic(ByVal testingValue As Variant, Optional
     IBeTestFuncs_Alphabetic = funcVal
     
     If tempTestValue <> "" Then
-        Call pExpressions.addToTestAndFluentPath("Alphabetic", funcVal, CBool(NegateValue), testingValue, cleanedTestValue:=tempTestValue)
+        Call pExpressions.addToTestAndFluentPath("Alphabetic", funcVal, CBool(negateValue), testingValue, cleanedTestValue:=tempTestValue)
     Else
-        Call pExpressions.addToTestAndFluentPath("Alphabetic", funcVal, CBool(NegateValue), testingValue)
+        Call pExpressions.addToTestAndFluentPath("Alphabetic", funcVal, CBool(negateValue), testingValue)
     End If
 End Function
 
-Private Function IBeTestFuncs_Numeric(ByVal testingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
+Private Function IBeTestFuncs_Numeric(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Variant
     Dim i As Long
     Dim tempChar As String
     Dim tempNum As String
@@ -741,14 +776,14 @@ Private Function IBeTestFuncs_Numeric(ByVal testingValue As Variant, Optional By
     IBeTestFuncs_Numeric = funcVal
     
     If tempTestValue <> "" Then
-        Call pExpressions.addToTestAndFluentPath("Numeric", funcVal, CBool(NegateValue), testingValue, cleanedTestValue:=tempTestValue)
+        Call pExpressions.addToTestAndFluentPath("Numeric", funcVal, CBool(negateValue), testingValue, cleanedTestValue:=tempTestValue)
     Else
-        Call pExpressions.addToTestAndFluentPath("Numeric", funcVal, CBool(NegateValue), testingValue)
+        Call pExpressions.addToTestAndFluentPath("Numeric", funcVal, CBool(negateValue), testingValue)
     End If
      
 End Function
 
-Private Function IBeTestFuncs_Alphanumeric(ByVal testingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
+Private Function IBeTestFuncs_Alphanumeric(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Variant
     Dim i As Long
     Dim tempChar As String
     Dim tempAlph As String
@@ -785,14 +820,14 @@ Private Function IBeTestFuncs_Alphanumeric(ByVal testingValue As Variant, Option
     IBeTestFuncs_Alphanumeric = funcVal
     
     If tempTestValue <> "" Then
-        Call pExpressions.addToTestAndFluentPath("Alphanumeric", funcVal, CBool(NegateValue), testingValue, cleanedTestValue:=tempTestValue)
+        Call pExpressions.addToTestAndFluentPath("Alphanumeric", funcVal, CBool(negateValue), testingValue, cleanedTestValue:=tempTestValue)
     Else
-        Call pExpressions.addToTestAndFluentPath("Alphanumeric", funcVal, CBool(NegateValue), testingValue)
+        Call pExpressions.addToTestAndFluentPath("Alphanumeric", funcVal, CBool(negateValue), testingValue)
     End If
     
 End Function
 
-Private Function IBeTestFuncs_Erroneous(ByVal testingValue As Variant, Optional ByVal NegateValue As Boolean = False) As Variant
+Private Function IBeTestFuncs_Erroneous(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Variant
     Dim temp As Variant
     Dim tempErrType As Variant
     Dim tempErrObj As VBA.ErrObject
@@ -828,16 +863,16 @@ Private Function IBeTestFuncs_Erroneous(ByVal testingValue As Variant, Optional 
     IBeTestFuncs_Erroneous = funcVal
     
     If tempTestValue <> "" Then
-        Call pExpressions.addToTestAndFluentPath("Erroneous", funcVal, CBool(NegateValue), tempErrType, cleanedTestValue:=tempTestValue)
+        Call pExpressions.addToTestAndFluentPath("Erroneous", funcVal, CBool(negateValue), tempErrType, cleanedTestValue:=tempTestValue)
     Else
-        Call pExpressions.addToTestAndFluentPath("Erroneous", funcVal, CBool(NegateValue), tempErrType)
+        Call pExpressions.addToTestAndFluentPath("Erroneous", funcVal, CBool(negateValue), tempErrType)
     End If
 End Function
 
 Private Function IHaveTestFuncs_ErrorNumberOf( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Long, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+Optional ByVal negateValue As Boolean = False) As Variant
     Dim temp As Variant
     Dim tempErrObj As VBA.ErrObject
     Dim funcVal As Variant
@@ -865,16 +900,16 @@ Optional ByVal NegateValue As Boolean = False) As Variant
     IHaveTestFuncs_ErrorNumberOf = funcVal
     
     If tempTestValue <> "" Then
-        Call pExpressions.addToTestAndFluentPath("ErrorNumberOf", funcVal, CBool(NegateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue)
+        Call pExpressions.addToTestAndFluentPath("ErrorNumberOf", funcVal, CBool(negateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue)
     Else
-        Call pExpressions.addToTestAndFluentPath("ErrorNumberOf", funcVal, CBool(NegateValue), testingValue, testingInput)
+        Call pExpressions.addToTestAndFluentPath("ErrorNumberOf", funcVal, CBool(negateValue), testingValue, testingInput)
     End If
 End Function
 
 Private Function IHaveTestFuncs_ErrorDescriptionOf( _
 ByVal testingValue As Variant, _
 ByVal testingInput As String, _
-Optional ByVal NegateValue As Boolean = False) As Variant
+Optional ByVal negateValue As Boolean = False) As Variant
     Dim tempTestVal As Variant
     Dim tempErrObj As VBA.ErrObject
     Dim funcVal As Variant
@@ -904,13 +939,13 @@ Optional ByVal NegateValue As Boolean = False) As Variant
     
     IHaveTestFuncs_ErrorDescriptionOf = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("ErrorDescriptionOf", funcVal, CBool(NegateValue), tempTestVal, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
+    Call pExpressions.addToTestAndFluentPath("ErrorDescriptionOf", funcVal, CBool(negateValue), tempTestVal, testingInput, cleanedTestValue:=tempTestValue, cleanedTestInput:=tempTestInput)
 End Function
 
 Private Function IHaveTestFuncs_SameTypeAs( _
 ByVal testingValue As Variant, _
 ByVal testingInput As Variant, _
-Optional ByVal NegateValue As Boolean = False, _
+Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim t1 As Variant
     Dim t2 As Variant
@@ -936,12 +971,12 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     IHaveTestFuncs_SameTypeAs = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("SameTypeAs", funcVal, CBool(NegateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("SameTypeAs", funcVal, CBool(negateValue), testingValue, testingInput)
 End Function
 
 Private Function IBeTestFuncs_IdenticalTo( _
 ByVal testingValue As Variant, _
-ByVal NegateValue As Boolean, _
+ByVal negateValue As Boolean, _
 ByVal testingInput As Variant, _
 ByVal updateFluentPath As Boolean) As Variant
     Dim funcVal As Variant
@@ -960,14 +995,14 @@ ByVal updateFluentPath As Boolean) As Variant
     IBeTestFuncs_IdenticalTo = funcVal
     
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("IdenticalTo", funcVal, CBool(NegateValue), testingValue, testingInput)
+        Call pExpressions.addToTestAndFluentPath("IdenticalTo", funcVal, CBool(negateValue), testingValue, testingInput)
     End If
 
 End Function
 
 Private Function IHaveTestFuncs_ExactSameElementsAs( _
 ByVal testingValue As Variant, _
-ByVal NegateValue As Boolean, _
+ByVal negateValue As Boolean, _
 ByVal updateFluentPath As Boolean, _
 ByVal testingInput As Variant) As Variant
     Dim elem As Variant
@@ -989,18 +1024,18 @@ ByVal testingInput As Variant) As Variant
             col2.Add elem
         Next elem
         
-        funcVal = IBeTestFuncs_IdenticalTo(col, NegateValue, col2, False)
+        funcVal = IBeTestFuncs_IdenticalTo(col, negateValue, col2, False)
     End If
     
     IHaveTestFuncs_ExactSameElementsAs = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("ExactSameElementsAs", funcVal, CBool(NegateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("ExactSameElementsAs", funcVal, CBool(negateValue), testingValue, testingInput)
 
 End Function
 
 Private Function IHaveTestFuncs_SameUniqueElementsAs( _
 ByVal testingValue As Variant, _
-ByVal NegateValue As Boolean, _
+ByVal negateValue As Boolean, _
 ByVal testingInput As Variant) As Variant
     Dim elem As Variant
     Dim d As Scripting.Dictionary
@@ -1031,18 +1066,18 @@ ByVal testingInput As Variant) As Variant
             End If
         Next elem
         
-        funcVal = IBeTestFuncs_IdenticalTo(d.Keys, NegateValue, d.Items, False)
+        funcVal = IBeTestFuncs_IdenticalTo(d.Keys, negateValue, d.Items, False)
     End If
     
     IHaveTestFuncs_SameUniqueElementsAs = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("SameUniqueElementsAs", funcVal, CBool(NegateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("SameUniqueElementsAs", funcVal, CBool(negateValue), testingValue, testingInput)
 
 End Function
 
 Private Function IHaveTestFuncs_SameElementsAs( _
 ByVal testingValue As Variant, _
-ByVal NegateValue As Boolean, _
+ByVal negateValue As Boolean, _
 ByVal testingInput As Variant) As Variant
     Dim i As Long
     Dim elem As Variant
@@ -1082,12 +1117,178 @@ ByVal testingInput As Variant) As Variant
             End If
         Next elem
         
-        funcVal = IBeTestFuncs_IdenticalTo(d, NegateValue, d2, False)
+        funcVal = IBeTestFuncs_IdenticalTo(d, negateValue, d2, False)
     End If
     
     IHaveTestFuncs_SameElementsAs = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("SameElementsAs", funcVal, CBool(NegateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("SameElementsAs", funcVal, CBool(negateValue), testingValue, testingInput)
 
+End Function
+
+Private Function assignOrConcatStr(assignStr, valueStr)
+    Dim finalStr As String
+    
+    If assignStr = "" Then
+        finalStr = valueStr
+    Else
+        finalStr = assignStr & ", " & valueStr
+    End If
+    
+    assignOrConcatStr = finalStr
+End Function
+
+Private Function IHaveTestFuncs_Procedure( _
+    ByVal testingValue As Variant, _
+    ByVal procName As String, _
+    ByVal callType As VBA.VbCallType, _
+    ByVal negateValue As Boolean _
+) As Variant
+    Dim funcVal As Variant
+    Dim callCounter As Long
+    Dim errCounter As Long
+    Dim callTypeStr As String
+    Dim testingInputStr As String
+    Dim actualStr As String
+    Dim tempStr As String
+        
+    callCounter = 0
+    errCounter = 0
+    callTypeStr = ""
+    
+    Const ARG_NOT_OPTIONAL As Long = 449
+    
+    testingInputStr = procName & "("
+    actualStr = testingInputStr
+    funcVal = ITestingFunctions_SetDefaultFuncVal
+    
+    If Information.IsObject(testingValue) And pTestValueSet Then
+        If Not testingValue Is Nothing Then
+            On Error Resume Next
+            'This section uses bitwise flags / composite values
+            'with the bitand operator
+            
+            'You can see more here in the Bitwise Flags section:
+            'https://developer.mozilla.org/en-US/docs/Glossary/Bitwise_flags
+            
+            'You can see more here in the composite values section:
+            'and in the composite values  section here:
+            'http://www.cpearson.com/excel/Enums.aspx
+            
+                If callType And VbCallType.VbGet Then
+                    tempStr = "VbGet"
+                    callCounter = callCounter + 1
+                    
+                    Call CallByName(testingValue, procName, VbCallType.VbGet)
+
+                    If Err.Number = 0 Or Err.Number = ARG_NOT_OPTIONAL Then
+                        errCounter = errCounter + 1
+                        actualStr = tempStr
+                    Else
+                        Err.Clear
+                    End If
+                    
+                    callTypeStr = tempStr
+                End If
+                
+                If callType And VbCallType.VbLet Then
+                    tempStr = "VbLet"
+                    callCounter = callCounter + 1
+                    
+                    Call CallByName(testingValue, procName, VbCallType.VbLet, Empty)
+                    
+                    If (Err.Number = 0) Then
+                        errCounter = errCounter + 1
+                        
+                        actualStr = assignOrConcatStr(actualStr, tempStr)
+                    Else
+                        Err.Clear
+                    End If
+                    
+                    callTypeStr = assignOrConcatStr(callTypeStr, tempStr)
+                End If
+                
+                If callType And VbCallType.VbMethod Then
+                    tempStr = "VbMethod"
+                    callCounter = callCounter + 1
+                    
+                    Call CallByName(testingValue, procName, VbCallType.VbMethod)
+                    
+                    If Err.Number = 0 Or Err.Number = ARG_NOT_OPTIONAL Then
+                        errCounter = errCounter + 1
+                        
+                        actualStr = assignOrConcatStr(actualStr, tempStr)
+                    Else
+                        Err.Clear
+                    End If
+                    
+                    callTypeStr = assignOrConcatStr(callTypeStr, tempStr)
+                End If
+                
+                If callType And VbCallType.VbSet Then
+                    tempStr = "VbSet"
+                    
+                    callCounter = callCounter + 1
+                    
+                    Call CallByName(testingValue, procName, VbCallType.VbSet, Nothing)
+                    
+                    If (Err.Number = 0) Then
+                        errCounter = errCounter + 1
+                        
+                        actualStr = assignOrConcatStr(actualStr, tempStr)
+                    Else
+                        Err.Clear
+                    End If
+                    
+                    callTypeStr = assignOrConcatStr(callTypeStr, tempStr)
+                End If
+            On Error GoTo 0
+            
+            actualStr = testingInputStr & actualStr & ")"
+            
+            testingInputStr = testingInputStr & callTypeStr & ")"
+            
+            funcVal = (callCounter > 0 And errCounter > 0 And callCounter = errCounter)
+        End If
+    End If
+    
+    IHaveTestFuncs_Procedure = funcVal
+    
+    If testingInputStr <> actualStr Then
+        Call pExpressions.addToTestAndFluentPath("Procedure", funcVal, CBool(negateValue), testingValue, testingInputStr, Actual:=actualStr)
+    Else
+        Call pExpressions.addToTestAndFluentPath("Procedure", funcVal, CBool(negateValue), testingValue, testingInputStr)
+    End If
+
+End Function
+
+Private Function IHaveTestFuncs_Elements( _
+    ByVal testingValue As Variant, _
+    ByRef testingInputArgs() As Variant, _
+    ByVal negateValue As Boolean _
+) As Variant
+    Dim i As Long
+    Dim elemCounter As Long
+    
+    Dim funcVal As Variant
+    Dim method As flAlgorithm
+    
+    funcVal = ITestingFunctions_SetDefaultFuncVal
+    
+    elemCounter = 0
+    
+    If pMeta.Tests.IsDataStructure(testingValue) And pTestValueSet Then
+        For i = LBound(testingInputArgs) To UBound(testingInputArgs)
+            If IBeTestFuncs_InDataStructure(testingInputArgs(i), testingValue, False, False) Then
+                elemCounter = elemCounter + 1
+            End If
+        Next i
+        
+        funcVal = (elemCounter = UBound(testingInputArgs) + 1)
+    End If
+    
+    IHaveTestFuncs_Elements = funcVal
+    
+    Call pExpressions.addToTestAndFluentPath("Elements", funcVal, CBool(negateValue), testingValue, testingInputArgs)
 End Function
 

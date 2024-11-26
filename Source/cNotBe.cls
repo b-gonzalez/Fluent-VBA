@@ -37,113 +37,113 @@ Private Property Let ISetTestFuncsAndValue_testValue(ByVal value As Variant)
 End Property
 
 Private Function IBe_GreaterThan(ByVal value As Double) As Variant
-    Dim Result As Variant
+    Dim result As Variant
     
-    Result = pBeTestFuncs.GreaterThan(pNotBeValue, value, True)
+    result = pBeTestFuncs.GreaterThan(pNotBeValue, value, True)
     
-    Result = pUtilities.NegateIfBool(Result)
+    result = pUtilities.NegateIfBool(result)
     
-    IBe_GreaterThan = Result
+    IBe_GreaterThan = result
 End Function
 
 Private Function IBe_LessThan(ByVal value As Double) As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.LessThan(pNotBeValue, value, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_LessThan = Result
+    Dim result As Variant
+    result = pBeTestFuncs.LessThan(pNotBeValue, value, True)
+    result = pUtilities.NegateIfBool(result)
+    IBe_LessThan = result
 End Function
 
 Private Function IBe_EqualTo(ByVal value As Variant) As Variant
-    Dim Result As Variant
+    Dim result As Variant
     
-    Result = pBeTestFuncs.EqualTo(pNotBeValue, value, True, updateFluentPath:=True)
+    result = pBeTestFuncs.EqualTo(pNotBeValue, value, True, updateFluentPath:=True)
 
-    Result = pUtilities.NegateIfBool(Result)
+    result = pUtilities.NegateIfBool(result)
     
-    IBe_EqualTo = Result
+    IBe_EqualTo = result
 End Function
 
 Private Function IBe_GreaterThanOrEqualTo(ByVal value As Double) As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.GreaterThanOrEqualTo(pNotBeValue, value, True, updateFluentPath:=True)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_GreaterThanOrEqualTo = Result
+    Dim result As Variant
+    result = pBeTestFuncs.GreaterThanOrEqualTo(pNotBeValue, value, True, updateFluentPath:=True)
+    result = pUtilities.NegateIfBool(result)
+    IBe_GreaterThanOrEqualTo = result
 End Function
 
 Private Function IBe_LessThanOrEqualTo(ByVal value As Double) As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.LessThanOrEqualTo(pNotBeValue, value, True, updateFluentPath:=True)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_LessThanOrEqualTo = Result
+    Dim result As Variant
+    result = pBeTestFuncs.LessThanOrEqualTo(pNotBeValue, value, True, updateFluentPath:=True)
+    result = pUtilities.NegateIfBool(result)
+    IBe_LessThanOrEqualTo = result
 End Function
 
 Private Function IBe_Something() As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.Something(pNotBeValue, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_Something = Result
+    Dim result As Variant
+    result = pBeTestFuncs.Something(pNotBeValue, True)
+    result = pUtilities.NegateIfBool(result)
+    IBe_Something = result
 End Function
 
-Private Function IBe_Between(ByVal LowerVal As Double, ByVal HigherVal As Double) As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.Between(pNotBeValue, LowerVal, HigherVal, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_Between = Result
+Private Function IBe_Between(ByVal lowerVal As Double, ByVal higherVal As Double) As Variant
+    Dim result As Variant
+    result = pBeTestFuncs.Between(pNotBeValue, lowerVal, higherVal, True)
+    result = pUtilities.NegateIfBool(result)
+    IBe_Between = result
 End Function
 
 Private Function IBe_OneOf(ParamArray All() As Variant) As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.OneOf(pNotBeValue, False, All)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_OneOf = Result
+    Dim result As Variant
+    result = pBeTestFuncs.OneOf(pNotBeValue, False, All)
+    result = pUtilities.NegateIfBool(result)
+    IBe_OneOf = result
 End Function
 
 Private Function IBe_InDataStructure(ByVal dataStructure As Variant) As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.InDataStructure(pNotBeValue, dataStructure, True, updateFluentPath:=True)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_InDataStructure = Result
+    Dim result As Variant
+    result = pBeTestFuncs.InDataStructure(pNotBeValue, dataStructure, True, updateFluentPath:=True)
+    result = pUtilities.NegateIfBool(result)
+    IBe_InDataStructure = result
 End Function
 
 Private Function IBe_InDataStructures(ParamArray DataStructures() As Variant) As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.InDataStructures(pNotBeValue, True, DataStructures)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_InDataStructures = Result
+    Dim result As Variant
+    result = pBeTestFuncs.InDataStructures(pNotBeValue, True, DataStructures)
+    result = pUtilities.NegateIfBool(result)
+    IBe_InDataStructures = result
 End Function
 
 Private Function IBe_Alphabetic() As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.Alphabetic(pNotBeValue, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_Alphabetic = Result
+    Dim result As Variant
+    result = pBeTestFuncs.Alphabetic(pNotBeValue, True)
+    result = pUtilities.NegateIfBool(result)
+    IBe_Alphabetic = result
 End Function
 
 Private Function IBe_Alphanumeric() As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.Alphanumeric(pNotBeValue, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_Alphanumeric = Result
+    Dim result As Variant
+    result = pBeTestFuncs.Alphanumeric(pNotBeValue, True)
+    result = pUtilities.NegateIfBool(result)
+    IBe_Alphanumeric = result
 End Function
 
 Private Function IBe_Numeric() As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.Numeric(pNotBeValue, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_Numeric = Result
+    Dim result As Variant
+    result = pBeTestFuncs.Numeric(pNotBeValue, True)
+    result = pUtilities.NegateIfBool(result)
+    IBe_Numeric = result
 End Function
 
 Private Function IBe_Erroneous() As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.Erroneous(pNotBeValue, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_Erroneous = Result
+    Dim result As Variant
+    result = pBeTestFuncs.Erroneous(pNotBeValue, True)
+    result = pUtilities.NegateIfBool(result)
+    IBe_Erroneous = result
 End Function
 
 Private Function IBe_IdenticalTo(ByVal dataStructure As Variant) As Variant
-    Dim Result As Variant
-    Result = pBeTestFuncs.IdenticalTo(pNotBeValue, True, dataStructure, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IBe_IdenticalTo = Result
+    Dim result As Variant
+    result = pBeTestFuncs.IdenticalTo(pNotBeValue, True, dataStructure, True)
+    result = pUtilities.NegateIfBool(result)
+    IBe_IdenticalTo = result
 End Function
 

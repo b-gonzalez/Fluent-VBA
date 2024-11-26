@@ -72,29 +72,29 @@ Private Property Get IShould_be() As IBe
 End Property
 
 Private Function IShould_Contain(ByVal value As String) As Variant
-    Dim Result As Variant
-    Result = pShouldFunctions.Contain(pShouldNotVal, value, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IShould_Contain = Result
+    Dim result As Variant
+    result = pShouldFunctions.Contain(pShouldNotVal, value, True)
+    result = pUtilities.NegateIfBool(result)
+    IShould_Contain = result
 End Function
 
 Private Function IShould_StartWith(ByVal value As String) As Variant
-    Dim Result As Variant
-    Result = pShouldFunctions.StartWith(pShouldNotVal, value, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IShould_StartWith = Result
+    Dim result As Variant
+    result = pShouldFunctions.StartWith(pShouldNotVal, value, True)
+    result = pUtilities.NegateIfBool(result)
+    IShould_StartWith = result
 End Function
 
 Private Function IShould_EndWith(ByVal value As String) As Variant
-    Dim Result As Variant
-    Result = pShouldFunctions.EndWith(pShouldNotVal, value, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IShould_EndWith = Result
+    Dim result As Variant
+    result = pShouldFunctions.EndWith(pShouldNotVal, value, True)
+    result = pUtilities.NegateIfBool(result)
+    IShould_EndWith = result
 End Function
 
 Private Function IShould_EvaluateTo(ByVal value As Variant) As Variant
-    Dim Result As Variant
-    Result = pShouldFunctions.EvaluateTo(pShouldNotVal, value, True)
-    Result = pUtilities.NegateIfBool(Result)
-    IShould_EvaluateTo = Result
+    Dim result As Variant
+    result = pShouldFunctions.EvaluateTo(pShouldNotVal, value, True)
+    result = pUtilities.NegateIfBool(result)
+    IShould_EvaluateTo = result
 End Function

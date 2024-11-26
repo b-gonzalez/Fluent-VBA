@@ -21,6 +21,9 @@ End Property
 Public Property Get Contain() As ITestingFunctionsSubInfo
 End Property
 
+Public Property Get Elements() As ITestingFunctionsSubInfo
+End Property
+
 Public Property Get EndWith() As ITestingFunctionsSubInfo
 End Property
 
@@ -79,6 +82,9 @@ Public Property Get Numeric() As ITestingFunctionsSubInfo
 End Property
 
 Public Property Get OneOf() As ITestingFunctionsSubInfo
+End Property
+
+Public Property Get Procedure() As ITestingFunctionsSubInfo
 End Property
 
 Public Property Get SameElementsAs() As ITestingFunctionsSubInfo
