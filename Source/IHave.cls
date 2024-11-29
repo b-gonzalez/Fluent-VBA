@@ -30,22 +30,27 @@ End Function
 Public Function SameTypeAs(ByVal All As Variant) As Variant
 End Function
 
-Public Function ExactSameElementsAs(ByVal dataStructure As Variant) As Variant
+Public Function ExactSameElementsAs(ByVal datastructure As Variant) As Variant
 End Function
 
-Public Function SameUniqueElementsAs(ByVal dataStructure As Variant) As Variant
+Public Function SameUniqueElementsAs(ByVal datastructure As Variant) As Variant
 End Function
 
-Public Function SameElementsAs(ByVal dataStructure As Variant) As Variant
+Public Function SameElementsAs(ByVal datastructure As Variant) As Variant
 End Function
 
 Public Function Procedure( _
-    procName As String, _
-    callType As VBA.VbCallType _
+    ByVal procName As String, _
+    ByVal callType As VBA.VbCallType _
 ) As Variant
 End Function
 
 Public Function Elements( _
     ParamArray args() As Variant _
-)
+) As Variant
+End Function
+
+Public Function ElementsInDataStructure( _
+    ByVal datastructure As Variant _
+) As Variant
 End Function

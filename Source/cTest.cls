@@ -12,32 +12,32 @@ Option Explicit
 Implements ITest
 Implements ITestDev
 
-Private pTestingValue As Variant
-Private pTestingInput As Variant
-Private pFluentPath As String
-Private pResult As Variant
-Private pFunctionName As String
-Private pLowerVal As Double
-Private pHigherVal As Double
-Private pStrTestValue As String
-Private pStrTestInput As String
-Private pHasNull As Boolean
-Private pNegateValue As Boolean
-Private pCategory As String
-Private pTestName As String
-Private pResultNumber As Long
-Private pTestValueRecur As String
-Private pTestValueIter As String
-Private pTestInputRecur As String
-Private pTestInputIter As String
-Private pTestValueSet As Boolean
-Private pHasEmpty As Boolean
-Private pCleanedTestValue As String
-Private pCleanedTestInput As String
-Private phasCleanTestValue As Boolean
-Private phasCleanTestInput As Boolean
-Private phasCleanTestStrings As Boolean
 Private pAcutal As String
+Private pCategory As String
+Private pCleanedTestInput As String
+Private pCleanedTestValue As String
+Private pFluentPath As String
+Private pFunctionName As String
+Private pHasCleanTestInput As Boolean
+Private pHasCleanTestStrings As Boolean
+Private pHasCleanTestValue As Boolean
+Private pHasEmpty As Boolean
+Private pHasNull As Boolean
+Private pHigherVal As Variant
+Private pLowerVal As Variant
+Private pNegateValue As Boolean
+Private pResult As Variant
+Private pResultNumber As Long
+Private pStrTestInput As String
+Private pStrTestValue As String
+Private pTestingInput As Variant
+Private pTestName As String
+Private pTestInputIter As String
+Private pTestInputRecur As String
+Private pTestValueIter As String
+Private pTestValueRecur As String
+Private pTestValueSet As Boolean
+Private pTestingValue As Variant
 
 Private Property Let ITest_testingValue(ByVal value As Variant)
     pTestingValue = value
@@ -71,19 +71,19 @@ Private Property Get ITest_testingInput() As Variant
     End If
 End Property
 
-Private Property Let ITest_LowerVal(ByVal value As Double)
+Private Property Let ITest_LowerVal(ByVal value As Variant)
     pLowerVal = value
 End Property
 
-Private Property Get ITest_LowerVal() As Double
+Private Property Get ITest_LowerVal() As Variant
     ITest_LowerVal = pLowerVal
 End Property
 
-Private Property Let ITest_HigherVal(ByVal value As Double)
+Private Property Let ITest_HigherVal(ByVal value As Variant)
     pHigherVal = value
 End Property
 
-Private Property Get ITest_HigherVal() As Double
+Private Property Get ITest_HigherVal() As Variant
     ITest_HigherVal = pHigherVal
 End Property
 
@@ -167,7 +167,7 @@ Private Property Get ITest_HasEmpty() As Boolean
     ITest_HasEmpty = pHasEmpty
 End Property
 
-Private Property Let ITest_CleanedTestValue(value As String)
+Private Property Let ITest_CleanedTestValue(ByVal value As String)
     pCleanedTestValue = value
 End Property
 
@@ -175,7 +175,7 @@ Private Property Get ITest_CleanedTestValue() As String
     ITest_CleanedTestValue = pCleanedTestValue
 End Property
 
-Private Property Let ITest_CleanedTestInput(value As String)
+Private Property Let ITest_CleanedTestInput(ByVal value As String)
     pCleanedTestInput = value
 End Property
 
@@ -184,30 +184,30 @@ Private Property Get ITest_CleanedTestInput() As String
 End Property
 
 Private Property Let ITest_HasCleanTestValue(ByVal value As Boolean)
-    phasCleanTestValue = value
+    pHasCleanTestValue = value
 End Property
 
 Private Property Get ITest_HasCleanTestValue() As Boolean
-    ITest_HasCleanTestValue = phasCleanTestValue
+    ITest_HasCleanTestValue = pHasCleanTestValue
 End Property
 
 Private Property Let ITest_HasCleanTestInput(ByVal value As Boolean)
-    phasCleanTestInput = False
+    pHasCleanTestInput = False
 End Property
 
 Private Property Get ITest_HasCleanTestInput() As Boolean
-    ITest_HasCleanTestInput = phasCleanTestInput
+    ITest_HasCleanTestInput = pHasCleanTestInput
 End Property
 
 Private Property Let ITest_HasCleanTestStrings(ByVal value As Boolean)
-    phasCleanTestStrings = value
+    pHasCleanTestStrings = value
 End Property
 
 Private Property Get ITest_HasCleanTestStrings() As Boolean
-    ITest_HasCleanTestStrings = phasCleanTestStrings
+    ITest_HasCleanTestStrings = pHasCleanTestStrings
 End Property
 
-Private Property Let ITest_Actual(value As String)
+Private Property Let ITest_Actual(ByVal value As String)
     pAcutal = value
 End Property
 
@@ -231,7 +231,7 @@ Private Property Get ITestDev_ResultNumber() As Long
     ITestDev_ResultNumber = pResultNumber
 End Property
 
-Private Property Let ITestDev_TestValueRecur(value As String)
+Private Property Let ITestDev_TestValueRecur(ByVal value As String)
     pTestValueRecur = value
 End Property
 
@@ -239,7 +239,7 @@ Private Property Get ITestDev_TestValueRecur() As String
     ITestDev_TestValueRecur = pTestValueRecur
 End Property
 
-Private Property Let ITestDev_TestValueIter(value As String)
+Private Property Let ITestDev_TestValueIter(ByVal value As String)
     pTestValueIter = value
 End Property
 
@@ -247,7 +247,7 @@ Private Property Get ITestDev_TestValueIter() As String
     ITestDev_TestValueIter = pTestValueIter
 End Property
 
-Private Property Let ITestDev_TestInputRecur(value As String)
+Private Property Let ITestDev_TestInputRecur(ByVal value As String)
     pTestInputRecur = value
 End Property
 
@@ -255,7 +255,7 @@ Private Property Get ITestDev_TestInputRecur() As String
     ITestDev_TestInputRecur = pTestInputRecur
 End Property
 
-Private Property Let ITestDev_TestInputIter(value As String)
+Private Property Let ITestDev_TestInputIter(ByVal value As String)
     pTestInputIter = value
 End Property
 
@@ -297,19 +297,19 @@ Public Property Get testingInput() As Variant
     End If
 End Property
 
-Public Property Let lowerVal(ByVal value As Double)
+Public Property Let lowerVal(ByVal value As Variant)
     ITest_LowerVal = value
 End Property
 
-Public Property Get lowerVal() As Double
+Public Property Get lowerVal() As Variant
     lowerVal = ITest_LowerVal
 End Property
 
-Public Property Let higherVal(ByVal value As Double)
+Public Property Let higherVal(ByVal value As Variant)
     ITest_HigherVal = value
 End Property
 
-Public Property Get higherVal() As Double
+Public Property Get higherVal() As Variant
     higherVal = ITest_HigherVal
 End Property
 
@@ -393,7 +393,7 @@ Public Property Get HasEmpty() As Boolean
     HasEmpty = ITest_HasEmpty
 End Property
 
-Public Property Let cleanedTestValue(value As String)
+Public Property Let cleanedTestValue(ByVal value As String)
     ITest_CleanedTestValue = value
 End Property
 
@@ -401,7 +401,7 @@ Public Property Get cleanedTestValue() As String
     cleanedTestValue = ITest_CleanedTestValue
 End Property
 
-Public Property Let cleanedTestInput(value As String)
+Public Property Let cleanedTestInput(ByVal value As String)
     ITest_CleanedTestInput = value
 End Property
 
@@ -433,7 +433,7 @@ Public Property Get HasCleanTestStrings() As Boolean
     HasCleanTestStrings = ITest_HasCleanTestStrings
 End Property
 
-Public Property Let Actual(value As String)
+Public Property Let Actual(ByVal value As String)
     ITest_Actual = value
 End Property
 

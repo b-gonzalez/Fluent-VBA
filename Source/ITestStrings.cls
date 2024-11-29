@@ -9,19 +9,19 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Let CleanTestValueStr(value As Boolean)
+Public Property Let CleanTestValueStr(ByVal value As Boolean)
 End Property
 
 Public Property Get CleanTestValueStr() As Boolean
 End Property
 
-Public Property Let CleanTestInputStr(value As Boolean)
+Public Property Let CleanTestInputStr(ByVal value As Boolean)
 End Property
 
 Public Property Get CleanTestInputStr() As Boolean
 End Property
 
-Public Property Let CleanTestStrings(value As Boolean)
+Public Property Let CleanTestStrings(ByVal value As Boolean)
 End Property
 
 Public Property Get CleanTestStrings() As Boolean
@@ -30,8 +30,8 @@ End Property
 Public Property Get CleanStringDict() As Scripting.Dictionary
 End Property
 
-Public Sub AddToCleanStringDict(key As String, Optional value As String = "", Optional replaceIfExists As Boolean = False)
+Public Sub AddToCleanStringDict(ByVal key As String, Optional ByVal value As String = "", Optional ByVal replaceIfExists As Boolean = False)
 End Sub
 
-Public Function CleanString(TestStr As Variant, Optional CleanDict As Scripting.Dictionary = Nothing) As String
+Public Function CleanString(ByVal TestStr As Variant, Optional ByVal CleanDict As Scripting.Dictionary = Nothing) As String
 End Function

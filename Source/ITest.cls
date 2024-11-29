@@ -27,16 +27,16 @@ End Property
 Public Property Get testingInput() As Variant
 End Property
 
-Public Property Let lowerVal(ByVal value As Double)
+Public Property Let lowerVal(ByVal value As Variant)
 End Property
 
-Public Property Get lowerVal() As Double
+Public Property Get lowerVal() As Variant
 End Property
 
-Public Property Let higherVal(ByVal value As Double)
+Public Property Let higherVal(ByVal value As Variant)
 End Property
 
-Public Property Get higherVal() As Double
+Public Property Get higherVal() As Variant
 End Property
 
 Public Property Let FluentPath(ByVal value As String)
@@ -99,13 +99,13 @@ End Property
 Public Property Get HasEmpty() As Boolean
 End Property
 
-Public Property Let cleanedTestValue(value As String)
+Public Property Let cleanedTestValue(ByVal value As String)
 End Property
 
 Public Property Get cleanedTestValue() As String
 End Property
 
-Public Property Let cleanedTestInput(value As String)
+Public Property Let cleanedTestInput(ByVal value As String)
 End Property
 
 Public Property Get cleanedTestInput() As String
@@ -129,7 +129,7 @@ End Property
 Public Property Get HasCleanTestStrings() As Boolean
 End Property
 
-Public Property Let Actual(value As String)
+Public Property Let Actual(ByVal value As String)
 End Property
 
 Public Property Get Actual() As String

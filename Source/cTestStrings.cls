@@ -29,7 +29,7 @@ Private Sub Class_Initialize()
     
 End Sub
 
-Private Property Let ITestStrings_CleanTestValueStr(value As Boolean)
+Private Property Let ITestStrings_CleanTestValueStr(ByVal value As Boolean)
     pCleanTestValueStr = value
 End Property
 
@@ -37,7 +37,7 @@ Private Property Get ITestStrings_CleanTestValueStr() As Boolean
     ITestStrings_CleanTestValueStr = pCleanTestValueStr
 End Property
 
-Private Property Let ITestStrings_CleanTestInputStr(value As Boolean)
+Private Property Let ITestStrings_CleanTestInputStr(ByVal value As Boolean)
     pCleanTestInputStr = value
 End Property
 
@@ -45,7 +45,7 @@ Private Property Get ITestStrings_CleanTestInputStr() As Boolean
     ITestStrings_CleanTestInputStr = pCleanTestInputStr
 End Property
 
-Private Property Let ITestStrings_CleanTestStrings(value As Boolean)
+Private Property Let ITestStrings_CleanTestStrings(ByVal value As Boolean)
     pCleanTestStrings = value
     
     pCleanTestValueStr = value
@@ -60,7 +60,7 @@ Private Property Get ITestStrings_CleanStringDict() As Scripting.Dictionary
     Set ITestStrings_CleanStringDict = pCleanStringDict
 End Property
 
-Private Sub ITestStrings_AddToCleanStringDict(key As String, Optional value As String = "", Optional replaceIfExists As Boolean = False)
+Private Sub ITestStrings_AddToCleanStringDict(ByVal key As String, Optional ByVal value As String = "", Optional ByVal replaceIfExists As Boolean = False)
     If replaceIfExists Then
         pCleanStringDict(key) = value
     Else
@@ -70,7 +70,7 @@ Private Sub ITestStrings_AddToCleanStringDict(key As String, Optional value As S
     End If
 End Sub
 
-Private Function ITestStrings_CleanString(TestStr As Variant, Optional CleanDict As Scripting.Dictionary = Nothing) As String
+Private Function ITestStrings_CleanString(ByVal TestStr As Variant, Optional ByVal CleanDict As Scripting.Dictionary = Nothing) As String
     Dim elem As Variant
     Dim tempStr As Variant
 

@@ -16,6 +16,7 @@ Private pAlphanumeric As ITestingFunctionsSubInfo
 Private pBetween As ITestingFunctionsSubInfo
 Private pContain As ITestingFunctionsSubInfo
 Private pElements As ITestingFunctionsSubInfo
+Private pElementsInDataStructure As ITestingFunctionsSubInfo
 Private pEndWith As ITestingFunctionsSubInfo
 Private pEqualTo As ITestingFunctionsSubInfo
 Private pErroneous As ITestingFunctionsSubInfo
@@ -43,6 +44,7 @@ Private pSameUniqueElementsAs As ITestingFunctionsSubInfo
 Private pSomething As ITestingFunctionsSubInfo
 Private pStartWith As ITestingFunctionsSubInfo
 
+
 Private pTestingFunctionsDict As Scripting.Dictionary
 
 Private Property Get ITestingFunctionsInfo_Alphabetic() As ITestingFunctionsSubInfo
@@ -63,6 +65,10 @@ End Property
 
 Private Property Get ITestingFunctionsInfo_Elements() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_Elements = pElements
+End Property
+
+Private Property Get ITestingFunctionsInfo_ElementsInDataStructure() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfo_ElementsInDataStructure = pElementsInDataStructure
 End Property
 
 Private Property Get ITestingFunctionsInfo_EndWith() As ITestingFunctionsSubInfo
@@ -169,7 +175,7 @@ Private Property Get ITestingFunctionsInfo_StartWith() As ITestingFunctionsSubIn
     Set ITestingFunctionsInfo_StartWith = pStartWith
 End Property
 
-Private Function ITestingFunctionsInfo_getTestingFunction(functionName As String) As ITestingFunctionsSubInfo
+Private Function ITestingFunctionsInfo_getTestingFunction(ByVal functionName As String) As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_getTestingFunction = pTestingFunctionsDict(functionName)
 End Function
 
@@ -179,6 +185,7 @@ Private Sub ITestingFunctionsInfo_populateDictWithTestFuncInfo()
     pTestingFunctionsDict.Add "Between", pBetween
     pTestingFunctionsDict.Add "Contain", pContain
     pTestingFunctionsDict.Add "Elements", pElements
+    pTestingFunctionsDict.Add "ElementsInDataStructure", pElementsInDataStructure
     pTestingFunctionsDict.Add "EndWith", pEndWith
     pTestingFunctionsDict.Add "EqualTo", pEqualTo
     pTestingFunctionsDict.Add "Erroneous", pErroneous
@@ -253,7 +260,7 @@ Private Function ITestingFunctionsInfo_TestFuncInfoToDict() As Scripting.Diction
     Set ITestingFunctionsInfo_TestFuncInfoToDict = pTestingFunctionsDict
 End Function
 
-Private Function ITestingFunctionsInfo_TestFuncInfoDictsAreIdentical(tfiDict1 As Scripting.Dictionary, tfiDict2 As Scripting.Dictionary) As Boolean
+Private Function ITestingFunctionsInfo_TestFuncInfoDictsAreIdentical(ByVal tfiDict1 As Scripting.Dictionary, ByVal tfiDict2 As Scripting.Dictionary) As Boolean
     Dim b As Boolean
     Dim counter As Long
     Dim elem As Variant
@@ -286,7 +293,7 @@ Private Function ITestingFunctionsInfo_TestFuncInfoDictsAreIdentical(tfiDict1 As
     ITestingFunctionsInfo_TestFuncInfoDictsAreIdentical = b
 End Function
 
-Private Function ITestingFunctionsInfo_validateTfiDictCounters(tfiDict As Scripting.Dictionary, Optional counter As Long = 0) As Boolean
+Private Function ITestingFunctionsInfo_validateTfiDictCounters(ByVal tfiDict As Scripting.Dictionary, Optional ByVal counter As Long = 0) As Boolean
     Dim b As Boolean
     Dim elem As Variant
     Dim testFuncSubInfo As ITestingFunctionsSubInfo

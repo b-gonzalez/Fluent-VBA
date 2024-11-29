@@ -24,6 +24,9 @@ End Property
 Public Property Get Elements() As ITestingFunctionsSubInfo
 End Property
 
+Public Property Get ElementsInDataStructure() As ITestingFunctionsSubInfo
+End Property
+
 Public Property Get EndWith() As ITestingFunctionsSubInfo
 End Property
 
@@ -105,7 +108,7 @@ End Property
 Public Sub initTestingFunctionsInfo()
 End Sub
 
-Public Function getTestingFunction(functionName As String) As ITestingFunctionsSubInfo
+Public Function getTestingFunction(ByVal functionName As String) As ITestingFunctionsSubInfo
 End Function
 
 Public Sub PrintTestFunInfo()
@@ -114,10 +117,10 @@ End Sub
 Public Function TestFuncInfoToDict() As Scripting.Dictionary
 End Function
 
-Public Function TestFuncInfoDictsAreIdentical(tfiDict1 As Scripting.Dictionary, tfiDict2 As Scripting.Dictionary) As Boolean
+Public Function TestFuncInfoDictsAreIdentical(ByVal tfiDict1 As Scripting.Dictionary, ByVal tfiDict2 As Scripting.Dictionary) As Boolean
 End Function
 
-Public Function validateTfiDictCounters(tfiDict As Scripting.Dictionary, Optional counter As Long = 0) As Boolean
+Public Function validateTfiDictCounters(ByVal tfiDict As Scripting.Dictionary, Optional ByVal counter As Long = 0) As Boolean
 End Function
 
 Private Sub populateDictWithTestFuncInfo()

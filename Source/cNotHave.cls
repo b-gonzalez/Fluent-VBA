@@ -83,30 +83,30 @@ Private Function IHave_SameTypeAs(ByVal All As Variant) As Variant
     IHave_SameTypeAs = result
 End Function
 
-Private Function IHave_ExactSameElementsAs(ByVal dataStructure As Variant) As Variant
+Private Function IHave_ExactSameElementsAs(ByVal datastructure As Variant) As Variant
     Dim result As Variant
-    result = pHaveTestFuncs.ExactSameElementsAs(pNotHaveVal, True, True, dataStructure)
+    result = pHaveTestFuncs.ExactSameElementsAs(pNotHaveVal, True, True, datastructure)
     result = pUtilities.NegateIfBool(result)
     IHave_ExactSameElementsAs = result
 End Function
 
-Private Function IHave_SameUniqueElementsAs(ByVal dataStructure As Variant) As Variant
+Private Function IHave_SameUniqueElementsAs(ByVal datastructure As Variant) As Variant
     Dim result As Variant
-    result = pHaveTestFuncs.SameUniqueElementsAs(pNotHaveVal, True, dataStructure)
+    result = pHaveTestFuncs.SameUniqueElementsAs(pNotHaveVal, True, datastructure)
     result = pUtilities.NegateIfBool(result)
     IHave_SameUniqueElementsAs = result
 End Function
 
-Private Function IHave_SameElementsAs(ByVal dataStructure As Variant) As Variant
+Private Function IHave_SameElementsAs(ByVal datastructure As Variant) As Variant
     Dim result As Variant
-    result = pHaveTestFuncs.SameElementsAs(pNotHaveVal, True, dataStructure)
+    result = pHaveTestFuncs.SameElementsAs(pNotHaveVal, True, datastructure)
     result = pUtilities.NegateIfBool(result)
     IHave_SameElementsAs = result
 End Function
 
 Private Function IHave_Procedure( _
-    procName As String, _
-    callType As VBA.VbCallType _
+    ByVal procName As String, _
+    ByVal callType As VBA.VbCallType _
 ) As Variant
     Dim result As Variant
     
@@ -115,13 +115,21 @@ Private Function IHave_Procedure( _
     IHave_Procedure = result
 End Function
 
-Private Function IHave_Elements(ParamArray args() As Variant)
+Private Function IHave_Elements(ParamArray args() As Variant) As Variant
     Dim tempArgs() As Variant
     Dim result As Variant
     
     tempArgs = args
     
-    result = pHaveTestFuncs.Elements(pNotHaveVal, tempArgs, True)
+    result = pHaveTestFuncs.Elements(pNotHaveVal, tempArgs, True, True)
     result = pUtilities.NegateIfBool(result)
     IHave_Elements = result
+End Function
+
+Private Function IHave_ElementsInDataStructure(ByVal datastructure As Variant) As Variant
+    Dim result As Variant
+        
+    result = pHaveTestFuncs.ElementsInDataStructure(pNotHaveVal, datastructure, True)
+    result = pUtilities.NegateIfBool(result)
+    IHave_ElementsInDataStructure = result
 End Function

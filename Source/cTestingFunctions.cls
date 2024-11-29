@@ -51,7 +51,7 @@ Private Property Let ITestingFunctions_TestValueClean(ByVal value As Variant)
     pTestValueClean = pMeta.Tests.TestStrings.CleanString(value)
 End Property
 
-Private Property Let ITestingFunctions_TestValueSet(value As Boolean)
+Private Property Let ITestingFunctions_TestValueSet(ByVal value As Boolean)
     pTestValueSet = value
 End Property
 
@@ -75,7 +75,7 @@ Private Property Set ITestingFunctions_Expressions(ByVal value As IExpressions)
     Set pExpressions = value
 End Property
 
-Private Function ITestingFunctions_GetCleanedString(value As Variant) As String
+Private Function ITestingFunctions_GetCleanedString(ByVal value As Variant) As String
     Dim tempVal As String
     
     tempVal = value
@@ -89,7 +89,7 @@ Private Function ITestingFunctions_GetCleanedString(value As Variant) As String
     ITestingFunctions_GetCleanedString = tempVal
 End Function
 
-Private Function ITestingFunctions_getTempTestValue(testingValue As Variant) As Variant
+Private Function ITestingFunctions_getTempTestValue(ByVal testingValue As Variant) As Variant
     Dim tempTestValue As Variant
     
     If Not Information.IsObject(testingValue) Then
@@ -107,7 +107,7 @@ Private Function ITestingFunctions_getTempTestValue(testingValue As Variant) As 
     End If
 End Function
 
-Private Function ITestingFunctions_getTempTestInput(testingInput As Variant) As Variant
+Private Function ITestingFunctions_getTempTestInput(ByVal testingInput As Variant) As Variant
     Dim tempTestingInput As Variant
     
     If Not Information.IsObject(testingInput) Then
@@ -152,7 +152,7 @@ End Function
 
 Private Function IBeTestFuncs_InDataStructure( _
 ByVal testingValue As Variant, _
-ByVal dataStructure As Variant, _
+ByVal datastructure As Variant, _
 Optional ByVal negateValue As Boolean = False, _
 Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim elem As Variant
@@ -166,13 +166,13 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     method = pMeta.Tests.Algorithm
     
-    If pMeta.Tests.IsDataStructure(dataStructure) And pTestValueSet Then
+    If pMeta.Tests.IsDataStructure(datastructure) And pTestValueSet Then
         tempBool = False
     
         If method = flRecursive Then
-            Set col = IBeTestFuncs_getNestedElementsRecur(dataStructure)
+            Set col = IBeTestFuncs_getNestedElementsRecur(datastructure)
         ElseIf method = flIterative Then
-            Set col = IBeTestFuncs_getNestedElementsIter(dataStructure)
+            Set col = IBeTestFuncs_getNestedElementsIter(datastructure)
         End If
             
         For Each elem In col
@@ -188,12 +188,12 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     IBeTestFuncs_InDataStructure = funcVal
     
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("InDataStructure", funcVal, CBool(negateValue), testingValue, dataStructure)
+        Call pExpressions.addToTestAndFluentPath("InDataStructure", funcVal, CBool(negateValue), testingValue, datastructure)
     End If
     
 End Function
 
-Private Function IBeTestFuncs_getNestedElementsRecur(ByVal dataStructure As Variant, Optional ByRef col As Collection = Nothing) As Collection
+Private Function IBeTestFuncs_getNestedElementsRecur(ByVal datastructure As Variant, Optional ByRef col As Collection = Nothing) As Collection
     Dim elem As Variant
     Dim tempDataStructure As Variant
     
@@ -202,14 +202,14 @@ Private Function IBeTestFuncs_getNestedElementsRecur(ByVal dataStructure As Vari
         Set col = New Collection
     End If
     
-    If pMeta.Tests.IsDataStructure(dataStructure) Then
-        If TypeOf dataStructure Is Scripting.Dictionary Then
-            tempDataStructure = dataStructure.Items
+    If pMeta.Tests.IsDataStructure(datastructure) Then
+        If TypeOf datastructure Is Scripting.Dictionary Then
+            tempDataStructure = datastructure.Items
         Else
-            If Information.IsObject(dataStructure) Then
-                Set tempDataStructure = dataStructure
+            If Information.IsObject(datastructure) Then
+                Set tempDataStructure = datastructure
             Else
-                tempDataStructure = dataStructure
+                tempDataStructure = datastructure
             End If
         End If
         
@@ -227,7 +227,7 @@ Private Function IBeTestFuncs_getNestedElementsRecur(ByVal dataStructure As Vari
     Set IBeTestFuncs_getNestedElementsRecur = col
 End Function
 
-Private Function IBeTestFuncs_getNestedElementsIter(ByVal dataStructure As Variant) As Collection
+Private Function IBeTestFuncs_getNestedElementsIter(ByVal datastructure As Variant) As Collection
     Dim elem As Variant
     Dim col As Collection
     Dim tempDataStructure As Variant
@@ -236,13 +236,13 @@ Private Function IBeTestFuncs_getNestedElementsIter(ByVal dataStructure As Varia
 
     Set col = New Collection
 
-    If TypeOf dataStructure Is Scripting.Dictionary Then
-        tempDataStructure = dataStructure.Items
+    If TypeOf datastructure Is Scripting.Dictionary Then
+        tempDataStructure = datastructure.Items
     Else
-        If Information.IsObject(dataStructure) Then
-            Set tempDataStructure = dataStructure
+        If Information.IsObject(datastructure) Then
+            Set tempDataStructure = datastructure
         Else
-            tempDataStructure = dataStructure
+            tempDataStructure = datastructure
         End If
     End If
 
@@ -1126,7 +1126,7 @@ ByVal testingInput As Variant) As Variant
 
 End Function
 
-Private Function assignOrConcatStr(assignStr, valueStr)
+Private Function assignOrConcatStr(ByVal assignStr As String, ByVal valueStr As String) As String
     Dim finalStr As String
     
     If assignStr = "" Then
@@ -1179,7 +1179,7 @@ Private Function IHaveTestFuncs_Procedure( _
                     tempStr = "VbGet"
                     callCounter = callCounter + 1
                     
-                    Call CallByName(testingValue, procName, VbCallType.VbGet)
+                    Call VBA.Interaction.CallByName(testingValue, procName, VbCallType.VbGet)
 
                     If Err.Number = 0 Or Err.Number = ARG_NOT_OPTIONAL Then
                         errCounter = errCounter + 1
@@ -1195,7 +1195,7 @@ Private Function IHaveTestFuncs_Procedure( _
                     tempStr = "VbLet"
                     callCounter = callCounter + 1
                     
-                    Call CallByName(testingValue, procName, VbCallType.VbLet, Empty)
+                    Call VBA.Interaction.CallByName(testingValue, procName, VbCallType.VbLet, Empty)
                     
                     If (Err.Number = 0) Then
                         errCounter = errCounter + 1
@@ -1212,7 +1212,7 @@ Private Function IHaveTestFuncs_Procedure( _
                     tempStr = "VbMethod"
                     callCounter = callCounter + 1
                     
-                    Call CallByName(testingValue, procName, VbCallType.VbMethod)
+                    Call VBA.Interaction.CallByName(testingValue, procName, VbCallType.VbMethod)
                     
                     If Err.Number = 0 Or Err.Number = ARG_NOT_OPTIONAL Then
                         errCounter = errCounter + 1
@@ -1230,7 +1230,7 @@ Private Function IHaveTestFuncs_Procedure( _
                     
                     callCounter = callCounter + 1
                     
-                    Call CallByName(testingValue, procName, VbCallType.VbSet, Nothing)
+                    Call VBA.Interaction.CallByName(testingValue, procName, VbCallType.VbSet, Nothing)
                     
                     If (Err.Number = 0) Then
                         errCounter = errCounter + 1
@@ -1264,31 +1264,57 @@ End Function
 
 Private Function IHaveTestFuncs_Elements( _
     ByVal testingValue As Variant, _
-    ByRef testingInputArgs() As Variant, _
-    ByVal negateValue As Boolean _
+    ByRef testingInput As Variant, _
+    ByVal negateValue As Boolean, _
+    ByVal updateFluentPath As Boolean _
 ) As Variant
     Dim i As Long
-    Dim elemCounter As Long
-    
+    Dim boolCounter As Long
+    Dim elemCount As Long
+    Dim elem As Variant
     Dim funcVal As Variant
-    Dim method As flAlgorithm
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
-    elemCounter = 0
+    boolCounter = 0
+    elemCount = 0
     
     If pMeta.Tests.IsDataStructure(testingValue) And pTestValueSet Then
-        For i = LBound(testingInputArgs) To UBound(testingInputArgs)
-            If IBeTestFuncs_InDataStructure(testingInputArgs(i), testingValue, False, False) Then
-                elemCounter = elemCounter + 1
+        elemCount = pExpressions.getDsCount(testingInput)
+
+        For Each elem In testingInput
+            If IBeTestFuncs_InDataStructure(elem, testingValue, False, False) Then
+                boolCounter = boolCounter + 1
             End If
-        Next i
-        
-        funcVal = (elemCounter = UBound(testingInputArgs) + 1)
+        Next elem
+
+        funcVal = (boolCounter = elemCount)
     End If
     
     IHaveTestFuncs_Elements = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("Elements", funcVal, CBool(negateValue), testingValue, testingInputArgs)
+    If updateFluentPath Then
+        Call pExpressions.addToTestAndFluentPath("Elements", funcVal, CBool(negateValue), testingValue, testingInput)
+    End If
+    
+    
+End Function
+
+Public Function IHaveTestFuncs_ElementsInDataStructure( _
+    ByVal testingValue As Variant, _
+    ByRef testingInput As Variant, _
+    ByVal negateValue As Boolean _
+) As Variant
+    Dim funcVal As Variant
+    
+    funcVal = ITestingFunctions_SetDefaultFuncVal
+    
+    If pMeta.Tests.IsDataStructure(testingValue) And pMeta.Tests.IsDataStructure(testingInput) And pTestValueSet Then
+        funcVal = IHaveTestFuncs_Elements(testingValue, testingInput, False, False)
+    End If
+    
+    IHaveTestFuncs_ElementsInDataStructure = funcVal
+    
+    Call pExpressions.addToTestAndFluentPath("ElementsInDataStructure", funcVal, CBool(negateValue), testingValue, testingInput)
 End Function
 

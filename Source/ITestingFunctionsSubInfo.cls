@@ -9,25 +9,25 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Let Count(value As Long)
+Public Property Let Count(ByVal value As Long)
 End Property
 
 Public Property Get Count() As Long
 End Property
 
-Public Property Let Passed(value As Long)
+Public Property Let Passed(ByVal value As Long)
 End Property
 
 Public Property Get Passed() As Long
 End Property
 
-Public Property Let Failed(value As Long)
+Public Property Let Failed(ByVal value As Long)
 End Property
 
 Public Property Get Failed() As Long
 End Property
 
-Public Property Let Unexpected(value As Long)
+Public Property Let Unexpected(ByVal value As Long)
 End Property
 
 Public Property Get Unexpected() As Long

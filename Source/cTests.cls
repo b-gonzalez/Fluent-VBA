@@ -36,7 +36,7 @@ Public Property Get result() As Boolean
     result = pResult
 End Property
 
-Public Property Get Item(OneBasedIndex As Long) As ITest
+Public Property Get Item(ByVal OneBasedIndex As Long) As ITest
 Attribute Item.VB_UserMemId = 0
     Set Item = pCol(OneBasedIndex)
 End Property
@@ -46,7 +46,7 @@ Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = pCol.[_NewEnum]
 End Property
 
-Public Property Let Algorithm(value As flAlgorithm)
+Public Property Let Algorithm(ByVal value As flAlgorithm)
     pAlgorithm = value
 End Property
 
@@ -54,7 +54,7 @@ Public Property Get Algorithm() As flAlgorithm
     Algorithm = pAlgorithm
 End Property
 
-Public Property Let ToStrDev(value As Boolean)
+Public Property Let ToStrDev(ByVal value As Boolean)
     pToStrDev = value
 End Property
 
@@ -86,7 +86,7 @@ Public Property Get DataStructures() As Collection
     Set DataStructures = pDataStructures
 End Property
 
-Public Property Let SkipDupCheck(value As Boolean)
+Public Property Let SkipDupCheck(ByVal value As Boolean)
     pSkipDupCheck = value
 End Property
 
@@ -102,12 +102,12 @@ Public Property Get TestStrings() As ITestStrings
     Set TestStrings = pTestStrings
 End Property
 
-Public Sub AddDataStructure(dataStructure As Variant)
+Public Sub AddDataStructure(ByVal datastructure As Variant)
     Dim dsType As String
 
-    dsType = Information.TypeName(dataStructure)
+    dsType = Information.TypeName(datastructure)
 
-    If IsIterable(dataStructure) And Not datastructureInCollection(dsType, pDataStructures) Then
+    If IsIterable(datastructure) And Not datastructureInCollection(dsType, pDataStructures) Then
         pDataStructures.Add dsType
     End If
 End Sub
@@ -128,32 +128,32 @@ Public Function datastructureInCollection(ByVal dsName As String, ByVal col As C
     datastructureInCollection = b
 End Function
 
-Public Function IsDataStructure(ByVal dataStructure As Variant) As Boolean
+Public Function IsDataStructure(ByVal datastructure As Variant) As Boolean
     Dim dsTypeName As String
     Dim tempBool As Boolean
     Dim fluentBool As Boolean
     Dim elem As Variant
     Dim tempErr As Long
     
-    dsTypeName = Information.TypeName(dataStructure)
+    dsTypeName = Information.TypeName(datastructure)
     tempBool = False
     
-    If IsArray(dataStructure) Then
+    If IsArray(datastructure) Then
         tempBool = True
     ElseIf datastructureInCollection(dsTypeName, pDataStructures) Then
-        tempBool = IsIterable(dataStructure)
+        tempBool = IsIterable(datastructure)
     End If
     
     IsDataStructure = tempBool
 End Function
 
-Public Function IsIterable(ByVal dataStructure As Variant) As Boolean
+Public Function IsIterable(ByVal datastructure As Variant) As Boolean
     Dim tempBool As Boolean
     Dim elem As Variant
     Dim tempErr As Long
     
     On Error Resume Next
-        For Each elem In dataStructure
+        For Each elem In datastructure
             Exit For
         Next elem
         
@@ -166,7 +166,7 @@ Public Function IsIterable(ByVal dataStructure As Variant) As Boolean
     IsIterable = tempBool
 End Function
 
-Public Sub CheckTest(test As ITest)
+Public Sub CheckTest(ByVal test As ITest)
     pResult = test.result
     
     pCol.Add test

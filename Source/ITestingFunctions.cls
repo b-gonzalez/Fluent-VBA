@@ -26,7 +26,7 @@ End Property
 Public Property Get TestValue() As Variant
 End Property
 
-Public Property Let TestValueSet(value As Boolean)
+Public Property Let TestValueSet(ByVal value As Boolean)
 End Property
 
 Public Function SetDefaultFuncVal() As Variant
@@ -38,11 +38,11 @@ End Property
 Public Property Set Expressions(ByVal value As IExpressions)
 End Property
 
-Public Function GetCleanedString(value As Variant) As String
+Public Function GetCleanedString(ByVal value As Variant) As String
 End Function
 
-Public Function GetTempTestValue(testingValue As Variant) As Variant
+Public Function GetTempTestValue(ByVal testingValue As Variant) As Variant
 End Function
 
-Public Function GetTempTestInput(testingInput As Variant) As Variant
+Public Function GetTempTestInput(ByVal testingInput As Variant) As Variant
 End Function

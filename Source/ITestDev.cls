@@ -21,25 +21,25 @@ End Property
 Public Property Get ResultNumber() As Long
 End Property
 
-Public Property Let TestValueRecur(value As String)
+Public Property Let TestValueRecur(ByVal value As String)
 End Property
 
 Public Property Get TestValueRecur() As String
 End Property
 
-Public Property Let TestValueIter(value As String)
+Public Property Let TestValueIter(ByVal value As String)
 End Property
 
 Public Property Get TestValueIter() As String
 End Property
 
-Public Property Let TestInputRecur(value As String)
+Public Property Let TestInputRecur(ByVal value As String)
 End Property
 
 Public Property Get TestInputRecur() As String
 End Property
 
-Public Property Let TestInputIter(value As String)
+Public Property Let TestInputIter(ByVal value As String)
 End Property
 
 Public Property Get TestInputIter() As String

@@ -9,11 +9,11 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Let WrapChar(value As String)
+Public Property Let WrapChar(ByVal value As String)
 End Property
 
 Public Property Get WrapChar() As String
 End Property
 
-Public Function WrapIfString(value As Variant)
+Public Function WrapIfString(ByVal value As Variant) As Variant
 End Function

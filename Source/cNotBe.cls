@@ -98,9 +98,9 @@ Private Function IBe_OneOf(ParamArray All() As Variant) As Variant
     IBe_OneOf = result
 End Function
 
-Private Function IBe_InDataStructure(ByVal dataStructure As Variant) As Variant
+Private Function IBe_InDataStructure(ByVal datastructure As Variant) As Variant
     Dim result As Variant
-    result = pBeTestFuncs.InDataStructure(pNotBeValue, dataStructure, True, updateFluentPath:=True)
+    result = pBeTestFuncs.InDataStructure(pNotBeValue, datastructure, True, updateFluentPath:=True)
     result = pUtilities.NegateIfBool(result)
     IBe_InDataStructure = result
 End Function
@@ -140,9 +140,9 @@ Private Function IBe_Erroneous() As Variant
     IBe_Erroneous = result
 End Function
 
-Private Function IBe_IdenticalTo(ByVal dataStructure As Variant) As Variant
+Private Function IBe_IdenticalTo(ByVal datastructure As Variant) As Variant
     Dim result As Variant
-    result = pBeTestFuncs.IdenticalTo(pNotBeValue, True, dataStructure, True)
+    result = pBeTestFuncs.IdenticalTo(pNotBeValue, True, datastructure, True)
     result = pUtilities.NegateIfBool(result)
     IBe_IdenticalTo = result
 End Function

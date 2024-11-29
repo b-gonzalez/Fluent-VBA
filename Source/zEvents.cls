@@ -97,11 +97,9 @@ Private Sub pTest_TestCompleted(ByVal test As ITest)
 End Sub
 
 Private Sub pTestOfResult_TestPassed(ByVal test As ITest)
-'    Debug.Assert test.ExpectedValue = test.ActualValue
 End Sub
 
 Private Sub pTestOfResult_TestFailed(ByVal test As ITest)
-'    Debug.Assert test.ExpectedValue <> test.ActualValue
 End Sub
 
 Private Sub pTestOfResults_TestCompleted(ByVal test As ITest)
@@ -112,7 +110,7 @@ Private Sub pTestDuplicate_DuplicateTest(ByVal test As ITest)
     TestDuplicateCount = TestDuplicateCount + 1
 End Sub
 
-Public Function CheckTestCounters()
+Public Function CheckTestCounters() As Boolean
     Dim b As Boolean
     
     b = ( _

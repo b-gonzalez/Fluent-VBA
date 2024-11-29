@@ -20,7 +20,7 @@ Sub NormalUnitTestExample
     Assert.Equal(Result,5)
 End Sub
 
-Public Function returnVal(value As Variant) As Variant
+Public Function returnVal(ByVal value As Variant) As Variant
     returnVal = value
 End Function
 ```

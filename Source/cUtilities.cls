@@ -11,7 +11,7 @@ Option Explicit
 
 Implements IUtilities
 
-Private Function IUtilities_NegateIfBool(result As Variant) As Variant
+Private Function IUtilities_NegateIfBool(ByVal result As Variant) As Variant
     Dim tempResult As Variant
     
     tempResult = result

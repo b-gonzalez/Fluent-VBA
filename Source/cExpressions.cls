@@ -19,7 +19,17 @@ Private pMeta As IMeta
 Private pTests As cTests
 Private pTestDictCounter As Scripting.Dictionary
 
-Private Const NOT_IMPLEMENTED_ERROR As Long = 514
+'Visual Basic errors (both Visual Basic-defined and user-defined errors) are in the range 0–65535.
+'The range 0–512 is reserved for system errors; the range 513–65535 is available for user-defined errors.
+'
+'When setting the Number property to your own error code in a class module, you add your error code number
+'to the vbObjectError constant. For example, to generate the error number 513, assign vbObjectError + 513
+'to the Number property.
+
+'source: https://learn.microsoft.com/en-us/office/vba/language/reference/user-interface-help/raise-method
+
+Private Const NOT_IMPLEMENTED_ERROR As Long = vbObjectError + 514
+Private Const SPACE_IN_FUNC_NAME As Long = vbObjectError + 515
 
 Private Property Set IExpressions_setPrinting(ByVal value As cPrinting)
     Set pPrinting = value
@@ -59,8 +69,8 @@ Private Function initTest(ByVal test As ITest, ByVal functionName As String, ByV
     With test
         .functionName = functionName
         .testingInput = Empty
-        .lowerVal = Empty
-        .higherVal = Empty
+        .lowerVal = Null
+        .higherVal = Null
         .StrTestInput = ""
         .strTestValue = ""
         .cleanedTestValue = ""
@@ -134,7 +144,7 @@ Private Function getCleanedTest(ByVal test As ITest, ByVal cleanedTestValue As V
     Set getCleanedTest = test
 End Function
 
-Private Function setStrTestValueStrTestInput(ByVal test As ITest, ByVal Meta As IMeta, ByVal negateValue As Boolean)
+Private Function setStrTestValueStrTestInput(ByVal test As ITest, ByVal Meta As IMeta, ByVal negateValue As Boolean) As ITest
     Dim testDev As ITestDev
     Dim algo As flAlgorithm
     
@@ -322,6 +332,8 @@ Optional ByVal higherVal As Variant) As String
     Select Case haveType
         Case Elements_
             funcStr = "elements"
+        Case ElementsInDataStructure_
+            funcStr = "elements in data structure"
         Case ErrorDescriptionOf_
             funcStr = "error description of"
         Case ErrorNumberOf_
@@ -387,10 +399,6 @@ Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentP
                 End If
             End If
 
-'        finalFluentPath = finalFluentPath & _
-'            " Expectation: Testing value " & tempFluentPath & ";" & _
-'            " Result: " & .Result
-
         finalFluentPath = finalFluentPath & _
             " Expectation: Testing value " & tempFluentPath & _
             ";" & IIf(.Actual <> "", " Actual: " & pMeta.ToString.WrapIfString(.Actual) & ";", "") & _
@@ -420,6 +428,8 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
             tempFluentPath = IExpressions_Should(Contain_, testingInput)
         Case "Elements"
             tempFluentPath = IExpressions_Have(Elements_, testingInput)
+        Case "ElementsInDataStructure"
+            tempFluentPath = IExpressions_Have(ElementsInDataStructure_, testingInput)
         Case "Erroneous"
             tempFluentPath = IExpressions_Be(Erroneous_)
         Case "ErrorNumberOf"
@@ -522,6 +532,8 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
         Else
             pTestingSubInfo.Unexpected = pTestingSubInfo.Unexpected + 1
         End If
+    ElseIf pTestDictCounter.Exists(Trim(test.functionName)) Then
+        Err.Raise Number:=SPACE_IN_FUNC_NAME, Description:="Test name not matching in TestDictCounter due to extra space in the function name"
     Else
         Err.Raise Number:=NOT_IMPLEMENTED_ERROR, Description:="Test name not implemented in TestDictCounter"
     End If
@@ -656,10 +668,6 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
         Case Else
             temp = temp & elem & ", "
     End Select
-    
-'    If Right(temp, 2) = ", " Then
-'        temp = Left(temp, Len(temp) - 2)
-'    End If
 
     If VBA.Right$(temp, 2) = ", " Then
         temp = VBA.Left$(temp, Len(temp) - 2)
@@ -670,7 +678,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
     IExpressions_InputToStringRecur = temp
 End Function
 
-Function IExpressions_inputToStringIter(v As Variant) As String
+Function IExpressions_inputToStringIter(ByVal v As Variant) As String
     Dim elem As Variant
     Dim tempCol As Collection
     Dim tempCount As Long
@@ -707,7 +715,6 @@ Function IExpressions_inputToStringIter(v As Variant) As String
                 End If
             Else
                 tempCol.Add elem & ": "
-'                tempCol.Add v(elem)
                 tempCol.Add pMeta.ToString.WrapIfString(v(elem))
             End If
         Else
@@ -749,7 +756,7 @@ Function IExpressions_inputToStringIter(v As Variant) As String
     
 End Function
 
-Function IExpressions_getNestedElementsFromCollection(col As Collection) As Collection
+Function IExpressions_getNestedElementsFromCollection(ByVal col As Collection) As Collection
     Dim elem As Variant
     Dim elem2 As Variant
     Dim counter As Long
@@ -843,26 +850,25 @@ Function IExpressions_getNestedElementsFromCollection(col As Collection) As Coll
     Set IExpressions_getNestedElementsFromCollection = tempCol
 End Function
 
-Function IExpressions_getDsCount(dataStructure As Variant) As Long
+Public Function IExpressions_getDsCount(ByVal datastructure As Variant) As Long
     Dim counter As Long
     Dim elem As Variant
     
     counter = 0
     
-    For Each elem In dataStructure
+    For Each elem In datastructure
         counter = counter + 1
     Next elem
     
     IExpressions_getDsCount = counter
 End Function
 
-Function IExpressions_getDsType(v As Variant) As String
+Private Function IExpressions_getDsType(ByVal v As Variant) As String
     Dim counter As Long
     Dim elem As Variant
     Dim temp As String
     
     If Information.IsArray(v) Then
-'        temp = Left(Information.TypeName(v), Len(Information.TypeName(v)) - 2) & "("
         temp = VBA.Left$(Information.TypeName(v), Len(Information.TypeName(v)) - 2) & "("
     ElseIf pMeta.Tests.IsDataStructure(v) Then
         temp = Information.TypeName(v) & "("
@@ -887,7 +893,3 @@ Private Function IExpressions_getResultNumber(ByVal result As Variant) As Long
     
     IExpressions_getResultNumber = ResultNumber
 End Function
-
-'Private Sub Class_Initialize()
-'
-'End Sub

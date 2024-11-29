@@ -84,7 +84,15 @@ End Function
 
 Public Function Elements( _
     ByVal testingValue As Variant, _
-    ByRef testingInputArgs() As Variant, _
+    ByRef testingInput As Variant, _
+    ByVal negateValue As Boolean, _
+    ByVal updateFluentPath As Boolean _
+    ) As Variant
+End Function
+
+Public Function ElementsInDataStructure( _
+    ByVal testingValue As Variant, _
+    ByRef testingInput As Variant, _
     ByVal negateValue As Boolean _
     ) As Variant
 End Function

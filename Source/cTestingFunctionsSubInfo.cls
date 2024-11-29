@@ -16,7 +16,7 @@ Private pPassed As Long
 Private pFailed As Long
 Private pUnexpected As Long
 
-Private Property Let ITestingFunctionsSubInfo_Count(value As Long)
+Private Property Let ITestingFunctionsSubInfo_Count(ByVal value As Long)
     pCount = value
 End Property
 
@@ -24,7 +24,7 @@ Private Property Get ITestingFunctionsSubInfo_Count() As Long
     ITestingFunctionsSubInfo_Count = pCount
 End Property
 
-Private Property Let ITestingFunctionsSubInfo_Passed(value As Long)
+Private Property Let ITestingFunctionsSubInfo_Passed(ByVal value As Long)
     pPassed = value
 End Property
 
@@ -32,7 +32,7 @@ Private Property Get ITestingFunctionsSubInfo_Passed() As Long
     ITestingFunctionsSubInfo_Passed = pPassed
 End Property
 
-Private Property Let ITestingFunctionsSubInfo_Failed(value As Long)
+Private Property Let ITestingFunctionsSubInfo_Failed(ByVal value As Long)
     pFailed = value
 End Property
 
@@ -40,7 +40,7 @@ Private Property Get ITestingFunctionsSubInfo_Failed() As Long
     ITestingFunctionsSubInfo_Failed = pFailed
 End Property
 
-Private Property Let ITestingFunctionsSubInfo_Unexpected(value As Long)
+Private Property Let ITestingFunctionsSubInfo_Unexpected(ByVal value As Long)
     pUnexpected = value
 End Property
 

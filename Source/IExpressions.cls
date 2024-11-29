@@ -21,6 +21,7 @@ End Enum
 Public Enum flHave
     [_first] = 101
     Elements_
+    ElementsInDataStructure_
     ErrorDescriptionOf_
     ErrorNumberOf_
     ExactSameElementsAs_
@@ -120,14 +121,14 @@ End Function
 Public Function getResultNumber(ByVal result As Variant) As Long
 End Function
 
-Public Function inputToStringIter(v As Variant) As String
+Public Function inputToStringIter(ByVal v As Variant) As String
 End Function
 
-Private Function getNestedElementsFromCollection(col As Collection) As Collection
+Private Function getNestedElementsFromCollection(ByVal col As Collection) As Collection
 End Function
 
-Private Function getDsCount(dataStructure As Variant) As Long
+Public Function getDsCount(ByVal datastructure As Variant) As Long
 End Function
 
-Private Function getDsType(v As Variant) As String
+Private Function getDsType(ByVal v As Variant) As String
 End Function

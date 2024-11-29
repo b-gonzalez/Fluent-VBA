@@ -95,7 +95,7 @@ Private Property Get IPrinting_FluentPath() As String
     IPrinting_FluentPath = pFluentPath
 End Property
 
-Private Function IPrinting_ArrayFromTests(col As Collection, tp As TestProperty) As Variant()
+Private Function IPrinting_ArrayFromTests(ByVal col As Collection, ByVal tp As TestProperty) As Variant()
     Dim test As ITest
     Dim testDev As ITestDev
     Dim elem As Variant
@@ -251,7 +251,7 @@ Private Function IPrinting_getWorkbook() As Workbook
     Set IPrinting_getWorkbook = pWorkbook
 End Function
 
-Private Sub IPrinting_addTableToWorkbook(wb As Workbook)
+Private Sub IPrinting_addTableToWorkbook(ByVal wb As Workbook)
     Dim ws As Excel.Worksheet
     Dim lo As Excel.ListObject
     Dim lc As Excel.ListColumn
@@ -339,7 +339,7 @@ Private Sub IPrinting_addValueConditColors(ByVal lo As Excel.ListObject, ByVal p
     On Error GoTo 0
 End Sub
 
-Private Function IPrinting_getTestMessageFromResultNumber(ResultNumber As Long)
+Private Function IPrinting_getTestMessageFromResultNumber(ByVal ResultNumber As Long) As String
     Dim tempMessage As String
     
     Select Case ResultNumber

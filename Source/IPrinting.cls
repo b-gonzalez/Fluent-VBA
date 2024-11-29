@@ -58,7 +58,7 @@ End Sub
 Private Function getWorkbook() As Workbook
 End Function
 
-Private Sub addTableToWorkbook(wb As Workbook)
+Private Sub addTableToWorkbook(ByVal wb As Workbook)
 End Sub
 
 Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
@@ -71,8 +71,8 @@ Private Sub addValueConditColors( _
     ByVal unexpectedMsg As String)
 End Sub
 
-Private Function ArrayFromTests(col As Collection, tp As TestProperty) As Variant()
+Private Function ArrayFromTests(ByVal col As Collection, ByVal tp As TestProperty) As Variant()
 End Function
 
-Private Function getTestMessageFromResultNumber(ResultNumber As Long)
+Private Function getTestMessageFromResultNumber(ByVal ResultNumber As Long) As String
 End Function
