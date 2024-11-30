@@ -1,6 +1,6 @@
-#NOTE: The program that's running this script must be
+#NOTE: The program that's running this script MUST be
 #run as administrator e.g. in command prompt, PowerShell, 
-#VSCode, etc. 
+#VSCode, etc. Otherwise the script will fail.
 
 #You must also select the correct bitness for the DLL you 
 #want to run. The script defaults to 64 bit. But if you 
