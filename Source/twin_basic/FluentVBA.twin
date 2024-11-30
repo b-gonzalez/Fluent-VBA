@@ -1,0 +1,19 @@
+Class FluentVBA
+
+    Dim pFluent As cFluent
+    Dim pFluentOf As cFluentOf
+    
+    Private Sub Class_Initialize()
+        Set pFluent = New cFluent
+        Set pFluent = New cFluent
+    End Sub
+    
+    Public Property Get Fluent() As IFluent
+        Set Fluent = pFluent
+    End Property
+    
+    Public Property Get FluentOf() As IFluentOf
+        Set FluentOf = pFluentOf
+    End Property
+
+End Class

@@ -1,0 +1,12 @@
+[AppObject]
+Class AppObj
+
+    Public Function MakeFluent() As IFluent
+        Set MakeFluent = New cFluent
+    End Function
+
+    Public Function MakeFluentOf() As IFluentOf
+        Set MakeFluentOf = New cFluentOf
+    End Function
+
+End Class
