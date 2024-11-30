@@ -1,10 +1,11 @@
 #NOTE: The program that's running this script must be
 #run as administrator e.g. in command prompt, PowerShell, 
-#VSCode, etc. You must also select the correct bitness
-#for the DLL you want to run. The script defaults to
-#64 bit. But if you want to run for 32bit, just comment
-#out the 64bit line and uncomment the 32bit line at the
-#bottom of this file.
+#VSCode, etc. 
+
+#You must also select the correct bitness for the DLL you 
+#want to run. The script defaults to 64 bit. But if you 
+#want to run for 32bit, just comment out the 64bit line 
+#and uncomment the 32bit line at the bottom of this file.
 
 #If run successfully, you will get a msgbox notification
 #that dllRegisterServer succeeded. After that, go to tools
@@ -33,15 +34,13 @@ function registerDll(){
     $dllFilename = "$($build)\fluent_vba_tb_win64.dll"
   }
 
-  # $sys32Dir = Join-Path $env:windir system32 "\"
+  $sys32Dir = Join-Path $env:windir "system32\"
 
-  # Set-Location $sys32Dir
+  Set-Location $sys32Dir
 
-  # regsvr32.exe $dllFilename
+  regsvr32.exe $dllFilename
 
-  # Set-Location $curDir
-
-  C:\Windows\System32\regsvr32.exe $dllFilename
+  Set-Location $curDir
 }
 
 # registerDll -dllBitness bit32
