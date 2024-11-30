@@ -6,8 +6,10 @@
 #out the 64bit line and uncomment the 32bit line at the
 #bottom of the file.
 
-#If run successfully, you will get a msgbox
-#notification that dllRegisterServer succeeded.
+#If run successfully, you will get a msgbox notification
+#that dllRegisterServer succeeded. After that, go to tools
+#> References in the VBIDE and select the DLL file. After
+#that you should be able to use code within the library.
 
 enum bitness {
   bit32 = 1
