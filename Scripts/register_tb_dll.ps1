@@ -33,6 +33,14 @@ function registerDll(){
     $dllFilename = "$($build)\fluent_vba_tb_win64.dll"
   }
 
+  # $sys32Dir = Join-Path $env:windir system32 "\"
+
+  # Set-Location $sys32Dir
+
+  # regsvr32.exe $dllFilename
+
+  # Set-Location $curDir
+
   C:\Windows\System32\regsvr32.exe $dllFilename
 }
 
