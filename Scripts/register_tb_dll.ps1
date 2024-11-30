@@ -4,7 +4,7 @@
 #for the DLL you want to run. The script defaults to
 #64 bit. But if you want to run for 32bit, just comment
 #out the 64bit line and uncomment the 32bit line at the
-#bottom of the file.
+#bottom of this file.
 
 #If run successfully, you will get a msgbox notification
 #that dllRegisterServer succeeded. After that, go to tools
