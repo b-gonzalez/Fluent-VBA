@@ -5,7 +5,7 @@ function get-TagNumbers {
   # Write-Output "Second latest tag number: $secondLatestTag"
 }
 
-function prep-binDir(){
+function get-binDir(){
   [string]$binPath = (Get-Item -Path ".\bin").FullName
   [System.Object[]]$binDir = Get-ChildItem -Path $binPath
   
@@ -52,7 +52,7 @@ function get-AndPublishPackage {
   
     get-officeFiles
 
-    prep-binDir
+    get-binDir
       
     $compress = @{
       Path             = "$parentDir\Distribution", "$parentDir\test_files",  "$parentDir\bin"
