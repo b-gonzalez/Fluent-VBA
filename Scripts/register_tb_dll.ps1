@@ -1,5 +1,5 @@
-#NOTE: the program that's running this script must be
-#run as administrator e.g. in command prompt,PowerShell, 
+#NOTE: The program that's running this script must be
+#run as administrator e.g. in command prompt, PowerShell, 
 #VSCode, etc. You must also select the correct bitness
 #for the DLL you want to run. The script defaults to
 #64 bit. But if you want to run for 32bit, just comment
