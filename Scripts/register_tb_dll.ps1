@@ -3,9 +3,13 @@
 #VSCode, etc. Otherwise the script will fail.
 
 #You must also select the correct bitness for the DLL you 
-#want to run. The script defaults to 64 bit. But if you 
-#want to run for 32bit, just comment out the 64bit line 
-#and uncomment the 32bit line at the bottom of this file.
+#want to run. The script defaults to 64-bit. This is due
+#to the function call using a bit64 parameter at the 
+#bottom of this file. If you want to run for 32-bit, 
+#just comment out the bit64 line and uncomment the bit32 
+#line. If you want to run for both 32-bit and 64-bit, then
+#comment out the 64-bit line and uncomment the line with 
+#bit32 + bit64 
 
 #If run successfully, you will get a msgbox notification
 #that dllRegisterServer succeeded. After that, go to tools
