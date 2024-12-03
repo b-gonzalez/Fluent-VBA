@@ -42,7 +42,7 @@ function registerDll(){
   Set-Location $sys32Dir
 
   foreach($dll in $arr) {
-    regsvr32.exe $dllFilename
+    regsvr32.exe $dll
   }
 
   Set-Location $curDir
