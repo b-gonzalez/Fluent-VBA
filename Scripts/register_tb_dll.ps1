@@ -23,8 +23,14 @@ enum bitness {
 
 function registerDll(){
   param(
-    [bitness]$dllBitness
+    [bitness[]]$bitnessArr
   )
+
+  [int]$dllInt = 0
+
+  foreach($bitness in $bitnessArr) {
+    $dllInt += [int]([int][bitness]::$bitness)
+  }
   
   $curDir = $PSScriptRoot
   $parentDir = (get-item $curDir).parent.FullName
@@ -33,11 +39,11 @@ function registerDll(){
 
   [string[]]$arr = @()
 
-  if ($dllBitness -band [bitness]::bit32) {
+  if ($dllInt -band [bitness]::bit32) {
     $arr += "$($build)\fluent_vba_tb_win32.dll"
   } 
   
-  if ($dllBitness -band [bitness]::bit64) {
+  if ($dllInt -band [bitness]::bit64) {
     $arr += "$($build)\fluent_vba_tb_win64.dll"
   }
 
@@ -52,6 +58,6 @@ function registerDll(){
   Set-Location $curDir
 }
 
-# registerDll -dllBitness bit32
-registerDll -dllBitness bit64
-# registerDll -dllBitness bit32 + bit64
+# registerDll -bitnessArr bit32
+registerDll -bitnessArr bit64
+# registerDll -bitnessArr bit32, bit64
