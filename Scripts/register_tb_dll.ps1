@@ -22,16 +22,19 @@ function registerDll(){
     [bitness]$dllBitness
   )
   
-  $dllFilename = ""
   $curDir = $PSScriptRoot
   $parentDir = (get-item $curDir).parent.FullName
   $build = "$parentDir\Source\twin_basic\Build"
   Set-Location $build
 
-  if ($dllBitness -eq [bitness]::bit32) {
-    $dllFilename = "$($build)\fluent_vba_tb_win32.dll"
-  } elseif ($dllBitness -eq [bitness]::bit64) {
-    $dllFilename = "$($build)\fluent_vba_tb_win64.dll"
+  [string[]]$arr = @()
+
+  if ($dllBitness -band [bitness]::bit32) {
+    $arr += "$($build)\fluent_vba_tb_win32.dll"
+  } 
+  
+  if ($dllBitness -band [bitness]::bit64) {
+    $arr += "$($build)\fluent_vba_tb_win64.dll"
   }
 
   $sys32Dir = Join-Path $env:windir "system32\"
@@ -45,3 +48,4 @@ function registerDll(){
 
 # registerDll -dllBitness bit32
 registerDll -dllBitness bit64
+# registerDll -dllBitness bit32 + bit64
