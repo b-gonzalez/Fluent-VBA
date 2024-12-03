@@ -9,7 +9,7 @@
 #just comment out the bit64 line and uncomment the bit32 
 #line. If you want to run for both 32-bit and 64-bit, then
 #comment out the 64-bit line and uncomment the line with 
-#bit32 + bit64 
+#bit32, bit64
 
 #If run successfully, you will get a msgbox notification
 #that dllRegisterServer succeeded. After that, go to tools
