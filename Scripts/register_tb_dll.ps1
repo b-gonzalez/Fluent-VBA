@@ -23,12 +23,19 @@
 
 function registerDll(){
   param(
-    [bitness]$dllBitness
+    [bitness]$dllBitness,
+    [switch]$runFromScriptsDir
   )
   
   $curDir = $PSScriptRoot
   $parentDir = (get-item $curDir).parent.FullName
-  $build = "$parentDir\Source\twin_basic\Build"
+  
+  if ($runFromScriptsDir) {
+    $build = "$parentDir\Source\twin_basic\Build"
+  } else {
+    $build = $curDir
+  }
+
   Set-Location $build
 
   if ($dllBitness -band [bitness]::bit32) {
