@@ -2,6 +2,11 @@
 #run as administrator e.g. in command prompt, PowerShell, 
 #VSCode, etc. Otherwise the script will fail.
 
+#This code can be run from either the bin or the scripts
+#folder. To run from the scripts folder, you MUST add the
+#-runFromScriptsDir switch parameter. You can see an
+#example commented out towards the bottom.
+
 #You must also select the correct bitness for the DLL you 
 #want to run. The script defaults to 64-bit. This is due
 #to the function call using a bit64 parameter at the 
@@ -60,3 +65,5 @@ function registerDll(){
 # registerDll -dllBitness ([bitness]::bit32)
 registerDll -dllBitness ([bitness]::bit64)
 # registerDll -dllBitness ([bitness]::bit32 + [bitness]::bit64)
+
+# registerDll -dllBitness ([bitness]::bit64) -runFromScriptsDir
