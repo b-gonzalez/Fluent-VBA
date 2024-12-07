@@ -25,6 +25,10 @@ function get-officeFiles {
             New-Item -Path .\test_files -ItemType "directory"
         }
 
+        if (! (Test-Path -PathType container .\bin)) {
+            New-Item -Path .\bin -ItemType "directory"
+        }
+
         $testFiles = Get-ChildItem -Path .\test_files -File
 
         $distFiles = Get-ChildItem -Path .\Distribution -File
