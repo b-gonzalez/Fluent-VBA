@@ -7154,6 +7154,9 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     Dim tfIter As IFluentOf
     Dim b As Boolean
     Dim arr() As Variant
+    Dim d1 As Scripting.Dictionary
+    Dim d2 As Scripting.Dictionary
+    Dim d3 As Scripting.Dictionary
                                                                                                             
     'positive documentation tests
     Set tfRecur = MakeFluentOf
@@ -7193,6 +7196,21 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set d1 = New Scripting.Dictionary
+    Set d2 = New Scripting.Dictionary
+    Set d3 = New Scripting.Dictionary
+    
+    d3.Add "C", 3
+    d2.Add "B", d3
+    d1.Add "A", d2
+    
+    fluent.TestValue = testFluent.Of(d1).Should.Have.DepthCountOf(3) 'with implicit recur
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = tfRecur.Of(d1).Should.Have.DepthCountOf(3) = tfIter.Of(d1).Should.Have.DepthCountOf(3)
+    mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     'negative documentation tests
     Set tfRecur = MakeFluentOf
@@ -7229,6 +7247,21 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.DepthCountOf(3) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.DepthCountOf(3) = tfIter.Of(arr).ShouldNot.Have.DepthCountOf(3)
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set d1 = New Scripting.Dictionary
+    Set d2 = New Scripting.Dictionary
+    Set d3 = New Scripting.Dictionary
+    
+    d3.Add "C", 3
+    d2.Add "B", d3
+    d1.Add "A", d2
+    
+    fluent.TestValue = testFluent.Of(d1).ShouldNot.Have.DepthCountOf(3) 'with implicit recur
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = tfRecur.Of(d1).ShouldNot.Have.DepthCountOf(3) = tfIter.Of(d1).ShouldNot.Have.DepthCountOf(3)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)

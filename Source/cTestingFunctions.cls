@@ -1347,8 +1347,14 @@ Private Function IHaveTestFuncs_getDepthCountRecur(ds As Variant, Optional count
     For Each elem In ds
         If counter > depthCounter Then depthCounter = counter
 
-        If pMeta.Tests.IsDataStructure(elem) Then
-            Call IHaveTestFuncs_getDepthCountRecur(elem, counter + 1, depthCounter)
+        If TypeOf ds Is Scripting.Dictionary Then
+            If pMeta.Tests.IsDataStructure(ds(elem)) Then
+                Call IHaveTestFuncs_getDepthCountRecur(ds(elem), counter + 1, depthCounter)
+            End If
+        Else
+            If pMeta.Tests.IsDataStructure(elem) Then
+                Call IHaveTestFuncs_getDepthCountRecur(elem, counter + 1, depthCounter)
+            End If
         End If
     Next elem
 
@@ -1377,7 +1383,12 @@ Private Function IHaveTestFuncs_getDepthCountIter(ds As Variant) As Long
         counter = counter + 1
         
         For Each elem In ds
-            col.Add elem
+'            col.Add elem
+            If Not TypeOf ds Is Scripting.Dictionary Then
+                col.Add elem
+            Else
+                col.Add ds(elem)
+            End If
         Next elem
     End If
     
@@ -1407,7 +1418,12 @@ Private Function IHaveTestFuncs_getDepthCountIter(ds As Variant) As Long
                     hasNestedElements = True
                                         
                     For Each elem2 In elem
-                        tempCol.Add elem2
+'                        tempCol.Add elem2
+                        If Not TypeOf elem Is Scripting.Dictionary Then
+                            tempCol.Add elem2
+                        Else
+                            tempCol.Add elem(elem2)
+                        End If
                     Next elem2
                 End If
             End If
