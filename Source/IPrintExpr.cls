@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Get TestCollection() As Collection
+Public Property Get TestCollection() As VBA.Collection
 End Property
 
 Public Property Let FluentPath(ByVal value As String)

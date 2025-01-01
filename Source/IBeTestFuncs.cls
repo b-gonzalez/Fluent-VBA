@@ -17,15 +17,15 @@ End Function
 
 Public Function InDataStructure( _
     ByVal testingValue As Variant, _
-    ByVal datastructure As Variant, _
+    ByVal dataStructure As Variant, _
     Optional ByVal negateValue As Boolean = False, _
     Optional ByVal updateFluentPath As Boolean = False) As Variant
 End Function
 
-Private Function getNestedElementsRecur(ByVal datastructure As Variant, Optional ByRef col As Collection = Nothing) As Collection
+Private Function getNestedElementsRecur(ByVal dataStructure As Variant, Optional ByRef col As VBA.Collection = Nothing) As VBA.Collection
 End Function
 
-Private Function getNestedElementsIter(ByVal datastructure As Variant) As Collection
+Private Function getNestedElementsIter(ByVal dataStructure As Variant) As VBA.Collection
 End Function
 
 Public Function GreaterThan(ByVal testingValue As Variant, ByVal testingInput As Double, Optional ByVal negateValue As Boolean = False) As Variant

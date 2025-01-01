@@ -16,7 +16,7 @@ Private Function IUtilities_NegateIfBool(ByVal result As Variant) As Variant
     
     tempResult = result
     
-    If Not Information.IsEmpty(result) And Not Information.IsNull(result) Then
+    If Not VBA.Information.IsEmpty(result) And Not VBA.Information.IsNull(result) Then
         tempResult = Not result
     End If
     

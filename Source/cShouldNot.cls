@@ -46,7 +46,7 @@ Private Property Get IShould_have() As IHave
     Set pNotHaveSet = pNotHave
     Set pNotHaveSet.SetTestFunc = pTestingFunctions
     
-    If Information.IsObject(pShouldNotVal) Then
+    If VBA.Information.IsObject(pShouldNotVal) Then
         Set pNotHaveSet.TestValue = pShouldNotVal
     Else
         pNotHaveSet.TestValue = pShouldNotVal
@@ -62,7 +62,7 @@ Private Property Get IShould_be() As IBe
     Set pNotBeSet = pNotBe
     Set pNotBeSet.SetTestFunc = pTestingFunctions
     
-    If Information.IsObject(pShouldNotVal) Then
+    If VBA.Information.IsObject(pShouldNotVal) Then
         Set pNotBeSet.TestValue = pShouldNotVal
     Else
         pNotBeSet.TestValue = pShouldNotVal

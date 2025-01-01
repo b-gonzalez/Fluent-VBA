@@ -15,6 +15,7 @@ Private pAlphabetic As ITestingFunctionsSubInfo
 Private pAlphanumeric As ITestingFunctionsSubInfo
 Private pBetween As ITestingFunctionsSubInfo
 Private pContain As ITestingFunctionsSubInfo
+Private pDepthCountOf As ITestingFunctionsSubInfo
 Private pElements As ITestingFunctionsSubInfo
 Private pElementsInDataStructure As ITestingFunctionsSubInfo
 Private pEndWith As ITestingFunctionsSubInfo
@@ -35,6 +36,7 @@ Private pLessThan As ITestingFunctionsSubInfo
 Private pLessThanOrEqualTo As ITestingFunctionsSubInfo
 Private pMaxLengthOf As ITestingFunctionsSubInfo
 Private pMinLengthOf As ITestingFunctionsSubInfo
+Private pNestedCountOf As ITestingFunctionsSubInfo
 Private pNumeric As ITestingFunctionsSubInfo
 Private pOneOf As ITestingFunctionsSubInfo
 Private pProcedure As ITestingFunctionsInfo
@@ -61,6 +63,10 @@ End Property
 
 Private Property Get ITestingFunctionsInfo_Contain() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_Contain = pContain
+End Property
+
+Private Property Get ITestingFunctionsInfo_DepthCountOf() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfo_DepthCountOf = pDepthCountOf
 End Property
 
 Private Property Get ITestingFunctionsInfo_Elements() As ITestingFunctionsSubInfo
@@ -143,6 +149,10 @@ Private Property Get ITestingFunctionsInfo_MinLengthOf() As ITestingFunctionsSub
     Set ITestingFunctionsInfo_MinLengthOf = pMinLengthOf
 End Property
 
+Private Property Get ITestingFunctionsInfo_NestedCountOf() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfo_NestedCountOf = pNestedCountOf
+End Property
+
 Private Property Get ITestingFunctionsInfo_Numeric() As ITestingFunctionsSubInfo
     Set ITestingFunctionsInfo_Numeric = pNumeric
 End Property
@@ -184,6 +194,7 @@ Private Sub ITestingFunctionsInfo_populateDictWithTestFuncInfo()
     pTestingFunctionsDict.Add "Alphanumeric", pAlphanumeric
     pTestingFunctionsDict.Add "Between", pBetween
     pTestingFunctionsDict.Add "Contain", pContain
+    pTestingFunctionsDict.Add "DepthCountOf", pDepthCountOf
     pTestingFunctionsDict.Add "Elements", pElements
     pTestingFunctionsDict.Add "ElementsInDataStructure", pElementsInDataStructure
     pTestingFunctionsDict.Add "EndWith", pEndWith
@@ -204,6 +215,7 @@ Private Sub ITestingFunctionsInfo_populateDictWithTestFuncInfo()
     pTestingFunctionsDict.Add "LessThanOrEqualTo", pLessThanOrEqualTo
     pTestingFunctionsDict.Add "MaxLengthOf", pMaxLengthOf
     pTestingFunctionsDict.Add "MinLengthOf", pMinLengthOf
+    pTestingFunctionsDict.Add "NestedCountOf", pNestedCountOf
     pTestingFunctionsDict.Add "Numeric", pNumeric
     pTestingFunctionsDict.Add "OneOf", pOneOf
     pTestingFunctionsDict.Add "Procedure", pProcedure

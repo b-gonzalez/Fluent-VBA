@@ -83,23 +83,23 @@ Private Function IHave_SameTypeAs(ByVal All As Variant) As Variant
     IHave_SameTypeAs = result
 End Function
 
-Private Function IHave_ExactSameElementsAs(ByVal datastructure As Variant) As Variant
+Private Function IHave_ExactSameElementsAs(ByVal dataStructure As Variant) As Variant
     Dim result As Variant
-    result = pHaveTestFuncs.ExactSameElementsAs(pNotHaveVal, True, True, datastructure)
+    result = pHaveTestFuncs.ExactSameElementsAs(pNotHaveVal, True, True, dataStructure)
     result = pUtilities.NegateIfBool(result)
     IHave_ExactSameElementsAs = result
 End Function
 
-Private Function IHave_SameUniqueElementsAs(ByVal datastructure As Variant) As Variant
+Private Function IHave_SameUniqueElementsAs(ByVal dataStructure As Variant) As Variant
     Dim result As Variant
-    result = pHaveTestFuncs.SameUniqueElementsAs(pNotHaveVal, True, datastructure)
+    result = pHaveTestFuncs.SameUniqueElementsAs(pNotHaveVal, True, dataStructure)
     result = pUtilities.NegateIfBool(result)
     IHave_SameUniqueElementsAs = result
 End Function
 
-Private Function IHave_SameElementsAs(ByVal datastructure As Variant) As Variant
+Private Function IHave_SameElementsAs(ByVal dataStructure As Variant) As Variant
     Dim result As Variant
-    result = pHaveTestFuncs.SameElementsAs(pNotHaveVal, True, datastructure)
+    result = pHaveTestFuncs.SameElementsAs(pNotHaveVal, True, dataStructure)
     result = pUtilities.NegateIfBool(result)
     IHave_SameElementsAs = result
 End Function
@@ -126,10 +126,30 @@ Private Function IHave_Elements(ParamArray args() As Variant) As Variant
     IHave_Elements = result
 End Function
 
-Private Function IHave_ElementsInDataStructure(ByVal datastructure As Variant) As Variant
+Private Function IHave_ElementsInDataStructure(ByVal dataStructure As Variant) As Variant
     Dim result As Variant
         
-    result = pHaveTestFuncs.ElementsInDataStructure(pNotHaveVal, datastructure, True)
+    result = pHaveTestFuncs.ElementsInDataStructure(pNotHaveVal, dataStructure, True)
     result = pUtilities.NegateIfBool(result)
     IHave_ElementsInDataStructure = result
+End Function
+
+Private Function IHave_DepthCountOf( _
+    ByVal value As Long _
+) As Variant
+    Dim result As Variant
+    
+    result = pHaveTestFuncs.DepthCountOf(pNotHaveVal, value, True)
+    result = pUtilities.NegateIfBool(result)
+    IHave_DepthCountOf = result
+End Function
+
+Private Function IHave_NestedCountOf( _
+    ByVal value As Long _
+) As Variant
+    Dim result As Variant
+    
+    result = pHaveTestFuncs.NestedCountOf(pNotHaveVal, value, True)
+    result = pUtilities.NegateIfBool(result)
+    IHave_NestedCountOf = result
 End Function

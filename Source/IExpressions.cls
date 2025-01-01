@@ -11,7 +11,7 @@ Option Explicit
 
 Public Enum flShould
     [_first] = 0
-    Contain_
+    Contain_ = [_first]
     EndWith_
     EvaluateTo_
     StartWith_ = 3
@@ -20,6 +20,7 @@ End Enum
 
 Public Enum flHave
     [_first] = 101
+    DepthCountOf_ = [_first]
     Elements_
     ElementsInDataStructure_
     ErrorDescriptionOf_
@@ -29,16 +30,17 @@ Public Enum flHave
     LengthOf_
     MaxLengthOf_
     MinLengthOf_
+    NestedCountOf_
     Procedure_
     SameElementsAs_
     SameTypeAs_
-    SameUniqueElementsAs_ = 111
+    SameUniqueElementsAs_ = 115
     [_last] = 200
 End Enum
 
 Public Enum flBe
     [_first] = 201
-    Alphabetic_
+    Alphabetic_ = [_first]
     Alphanumeric_
     Between_
     Erroneous_
@@ -52,7 +54,7 @@ Public Enum flBe
     LessThanOrEqualTo_
     Numeric_
     OneOf_
-    Something_ = 216
+    Something_ = 215
     [_last] = 300
 End Enum
 
@@ -115,7 +117,7 @@ End Function
 Public Function DatastructureIsEmpty(ByVal v As Variant) As Boolean
 End Function
 
-Public Function InputToStringRecur(ByVal v As Variant) As String
+Public Function inputToStringRecur(ByVal v As Variant) As String
 End Function
 
 Public Function getResultNumber(ByVal result As Variant) As Long
@@ -124,10 +126,10 @@ End Function
 Public Function inputToStringIter(ByVal v As Variant) As String
 End Function
 
-Private Function getNestedElementsFromCollection(ByVal col As Collection) As Collection
+Private Function getNestedElementsFromCollection(ByVal col As VBA.Collection) As VBA.Collection
 End Function
 
-Public Function getDsCount(ByVal datastructure As Variant) As Long
+Public Function getDsCount(ByVal dataStructure As Variant) As Long
 End Function
 
 Private Function getDsType(ByVal v As Variant) As String

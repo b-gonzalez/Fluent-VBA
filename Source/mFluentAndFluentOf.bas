@@ -1,7 +1,7 @@
 Attribute VB_Name = "mFluentAndFluentOf"
 Option Explicit
 
-Sub FluentAndFluentOfExample()
+Private Sub FluentAndFluentOfExample()
     'NOTE: In order to create Fluent and FluentOf
     'objects, you have to add a reference to the
     'appropriate office file. This is done by:

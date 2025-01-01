@@ -57,16 +57,16 @@ Private Function IHave_SameTypeAs(ByVal All As Variant) As Variant
     IHave_SameTypeAs = pHaveTestFuncs.SameTypeAs(pHaveVal, All)
 End Function
 
-Private Function IHave_ExactSameElementsAs(ByVal datastructure As Variant) As Variant
-    IHave_ExactSameElementsAs = pHaveTestFuncs.ExactSameElementsAs(pHaveVal, False, True, datastructure)
+Private Function IHave_ExactSameElementsAs(ByVal dataStructure As Variant) As Variant
+    IHave_ExactSameElementsAs = pHaveTestFuncs.ExactSameElementsAs(pHaveVal, False, True, dataStructure)
 End Function
 
-Private Function IHave_SameUniqueElementsAs(ByVal datastructure As Variant) As Variant
-    IHave_SameUniqueElementsAs = pHaveTestFuncs.SameUniqueElementsAs(pHaveVal, False, datastructure)
+Private Function IHave_SameUniqueElementsAs(ByVal dataStructure As Variant) As Variant
+    IHave_SameUniqueElementsAs = pHaveTestFuncs.SameUniqueElementsAs(pHaveVal, False, dataStructure)
 End Function
 
-Private Function IHave_SameElementsAs(ByVal datastructure As Variant) As Variant
-    IHave_SameElementsAs = pHaveTestFuncs.SameElementsAs(pHaveVal, False, datastructure)
+Private Function IHave_SameElementsAs(ByVal dataStructure As Variant) As Variant
+    IHave_SameElementsAs = pHaveTestFuncs.SameElementsAs(pHaveVal, False, dataStructure)
 End Function
 
 Private Function IHave_Procedure( _
@@ -84,6 +84,19 @@ Private Function IHave_Elements(ParamArray args() As Variant) As Variant
     IHave_Elements = pHaveTestFuncs.Elements(pHaveVal, tempArgs, False, True)
 End Function
 
-Private Function IHave_ElementsInDataStructure(ByVal datastructure As Variant) As Variant
-    IHave_ElementsInDataStructure = pHaveTestFuncs.ElementsInDataStructure(pHaveVal, datastructure, False)
+Private Function IHave_ElementsInDataStructure(ByVal dataStructure As Variant) As Variant
+    IHave_ElementsInDataStructure = pHaveTestFuncs.ElementsInDataStructure(pHaveVal, dataStructure, False)
 End Function
+
+Private Function IHave_DepthCountOf( _
+    ByVal value As Long _
+) As Variant
+    IHave_DepthCountOf = pHaveTestFuncs.DepthCountOf(pHaveVal, value, False)
+End Function
+
+Private Function IHave_NestedCountOf( _
+    ByVal value As Long _
+) As Variant
+    IHave_NestedCountOf = pHaveTestFuncs.NestedCountOf(pHaveVal, value, False)
+End Function
+

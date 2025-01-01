@@ -16,14 +16,14 @@ Public Event TestUnexpected(ByVal test As ITest)
 Public Event DuplicateTest(ByVal test As ITest)
 
 Private pResult As Variant
-Private pCol As Collection
+Private pCol As VBA.Collection
 Private pCount As Long
 Private pTestDictCounter As Scripting.Dictionary
 Private pAlgorithm As flAlgorithm
 Private pToStrDev As Boolean
 Private pApproximateEqual As Boolean
 Private pEpsilon As Double
-Private pDataStructures As Collection
+Private pDataStructures As VBA.Collection
 Private pFluentPathDict As Scripting.Dictionary
 Private pSkipDupCheck As Boolean
 Private pTestStrings As ITestStrings
@@ -82,7 +82,7 @@ Public Property Get Epsilon() As Double
     Epsilon = pEpsilon
 End Property
 
-Public Property Get DataStructures() As Collection
+Public Property Get DataStructures() As VBA.Collection
     Set DataStructures = pDataStructures
 End Property
 
@@ -102,17 +102,17 @@ Public Property Get TestStrings() As ITestStrings
     Set TestStrings = pTestStrings
 End Property
 
-Public Sub AddDataStructure(ByVal datastructure As Variant)
+Public Sub AddDataStructure(ByVal dataStructure As Variant)
     Dim dsType As String
 
-    dsType = Information.TypeName(datastructure)
+    dsType = VBA.Information.TypeName(dataStructure)
 
-    If IsIterable(datastructure) And Not datastructureInCollection(dsType, pDataStructures) Then
+    If IsIterable(dataStructure) And Not datastructureInCollection(dsType, pDataStructures) Then
         pDataStructures.Add dsType
     End If
 End Sub
 
-Public Function datastructureInCollection(ByVal dsName As String, ByVal col As Collection) As Boolean
+Public Function datastructureInCollection(ByVal dsName As String, ByVal col As VBA.Collection) As Boolean
     Dim elem As Variant
     Dim b As Boolean
     
@@ -128,32 +128,32 @@ Public Function datastructureInCollection(ByVal dsName As String, ByVal col As C
     datastructureInCollection = b
 End Function
 
-Public Function IsDataStructure(ByVal datastructure As Variant) As Boolean
+Public Function IsDataStructure(ByVal dataStructure As Variant) As Boolean
     Dim dsTypeName As String
     Dim tempBool As Boolean
     Dim fluentBool As Boolean
     Dim elem As Variant
     Dim tempErr As Long
     
-    dsTypeName = Information.TypeName(datastructure)
+    dsTypeName = VBA.Information.TypeName(dataStructure)
     tempBool = False
     
-    If IsArray(datastructure) Then
+    If VBA.Information.IsArray(dataStructure) Then
         tempBool = True
     ElseIf datastructureInCollection(dsTypeName, pDataStructures) Then
-        tempBool = IsIterable(datastructure)
+        tempBool = IsIterable(dataStructure)
     End If
     
     IsDataStructure = tempBool
 End Function
 
-Public Function IsIterable(ByVal datastructure As Variant) As Boolean
+Public Function IsIterable(ByVal dataStructure As Variant) As Boolean
     Dim tempBool As Boolean
     Dim elem As Variant
     Dim tempErr As Long
     
     On Error Resume Next
-        For Each elem In datastructure
+        For Each elem In dataStructure
             Exit For
         Next elem
         
@@ -179,7 +179,7 @@ Public Sub CheckTest(ByVal test As ITest)
         RaiseEvent TestPassed(test)
     ElseIf test.result = False Then
         RaiseEvent TestFailed(test)
-    ElseIf Information.IsNull(test.result) Or Information.IsEmpty(test.result) Then
+    ElseIf VBA.Information.IsNull(test.result) Or VBA.Information.IsEmpty(test.result) Then
         RaiseEvent TestUnexpected(test)
     End If
     
@@ -199,7 +199,7 @@ Public Sub ResetCounter()
 End Sub
 
 Private Sub Class_Initialize()
-    Set pCol = New Collection
+    Set pCol = New VBA.Collection
     pCount = 0
     
     pAlgorithm = flRecursive
@@ -211,7 +211,7 @@ Private Sub Class_Initialize()
     
     Set pTestStrings = New cTestStrings
         
-    Set pDataStructures = New Collection
+    Set pDataStructures = New VBA.Collection
     
     pDataStructures.Add "Dictionary"
     pDataStructures.Add "Collection"

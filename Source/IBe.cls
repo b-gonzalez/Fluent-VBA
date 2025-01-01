@@ -37,7 +37,7 @@ Public Function GreaterThanOrEqualTo(ByVal value As Double) As Variant
 
 End Function
 
-Public Function InDataStructure(ByVal datastructure As Variant) As Variant
+Public Function InDataStructure(ByVal dataStructure As Variant) As Variant
 
 End Function
 
@@ -65,6 +65,6 @@ Public Function Something() As Variant
 
 End Function
 
-Public Function IdenticalTo(ByVal datastructure As Variant) As Variant
+Public Function IdenticalTo(ByVal dataStructure As Variant) As Variant
 
 End Function

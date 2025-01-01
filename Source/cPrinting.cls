@@ -14,7 +14,7 @@ Implements IPrinting
 
 Private pPrintTotalTests As Boolean
 Private pName As String
-Private pTestCollection As Collection
+Private pTestCollection As VBA.Collection
 Private pTestCount As Long
 Private pCategory As String
 Private iPrint As IPrintExpr
@@ -28,9 +28,9 @@ Private pExpressions As IExpressions
 Private pCategorySet As Boolean
 Private pNameSet As Boolean
 
-Private Property Get IPrintExpr_TestCollection() As Collection
+Private Property Get IPrintExpr_TestCollection() As VBA.Collection
     If pTestCollection Is Nothing Then
-        Set pTestCollection = New Collection
+        Set pTestCollection = New VBA.Collection
     End If
     Set IPrintExpr_TestCollection = pTestCollection
 End Property
@@ -95,7 +95,7 @@ Private Property Get IPrinting_FluentPath() As String
     IPrinting_FluentPath = pFluentPath
 End Property
 
-Private Function IPrinting_ArrayFromTests(ByVal col As Collection, ByVal tp As TestProperty) As Variant()
+Private Function IPrinting_ArrayFromTests(ByVal col As VBA.Collection, ByVal tp As TestProperty) As Variant()
     Dim test As ITest
     Dim testDev As ITestDev
     Dim elem As Variant

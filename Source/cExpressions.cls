@@ -48,14 +48,14 @@ End Property
 
 Private Function setTestResultProps(ByVal test As ITest, ByVal result As Variant, ByVal negateValue As Boolean) As ITest
     
-    If Information.IsNull(result) Then
+    If VBA.Information.IsNull(result) Then
         test.HasNull = True
-    ElseIf Information.IsEmpty(result) Then
+    ElseIf VBA.Information.IsEmpty(result) Then
         test.HasEmpty = True
         test.TestValueSet = False
     End If
 
-    If negateValue And Not Information.IsNull(result) And Not Information.IsEmpty(result) Then
+    If negateValue And Not VBA.Information.IsNull(result) And Not VBA.Information.IsEmpty(result) Then
         result = Not result
     End If
     
@@ -87,7 +87,7 @@ Private Function initTest(ByVal test As ITest, ByVal functionName As String, ByV
 End Function
 
 Private Function setTestValueTestInput(ByVal test As ITest, ByVal testingValue As Variant, ByVal testingInput As Variant) As ITest
-    If Information.TypeName(testingValue) <> "Nothing" Then
+    If VBA.Information.TypeName(testingValue) <> "Nothing" Then
         If TypeOf testingValue Is Object  Then
             Set test.testingValue = testingValue
         Else
@@ -95,8 +95,8 @@ Private Function setTestValueTestInput(ByVal test As ITest, ByVal testingValue A
         End If
     End If
     
-    If Not Information.IsMissing(testingInput) Then
-        If Information.TypeName(testingInput) <> "Nothing" Then
+    If Not VBA.Information.IsMissing(testingInput) Then
+        If VBA.Information.TypeName(testingInput) <> "Nothing" Then
             If TypeOf testingInput Is Object  Then
                 Set test.testingInput = testingInput
             Else
@@ -112,15 +112,15 @@ Private Function setLowerValHigherVal(ByVal test As ITest, ByVal lowerVal As Var
     test.lowerVal = lowerVal
 
     test.higherVal = higherVal
-
-    test.testingInput = Array(lowerVal, higherVal)
+    
+    test.testingInput = [_HiddenModule].Array(lowerVal, higherVal)
     
     Set setLowerValHigherVal = test
 End Function
 
 Private Function getCleanedTest(ByVal test As ITest, ByVal cleanedTestValue As Variant, ByVal cleanedTestInput As Variant) As ITest
-    If Not Information.IsMissing(cleanedTestValue) Then
-        If Information.TypeName(cleanedTestValue) = "String" Then
+    If Not VBA.Information.IsMissing(cleanedTestValue) Then
+        If VBA.Information.TypeName(cleanedTestValue) = "String" Then
             If test.testingValue <> cleanedTestValue Then
                 test.cleanedTestValue = cleanedTestValue
                 test.HasCleanTestValue = True
@@ -128,8 +128,8 @@ Private Function getCleanedTest(ByVal test As ITest, ByVal cleanedTestValue As V
         End If
     End If
     
-    If Not Information.IsMissing(cleanedTestInput) Then
-        If Information.TypeName(cleanedTestInput) = "String" Then
+    If Not VBA.Information.IsMissing(cleanedTestInput) Then
+        If VBA.Information.TypeName(cleanedTestInput) = "String" Then
             If test.testingInput <> cleanedTestInput Then
                 test.cleanedTestInput = cleanedTestInput
                 test.HasCleanTestInput = True
@@ -214,7 +214,7 @@ Private Sub IExpressions_addToTestAndFluentPath( _
 
     Set test = initTest(test, functionName, pPrinting)
     
-    If Not Information.IsMissing(Actual) Then
+    If Not VBA.Information.IsMissing(Actual) Then
         test.Actual = Actual
     End If
     
@@ -223,7 +223,7 @@ Private Sub IExpressions_addToTestAndFluentPath( _
 
     Set test = setTestValueTestInput(test, testingValue, testingInput)
 
-    If Not Information.IsMissing(lowerVal) And Not Information.IsMissing(higherVal) Then
+    If Not VBA.Information.IsMissing(lowerVal) And Not VBA.Information.IsMissing(higherVal) Then
         Set test = setLowerValHigherVal(test, lowerVal, higherVal)
     End If
 
@@ -253,7 +253,7 @@ Private Function IExpressions_Should(ByVal shouldType As flShould, Optional ByVa
             Err.Raise NOT_IMPLEMENTED_ERROR, "Function not implemented"
     End Select
     
-    If Not Information.IsMissing(testingInput) Then
+    If Not VBA.Information.IsMissing(testingInput) Then
         shouldStr = shouldStr & " " & testingInput
     End If
 
@@ -308,11 +308,11 @@ Optional ByVal higherVal As Variant) As String
     
     beStr = beStr & funcStr
     
-    If TesingInput <> "" And Information.IsMissing(lowerVal) And Information.IsMissing(higherVal) Then
+    If TesingInput <> "" And VBA.Information.IsMissing(lowerVal) And VBA.Information.IsMissing(higherVal) Then
         beStr = beStr & " " & TesingInput
     End If
     
-    If TesingInput = "" And Not Information.IsMissing(lowerVal) And Not Information.IsMissing(higherVal) Then
+    If TesingInput = "" And Not VBA.Information.IsMissing(lowerVal) And Not VBA.Information.IsMissing(higherVal) Then
         beStr = beStr & " " & lowerVal & " and " & higherVal
     End If
 
@@ -330,6 +330,8 @@ Optional ByVal higherVal As Variant) As String
     haveStr = "have "
     
     Select Case haveType
+        Case DepthCountOf_
+            funcStr = "depth count of"
         Case Elements_
             funcStr = "elements"
         Case ElementsInDataStructure_
@@ -348,6 +350,8 @@ Optional ByVal higherVal As Variant) As String
             funcStr = "max length of"
         Case MinLengthOf_
             funcStr = "min length of"
+        Case NestedCountOf_
+            funcStr = "nested count of"
         Case Procedure_
             funcStr = "procedure"
         Case SameElementsAs_
@@ -362,11 +366,11 @@ Optional ByVal higherVal As Variant) As String
     
     haveStr = haveStr & funcStr
     
-    If TesingInput <> "" And Information.IsMissing(lowerVal) And Information.IsMissing(higherVal) Then
+    If TesingInput <> "" And VBA.Information.IsMissing(lowerVal) And VBA.Information.IsMissing(higherVal) Then
         haveStr = haveStr & " " & TesingInput
     End If
     
-    If TesingInput = "" And Not Information.IsMissing(lowerVal) And Not Information.IsMissing(higherVal) Then
+    If TesingInput = "" And Not VBA.Information.IsMissing(lowerVal) And Not VBA.Information.IsMissing(higherVal) Then
         haveStr = haveStr & " " & lowerVal & " and " & higherVal
     End If
 
@@ -377,8 +381,8 @@ End Function
 Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentPath As String, ByVal tempFluentPath As String) As String
     Dim finalFluentPath As String
     
-    If Information.IsNull(test.result) Or Information.IsEmpty(test.result) Then
-        test.result = Information.TypeName(test.result)
+    If VBA.Information.IsNull(test.result) Or VBA.Information.IsEmpty(test.result) Then
+        test.result = VBA.Information.TypeName(test.result)
     End If
 
     With test
@@ -426,6 +430,8 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
             tempFluentPath = IExpressions_Be(Between_, lowerVal:=test.lowerVal, higherVal:=test.higherVal)
         Case "Contain"
             tempFluentPath = IExpressions_Should(Contain_, testingInput)
+        Case "DepthCountOf"
+            tempFluentPath = IExpressions_Have(DepthCountOf_, testingInput)
         Case "Elements"
             tempFluentPath = IExpressions_Have(Elements_, testingInput)
         Case "ElementsInDataStructure"
@@ -466,6 +472,8 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
             tempFluentPath = IExpressions_Have(MaxLengthOf_, testingInput)
         Case "MinLengthOf"
             tempFluentPath = IExpressions_Have(MinLengthOf_, testingInput)
+        Case "NestedCountOf"
+            tempFluentPath = IExpressions_Have(NestedCountOf_, testingInput)
         Case "Numeric"
             tempFluentPath = IExpressions_Be(Numeric_)
         Case "OneOf"
@@ -523,7 +531,7 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
         
         pTestingSubInfo.Count = pTestingSubInfo.Count + 1
         
-        If Not Information.IsNull(test.result) Then
+        If Not VBA.Information.IsNull(test.result) Then
             If test.result Then
                 pTestingSubInfo.Passed = pTestingSubInfo.Passed + 1
             Else
@@ -532,7 +540,7 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
         Else
             pTestingSubInfo.Unexpected = pTestingSubInfo.Unexpected + 1
         End If
-    ElseIf pTestDictCounter.Exists(Trim(test.functionName)) Then
+    ElseIf pTestDictCounter.Exists(VBA.Strings.Trim(test.functionName)) Then
         Err.Raise Number:=SPACE_IN_FUNC_NAME, Description:="Test name not matching in TestDictCounter due to extra space in the function name"
     Else
         Err.Raise Number:=NOT_IMPLEMENTED_ERROR, Description:="Test name not implemented in TestDictCounter"
@@ -544,7 +552,7 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
     
     FluentPath = IExpressions_getFluentPath(FluentPath, test, negateValue)
     
-    finalFluentPath = Trim(Split(FluentPath, "=")(fluentElement))
+    finalFluentPath = VBA.Strings.Trim(VBA.Strings.Split(FluentPath, "=")(fluentElement))
     
     iPrint.FluentPath = finalFluentPath
     
@@ -562,12 +570,12 @@ Private Function IExpressions_InputToString(ByVal nv As Variant) As String
     Dim tempNVTS As String
     Dim i As Long
     Dim elem As Variant
-    Dim col As Collection
+    Dim col As VBA.Collection
     Dim counter As Long
     
     i = 0
     counter = 0
-    Set col = New Collection
+    Set col = New VBA.Collection
     
     Select Case True
         Case pMeta.Tests.IsDataStructure(nv)
@@ -576,18 +584,18 @@ Private Function IExpressions_InputToString(ByVal nv As Variant) As String
             ElseIf pMeta.Tests.Algorithm = flIterative Then
                 tempNVTS = IExpressions_inputToStringIter(nv)
             End If
-        Case Information.IsNull(nv) Or Information.IsEmpty(nv)
-            tempNVTS = Information.TypeName(nv)
+        Case VBA.Information.IsNull(nv) Or VBA.Information.IsEmpty(nv)
+            tempNVTS = VBA.Information.TypeName(nv)
         Case Not TypeOf nv Is Object
-            If Information.TypeName(nv) = "String" Then
+            If VBA.Information.TypeName(nv) = "String" Then
                 nv = pMeta.ToString.WrapIfString(nv)
             End If
-            tempNVTS = CStr(nv)
+            tempNVTS = VBA.Conversion.CStr(nv)
         Case TypeOf nv Is VBA.ErrObject
-            tempNVTS = Information.TypeName(nv)
+            tempNVTS = VBA.Information.TypeName(nv)
         Case TypeOf nv Is Object
             If Not nv Is Nothing Then
-                tempNVTS = Information.TypeName(nv)
+                tempNVTS = VBA.Information.TypeName(nv)
             Else
                 tempNVTS = "Nothing"
             End If
@@ -644,9 +652,9 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                 For Each elem In v
                     If pMeta.Tests.IsDataStructure(elem) Then
                         temp = temp & IExpressions_InputToStringRecur(elem) & ", "
-                    ElseIf Information.IsObject(elem) Then
-                        temp = temp & Information.TypeName(elem) & ", "
-                    ElseIf Information.TypeName(elem) = "String" Then
+                    ElseIf VBA.Information.IsObject(elem) Then
+                        temp = temp & VBA.Information.TypeName(elem) & ", "
+                    ElseIf VBA.Information.TypeName(elem) = "String" Then
                         temp = temp & pMeta.ToString.WrapIfString(elem) & ", "
                     Else
                         temp = temp & elem & ", "
@@ -656,9 +664,9 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
                 For Each elem In v.Keys
                     If pMeta.Tests.IsDataStructure(v(elem)) Then
                         temp = temp & elem & ": " & IExpressions_InputToStringRecur(v(elem)) & ", "
-                    ElseIf Information.IsObject(v(elem)) Then
-                        temp = temp & elem & ": " & Information.TypeName(v(elem)) & ", "
-                    ElseIf Information.TypeName(v(elem)) = "String" Then
+                    ElseIf VBA.Information.IsObject(v(elem)) Then
+                        temp = temp & elem & ": " & VBA.Information.TypeName(v(elem)) & ", "
+                    ElseIf VBA.Information.TypeName(v(elem)) = "String" Then
                         temp = temp & elem & ": " & pMeta.ToString.WrapIfString(v(elem)) & ", "
                     Else
                         temp = temp & elem & ": " & v(elem) & ", "
@@ -670,7 +678,7 @@ Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
     End Select
 
     If VBA.Right$(temp, 2) = ", " Then
-        temp = VBA.Left$(temp, Len(temp) - 2)
+        temp = VBA.Left$(temp, VBA.Strings.Len(temp) - 2)
     End If
 
     temp = temp & ")"
@@ -680,15 +688,15 @@ End Function
 
 Function IExpressions_inputToStringIter(ByVal v As Variant) As String
     Dim elem As Variant
-    Dim tempCol As Collection
+    Dim tempCol As VBA.Collection
     Dim tempCount As Long
-    Dim finalCol As Collection
+    Dim finalCol As VBA.Collection
     Dim elemStr As String
     Dim temp As String
     Dim vCounter As String
     Dim dsCount As Long
     
-    Set tempCol = New Collection
+    Set tempCol = New VBA.Collection
     tempCount = 1
     
     vCounter = IExpressions_getDsCount(v)
@@ -706,16 +714,22 @@ Function IExpressions_inputToStringIter(ByVal v As Variant) As String
             'value or object it is associated with
             
             If Not TypeOf v Is Scripting.Dictionary Then
-                If Information.IsObject(elem) Then
-                    tempCol.Add Information.TypeName(elem)
-                ElseIf Information.TypeName(elem) = "String" Then
+                If VBA.Information.IsObject(elem) Then
+                    tempCol.Add VBA.Information.TypeName(elem)
+                ElseIf VBA.Information.TypeName(elem) = "String" Then
                     tempCol.Add pMeta.ToString.WrapIfString(elem)
                 Else
                     tempCol.Add elem
                 End If
             Else
+                'v(elem) is a dictionary
                 tempCol.Add elem & ": "
-                tempCol.Add pMeta.ToString.WrapIfString(v(elem))
+                
+                If Not TypeOf v(elem) Is Scripting.Dictionary Then
+                    tempCol.Add pMeta.ToString.WrapIfString(v(elem))
+                Else
+                    tempCol.Add v(elem)
+                End If
             End If
         Else
             dsCount = IExpressions_getDsCount(elem)
@@ -756,13 +770,13 @@ Function IExpressions_inputToStringIter(ByVal v As Variant) As String
     
 End Function
 
-Function IExpressions_getNestedElementsFromCollection(ByVal col As Collection) As Collection
+Function IExpressions_getNestedElementsFromCollection(ByVal col As VBA.Collection) As VBA.Collection
     Dim elem As Variant
     Dim elem2 As Variant
     Dim counter As Long
     Dim elemCount As Long
     Dim elemCounter As Long
-    Dim tempCol As Collection
+    Dim tempCol As VBA.Collection
     Dim hasDataStructure As Boolean
     Dim d As Object
     
@@ -773,73 +787,80 @@ Function IExpressions_getNestedElementsFromCollection(ByVal col As Collection) A
     Do
         hasDataStructure = False
 
-        If Information.IsObject(tempCol(counter)) Then
+        If VBA.Information.IsObject(tempCol(counter)) Then
             Set elem = tempCol(counter)
         Else
             elem = tempCol(counter)
         End If
         
         If pMeta.Tests.IsDataStructure(elem) Then
-            hasDataStructure = True
-            
-            tempCol.Add IExpressions_getDsType(elem), before:=counter
-            
-            'counter needs to get incremented every time an element is added
-            'to tempCol or when the loop continues to the next element
-            counter = counter + 1
-            
-            elemCount = IExpressions_getDsCount(elem)
-            
-            For Each elem2 In elem
-                If Not TypeOf elem Is Scripting.Dictionary Then
-                    If Information.TypeName(elem2) = "String" Then
-                        tempCol.Add pMeta.ToString.WrapIfString(elem2), before:=counter
-                    Else
-                        tempCol.Add elem2, before:=counter
-                    End If
-                    
-                    'counter incremented towards end of if statement
-                Else
-                    Set d = elem
-                    
-                    If pMeta.Tests.IsDataStructure(d(elem2)) Then
-                        tempCol.Add elem2 & ": ", before:=counter
-                        counter = counter + 1
+            If IExpressions_getDsCount(elem) > 0 Then
+                hasDataStructure = True
+                
+                tempCol.Add IExpressions_getDsType(elem), before:=counter
+                
+                'counter needs to get incremented every time an element is added
+                'to tempCol or when the loop continues to the next element
+                counter = counter + 1
+                
+                elemCount = IExpressions_getDsCount(elem)
+                
+                For Each elem2 In elem
+                    If Not TypeOf elem Is Scripting.Dictionary Then
+                        If VBA.Information.TypeName(elem2) = "String" Then
+                            tempCol.Add pMeta.ToString.WrapIfString(elem2), before:=counter
+                        Else
+                            tempCol.Add elem2, before:=counter
+                        End If
                         
                         'counter incremented towards end of if statement
-                        tempCol.Add d(elem2), before:=counter
-                    ElseIf Information.TypeName(d(elem2)) = "String" Then
-                        'counter incremented towards end of if statement
-                        tempCol.Add elem2 & ": " & pMeta.ToString.WrapIfString(d(elem2)), before:=counter
                     Else
-                        'counter incremented towards end of if statement
-                        tempCol.Add elem2 & ": " & d(elem2), before:=counter
+                        Set d = elem
+                        
+                        If pMeta.Tests.IsDataStructure(d(elem2)) Then
+                            tempCol.Add elem2 & ": ", before:=counter
+                            counter = counter + 1
+                            
+                            'counter incremented towards end of if statement
+                            tempCol.Add d(elem2), before:=counter
+                        ElseIf VBA.Information.TypeName(d(elem2)) = "String" Then
+                            'counter incremented towards end of if statement
+                            tempCol.Add elem2 & ": " & pMeta.ToString.WrapIfString(d(elem2)), before:=counter
+                        Else
+                            'counter incremented towards end of if statement
+                            tempCol.Add elem2 & ": " & d(elem2), before:=counter
+                        End If
                     End If
-                End If
-            
+                
+                    counter = counter + 1
+                    
+                    If elemCounter < elemCount Then
+                    
+                        tempCol.Add ", ", before:=counter
+                    
+                    ElseIf elemCounter >= elemCount Then
+                    
+                        tempCol.Add ")", before:=counter
+                    
+                    End If
+                    
+                    elemCounter = elemCounter + 1
+                    
+                    counter = counter + 1
+                Next elem2
+                
+                tempCol.Remove counter
+    
+                counter = 0
+                
+                elemCounter = 1
+            Else
+                tempCol.Add IExpressions_getDsType(elem), before:=counter
                 counter = counter + 1
-                
-                If elemCounter < elemCount Then
-                
-                    tempCol.Add ", ", before:=counter
-                
-                ElseIf elemCounter >= elemCount Then
-                
-                    tempCol.Add ")", before:=counter
-                
-                End If
-                
-                elemCounter = elemCounter + 1
-                
+                tempCol.Add ")", before:=counter
                 counter = counter + 1
-            Next elem2
-            
-            tempCol.Remove counter
-
-            counter = 0
-            
-            elemCounter = 1
-
+                tempCol.Remove counter
+            End If
         End If
         
         counter = counter + 1
@@ -850,13 +871,13 @@ Function IExpressions_getNestedElementsFromCollection(ByVal col As Collection) A
     Set IExpressions_getNestedElementsFromCollection = tempCol
 End Function
 
-Public Function IExpressions_getDsCount(ByVal datastructure As Variant) As Long
+Public Function IExpressions_getDsCount(ByVal dataStructure As Variant) As Long
     Dim counter As Long
     Dim elem As Variant
     
     counter = 0
     
-    For Each elem In datastructure
+    For Each elem In dataStructure
         counter = counter + 1
     Next elem
     
@@ -868,12 +889,12 @@ Private Function IExpressions_getDsType(ByVal v As Variant) As String
     Dim elem As Variant
     Dim temp As String
     
-    If Information.IsArray(v) Then
-        temp = VBA.Left$(Information.TypeName(v), Len(Information.TypeName(v)) - 2) & "("
+    If VBA.Information.IsArray(v) Then
+        temp = VBA.Strings.Left$(VBA.Information.TypeName(v), VBA.Strings.Len(VBA.Information.TypeName(v)) - 2) & "("
     ElseIf pMeta.Tests.IsDataStructure(v) Then
-        temp = Information.TypeName(v) & "("
-    ElseIf Information.IsObject(v) Then
-        temp = Information.TypeName(v)
+        temp = VBA.Information.TypeName(v) & "("
+    ElseIf VBA.Information.IsObject(v) Then
+        temp = VBA.Information.TypeName(v)
     End If
     
     IExpressions_getDsType = temp
@@ -885,10 +906,10 @@ Private Function IExpressions_getResultNumber(ByVal result As Variant) As Long
     
     ResultNumber = Null
     
-    If Information.IsNull(result) Or Information.IsEmpty(result) Then
+    If VBA.Information.IsNull(result) Or VBA.Information.IsEmpty(result) Then
         ResultNumber = 1
-    ElseIf Information.TypeName(result) = "Boolean" Then
-        ResultNumber = CLng(result)
+    ElseIf VBA.Information.TypeName(result) = "Boolean" Then
+        ResultNumber = VBA.Conversion.CLng(result)
     End If
     
     IExpressions_getResultNumber = ResultNumber

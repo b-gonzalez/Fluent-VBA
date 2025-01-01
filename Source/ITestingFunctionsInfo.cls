@@ -21,6 +21,9 @@ End Property
 Public Property Get Contain() As ITestingFunctionsSubInfo
 End Property
 
+Public Property Get DepthCountOf() As ITestingFunctionsSubInfo
+End Property
+
 Public Property Get Elements() As ITestingFunctionsSubInfo
 End Property
 
@@ -79,6 +82,9 @@ Public Property Get MaxLengthOf() As ITestingFunctionsSubInfo
 End Property
 
 Public Property Get MinLengthOf() As ITestingFunctionsSubInfo
+End Property
+
+Public Property Get NestedCountOf() As ITestingFunctionsSubInfo
 End Property
 
 Public Property Get Numeric() As ITestingFunctionsSubInfo

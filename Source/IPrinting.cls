@@ -71,7 +71,7 @@ Private Sub addValueConditColors( _
     ByVal unexpectedMsg As String)
 End Sub
 
-Private Function ArrayFromTests(ByVal col As Collection, ByVal tp As TestProperty) As Variant()
+Private Function ArrayFromTests(ByVal col As VBA.Collection, ByVal tp As TestProperty) As Variant()
 End Function
 
 Private Function getTestMessageFromResultNumber(ByVal ResultNumber As Long) As String

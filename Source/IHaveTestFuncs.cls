@@ -96,3 +96,28 @@ Public Function ElementsInDataStructure( _
     ByVal negateValue As Boolean _
     ) As Variant
 End Function
+
+Public Function DepthCountOf( _
+    ByVal testingValue As Variant, _
+    ByRef testingInput As Long, _
+    ByVal negateValue As Boolean _
+    ) As Variant
+End Function
+
+Private Function getDepthCountRecur( _
+    testingValue As Variant, _
+    Optional counter As Long = 1, _
+    Optional depthCounter As Long = 0 _
+) As Long
+End Function
+
+Private Function getDepthCountIter(ds As Variant) As Long
+End Function
+
+Public Function NestedCountOf( _
+    ByVal testingValue As Variant, _
+    ByRef testingInput As Long, _
+    ByVal negateValue As Boolean _
+    ) As Variant
+End Function
+
