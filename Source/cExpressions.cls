@@ -113,7 +113,7 @@ Private Function setLowerValHigherVal(ByVal test As ITest, ByVal lowerVal As Var
 
     test.higherVal = higherVal
     
-    test.testingInput = [_HiddenModule].Array(lowerVal, higherVal)
+    test.testingInput = VBA.[_HiddenModule].Array(lowerVal, higherVal)
     
     Set setLowerValHigherVal = test
 End Function
@@ -226,8 +226,10 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     If Not VBA.Information.IsMissing(lowerVal) And Not VBA.Information.IsMissing(higherVal) Then
         Set test = setLowerValHigherVal(test, lowerVal, higherVal)
     End If
-
-    Set test = getCleanedTest(test, cleanedTestValue, cleanedTestInput)
+    
+    If Not VBA.Information.IsMissing(cleanedTestValue) Or Not VBA.Information.IsMissing(higherVal) Then
+        Set test = getCleanedTest(test, cleanedTestValue, cleanedTestInput)
+    End If
         
     Set test = setStrTestValueStrTestInput(test, pMeta, negateValue)
     
@@ -615,7 +617,7 @@ Private Function IExpressions_DatastructureIsEmpty(ByVal v As Variant) As Boolea
         Case TypeOf v Is Scripting.Dictionary Or TypeOf v Is Collection
             b = (v.Count = 0)
         
-        Case IsArray(v)
+        Case VBA.Information.IsArray(v)
             On Error Resume Next
             
                 '// will throw an error if v is initialized with no elements
