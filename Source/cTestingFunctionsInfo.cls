@@ -39,13 +39,12 @@ Private pMinLengthOf As ITestingFunctionsSubInfo
 Private pNestedCountOf As ITestingFunctionsSubInfo
 Private pNumeric As ITestingFunctionsSubInfo
 Private pOneOf As ITestingFunctionsSubInfo
-Private pProcedure As ITestingFunctionsInfo
+Private pProcedure As ITestingFunctionsSubInfo
 Private pSameElementsAs As ITestingFunctionsSubInfo
 Private pSameTypeAs As ITestingFunctionsSubInfo
 Private pSameUniqueElementsAs As ITestingFunctionsSubInfo
 Private pSomething As ITestingFunctionsSubInfo
 Private pStartWith As ITestingFunctionsSubInfo
-
 
 Private pTestingFunctionsDict As Scripting.Dictionary
 
@@ -227,12 +226,10 @@ Private Sub ITestingFunctionsInfo_populateDictWithTestFuncInfo()
 End Sub
 
 Private Sub ITestingFunctionsInfo_initTestingFunctionsInfo()
-    Dim i As Long
-    Dim elem As Variant
-    
-    For Each elem In pTestingFunctionsDict.Keys
-        Set pTestingFunctionsDict(elem) = New cTestingFunctionsSubInfo
-    Next elem
+    Set pTestingFunctionsDict = New Scripting.Dictionary
+    Call initTestingFunctionsSubInfoObjects
+    Call ITestingFunctionsInfo_populateDictWithTestFuncInfo
+
 End Sub
 
 Private Sub ITestingFunctionsInfo_PrintTestFunInfo()
@@ -325,9 +322,46 @@ Private Function ITestingFunctionsInfo_validateTfiDictCounters(ByVal tfiDict As 
     ITestingFunctionsInfo_validateTfiDictCounters = b
 End Function
 
+Private Sub initTestingFunctionsSubInfoObjects()
+    Set pAlphabetic = New cTestingFunctionsSubInfo
+    Set pAlphanumeric = New cTestingFunctionsSubInfo
+    Set pBetween = New cTestingFunctionsSubInfo
+    Set pContain = New cTestingFunctionsSubInfo
+    Set pDepthCountOf = New cTestingFunctionsSubInfo
+    Set pElements = New cTestingFunctionsSubInfo
+    Set pElementsInDataStructure = New cTestingFunctionsSubInfo
+    Set pEndWith = New cTestingFunctionsSubInfo
+    Set pEqualTo = New cTestingFunctionsSubInfo
+    Set pErroneous = New cTestingFunctionsSubInfo
+    Set pErrorDescriptionOf = New cTestingFunctionsSubInfo
+    Set pErrorNumberOf = New cTestingFunctionsSubInfo
+    Set pEvaluateTo = New cTestingFunctionsSubInfo
+    Set pExactSameElementsAs = New cTestingFunctionsSubInfo
+    Set pGreaterThan = New cTestingFunctionsSubInfo
+    Set pGreaterThanOrEqualTo = New cTestingFunctionsSubInfo
+    Set pIdenticalTo = New cTestingFunctionsSubInfo
+    Set pInDataStructure = New cTestingFunctionsSubInfo
+    Set pInDataStructures = New cTestingFunctionsSubInfo
+    Set pLengthBetween = New cTestingFunctionsSubInfo
+    Set pLengthOf = New cTestingFunctionsSubInfo
+    Set pLessThan = New cTestingFunctionsSubInfo
+    Set pLessThanOrEqualTo = New cTestingFunctionsSubInfo
+    Set pMaxLengthOf = New cTestingFunctionsSubInfo
+    Set pMinLengthOf = New cTestingFunctionsSubInfo
+    Set pNestedCountOf = New cTestingFunctionsSubInfo
+    Set pNumeric = New cTestingFunctionsSubInfo
+    Set pOneOf = New cTestingFunctionsSubInfo
+    Set pProcedure = New cTestingFunctionsSubInfo
+    Set pSameElementsAs = New cTestingFunctionsSubInfo
+    Set pSameTypeAs = New cTestingFunctionsSubInfo
+    Set pSameUniqueElementsAs = New cTestingFunctionsSubInfo
+    Set pSomething = New cTestingFunctionsSubInfo
+    Set pStartWith = New cTestingFunctionsSubInfo
+End Sub
+
 Private Sub Class_Initialize()
     Set pTestingFunctionsDict = New Scripting.Dictionary
     
+    Call initTestingFunctionsSubInfoObjects
     Call ITestingFunctionsInfo_populateDictWithTestFuncInfo
-    Call ITestingFunctionsInfo_initTestingFunctionsInfo
 End Sub
