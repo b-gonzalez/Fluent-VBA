@@ -13,6 +13,8 @@ Implements ITest
 Implements ITestDev
 
 Private pAcutal As String
+Private pAlgorithm As Variant
+Private pAlgorithmValueSet As Boolean
 Private pCategory As String
 Private pCleanedTestInput As String
 Private pCleanedTestValue As String
@@ -24,6 +26,7 @@ Private pHasCleanTestValue As Boolean
 Private pHasEmpty As Boolean
 Private pHasNull As Boolean
 Private pHigherVal As Variant
+Private pIsRecurIterFunc As Boolean
 Private pLowerVal As Variant
 Private pNegateValue As Boolean
 Private pResult As Variant
@@ -38,6 +41,13 @@ Private pTestValueIter As String
 Private pTestValueRecur As String
 Private pTestValueSet As Boolean
 Private pTestingValue As Variant
+
+
+Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
+
+Private Sub Class_Initialize()
+    pAlgorithm = Null
+End Sub
 
 Private Property Let ITest_testingValue(ByVal value As Variant)
     pTestingValue = value
@@ -263,6 +273,34 @@ Private Property Get ITestDev_TestInputIter() As String
     ITestDev_TestInputIter = pTestInputIter
 End Property
 
+Private Property Let ITestDev_Algorithm(ByVal value As Variant)
+    If value = flAlgorithm.flIterative Or value = flAlgorithm.flRecursive Then
+        pAlgorithm = value
+    Else
+        Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+    End If
+End Property
+
+Private Property Get ITestDev_Algorithm() As Variant
+    ITestDev_Algorithm = pAlgorithm
+End Property
+
+Private Property Let ITestDev_AlgorithmValueSet(ByVal value As Boolean)
+    pAlgorithmValueSet = value
+End Property
+
+Private Property Get ITestDev_AlgorithmValueSet() As Boolean
+    ITestDev_AlgorithmValueSet = pAlgorithmValueSet
+End Property
+
+Private Property Let ITestDev_IsRecurIterFunc(ByVal value As Boolean)
+    pIsRecurIterFunc = value
+End Property
+
+Private Property Get ITestDev_IsRecurIterFunc() As Boolean
+    ITestDev_IsRecurIterFunc = pIsRecurIterFunc
+End Property
+
 'PUBLIC PROPERTIES
 
 Public Property Let testingValue(ByVal value As Variant)
@@ -440,3 +478,4 @@ End Property
 Public Property Get Actual() As String
     Actual = ITest_Actual
 End Property
+

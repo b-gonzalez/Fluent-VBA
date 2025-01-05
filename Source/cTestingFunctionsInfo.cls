@@ -10,6 +10,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Implements ITestingFunctionsInfo
+Implements ITestingFunctionsInfoDev
 
 Private pAlphabetic As ITestingFunctionsSubInfo
 Private pAlphanumeric As ITestingFunctionsSubInfo
@@ -45,6 +46,17 @@ Private pSameTypeAs As ITestingFunctionsSubInfo
 Private pSameUniqueElementsAs As ITestingFunctionsSubInfo
 Private pSomething As ITestingFunctionsSubInfo
 Private pStartWith As ITestingFunctionsSubInfo
+
+'ITestingFunctionsInfoDev
+
+Private pDepthCountOfRecur As ITestingFunctionsSubInfo
+Private pDepthCountOfIter As ITestingFunctionsSubInfo
+Private pInDataStructureRecur As ITestingFunctionsSubInfo
+Private pInDataStructureIter As ITestingFunctionsSubInfo
+Private pInDataStructuresRecur As ITestingFunctionsSubInfo
+Private pInDataStructuresIter As ITestingFunctionsSubInfo
+Private pNestedCountOfRecur As ITestingFunctionsSubInfo
+Private pNestedCountOfIter As ITestingFunctionsSubInfo
 
 Private pTestingFunctionsDict As Scripting.Dictionary
 
@@ -188,6 +200,40 @@ Private Function ITestingFunctionsInfo_getTestingFunction(ByVal functionName As 
     Set ITestingFunctionsInfo_getTestingFunction = pTestingFunctionsDict(functionName)
 End Function
 
+'ITestingFunctionsInfoDev settings
+
+Private Property Get ITestingFunctionsInfoDev_DepthCountOfRecur() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfoDev_DepthCountOfRecur = pDepthCountOfRecur
+End Property
+
+Private Property Get ITestingFunctionsInfoDev_DepthCountOfIter() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfoDev_DepthCountOfIter = pDepthCountOfIter
+End Property
+
+Private Property Get ITestingFunctionsInfoDev_InDataStructureRecur() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfoDev_InDataStructureRecur = pInDataStructureRecur
+End Property
+
+Private Property Get ITestingFunctionsInfoDev_InDataStructureIter() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfoDev_InDataStructureIter = pInDataStructureIter
+End Property
+
+Private Property Get ITestingFunctionsInfoDev_InDataStructuresRecur() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfoDev_InDataStructuresRecur = pInDataStructuresRecur
+End Property
+
+Private Property Get ITestingFunctionsInfoDev_InDataStructuresIter() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfoDev_InDataStructuresIter = pInDataStructuresIter
+End Property
+
+Private Property Get ITestingFunctionsInfoDev_NestedCountOfRecur() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfoDev_NestedCountOfRecur = pNestedCountOfRecur
+End Property
+
+Private Property Get ITestingFunctionsInfoDev_NestedCountOfIter() As ITestingFunctionsSubInfo
+    Set ITestingFunctionsInfoDev_NestedCountOfIter = pNestedCountOfIter
+End Property
+
 Private Sub ITestingFunctionsInfo_populateDictWithTestFuncInfo()
     pTestingFunctionsDict.Add "Alphabetic", pAlphabetic
     pTestingFunctionsDict.Add "Alphanumeric", pAlphanumeric
@@ -223,6 +269,17 @@ Private Sub ITestingFunctionsInfo_populateDictWithTestFuncInfo()
     pTestingFunctionsDict.Add "SameUniqueElementsAs", pSameUniqueElementsAs
     pTestingFunctionsDict.Add "Something", pSomething
     pTestingFunctionsDict.Add "StartWith", pStartWith
+    
+    'ITestingFunctionsInfoDev
+    
+    pTestingFunctionsDict.Add "DepthCountOfRecur", pDepthCountOfRecur
+    pTestingFunctionsDict.Add "DepthCountOfIter", pDepthCountOfIter
+    pTestingFunctionsDict.Add "InDataStructureRecur", pInDataStructureRecur
+    pTestingFunctionsDict.Add "InDataStructureIter", pInDataStructureIter
+    pTestingFunctionsDict.Add "InDataStructuresRecur", pInDataStructuresRecur
+    pTestingFunctionsDict.Add "InDataStructuresIter", pInDataStructuresIter
+    pTestingFunctionsDict.Add "NestedCountOfRecur", pNestedCountOfRecur
+    pTestingFunctionsDict.Add "NestedCountOfIter", pNestedCountOfIter
 End Sub
 
 Private Sub ITestingFunctionsInfo_initTestingFunctionsInfo()
@@ -306,19 +363,25 @@ Private Function ITestingFunctionsInfo_validateTfiDictCounters(ByVal tfiDict As 
     Dim b As Boolean
     Dim elem As Variant
     Dim testFuncSubInfo As ITestingFunctionsSubInfo
+    Dim recurIterFuncscount As Long
+    
+    recurIterFuncscount = 0
     
     For Each elem In tfiDict.Keys
-        Set testFuncSubInfo = tfiDict(elem)
-        
-        If testFuncSubInfo.Count > 0 Then
-            counter = counter + 1
+        If Not elem Like "*Recur*" And Not elem Like "*Iter*" Then
+            Set testFuncSubInfo = tfiDict(elem)
+            
+            If testFuncSubInfo.Count > 0 Then
+                counter = counter + 1
+            Else
+                Debug.Print "Not in dict: " & elem
+            End If
         Else
-            Debug.Print "Not in dict: " & elem
+            recurIterFuncscount = recurIterFuncscount + 1
         End If
-           
     Next elem
     
-    b = (counter = tfiDict.Count)
+    b = (counter = (tfiDict.Count - recurIterFuncscount))
     ITestingFunctionsInfo_validateTfiDictCounters = b
 End Function
 
@@ -357,6 +420,16 @@ Private Sub initTestingFunctionsSubInfoObjects()
     Set pSameUniqueElementsAs = New cTestingFunctionsSubInfo
     Set pSomething = New cTestingFunctionsSubInfo
     Set pStartWith = New cTestingFunctionsSubInfo
+    
+'ITestingFunctionsInfoDev
+    Set pDepthCountOfRecur = New cTestingFunctionsSubInfo
+    Set pDepthCountOfIter = New cTestingFunctionsSubInfo
+    Set pInDataStructureRecur = New cTestingFunctionsSubInfo
+    Set pInDataStructureIter = New cTestingFunctionsSubInfo
+    Set pInDataStructuresRecur = New cTestingFunctionsSubInfo
+    Set pInDataStructuresIter = New cTestingFunctionsSubInfo
+    Set pNestedCountOfRecur = New cTestingFunctionsSubInfo
+    Set pNestedCountOfIter = New cTestingFunctionsSubInfo
 End Sub
 
 Private Sub Class_Initialize()

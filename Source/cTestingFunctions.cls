@@ -29,6 +29,8 @@ Private pFluentPath As String
 Private pExpressions As IExpressions
 Private pTestValueClean As String
 
+Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
+
 Private Property Let ITestingFunctions_TestValue(ByVal value As Variant)
     pTestValue = value
     pTestValueSet = True
@@ -142,20 +144,25 @@ Private Function IBeTestFuncs_InDataStructures( _
     If pMeta.Tests.IsDataStructure(testingInput) And pTestValueSet Then
         For i = LBound(testingInput) To UBound(testingInput)
             If pMeta.Tests.IsDataStructure(testingInput(i)) Then
-                If method = flRecursive Then
+                If method = flAlgorithm.flRecursive Then
                     Set col = IBeTestFuncs_getNestedElementsRecur(testingInput)
-                ElseIf method = flIterative Then
+                ElseIf method = flAlgorithm.flIterative Then
                     Set col = IBeTestFuncs_getNestedElementsIter(testingInput)
+                Else
+                    Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
                 End If
-            
-                funcVal = IBeTestFuncs_InDataStructure(testingValue, col, negateValue, updateFluentPath:=False)
+                If Not col Is Nothing Then
+                    funcVal = IBeTestFuncs_InDataStructure(testingValue, col, negateValue, updateFluentPath:=False)
+                Else
+                    Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+                End If
             End If
         Next i
     End If
     
     IBeTestFuncs_InDataStructures = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("InDataStructures", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("InDataStructures", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, recurIterFunc:=True)
     
 End Function
 
@@ -174,30 +181,36 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
     method = pMeta.Tests.Algorithm
-    
+        
     If pMeta.Tests.IsDataStructure(dataStructure) And pTestValueSet Then
         tempBool = False
     
-        If method = flRecursive Then
+        If method = flAlgorithm.flRecursive Then
             Set col = IBeTestFuncs_getNestedElementsRecur(dataStructure)
-        ElseIf method = flIterative Then
+        ElseIf method = flAlgorithm.flIterative Then
             Set col = IBeTestFuncs_getNestedElementsIter(dataStructure)
+        Else
+            Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
         End If
-            
-        For Each elem In col
-            If testingValue = elem Then
-                tempBool = True
-                Exit For
-            End If
-        Next elem
         
-        funcVal = tempBool
+        If Not col Is Nothing Then
+            For Each elem In col
+                If testingValue = elem Then
+                    tempBool = True
+                    Exit For
+                End If
+            Next elem
+            
+            funcVal = tempBool
+        Else
+            Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+        End If
     End If
     
     IBeTestFuncs_InDataStructure = funcVal
     
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("InDataStructure", funcVal, VBA.Conversion.CBool(negateValue), testingValue, dataStructure)
+        Call pExpressions.addToTestAndFluentPath("InDataStructure", funcVal, VBA.Conversion.CBool(negateValue), testingValue, dataStructure, recurIterFunc:=True)
     End If
     
 End Function
@@ -1457,10 +1470,12 @@ Private Function IHaveTestFuncs_DepthCountOf( _
     method = pMeta.Tests.Algorithm
     
     If pMeta.Tests.IsDataStructure(testingValue) And pTestValueSet Then
-        If method = flRecursive Then
+        If method = flAlgorithm.flRecursive Then
             tempCount = IHaveTestFuncs_getDepthCountRecur(testingValue)
-        ElseIf method = flIterative Then
+        ElseIf method = flAlgorithm.flIterative Then
             tempCount = IHaveTestFuncs_getDepthCountIter(testingValue)
+        Else
+            Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
         End If
     
         funcVal = (tempCount = testingInput)
@@ -1468,7 +1483,7 @@ Private Function IHaveTestFuncs_DepthCountOf( _
     
     IHaveTestFuncs_DepthCountOf = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("DepthCountOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("DepthCountOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, recurIterFunc:=True)
 End Function
 
 Private Function IHaveTestFuncs_NestedCountOf( _
@@ -1486,10 +1501,12 @@ Private Function IHaveTestFuncs_NestedCountOf( _
     method = pMeta.Tests.Algorithm
     
     If pMeta.Tests.IsDataStructure(testingValue) And pTestValueSet Then
-        If method = flRecursive Then
+        If method = flAlgorithm.flRecursive Then
             Set tempCol = IBeTestFuncs_getNestedElementsRecur(testingValue)
-        ElseIf method = flIterative Then
+        ElseIf method = flAlgorithm.flIterative Then
             Set tempCol = IBeTestFuncs_getNestedElementsIter(testingValue)
+        Else
+            Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
         End If
         
         tempCount = tempCol.Count
@@ -1499,6 +1516,6 @@ Private Function IHaveTestFuncs_NestedCountOf( _
     
     IHaveTestFuncs_NestedCountOf = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("NestedCountOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("NestedCountOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, recurIterFunc:=True)
 End Function
 
