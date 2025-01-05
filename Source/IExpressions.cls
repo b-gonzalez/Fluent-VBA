@@ -10,11 +10,11 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Public Enum flShould
-    [_first] = 0
+    [_first] = 1
     Contain_ = [_first]
     EndWith_
     EvaluateTo_
-    StartWith_ = 3
+    StartWith_ '4
     [_last] = 100
 End Enum
 
@@ -34,7 +34,7 @@ Public Enum flHave
     Procedure_
     SameElementsAs_
     SameTypeAs_
-    SameUniqueElementsAs_ = 115
+    SameUniqueElementsAs_ '115
     [_last] = 200
 End Enum
 
@@ -54,7 +54,7 @@ Public Enum flBe
     LessThanOrEqualTo_
     Numeric_
     OneOf_
-    Something_ = 215
+    Something_ '215
     [_last] = 300
 End Enum
 

@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Enum TestProperty
-    TestCategory
+    TestCategory = 1
     TestInfo
     TestName
     TestResultNumber

@@ -282,6 +282,8 @@ Private Function IBeTestFuncs_getNestedElementsIter(ByVal dataStructure As Varia
                     
                     col.Remove i
                     Exit For
+                Else
+                    col.Remove i
                 End If
             End If
         Next i

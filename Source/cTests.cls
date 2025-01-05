@@ -202,7 +202,7 @@ Private Sub Class_Initialize()
     Set pCol = New VBA.Collection
     pCount = 0
     
-    pAlgorithm = flRecursive
+    pAlgorithm = flAlgorithm.flRecursive
     pEpsilon = defaultEpsilon
     
     Set pFluentPathDict = New Scripting.Dictionary

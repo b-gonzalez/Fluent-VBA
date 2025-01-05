@@ -62,7 +62,7 @@ function get-AndPublishPackage {
       
     Compress-Archive @compress
       
-    # gh release create "v${newTagNumber}" $NewDestination
+    gh release create "v${newTagNumber}" $NewDestination
   }
   catch {
     Write-Host "An error occurred:"

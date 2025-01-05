@@ -10,8 +10,8 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Public Enum flAlgorithm
-    flRecursive
-    flIterative
+    flRecursive = 2 ^ 0
+    flIterative = 2 ^ 1
 End Enum
 
 Public Property Let TestValue(ByVal value As Variant)

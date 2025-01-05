@@ -12,11 +12,6 @@ Private negTestCount As Long
 
 Private mEvents As zEvents
 
-Public Enum hw
-    helloWorld
-    goodbyeWorld
-End Enum
-
 Public Sub runMainTests()
     Dim fluent As IFluent
     Dim testFluent As IFluentOf

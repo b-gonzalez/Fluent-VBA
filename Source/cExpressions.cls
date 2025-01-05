@@ -176,10 +176,10 @@ Private Function setStrTestValueStrTestInput(ByVal test As ITest, ByVal Meta As 
                 testDev.TestValueRecur = IExpressions_InputToString(test.testingValue)
                 testDev.TestInputRecur = IExpressions_InputToString(test.testingInput)
             End If
+            
+            pMeta.Tests.Algorithm = algo
         End If
     End With
-    
-    pMeta.Tests.Algorithm = algo
     
     testDev.negateValue = negateValue
     
