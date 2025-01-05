@@ -9,6 +9,18 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
+Public Property Let Algorithm(ByVal value As Variant)
+End Property
+
+Public Property Get Algorithm() As Variant
+End Property
+
+Public Property Let AlgorithmValueSet(ByVal value As Boolean)
+End Property
+
+Public Property Get AlgorithmValueSet() As Boolean
+End Property
+
 Public Property Let negateValue(ByVal value As Boolean)
 End Property
 
@@ -43,4 +55,10 @@ Public Property Let TestInputIter(ByVal value As String)
 End Property
 
 Public Property Get TestInputIter() As String
+End Property
+
+Public Property Let IsRecurIterFunc(ByVal value As Boolean)
+End Property
+
+Public Property Get IsRecurIterFunc() As Boolean
 End Property

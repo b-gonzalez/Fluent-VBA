@@ -9,28 +9,31 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
+'AlgorithmValueSet
+
 Public Event TestPassed(ByVal test As ITest)
 Public Event TestFailed(ByVal test As ITest)
 Public Event TestCompleted(ByVal test As ITest)
 Public Event TestUnexpected(ByVal test As ITest)
 Public Event DuplicateTest(ByVal test As ITest)
 
-Private pResult As Variant
+Private pAlgorithm As flAlgorithm
+Private pAlgorithmValueSet As Boolean
+Private pApproximateEqual As Boolean
 Private pCol As VBA.Collection
 Private pCount As Long
-Private pTestDictCounter As Scripting.Dictionary
-Private pAlgorithm As flAlgorithm
-Private pToStrDev As Boolean
-Private pApproximateEqual As Boolean
-Private pEpsilon As Double
 Private pDataStructures As VBA.Collection
+Private pEpsilon As Double
 Private pFluentPathDict As Scripting.Dictionary
+Private pResult As Variant
 Private pSkipDupCheck As Boolean
+Private pTestDictCounter As Scripting.Dictionary
+Private pTestingInfo As ITestingFunctionsInfo
+Private pToStrDev As Boolean
 Private pTestStrings As ITestStrings
 
-Private pTestingInfo As ITestingFunctionsInfo
-
 Private Const defaultEpsilon As Double = 0.000001
+Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
 
 Public Property Get result() As Boolean
     result = pResult
@@ -47,11 +50,21 @@ Attribute NewEnum.VB_UserMemId = -4
 End Property
 
 Public Property Let Algorithm(ByVal value As flAlgorithm)
-    pAlgorithm = value
+    If value = flAlgorithm.flIterative Or value = flAlgorithm.flRecursive Then
+        pAlgorithm = value
+    Else
+        Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+    End If
+    
+    pAlgorithmValueSet = True
 End Property
 
 Public Property Get Algorithm() As flAlgorithm
     Algorithm = pAlgorithm
+End Property
+
+Public Property Get AlgorithmValueSet() As Boolean
+    AlgorithmValueSet = pAlgorithmValueSet
 End Property
 
 Public Property Let ToStrDev(ByVal value As Boolean)

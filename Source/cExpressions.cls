@@ -29,7 +29,9 @@ Private pTestDictCounter As Scripting.Dictionary
 'source: https://learn.microsoft.com/en-us/office/vba/language/reference/user-interface-help/raise-method
 
 Private Const NOT_IMPLEMENTED_ERROR As Long = vbObjectError + 514
-Private Const SPACE_IN_FUNC_NAME As Long = vbObjectError + 515
+Private Const SPACE_IN_FUNC_NAME_ERROR As Long = vbObjectError + 515
+Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
+Private Const RECUR_ITER_FUNC_ERROR As Long = vbObjectError + 517
 
 Private Property Set IExpressions_setPrinting(ByVal value As cPrinting)
     Set pPrinting = value
@@ -159,25 +161,21 @@ Private Function setStrTestValueStrTestInput(ByVal test As ITest, ByVal Meta As 
         If .ToStrDev Then
             algo = .Algorithm
             
-            If algo = flRecursive Then
+            If algo = flAlgorithm.flRecursive Then
                 testDev.TestValueRecur = test.strTestValue
                 testDev.TestInputRecur = test.StrTestInput
                 
-                pMeta.Tests.Algorithm = flIterative
-                
-                testDev.TestValueIter = IExpressions_InputToString(test.testingValue)
-                testDev.TestInputIter = IExpressions_InputToString(test.testingInput)
-            ElseIf algo = flIterative Then
+                testDev.TestValueIter = IExpressions_InputToString(test.testingValue, flAlgorithm.flIterative)
+                testDev.TestInputIter = IExpressions_InputToString(test.testingInput, flAlgorithm.flIterative)
+            ElseIf algo = flAlgorithm.flIterative Then
                 testDev.TestValueIter = test.strTestValue
                 testDev.TestInputIter = test.StrTestInput
                 
-                pMeta.Tests.Algorithm = flRecursive
-                
-                testDev.TestValueRecur = IExpressions_InputToString(test.testingValue)
-                testDev.TestInputRecur = IExpressions_InputToString(test.testingInput)
+                testDev.TestValueRecur = IExpressions_InputToString(test.testingValue, flAlgorithm.flRecursive)
+                testDev.TestInputRecur = IExpressions_InputToString(test.testingInput, flAlgorithm.flRecursive)
+            Else
+                Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
             End If
-            
-            pMeta.Tests.Algorithm = algo
         End If
     End With
     
@@ -196,7 +194,8 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     Optional ByVal higherVal As Variant, _
     Optional ByVal cleanedTestValue As Variant, _
     Optional ByVal cleanedTestInput As Variant, _
-    Optional ByVal Actual As Variant _
+    Optional ByVal Actual As Variant, _
+    Optional ByVal recurIterFunc As Variant _
 )
 
     'Consider refactoring to add a method to sets all test properties if not missing.
@@ -205,8 +204,10 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     'functions as well.
     
     Dim test As ITest
+    Dim testDev As ITestDev
     
     Set test = New cTest
+    Set testDev = test
     
     test.TestValueSet = True
     
@@ -232,6 +233,16 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     End If
         
     Set test = setStrTestValueStrTestInput(test, pMeta, negateValue)
+    
+    If Not VBA.Information.IsMissing(recurIterFunc) Then
+        If recurIterFunc Then
+            testDev.Algorithm = pMeta.Tests.Algorithm
+        
+            testDev.AlgorithmValueSet = pMeta.Tests.AlgorithmValueSet
+            
+            testDev.IsRecurIterFunc = recurIterFunc
+        End If
+    End If
     
     Call IExpressions_addFluentPathNew(test, negateValue)
 
@@ -523,13 +534,33 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
     Dim fluentElement As Long
     Dim ResultNumber As Long
     Dim testDev As ITestDev
+    Dim recurName As String
+    Dim iterName As String
+    Dim TestingSubInfoRecur As ITestingFunctionsSubInfo
+    Dim TestingSubInfoIter As ITestingFunctionsSubInfo
     
     FluentPath = ""
     fluentElement = 1
     Set testDev = test
+    recurName = ""
+    iterName = ""
     
     If pTestDictCounter.Exists(test.functionName) Then
         Set pTestingSubInfo = pTestingInfo.getTestingFunction(test.functionName)
+        
+        If testDev.IsRecurIterFunc Then
+            recurName = test.functionName & "Recur"
+            iterName = test.functionName & "Iter"
+            If pTestDictCounter.Exists(recurName) And pTestDictCounter.Exists(iterName) Then
+                Set TestingSubInfoRecur = pTestingInfo.getTestingFunction(recurName)
+                Set TestingSubInfoIter = pTestingInfo.getTestingFunction(iterName)
+                
+                TestingSubInfoRecur.Count = TestingSubInfoRecur.Count + 1
+                TestingSubInfoIter.Count = TestingSubInfoIter.Count + 1
+            Else
+                Err.Raise Number:=RECUR_ITER_FUNC_ERROR, Description:="Recursive and/or iterative function does not entries in pTestDictCounter"
+            End If
+        End If
         
         pTestingSubInfo.Count = pTestingSubInfo.Count + 1
         
@@ -543,7 +574,7 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
             pTestingSubInfo.Unexpected = pTestingSubInfo.Unexpected + 1
         End If
     ElseIf pTestDictCounter.Exists(VBA.Strings.Trim(test.functionName)) Then
-        Err.Raise Number:=SPACE_IN_FUNC_NAME, Description:="Test name not matching in TestDictCounter due to extra space in the function name"
+        Err.Raise Number:=SPACE_IN_FUNC_NAME_ERROR, Description:="Test name not matching in TestDictCounter due to extra space in the function name"
     Else
         Err.Raise Number:=NOT_IMPLEMENTED_ERROR, Description:="Test name not implemented in TestDictCounter"
     End If
@@ -566,7 +597,7 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
     
 End Sub
 
-Private Function IExpressions_InputToString(ByVal nv As Variant) As String
+Private Function IExpressions_InputToString(ByVal nv As Variant, Optional algo As Variant) As String
     Dim strArgs() As String
     Dim strObj As String
     Dim tempNVTS As String
@@ -574,17 +605,26 @@ Private Function IExpressions_InputToString(ByVal nv As Variant) As String
     Dim elem As Variant
     Dim col As VBA.Collection
     Dim counter As Long
+    Dim method As flAlgorithm
     
     i = 0
     counter = 0
     Set col = New VBA.Collection
     
+    If IsMissing(algo) Then 'a value of 0 is equivalent to
+        method = pMeta.Tests.Algorithm
+    Else
+        method = algo
+    End If
+    
     Select Case True
         Case pMeta.Tests.IsDataStructure(nv)
-            If pMeta.Tests.Algorithm = flRecursive Then
+            If method = flAlgorithm.flRecursive Then
                 tempNVTS = IExpressions_InputToStringRecur(nv)
-            ElseIf pMeta.Tests.Algorithm = flIterative Then
+            ElseIf method = flAlgorithm.flIterative Then
                 tempNVTS = IExpressions_inputToStringIter(nv)
+            Else
+                Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
             End If
         Case VBA.Information.IsNull(nv) Or VBA.Information.IsEmpty(nv)
             tempNVTS = VBA.Information.TypeName(nv)

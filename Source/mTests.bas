@@ -9,6 +9,8 @@ Private mMiscPosTests As Long
 Private mMiscNegTests As Long
 Private posTestCount As Long
 Private negTestCount As Long
+Private tfRecur As IFluentOf
+Private tfIter As IFluentOf
 
 Private mEvents As zEvents
 
@@ -20,6 +22,7 @@ Public Sub runMainTests()
     Dim nulTestFluent As IFluentOf
     Dim emptyTestFluent As IFluentOf
     Dim tempCounter As Long
+    Dim TestingInfoDev As ITestingFunctionsInfoDev
     
     Set fluent = MakeFluent
     Set testFluentResult = MakeFluentOf
@@ -31,6 +34,30 @@ Public Sub runMainTests()
     Call runEqualPosNegTests(fluent, testFluent, testFluentResult)
     
 '    testFluent.Meta.Printing.PrintToSheet
+
+    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
+    
+    With tfRecur.Meta.Tests
+        Set TestingInfoDev = .TestingInfo
+        
+        With TestingInfoDev
+            Debug.Assert .DepthCountOfIter.Count = .DepthCountOfRecur.Count
+            Debug.Assert .InDataStructureIter.Count = .InDataStructureRecur.Count
+            Debug.Assert .InDataStructuresIter.Count = .InDataStructuresRecur.Count
+            Debug.Assert .NestedCountOfIter.Count = .NestedCountOfRecur.Count
+        End With
+    End With
+    
+    With tfIter.Meta.Tests
+        Set TestingInfoDev = .TestingInfo
+        
+        With TestingInfoDev
+            Debug.Assert .DepthCountOfIter.Count = .DepthCountOfRecur.Count
+            Debug.Assert .InDataStructureIter.Count = .InDataStructureRecur.Count
+            Debug.Assert .InDataStructuresIter.Count = .InDataStructuresRecur.Count
+            Debug.Assert .NestedCountOfIter.Count = .NestedCountOfRecur.Count
+        End With
+    End With
 
     tempCounter = mCounter
 
@@ -116,6 +143,12 @@ Private Sub runEqualPosNegTests(ByVal fluent As IFluent, ByVal testFluent As IFl
     Set equalTestFluent = EqualityDocumentationTests(fluent, testFluent, testFluentResult)
     Set equalTestingInfo = equalTestFluent.Meta.Tests.TestingInfo
     Set equalTestingInfoDict = equalTestingInfo.TestFuncInfoToDict
+    
+    Set tfRecur = MakeFluentOf
+    Set tfIter = MakeFluentOf
+    
+    tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
+    tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
     
     'The equality tests cannot use validateTestDict counter since it will fail since they
     'only run the equality tests
@@ -512,6 +545,71 @@ Sub validateTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf)
             i = i + 1
         Next test
     End With
+End Sub
+
+Sub validateRecurIterFluentOfs(testFluent As cFluentOf, tfRecur As cFluentOf, tfIter As cFluentOf)
+    Dim test As ITestDev
+    Dim implicitRecurCount As Long
+    Dim explicitRecurCount As Long
+    Dim explicitIterCount As Long
+    Dim b1 As Boolean
+    Dim b2 As Boolean
+    
+    implicitRecurCount = 0
+    explicitRecurCount = 0
+    explicitIterCount = 0
+    b1 = False
+    b2 = False
+    
+    For Each test In testFluent.Meta.Tests
+        If Not VBA.Information.IsNull(test.Algorithm) Then
+            b1 = test.AlgorithmValueSet = False 'False because testFluent should use implicit flAlgorithm.flRecursive
+            b2 = test.Algorithm = flAlgorithm.flRecursive
+            
+            Debug.Assert b1
+            Debug.Assert b2
+            Debug.Assert test.IsRecurIterFunc
+            
+            If b1 And b2 Then
+                implicitRecurCount = implicitRecurCount + 1
+            End If
+        End If
+    Next test
+    
+    b1 = False
+    b2 = False
+    
+    For Each test In tfRecur.Meta.Tests
+        b1 = test.AlgorithmValueSet = True 'True because tfRecur should use explicit flAlgorithm.flRecursive
+        b2 = test.Algorithm = flAlgorithm.flRecursive
+        
+        Debug.Assert b1 'False because testFluent should use implicit flAlgorithm.flRecursive
+        Debug.Assert b2
+        Debug.Assert test.IsRecurIterFunc
+        
+        If b1 And b2 Then
+            explicitRecurCount = explicitRecurCount + 1
+        End If
+    Next test
+    
+    b1 = False
+    b2 = False
+    
+    For Each test In tfIter.Meta.Tests
+        b1 = test.AlgorithmValueSet = True 'True because tfIter should use explicit flAlgorithm.flIterative
+        b2 = test.Algorithm = flAlgorithm.flIterative
+        
+        Debug.Assert b1 'False because testFluent should use implicit flAlgorithm.flRecursive
+        Debug.Assert b2
+        Debug.Assert test.IsRecurIterFunc
+        
+        If b1 And b2 Then
+            explicitIterCount = explicitIterCount + 1
+        End If
+    Next test
+    
+    
+    Debug.Assert (explicitRecurCount = explicitIterCount)
 End Sub
 
 Private Function EqualToTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf, ByVal testFluentResult As IFluentOf) As IFluentOf
@@ -2769,16 +2867,8 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     Dim strArr(1, 1) As Variant
     Dim b As Boolean
     Dim al As Object
-    Dim tfRecur As IFluentOf
-    Dim tfIter As IFluentOf
-    
-    Set tfRecur = MakeFluentOf
-    Set tfIter = MakeFluentOf
     
     'positive documentation tests
-    
-    tfRecur.Meta.Tests.Algorithm = flRecursive
-    tfIter.Meta.Tests.Algorithm = flIterative
     
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
@@ -2927,12 +3017,6 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
-
-    Set tfRecur = MakeFluentOf
-    Set tfIter = MakeFluentOf
-    
-    tfRecur.Meta.Tests.Algorithm = flRecursive
-    tfIter.Meta.Tests.Algorithm = flIterative
     
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
@@ -3081,6 +3165,10 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
+    Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
+    Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
+    
+    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
     
     'positive null documentation tests
     
@@ -3164,14 +3252,6 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     Dim arr2() As Variant
     Dim b As Boolean
     Dim al As Object
-    Dim tfRecur As IFluentOf
-    Dim tfIter As IFluentOf
-
-    Set tfRecur = MakeFluentOf
-    Set tfIter = MakeFluentOf
-    
-    tfRecur.Meta.Tests.Algorithm = flRecursive
-    tfIter.Meta.Tests.Algorithm = flIterative
 
     'positive documentation tests
            
@@ -3598,8 +3678,6 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-
-
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
@@ -3768,6 +3846,11 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
+    Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
+    
+    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
 
     'positive null documentation tests
     
@@ -7149,20 +7232,13 @@ End Function
 Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf, ByVal testFluentResult As IFluentOf) As IFluentOf
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
-    Dim tfRecur As IFluentOf
-    Dim tfIter As IFluentOf
     Dim b As Boolean
     Dim arr() As Variant
     Dim d1 As Scripting.Dictionary
     Dim d2 As Scripting.Dictionary
     Dim d3 As Scripting.Dictionary
-                                                                                                            
+    
     'positive documentation tests
-    Set tfRecur = MakeFluentOf
-    Set tfIter = MakeFluentOf
-
-    tfRecur.Meta.Tests.Algorithm = flRecursive
-    tfIter.Meta.Tests.Algorithm = flIterative
 
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(arr).Should.Have.DepthCountOf(0) 'with implicit recur
@@ -7230,11 +7306,11 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     'negative documentation tests
-    Set tfRecur = MakeFluentOf
-    Set tfIter = MakeFluentOf
-
-    tfRecur.Meta.Tests.Algorithm = flRecursive
-    tfIter.Meta.Tests.Algorithm = flIterative
+'    Set tfRecur = MakeFluentOf
+'    Set tfIter = MakeFluentOf
+'
+'    tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
+'    tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
 
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.DepthCountOf(0) 'with implicit recur
@@ -7300,6 +7376,11 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
+    Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
+    
+    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
     
     'positive null documentation tests
     
@@ -7470,17 +7551,10 @@ End Function
 Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf, ByVal testFluentResult As IFluentOf) As IFluentOf
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
-    Dim tfRecur As IFluentOf
-    Dim tfIter As IFluentOf
     Dim b As Boolean
     Dim arr() As Variant
-                                                                                                            
+    
     'positive documentation tests
-    Set tfRecur = MakeFluentOf
-    Set tfIter = MakeFluentOf
-
-    tfRecur.Meta.Tests.Algorithm = flRecursive
-    tfIter.Meta.Tests.Algorithm = flIterative
 
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(0) 'with implicit recur
@@ -7595,11 +7669,6 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     'negative documentation tests
-    Set tfRecur = MakeFluentOf
-    Set tfIter = MakeFluentOf
-
-    tfRecur.Meta.Tests.Algorithm = flRecursive
-    tfIter.Meta.Tests.Algorithm = flIterative
 
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(0) 'with implicit recur
@@ -7712,6 +7781,11 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
+    Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
+    
+    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
     
     'positive null documentation tests
     
