@@ -609,7 +609,7 @@ Sub validateRecurIterFluentOfs(testFluent As cFluentOf, tfRecur As cFluentOf, tf
     Next test
     
     
-    Debug.Assert (explicitRecurCount = explicitIterCount)
+    Debug.Assert (implicitRecurCount = explicitRecurCount) And (explicitRecurCount = explicitIterCount)
 End Sub
 
 Private Function EqualToTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf, ByVal testFluentResult As IFluentOf) As IFluentOf
@@ -2867,8 +2867,9 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     Dim strArr(1, 1) As Variant
     Dim b As Boolean
     Dim al As Object
+    Dim val As Variant
     
-    'positive documentation tests
+'positive documentation tests
     
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
@@ -3016,7 +3017,7 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    'negative documentation tests
+'negative documentation tests
     
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
@@ -3164,77 +3165,209 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
     fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+'positive null documentation tests
 
+    val = "Hello World"
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = """ Hello World """
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 10
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 123.45
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    val = True
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = Null
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+'negative null documentation tests
+    
+    val = "Hello World"
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    val = """ Hello World """
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(""" Hello World """)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    val = 10
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(10)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 123.45
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    val = True
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = Null
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+'empty documention tests
+        
+    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure("Hello World")
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructure(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure("Hello World")
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure("""Hello world""")
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructure(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure("""Hello world""")
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(" ""Hello world"" ")
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructure(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(" ""Hello world"" ")
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(""" Hello world """)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructure(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(""" Hello world """)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructure(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
     Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
     
     Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
-    
-    'positive null documentation tests
-    
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure("Hello World")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(""" Hello World """)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(10)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(123.45)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(True)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(Null)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    'negative null documentation tests
-    
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure("Hello World")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(""" Hello World """)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(10)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(123.45)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(True)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(Null)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    'empty documention tests
-    
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure("Hello World")
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure("Hello World")
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure("""Hello world""")
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure("""Hello world""")
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(" ""Hello world"" ")
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(" ""Hello world"" ")
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(""" Hello world """)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(""" Hello world """)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
     
@@ -3252,8 +3385,9 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     Dim arr2() As Variant
     Dim b As Boolean
     Dim al As Object
+    Dim val As Variant
 
-    'positive documentation tests
+'positive documentation tests
            
     arr2 = VBA.[_HiddenModule].Array(9, 10, 11)
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr2) 'with implicit recur
@@ -3550,7 +3684,7 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    'negative documentation tests
+'negative documentation tests
     
     arr2 = VBA.[_HiddenModule].Array(9, 10, 11)
     fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(arr2) 'with implicit recur
@@ -3846,137 +3980,410 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
-    Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
-    
-    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
 
-    'positive null documentation tests
+'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures("Hello World")
+    val = "Hello World"
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = """Hello World"""
     fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures("""Hello World""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(" ""Hello World"" ")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(""" Hello World """)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(10)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(123.45)
+    val = " ""Hello World"" "
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = """ Hello World """
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(True)
+    val = 10
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(Null)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures("Hello World")
+    val = 123.45
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures("""Hello World""")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(" ""Hello World "" ")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(""" Hello World """)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(10)
+    val = True
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = Null
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(123.45)
+    val = "Hello World"
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = """Hello World"""
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = " ""Hello World "" "
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = """ Hello World """
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 10
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 123.45
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(True)
+    val = True
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(Null)
+    val = Null
+    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    'negative null documentation tests
+'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures("Hello World")
+    val = "Hello World"
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    val = """Hello World"""
     fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures("""Hello World""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(" ""Hello World"" ")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(""" Hello World """)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(10)
+    val = " ""Hello World"" "
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = """ Hello World """
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(123.45)
+    val = 10
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(True)
+    val = 123.45
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(Null)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures("Hello World")
+    val = True
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures("""Hello World""")
+    val = Null
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(" ""Hello World "" ")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(""" Hello World """)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(10)
+    val = "Hello World"
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = """Hello World"""
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = " ""Hello World "" "
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = """ Hello World """
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 10
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 123.45
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(123.45)
+    val = True
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(True)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = Null
+    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(Null)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+'empty documention tests
     
-    'empty documention tests
-    
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructures("Hello World")
+    val = "Hello World"
+    fluent.TestValue = testFluent.Of().Should.Be.InDataStructures(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures("Hello World")
+    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructures("""Hello world""")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures("""Hello world""")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructures(" ""Hello world"" ")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures(" ""Hello world"" ")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructures(""" Hello world """)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructures(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures(""" Hello world """)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructures(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructures(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
+    Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
+
+    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
     
     Call validateTests(fluent, testFluent)
     
@@ -7237,8 +7644,10 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     Dim d1 As Scripting.Dictionary
     Dim d2 As Scripting.Dictionary
     Dim d3 As Scripting.Dictionary
+    Dim val As Variant
+
     
-    'positive documentation tests
+'positive documentation tests
 
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(arr).Should.Have.DepthCountOf(0) 'with implicit recur
@@ -7305,12 +7714,7 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-    'negative documentation tests
-'    Set tfRecur = MakeFluentOf
-'    Set tfIter = MakeFluentOf
-'
-'    tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
-'    tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
+'negative documentation tests
 
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.DepthCountOf(0) 'with implicit recur
@@ -7377,64 +7781,172 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+'positive null documentation tests
+    
+    val = 0
+    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(Null).Should.Have.DepthCountOf(val)) And _
+    VBA.Information.IsNull(tfIter.Of(Null).Should.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    val = 1
+    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(Null).Should.Have.DepthCountOf(val)) And _
+    VBA.Information.IsNull(tfIter.Of(Null).Should.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 2
+    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(Null).Should.Have.DepthCountOf(val)) And _
+    VBA.Information.IsNull(tfIter.Of(Null).Should.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 3
+    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(Null).Should.Have.DepthCountOf(val)) And _
+    VBA.Information.IsNull(tfIter.Of(Null).Should.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+'negative null documentation tests
+    
+    val = 0
+    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(Null).ShouldNot.Have.DepthCountOf(val)) And _
+    VBA.Information.IsNull(tfIter.Of(Null).ShouldNot.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 1
+    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(Null).ShouldNot.Have.DepthCountOf(val)) And _
+    VBA.Information.IsNull(tfIter.Of(Null).ShouldNot.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 2
+    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(Null).ShouldNot.Have.DepthCountOf(val)) And _
+    VBA.Information.IsNull(tfIter.Of(Null).ShouldNot.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 3
+    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(Null).ShouldNot.Have.DepthCountOf(val)) And _
+    VBA.Information.IsNull(tfIter.Of(Null).ShouldNot.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+'empty documention tests
+    
+    val = 0
+    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(val)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Have.DepthCountOf(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Have.DepthCountOf(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 1
+    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(val)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Have.DepthCountOf(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Have.DepthCountOf(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 2
+    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(val)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Have.DepthCountOf(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Have.DepthCountOf(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    val = 3
+    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(val)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Have.DepthCountOf(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Have.DepthCountOf(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Have.DepthCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
     Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
     Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
     
     Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
-    
-    'positive null documentation tests
-    
-    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(0)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(1)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(2)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(3)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    'negative null documentation tests
-    
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(0)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(1)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(2)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(3)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    'empty documention tests
-    
-    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(0)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(0)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(1)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(1)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(2)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(2)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(3)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(3)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
     
@@ -7553,8 +8065,9 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     Dim d As Scripting.Dictionary
     Dim b As Boolean
     Dim arr() As Variant
+    Dim val As Variant
     
-    'positive documentation tests
+'positive documentation tests
 
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(0) 'with implicit recur
@@ -7668,7 +8181,7 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-    'negative documentation tests
+'negative documentation tests
 
     arr = VBA.[_HiddenModule].Array()
     fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(0) 'with implicit recur
@@ -7782,29 +8295,56 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+'positive null documentation tests
+    val = 0
+    fluent.TestValue = testFluent.Of(Null).Should.Have.NestedCountOf(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(Null).Should.Have.NestedCountOf(val)) And _
+    VBA.Information.IsNull(tfIter.Of(Null).Should.Have.NestedCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+'negative null documentation tests
+    
+    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.NestedCountOf(val)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Have.NestedCountOf(val)) And _
+    VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Have.NestedCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    
+'empty documention tests
+    
+    val = 0
+    fluent.TestValue = testFluent.Of().Should.Have.NestedCountOf(val)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().Should.Have.NestedCountOf(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().Should.Have.NestedCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+
+    
+    fluent.TestValue = testFluent.Of().ShouldNot.Have.NestedCountOf(val)
+    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    b = _
+    VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Have.NestedCountOf(val)) And _
+    VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Have.NestedCountOf(val))
+    mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
+    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    
     Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
     Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
     
     Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
-    
-    'positive null documentation tests
-    
-    fluent.TestValue = testFluent.Of(Null).Should.Have.NestedCountOf(0)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    'negative null documentation tests
-    
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.NestedCountOf(0)
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    
-    'empty documention tests
-    
-    fluent.TestValue = testFluent.Of().Should.Have.NestedCountOf(0)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.NestedCountOf(0)
-    Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
     
