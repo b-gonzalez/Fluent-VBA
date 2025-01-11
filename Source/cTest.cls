@@ -274,7 +274,7 @@ Private Property Get ITestDev_TestInputIter() As String
 End Property
 
 Private Property Let ITestDev_Algorithm(ByVal value As Variant)
-    If value = flAlgorithm.flIterative Or value = flAlgorithm.flRecursive Then
+    If value And flAlgorithm.flIterative Or value And flAlgorithm.flRecursive Then
         pAlgorithm = value
     Else
         Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"

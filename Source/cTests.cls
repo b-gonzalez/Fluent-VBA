@@ -50,7 +50,7 @@ Attribute NewEnum.VB_UserMemId = -4
 End Property
 
 Public Property Let Algorithm(ByVal value As flAlgorithm)
-    If value = flAlgorithm.flIterative Or value = flAlgorithm.flRecursive Then
+    If value And flAlgorithm.flIterative Or value And flAlgorithm.flRecursive Then
         pAlgorithm = value
     Else
         Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"

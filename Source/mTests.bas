@@ -11,8 +11,8 @@ Private posTestCount As Long
 Private negTestCount As Long
 Private tfRecur As IFluentOf
 Private tfIter As IFluentOf
-
 Private mEvents As zEvents
+Private mRecurIterFuncNamesDict As Scripting.Dictionary
 
 Public Sub runMainTests()
     Dim fluent As IFluent
@@ -23,7 +23,11 @@ Public Sub runMainTests()
     Dim emptyTestFluent As IFluentOf
     Dim tempCounter As Long
     Dim TestingInfoDev As ITestingFunctionsInfoDev
+    Dim elem As Variant
+    Dim recurCount1 As Long, iterCount1 As Long
+    Dim recurCount2 As Long, iterCount2 As Long
     
+    Set mRecurIterFuncNamesDict = New Scripting.Dictionary
     Set fluent = MakeFluent
     Set testFluentResult = MakeFluentOf
     
@@ -35,30 +39,8 @@ Public Sub runMainTests()
     
 '    testFluent.Meta.Printing.PrintToSheet
 
-    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
+    Call runRecurIterTests(testFluent)
     
-    With tfRecur.Meta.Tests
-        Set TestingInfoDev = .TestingInfo
-        
-        With TestingInfoDev
-            Debug.Assert .DepthCountOfIter.Count = .DepthCountOfRecur.Count
-            Debug.Assert .InDataStructureIter.Count = .InDataStructureRecur.Count
-            Debug.Assert .InDataStructuresIter.Count = .InDataStructuresRecur.Count
-            Debug.Assert .NestedCountOfIter.Count = .NestedCountOfRecur.Count
-        End With
-    End With
-    
-    With tfIter.Meta.Tests
-        Set TestingInfoDev = .TestingInfo
-        
-        With TestingInfoDev
-            Debug.Assert .DepthCountOfIter.Count = .DepthCountOfRecur.Count
-            Debug.Assert .InDataStructureIter.Count = .InDataStructureRecur.Count
-            Debug.Assert .InDataStructuresIter.Count = .InDataStructuresRecur.Count
-            Debug.Assert .NestedCountOfIter.Count = .NestedCountOfRecur.Count
-        End With
-    End With
-
     tempCounter = mCounter
 
     Set fluent = MakeFluent
@@ -67,17 +49,6 @@ Public Sub runMainTests()
     mCounter = 0
 
     mCounter = tempCounter
-
-    tempCounter = mCounter
-
-    Set fluent = MakeFluent
-    Set testFluent = MakeFluentOf
-
-    mCounter = 0
-
-    mCounter = tempCounter
-    
-    Set fluent = MakeFluent
 
     mCounter = mCounter + cleanStringTests(fluent)
     
@@ -174,8 +145,6 @@ Private Sub runEqualPosNegTests(ByVal fluent As IFluent, ByVal testFluent As IFl
     Set posAndNegTestFluent = LengthBetweenTests(fluent, posAndNegTestFluent, testFluentResult)
     Set posAndNegTestFluent = OneOfTests(fluent, posAndNegTestFluent, testFluentResult)
     Set posAndNegTestFluent = SomethingTests(fluent, posAndNegTestFluent, testFluentResult)
-    Set posAndNegTestFluent = InDataStructureTests(fluent, posAndNegTestFluent, testFluentResult)
-    Set posAndNegTestFluent = InDataStructuresTests(fluent, posAndNegTestFluent, testFluentResult)
     Set posAndNegTestFluent = EvaluateToTests(fluent, posAndNegTestFluent, testFluentResult)
     Set posAndNegTestFluent = AlphabeticTests(fluent, posAndNegTestFluent, testFluentResult)
     Set posAndNegTestFluent = NumericTests(fluent, posAndNegTestFluent, testFluentResult)
@@ -188,6 +157,8 @@ Private Sub runEqualPosNegTests(ByVal fluent As IFluent, ByVal testFluent As IFl
     Set posAndNegTestFluent = ProcedureTests(fluent, posAndNegTestFluent, testFluentResult)
     Set posAndNegTestFluent = ElementsTests(fluent, posAndNegTestFluent, testFluentResult)
     Set posAndNegTestFluent = ElementsInDataStructureTests(fluent, posAndNegTestFluent, testFluentResult)
+    Set posAndNegTestFluent = InDataStructureTests(fluent, posAndNegTestFluent, testFluentResult)
+    Set posAndNegTestFluent = InDataStructuresTests(fluent, posAndNegTestFluent, testFluentResult)
     Set posAndNegTestFluent = DepthCountOfTests(fluent, posAndNegTestFluent, testFluentResult)
     Set posAndNegTestFluent = NestedCountOfTests(fluent, posAndNegTestFluent, testFluentResult)
     
@@ -547,7 +518,7 @@ Sub validateTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf)
     End With
 End Sub
 
-Sub validateRecurIterFluentOfs(testFluent As cFluentOf, tfRecur As cFluentOf, tfIter As cFluentOf)
+Sub validateRecurIterFluentOfs(testFluent As cFluentOf, tfRecur As cFluentOf, tfIter As cFluentOf, recurIterFuncName As String)
     Dim test As ITestDev
     Dim implicitRecurCount As Long
     Dim explicitRecurCount As Long
@@ -610,6 +581,106 @@ Sub validateRecurIterFluentOfs(testFluent As cFluentOf, tfRecur As cFluentOf, tf
     
     
     Debug.Assert (implicitRecurCount = explicitRecurCount) And (explicitRecurCount = explicitIterCount)
+    
+    If recurIterFuncName <> "main" Then
+        mRecurIterFuncNamesDict.Add recurIterFuncName, recurIterFuncName
+    End If
+End Sub
+
+Function validateRecurIterFuncCounts(recurIterFluentOf As cFluentOf) As Long
+    Dim TestingInfoDev As ITestingFunctionsInfoDev
+    Dim counter As Long
+    
+    With recurIterFluentOf.Meta.Tests
+        Set TestingInfoDev = .TestingInfo
+        
+        With TestingInfoDev
+            Debug.Assert .DepthCountOfIter.Count = .DepthCountOfRecur.Count
+            If .DepthCountOfIter.Count = .DepthCountOfRecur.Count Then counter = counter + 1
+            
+            Debug.Assert .InDataStructureIter.Count = .InDataStructureRecur.Count
+            If .DepthCountOfIter.Count = .DepthCountOfRecur.Count Then counter = counter + 1
+            
+            Debug.Assert .InDataStructuresIter.Count = .InDataStructuresRecur.Count
+            If .DepthCountOfIter.Count = .DepthCountOfRecur.Count Then counter = counter + 1
+            
+            Debug.Assert .NestedCountOfIter.Count = .NestedCountOfRecur.Count
+            If .DepthCountOfIter.Count = .DepthCountOfRecur.Count Then counter = counter + 1
+        End With
+    End With
+    
+    validateRecurIterFuncCounts = counter
+End Function
+
+Function validateRecurIterFuncCounts2(recurIterFluentOf As cFluentOf)
+    Dim TestingInfoDev As ITestingFunctionsInfoDev
+    Dim counter As Long
+    Dim recurIterFuncNameCol As VBA.Collection
+    Dim elem As Variant
+    Dim testSubInfoRecur As ITestingFunctionsSubInfo
+    Dim testSubInfoIter As ITestingFunctionsSubInfo
+    
+    Set TestingInfoDev = recurIterFluentOf.Meta.Tests.TestingInfo
+    Set recurIterFuncNameCol = TestingInfoDev.getRecurIterFuncNameCol
+    counter = 0
+    
+    For Each elem In recurIterFuncNameCol
+        Set testSubInfoRecur = VBA.Interaction.CallByName(TestingInfoDev, elem & "Recur", VbGet)
+        Set testSubInfoIter = VBA.Interaction.CallByName(TestingInfoDev, elem & "Iter", VbGet)
+        
+        Debug.Assert testSubInfoIter.Count = testSubInfoRecur.Count
+        
+        If testSubInfoIter.Count = testSubInfoRecur.Count Then counter = counter + 1
+    Next elem
+    
+    validateRecurIterFuncCounts2 = counter
+End Function
+
+Function validateRecurIterFuncNamesFromFluentOfInDict(recurIterFluentOf As cFluentOf) As Boolean
+    Dim elem As Variant
+    Dim counter As Long
+    Dim recurIterFuncNamesCol As VBA.Collection
+    Dim TestingInfoDev As ITestingFunctionsInfoDev
+    
+    Set TestingInfoDev = recurIterFluentOf.Meta.Tests.TestingInfo
+    Set recurIterFuncNamesCol = TestingInfoDev.getRecurIterFuncNameCol
+    
+    Debug.Assert recurIterFuncNamesCol.Count = mRecurIterFuncNamesDict.Count
+    
+    For Each elem In recurIterFuncNamesCol
+        If mRecurIterFuncNamesDict.Exists(elem) Then
+            counter = counter + 1
+        End If
+    Next elem
+    
+    validateRecurIterFuncNamesFromFluentOfInDict = (recurIterFuncNamesCol.Count) = counter And (mRecurIterFuncNamesDict.Count = counter)
+End Function
+
+Sub runRecurIterTests(testFluent As cFluentOf)
+    Dim recurCount1 As Long, iterCount1 As Long
+    Dim recurCount2 As Long, iterCount2 As Long
+    
+    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "main")
+    
+    Call validateRecurIterFuncCounts2(tfRecur)
+    
+    recurCount1 = validateRecurIterFuncCounts(tfRecur)
+    iterCount1 = validateRecurIterFuncCounts(tfIter)
+    Debug.Assert recurCount1 = iterCount1
+    
+    recurCount2 = validateRecurIterFuncCounts2(tfRecur)
+    iterCount2 = validateRecurIterFuncCounts2(tfIter)
+    Debug.Assert recurCount2 = iterCount2
+    
+    Debug.Assert _
+    (recurCount1 = iterCount1) And _
+    (recurCount2 = iterCount2) And _
+    (recurCount1 = recurCount2) And _
+    (iterCount1 = iterCount2)
+    
+    Debug.Assert _
+    validateRecurIterFuncNamesFromFluentOfInDict(tfRecur) And _
+    validateRecurIterFuncNamesFromFluentOfInDict(tfIter)
 End Sub
 
 Private Function EqualToTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf, ByVal testFluentResult As IFluentOf) As IFluentOf
@@ -2868,6 +2939,7 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     Dim b As Boolean
     Dim al As Object
     Dim val As Variant
+    Dim tfBitwiseFlag As cFluentOf
     
 'positive documentation tests
     
@@ -3139,7 +3211,6 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     mMiscNegTests = mMiscNegTests + 1
     fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
 
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
@@ -3367,9 +3438,22 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
     Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
     
-    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
+    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "InDataStructure")
     
     Call validateTests(fluent, testFluent)
+    
+'bitwise flags tests
+
+    Set tfBitwiseFlag = New cFluentOf
+    tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
+    
+    arr = VBA.[_HiddenModule].Array(9, 10, 11)
+    Debug.Assert tfBitwiseFlag.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
+    
+    arr = VBA.[_HiddenModule].Array(9, 11)
+    Debug.Assert tfBitwiseFlag.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
+    
+    Set tfBitwiseFlag = Nothing
     
     Debug.Print "InDataStructureTests finished"
     printTestCount (mTestCounter)
@@ -3386,6 +3470,7 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     Dim b As Boolean
     Dim al As Object
     Dim val As Variant
+    Dim tfBitwiseFlag As cFluentOf
 
 'positive documentation tests
            
@@ -4383,9 +4468,22 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
     Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
 
-    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
+    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "InDataStructures")
     
     Call validateTests(fluent, testFluent)
+    
+'bitwise flags tests
+
+    Set tfBitwiseFlag = New cFluentOf
+    tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
+    
+    arr = VBA.[_HiddenModule].Array(9, 10, 11)
+    Debug.Assert tfBitwiseFlag.Of(10).Should.Be.InDataStructures(arr) 'with implicit recur
+    
+    arr = VBA.[_HiddenModule].Array(9, 11)
+    Debug.Assert tfBitwiseFlag.Of(10).ShouldNot.Be.InDataStructures(arr) 'with implicit recur
+    
+    Set tfBitwiseFlag = Nothing
     
     Debug.Print "InDataStructuresTests finished"
     printTestCount (mTestCounter)
@@ -7645,7 +7743,7 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     Dim d2 As Scripting.Dictionary
     Dim d3 As Scripting.Dictionary
     Dim val As Variant
-
+    Dim tfBitwiseFlag As cFluentOf
     
 'positive documentation tests
 
@@ -7946,9 +8044,22 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
     Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
     
-    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
+    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "DepthCountOf")
     
     Call validateTests(fluent, testFluent)
+    
+'bitwise flags tests
+
+    Set tfBitwiseFlag = New cFluentOf
+    tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
+    
+    arr = VBA.[_HiddenModule].Array(1)
+    Debug.Assert tfBitwiseFlag.Of(arr).Should.Have.DepthCountOf(1)  'with implicit recur
+    
+    arr = VBA.[_HiddenModule].Array()
+    Debug.Assert tfBitwiseFlag.Of(arr).ShouldNot.Have.DepthCountOf(1) 'with implicit recur
+    
+    Set tfBitwiseFlag = Nothing
     
     Debug.Print "DepthCountOfTests finished"
     printTestCount (mTestCounter)
@@ -8066,6 +8177,7 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     Dim b As Boolean
     Dim arr() As Variant
     Dim val As Variant
+    Dim tfBitwiseFlag As cFluentOf
     
 'positive documentation tests
 
@@ -8344,9 +8456,22 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
     Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
     
-    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter)
+    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "NestedCountOf")
     
     Call validateTests(fluent, testFluent)
+    
+'bitwise flags tests
+
+    Set tfBitwiseFlag = New cFluentOf
+    tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
+    
+    arr = VBA.[_HiddenModule].Array(1)
+    Debug.Assert tfBitwiseFlag.Of(arr).Should.Have.NestedCountOf(1)  'with implicit recur
+    
+    arr = VBA.[_HiddenModule].Array()
+    Debug.Assert tfBitwiseFlag.Of(arr).ShouldNot.Have.NestedCountOf(1) 'with implicit recur
+    
+    Set tfBitwiseFlag = Nothing
     
     Debug.Print "NestedCountOfTests finished"
     printTestCount (mTestCounter)

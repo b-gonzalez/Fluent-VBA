@@ -30,6 +30,7 @@ Private pExpressions As IExpressions
 Private pTestValueClean As String
 
 Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
+Private Const RECUR_ITER_INPUTS_NOT_IDENTICAL_ERROR As Long = vbObjectError + 517
 
 Private Property Let ITestingFunctions_TestValue(ByVal value As Variant)
     pTestValue = value
@@ -130,12 +131,14 @@ End Function
 Private Function IBeTestFuncs_InDataStructures( _
     ByVal testingValue As Variant, _
     ByVal negateValue As Boolean, _
-    ByVal testingInput As Variant) As Variant
-    
+    ByVal testingInput As Variant _
+) As Variant
     Dim col As VBA.Collection
     Dim i As Long
     Dim funcVal As Variant
     Dim method As flAlgorithm
+    Dim recurCol As VBA.Collection
+    Dim iterCol As VBA.Collection
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
@@ -144,13 +147,31 @@ Private Function IBeTestFuncs_InDataStructures( _
     If pMeta.Tests.IsDataStructure(testingInput) And pTestValueSet Then
         For i = LBound(testingInput) To UBound(testingInput)
             If pMeta.Tests.IsDataStructure(testingInput(i)) Then
-                If method = flAlgorithm.flRecursive Then
-                    Set col = IBeTestFuncs_getNestedElementsRecur(testingInput)
-                ElseIf method = flAlgorithm.flIterative Then
-                    Set col = IBeTestFuncs_getNestedElementsIter(testingInput)
-                Else
-                    Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+            
+                If method And flAlgorithm.flRecursive Then
+                   Set recurCol = IBeTestFuncs_getNestedElementsRecur(testingInput(i))
                 End If
+                
+                If method And flAlgorithm.flIterative Then
+                    Set iterCol = IBeTestFuncs_getNestedElementsIter(testingInput(i))
+                End If
+                
+                If (Not recurCol Is Nothing And Not iterCol Is Nothing) Then
+                    If IBeTestFuncs_IdenticalTo(recurCol, negateValue, iterCol, False) Then
+                        Set col = recurCol
+                    Else
+                        Err.Raise RECUR_ITER_INPUTS_NOT_IDENTICAL_ERROR, Description:="Recursive and Iterative collections are not identical"
+                    End If
+                Else
+                    If Not recurCol Is Nothing Then
+                        Set col = IBeTestFuncs_getNestedElementsRecur(testingInput)
+                    ElseIf Not iterCol Is Nothing Then
+                        Set col = IBeTestFuncs_getNestedElementsIter(testingInput)
+                    Else
+                        Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+                    End If
+                End If
+                    
                 If Not col Is Nothing Then
                     funcVal = IBeTestFuncs_InDataStructure(testingValue, col, negateValue, updateFluentPath:=False)
                 Else
@@ -177,6 +198,8 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     Dim strTestingVal As String
     Dim funcVal As Variant
     Dim method As flAlgorithm
+    Dim recurCol As VBA.Collection
+    Dim iterCol As VBA.Collection
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
@@ -184,13 +207,29 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
         
     If pMeta.Tests.IsDataStructure(dataStructure) And pTestValueSet Then
         tempBool = False
-    
-        If method = flAlgorithm.flRecursive Then
-            Set col = IBeTestFuncs_getNestedElementsRecur(dataStructure)
-        ElseIf method = flAlgorithm.flIterative Then
-            Set col = IBeTestFuncs_getNestedElementsIter(dataStructure)
+        
+        If method And flAlgorithm.flRecursive Then
+           Set recurCol = IBeTestFuncs_getNestedElementsRecur(dataStructure)
+        End If
+        
+        If method And flAlgorithm.flIterative Then
+            Set iterCol = IBeTestFuncs_getNestedElementsIter(dataStructure)
+        End If
+        
+        If (Not recurCol Is Nothing And Not iterCol Is Nothing) Then
+            If IBeTestFuncs_IdenticalTo(recurCol, negateValue, iterCol, False) Then
+                Set col = recurCol
+            Else
+                Err.Raise RECUR_ITER_INPUTS_NOT_IDENTICAL_ERROR, Description:="Recursive and Iterative collections are not identical"
+            End If
         Else
-            Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+            If Not recurCol Is Nothing Then
+                Set col = recurCol
+            ElseIf Not iterCol Is Nothing Then
+                Set col = iterCol
+            Else
+                Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+            End If
         End If
         
         If Not col Is Nothing Then
@@ -1464,18 +1503,36 @@ Private Function IHaveTestFuncs_DepthCountOf( _
     Dim funcVal As Variant
     Dim method As flAlgorithm
     Dim tempCount As Long
+    Dim recurCol As VBA.Collection
+    Dim iterCol As VBA.Collection
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
     method = pMeta.Tests.Algorithm
     
     If pMeta.Tests.IsDataStructure(testingValue) And pTestValueSet Then
-        If method = flAlgorithm.flRecursive Then
-            tempCount = IHaveTestFuncs_getDepthCountRecur(testingValue)
-        ElseIf method = flAlgorithm.flIterative Then
-            tempCount = IHaveTestFuncs_getDepthCountIter(testingValue)
+        If method And flAlgorithm.flRecursive Then
+           Set recurCol = IBeTestFuncs_getNestedElementsRecur(testingValue)
+        End If
+        
+        If method And flAlgorithm.flIterative Then
+            Set iterCol = IBeTestFuncs_getNestedElementsIter(testingValue)
+        End If
+        
+        If (Not recurCol Is Nothing And Not iterCol Is Nothing) Then
+            If IBeTestFuncs_IdenticalTo(recurCol, negateValue, iterCol, False) Then
+                tempCount = IHaveTestFuncs_getDepthCountRecur(testingValue)
+            Else
+                Err.Raise RECUR_ITER_INPUTS_NOT_IDENTICAL_ERROR, Description:="Recursive and Iterative collections are not identical"
+            End If
         Else
-            Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+            If Not recurCol Is Nothing Then
+                tempCount = IHaveTestFuncs_getDepthCountRecur(testingValue)
+            ElseIf Not iterCol Is Nothing Then
+                tempCount = IHaveTestFuncs_getDepthCountIter(testingValue)
+            Else
+                Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+            End If
         End If
     
         funcVal = (tempCount = testingInput)
@@ -1495,18 +1552,36 @@ Private Function IHaveTestFuncs_NestedCountOf( _
     Dim method As flAlgorithm
     Dim tempCount As Long
     Dim tempCol As VBA.Collection
+    Dim recurCol As VBA.Collection
+    Dim iterCol As VBA.Collection
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
     method = pMeta.Tests.Algorithm
     
     If pMeta.Tests.IsDataStructure(testingValue) And pTestValueSet Then
-        If method = flAlgorithm.flRecursive Then
-            Set tempCol = IBeTestFuncs_getNestedElementsRecur(testingValue)
-        ElseIf method = flAlgorithm.flIterative Then
-            Set tempCol = IBeTestFuncs_getNestedElementsIter(testingValue)
+        If method And flAlgorithm.flRecursive Then
+           Set recurCol = IBeTestFuncs_getNestedElementsRecur(testingValue)
+        End If
+        
+        If method And flAlgorithm.flIterative Then
+            Set iterCol = IBeTestFuncs_getNestedElementsIter(testingValue)
+        End If
+        
+        If (Not recurCol Is Nothing And Not iterCol Is Nothing) Then
+            If IBeTestFuncs_IdenticalTo(recurCol, negateValue, iterCol, False) Then
+                Set tempCol = IBeTestFuncs_getNestedElementsRecur(testingValue)
+            Else
+                Err.Raise RECUR_ITER_INPUTS_NOT_IDENTICAL_ERROR, Description:="Recursive and Iterative collections are not identical"
+            End If
         Else
-            Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+            If Not recurCol Is Nothing Then
+                Set tempCol = IBeTestFuncs_getNestedElementsRecur(testingValue)
+            ElseIf Not iterCol Is Nothing Then
+                Set tempCol = IBeTestFuncs_getNestedElementsIter(testingValue)
+            Else
+                Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+            End If
         End If
         
         tempCount = tempCol.Count

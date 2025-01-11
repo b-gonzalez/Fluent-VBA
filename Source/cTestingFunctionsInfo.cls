@@ -12,6 +12,8 @@ Option Explicit
 Implements ITestingFunctionsInfo
 Implements ITestingFunctionsInfoDev
 
+Private pRecurIterFuncCol As VBA.Collection
+
 Private pAlphabetic As ITestingFunctionsSubInfo
 Private pAlphanumeric As ITestingFunctionsSubInfo
 Private pBetween As ITestingFunctionsSubInfo
@@ -234,6 +236,22 @@ Private Property Get ITestingFunctionsInfoDev_NestedCountOfIter() As ITestingFun
     Set ITestingFunctionsInfoDev_NestedCountOfIter = pNestedCountOfIter
 End Property
 
+Private Sub ITestingFunctionsInfoDev_addRecurIterFuncName(value As String)
+    Dim i As Long
+    
+    For i = 1 To pRecurIterFuncCol.Count
+        If pRecurIterFuncCol(i) = value Then
+            Exit Sub
+        End If
+    Next i
+    
+    pRecurIterFuncCol.Add value
+End Sub
+
+Private Function ITestingFunctionsInfoDev_getRecurIterFuncNameCol() As VBA.Collection
+    Set ITestingFunctionsInfoDev_getRecurIterFuncNameCol = pRecurIterFuncCol
+End Function
+
 Private Sub ITestingFunctionsInfo_populateDictWithTestFuncInfo()
     pTestingFunctionsDict.Add "Alphabetic", pAlphabetic
     pTestingFunctionsDict.Add "Alphanumeric", pAlphanumeric
@@ -386,6 +404,8 @@ Private Function ITestingFunctionsInfo_validateTfiDictCounters(ByVal tfiDict As 
 End Function
 
 Private Sub initTestingFunctionsSubInfoObjects()
+    Set pRecurIterFuncCol = New VBA.Collection
+
     Set pAlphabetic = New cTestingFunctionsSubInfo
     Set pAlphanumeric = New cTestingFunctionsSubInfo
     Set pBetween = New cTestingFunctionsSubInfo

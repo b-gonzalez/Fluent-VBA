@@ -32,6 +32,7 @@ Private Const NOT_IMPLEMENTED_ERROR As Long = vbObjectError + 514
 Private Const SPACE_IN_FUNC_NAME_ERROR As Long = vbObjectError + 515
 Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
 Private Const RECUR_ITER_FUNC_ERROR As Long = vbObjectError + 517
+Private Const RECUR_ITER_INPUTS_NOT_IDENTICAL_ERROR As Long = vbObjectError + 517
 
 Private Property Set IExpressions_setPrinting(ByVal value As cPrinting)
     Set pPrinting = value
@@ -534,6 +535,7 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
     Dim fluentElement As Long
     Dim ResultNumber As Long
     Dim testDev As ITestDev
+    Dim testInfoDev As ITestingFunctionsInfoDev
     Dim recurName As String
     Dim iterName As String
     Dim TestingSubInfoRecur As ITestingFunctionsSubInfo
@@ -552,6 +554,10 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
             recurName = test.functionName & "Recur"
             iterName = test.functionName & "Iter"
             If pTestDictCounter.Exists(recurName) And pTestDictCounter.Exists(iterName) Then
+                Set testInfoDev = pTestingInfo
+                
+                Call testInfoDev.addRecurIterFuncName(test.functionName)
+            
                 Set TestingSubInfoRecur = pTestingInfo.getTestingFunction(recurName)
                 Set TestingSubInfoIter = pTestingInfo.getTestingFunction(iterName)
                 
@@ -606,6 +612,10 @@ Private Function IExpressions_InputToString(ByVal nv As Variant, Optional algo A
     Dim col As VBA.Collection
     Dim counter As Long
     Dim method As flAlgorithm
+    Dim recurStr As String
+    Dim iterStr As String
+    Dim recurBool As Boolean
+    Dim iterBool As Boolean
     
     i = 0
     counter = 0
@@ -619,12 +629,28 @@ Private Function IExpressions_InputToString(ByVal nv As Variant, Optional algo A
     
     Select Case True
         Case pMeta.Tests.IsDataStructure(nv)
-            If method = flAlgorithm.flRecursive Then
-                tempNVTS = IExpressions_InputToStringRecur(nv)
-            ElseIf method = flAlgorithm.flIterative Then
-                tempNVTS = IExpressions_inputToStringIter(nv)
+            If method And flAlgorithm.flRecursive Then
+                recurStr = IExpressions_InputToStringRecur(nv)
+            End If
+
+            If method And flAlgorithm.flIterative Then
+                iterStr = IExpressions_inputToStringIter(nv)
+            End If
+            
+            If recurStr <> "" And iterStr <> "" Then
+                If recurStr = iterStr Then
+                    tempNVTS = recurStr
+                Else
+                    Err.Raise RECUR_ITER_INPUTS_NOT_IDENTICAL_ERROR, Description:="Recursive and Iterative strings are not identical"
+                End If
             Else
-                Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+                If recurStr <> "" Then
+                    tempNVTS = IExpressions_InputToStringRecur(nv)
+                ElseIf iterStr <> "" Then
+                    tempNVTS = IExpressions_inputToStringIter(nv)
+                Else
+                    Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+                End If
             End If
         Case VBA.Information.IsNull(nv) Or VBA.Information.IsEmpty(nv)
             tempNVTS = VBA.Information.TypeName(nv)
