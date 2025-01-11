@@ -93,4 +93,4 @@ You are free to contact me regarding feature requests as long as you understand 
 
 # Final notes
 
-The API is in a good and usable state. Overall I'm pretty happy with the API's internal and external design. As of right now, I only anticipate internal changes and feature enhancements. So the design of the API should be relatively stable. I'd be open to changing certain design aspects of the API if I found a good reason to do so however. Naturally, this is dependant on time and availability on my part however.
+The API is in a good and usable state. Overall I'm pretty happy with the API's internal and external design. As of right now, I only anticipate internal changes and feature enhancements. So the design of the API should be relatively stable. I'd be open to changing certain design aspects of the API if I found a good reason to do so. Naturally, this is dependant on time and availability on my part however.
