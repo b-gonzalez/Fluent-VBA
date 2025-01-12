@@ -11,7 +11,7 @@ Option Explicit
 
 Enum TestProperty
     TestCategory = 1
-    TestInfo
+    testInfo
     TestName
     TestResultNumber
 End Enum

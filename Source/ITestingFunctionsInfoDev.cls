@@ -9,28 +9,28 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Get DepthCountOfRecur() As ITestingFunctionsSubInfo
+Public Property Get DepthCountOfRecur() As ITestingFunctionsInfo
 End Property
 
-Public Property Get DepthCountOfIter() As ITestingFunctionsSubInfo
+Public Property Get DepthCountOfIter() As ITestingFunctionsInfo
 End Property
 
-Public Property Get InDataStructureRecur() As ITestingFunctionsSubInfo
+Public Property Get InDataStructureRecur() As ITestingFunctionsInfo
 End Property
 
-Public Property Get InDataStructureIter() As ITestingFunctionsSubInfo
+Public Property Get InDataStructureIter() As ITestingFunctionsInfo
 End Property
 
-Public Property Get InDataStructuresRecur() As ITestingFunctionsSubInfo
+Public Property Get InDataStructuresRecur() As ITestingFunctionsInfo
 End Property
 
-Public Property Get InDataStructuresIter() As ITestingFunctionsSubInfo
+Public Property Get InDataStructuresIter() As ITestingFunctionsInfo
 End Property
 
-Public Property Get NestedCountOfRecur() As ITestingFunctionsSubInfo
+Public Property Get NestedCountOfRecur() As ITestingFunctionsInfo
 End Property
 
-Public Property Get NestedCountOfIter() As ITestingFunctionsSubInfo
+Public Property Get NestedCountOfIter() As ITestingFunctionsInfo
 End Property
 
 Public Sub addRecurIterFuncName(value As String)
@@ -38,3 +38,4 @@ End Sub
 
 Public Function getRecurIterFuncNameCol() As VBA.Collection
 End Function
+
