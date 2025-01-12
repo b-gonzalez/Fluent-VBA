@@ -28,7 +28,7 @@ Private pFluentPathDict As Scripting.Dictionary
 Private pResult As Variant
 Private pSkipDupCheck As Boolean
 Private pTestDictCounter As Scripting.Dictionary
-Private pTestingInfo As ITestingFunctionsInfo
+Private pTestingInfos As cTestingFunctionsInfos
 Private pToStrDev As Boolean
 Private pTestStrings As ITestStrings
 
@@ -107,8 +107,8 @@ Public Property Get SkipDupCheck() As Boolean
     SkipDupCheck = pSkipDupCheck
 End Property
 
-Public Property Get TestingInfo() As ITestingFunctionsInfo
-    Set TestingInfo = pTestingInfo
+Public Property Get TestingInfos() As cTestingFunctionsInfos
+    Set TestingInfos = pTestingInfos
 End Property
 
 Public Property Get TestStrings() As ITestStrings
@@ -204,7 +204,7 @@ Public Sub CheckTest(ByVal test As ITest)
 End Sub
 
 Public Sub resetTestingInfo()
-    pTestingInfo.initTestingFunctionsInfo
+    pTestingInfos.initTestingFunctionsInfo
 End Sub
 
 Public Sub ResetCounter()
@@ -220,7 +220,7 @@ Private Sub Class_Initialize()
     
     Set pFluentPathDict = New Scripting.Dictionary
     
-    Set pTestingInfo = New cTestingFunctionsInfo
+    Set pTestingInfos = New cTestingFunctionsInfos
     
     Set pTestStrings = New cTestStrings
         

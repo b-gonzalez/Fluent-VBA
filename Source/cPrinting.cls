@@ -112,7 +112,7 @@ Private Function IPrinting_ArrayFromTests(ByVal col As VBA.Collection, ByVal tp 
         Select Case tp
             Case TestProperty.TestCategory
                 arr(i, 1) = test.Category
-            Case TestProperty.TestInfo
+            Case TestProperty.testInfo
                 arr(i, 1) = IPrinting_getTestMessageFromResultNumber(testDev.ResultNumber) & " - " & test.FluentPath
             Case TestProperty.TestName
                 arr(i, 1) = test.TestName
@@ -144,7 +144,7 @@ Private Sub IPrinting_PrintToImmediate()
     
     If pNameSet Then testNameArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestName)
     
-    testInfoArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestInfo)
+    testInfoArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.testInfo)
     
     testResultArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestResultNumber)
     
@@ -185,7 +185,7 @@ Private Sub IPrinting_PrintToSheet()
 
     Set wb = IPrinting_getWorkbook
     
-    testInfoArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestInfo)
+    testInfoArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.testInfo)
     
     wb.ActiveSheet.Range("A2").Resize(UBound(testInfoArr, 1), UBound(testInfoArr, 2)).value = testInfoArr
     

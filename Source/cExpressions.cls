@@ -11,8 +11,8 @@ Option Explicit
 
 Implements IExpressions
 
+Private pTestingInfos As cTestingFunctionsInfos
 Private pTestingInfo As ITestingFunctionsInfo
-Private pTestingSubInfo As ITestingFunctionsSubInfo
 Private pPrinting As IPrinting
 Private iPrint As IPrintExpr
 Private pMeta As IMeta
@@ -45,8 +45,8 @@ End Property
 
 Private Property Set IExpressions_setMeta(ByVal value As cMeta)
     Set pMeta = value
-    Set pTestDictCounter = pMeta.Tests.TestingInfo.TestFuncInfoToDict
-    Set pTestingInfo = pMeta.Tests.TestingInfo
+    Set pTestDictCounter = pMeta.Tests.TestingInfos.TestFuncInfoToDict
+    Set pTestingInfos = pMeta.Tests.TestingInfos
 End Property
 
 Private Function setTestResultProps(ByVal test As ITest, ByVal result As Variant, ByVal negateValue As Boolean) As ITest
@@ -538,8 +538,8 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
     Dim testInfoDev As ITestingFunctionsInfoDev
     Dim recurName As String
     Dim iterName As String
-    Dim TestingSubInfoRecur As ITestingFunctionsSubInfo
-    Dim TestingSubInfoIter As ITestingFunctionsSubInfo
+    Dim TestingInfoRecur As ITestingFunctionsInfo
+    Dim TestingInfoIter As ITestingFunctionsInfo
     
     FluentPath = ""
     fluentElement = 1
@@ -548,37 +548,48 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
     iterName = ""
     
     If pTestDictCounter.Exists(test.functionName) Then
-        Set pTestingSubInfo = pTestingInfo.getTestingFunction(test.functionName)
+        Set pTestingInfo = pTestingInfos.getTestingFunction(test.functionName)
+        
+        pTestingInfo.Name = test.functionName
         
         If testDev.IsRecurIterFunc Then
             recurName = test.functionName & "Recur"
             iterName = test.functionName & "Iter"
             If pTestDictCounter.Exists(recurName) And pTestDictCounter.Exists(iterName) Then
-                Set testInfoDev = pTestingInfo
+                Set testInfoDev = pTestingInfos
                 
                 Call testInfoDev.addRecurIterFuncName(test.functionName)
             
-                Set TestingSubInfoRecur = pTestingInfo.getTestingFunction(recurName)
-                Set TestingSubInfoIter = pTestingInfo.getTestingFunction(iterName)
+                Set TestingInfoRecur = pTestingInfos.getTestingFunction(recurName)
+                Set TestingInfoIter = pTestingInfos.getTestingFunction(iterName)
                 
-                TestingSubInfoRecur.Count = TestingSubInfoRecur.Count + 1
-                TestingSubInfoIter.Count = TestingSubInfoIter.Count + 1
+                TestingInfoRecur.Count = TestingInfoRecur.Count + 1
+                TestingInfoIter.Count = TestingInfoIter.Count + 1
+                
+                If pTestingInfos.AddDevTestingFunctionsInfo Then
+                    With pTestingInfos
+                        .AddTestingFunctionsInfo .getTestingFunction(recurName)
+                        .AddTestingFunctionsInfo .getTestingFunction(iterName)
+                    End With
+                End If
             Else
                 Err.Raise Number:=RECUR_ITER_FUNC_ERROR, Description:="Recursive and/or iterative function does not entries in pTestDictCounter"
             End If
         End If
         
-        pTestingSubInfo.Count = pTestingSubInfo.Count + 1
+        pTestingInfo.Count = pTestingInfo.Count + 1
         
         If Not VBA.Information.IsNull(test.result) Then
             If test.result Then
-                pTestingSubInfo.Passed = pTestingSubInfo.Passed + 1
+                pTestingInfo.Passed = pTestingInfo.Passed + 1
             Else
-                pTestingSubInfo.Failed = pTestingSubInfo.Failed + 1
+                pTestingInfo.Failed = pTestingInfo.Failed + 1
             End If
         Else
-            pTestingSubInfo.Unexpected = pTestingSubInfo.Unexpected + 1
+            pTestingInfo.Unexpected = pTestingInfo.Unexpected + 1
         End If
+        
+        pTestingInfos.AddTestingFunctionsInfo pTestingInfo
     ElseIf pTestDictCounter.Exists(VBA.Strings.Trim(test.functionName)) Then
         Err.Raise Number:=SPACE_IN_FUNC_NAME_ERROR, Description:="Test name not matching in TestDictCounter due to extra space in the function name"
     Else
