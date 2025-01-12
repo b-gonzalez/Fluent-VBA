@@ -32,7 +32,6 @@ Public Sub runMainTests()
     Set testFluentResult = MakeFluentOf
     
     Set testFluent = getAndInitTestFluent
-    
     Set mEvents = getAndInitEvent(fluent, testFluent, testFluentResult)
     
     Call runEqualPosNegTests(fluent, testFluent, testFluentResult)
@@ -62,6 +61,18 @@ Public Sub runMainTests()
     
     Call resetAndCheckCounters(mEvents, fluent, testFluent)
     
+    'set local and module-level variables to default values
+    tempCounter = 0
+    
+    Set mRecurIterFuncNamesDict = Nothing
+    Set fluent = Nothing
+    Set testFluentResult = Nothing
+    Set testFluent = Nothing
+    Set mEvents = Nothing
+    Set tfIter = Nothing
+    Set tfRecur = Nothing
+    
+    Stop
 End Sub
 
 Private Function getAndInitTestFluent() As IFluentOf
@@ -2940,6 +2951,7 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     Dim al As Object
     Dim val As Variant
     Dim tfBitwiseFlag As cFluentOf
+    Dim testInfoDev As ITestingFunctionsInfoDev
     
 'positive documentation tests
     
@@ -3453,6 +3465,13 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     arr = VBA.[_HiddenModule].Array(9, 11)
     Debug.Assert tfBitwiseFlag.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
     
+    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingInfo
+    
+    With testInfoDev
+        Debug.Assert .InDataStructureRecur.Count > 0 And .InDataStructureIter.Count > 0
+        Debug.Assert .InDataStructureRecur.Count = .InDataStructureIter.Count
+    End With
+    
     Set tfBitwiseFlag = Nothing
     
     Debug.Print "InDataStructureTests finished"
@@ -3471,6 +3490,7 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     Dim al As Object
     Dim val As Variant
     Dim tfBitwiseFlag As cFluentOf
+    Dim testInfoDev As ITestingFunctionsInfoDev
 
 'positive documentation tests
            
@@ -4482,6 +4502,13 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     
     arr = VBA.[_HiddenModule].Array(9, 11)
     Debug.Assert tfBitwiseFlag.Of(10).ShouldNot.Be.InDataStructures(arr) 'with implicit recur
+    
+    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingInfo
+    
+    With testInfoDev
+        Debug.Assert .InDataStructuresRecur.Count > 0 And .InDataStructuresIter.Count > 0
+        Debug.Assert .InDataStructuresRecur.Count = .InDataStructuresIter.Count
+    End With
     
     Set tfBitwiseFlag = Nothing
     
@@ -7744,6 +7771,7 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     Dim d3 As Scripting.Dictionary
     Dim val As Variant
     Dim tfBitwiseFlag As cFluentOf
+    Dim testInfoDev As ITestingFunctionsInfoDev
     
 'positive documentation tests
 
@@ -8059,6 +8087,13 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     arr = VBA.[_HiddenModule].Array()
     Debug.Assert tfBitwiseFlag.Of(arr).ShouldNot.Have.DepthCountOf(1) 'with implicit recur
     
+    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingInfo
+    
+    With testInfoDev
+        Debug.Assert .DepthCountOfRecur.Count > 0 And .DepthCountOfIter.Count > 0
+        Debug.Assert .DepthCountOfRecur.Count = .DepthCountOfIter.Count
+    End With
+    
     Set tfBitwiseFlag = Nothing
     
     Debug.Print "DepthCountOfTests finished"
@@ -8178,6 +8213,7 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     Dim arr() As Variant
     Dim val As Variant
     Dim tfBitwiseFlag As cFluentOf
+    Dim testInfoDev As ITestingFunctionsInfoDev
     
 'positive documentation tests
 
@@ -8470,6 +8506,13 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     
     arr = VBA.[_HiddenModule].Array()
     Debug.Assert tfBitwiseFlag.Of(arr).ShouldNot.Have.NestedCountOf(1) 'with implicit recur
+    
+    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingInfo
+    
+    With testInfoDev
+        Debug.Assert .NestedCountOfRecur.Count > 0 And .NestedCountOfIter.Count > 0
+        Debug.Assert .NestedCountOfRecur.Count = .NestedCountOfIter.Count
+    End With
     
     Set tfBitwiseFlag = Nothing
     
