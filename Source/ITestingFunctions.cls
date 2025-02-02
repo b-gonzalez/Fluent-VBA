@@ -14,6 +14,26 @@ Public Enum flAlgorithm
     flIterative = 2 ^ 1
 End Enum
 
+Public Enum flTestType
+    flIsArray = 2 ^ 0
+    flIsNotArray = 2 ^ 1
+    flIsDataStructure = 2 ^ 2
+    flIsErrObject = 2 ^ 3
+    flIsNotErrObject = 2 ^ 4
+    flIsNotDataStructure = 2 ^ 5
+    flIsNull = 2 ^ 6
+    flIsNotNull = 2 ^ 7
+    flIsNumeric = 2 ^ 8
+    flIsNotNumeric = 2 ^ 9
+    flIsObject = 2 ^ 10
+    flIsNotObject = 2 ^ 11
+    flIsSelfReferential = 2 ^ 12
+    flIsNotSelfReferential = 2 ^ 13
+    flIsString = 2 ^ 14
+    flIsNotString = 2 ^ 15
+    flIsVariant = 2 ^ 16
+    flIsNotVariant = 2 ^ 17
+End Enum
 Public Property Let TestValue(ByVal value As Variant)
 End Property
 
@@ -45,4 +65,8 @@ Public Function GetTempTestValue(ByVal testingValue As Variant) As Variant
 End Function
 
 Public Function GetTempTestInput(ByVal testingInput As Variant) As Variant
+End Function
+
+Private Function inputIsValid(ByVal inputValue As Variant, ByVal inputConditions As flTestType)
+
 End Function
