@@ -33,7 +33,7 @@ End Property
 Public Property Get NestedCountOfIter() As ITestingFunctionsInfo
 End Property
 
-Public Sub addRecurIterFuncName(value As String)
+Public Sub addRecurIterFuncName(ByVal value As String)
 End Sub
 
 Public Function getRecurIterFuncNameCol() As VBA.Collection

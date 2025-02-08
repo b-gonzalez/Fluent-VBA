@@ -208,7 +208,7 @@ Public Property Get StartWith() As ITestingFunctionsInfo
     Set StartWith = pStartWith
 End Property
 
-Public Property Let AddDevTestingFunctionsInfo(value As Boolean)
+Public Property Let AddDevTestingFunctionsInfo(ByVal value As Boolean)
     AddDevTestingFunctionsInfo = value
 End Property
 
@@ -411,7 +411,7 @@ Private Sub initTestingFunctionsInfoObjects()
     Set pTestingFunctionsInfoCol = New VBA.Collection
 End Sub
 
-Public Sub AddTestingFunctionsInfo(value As ITestingFunctionsInfo)
+Public Sub AddTestingFunctionsInfo(ByVal value As ITestingFunctionsInfo)
     Dim testInfoPreviouslyAdded As Boolean
     Dim elem As ITestingFunctionsInfo
     
@@ -425,7 +425,7 @@ Public Sub AddTestingFunctionsInfo(value As ITestingFunctionsInfo)
     If Not testInfoPreviouslyAdded Then pTestingFunctionsInfoCol.Add value
 End Sub
 
-Private Sub ITestingFunctionsInfoDev_addRecurIterFuncName(value As String)
+Private Sub ITestingFunctionsInfoDev_addRecurIterFuncName(ByVal value As String)
     Dim i As Long
     
     For i = 1 To pRecurIterFuncCol.Count

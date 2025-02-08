@@ -550,7 +550,7 @@ Sub validateTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf)
     End With
 End Sub
 
-Sub validateRecurIterFluentOfs(testFluent As cFluentOf, tfRecur As cFluentOf, tfIter As cFluentOf, recurIterFuncName As String)
+Sub validateRecurIterFluentOfs(ByVal testFluent As cFluentOf, ByVal tfRecur As cFluentOf, ByVal tfIter As cFluentOf, ByVal recurIterFuncName As String)
     Dim test As ITestDev
     Dim implicitRecurCount As Long
     Dim explicitRecurCount As Long
@@ -619,7 +619,7 @@ Sub validateRecurIterFluentOfs(testFluent As cFluentOf, tfRecur As cFluentOf, tf
     End If
 End Sub
 
-Function validateRecurIterFuncCounts(recurIterFluentOf As cFluentOf) As Long
+Function validateRecurIterFuncCounts(ByVal recurIterFluentOf As cFluentOf) As Long
     Dim TestingInfoDev As ITestingFunctionsInfoDev
     Dim counter As Long
     
@@ -644,7 +644,7 @@ Function validateRecurIterFuncCounts(recurIterFluentOf As cFluentOf) As Long
     validateRecurIterFuncCounts = counter
 End Function
 
-Function validateRecurIterFuncCounts2(recurIterFluentOf As cFluentOf)
+Function validateRecurIterFuncCounts2(ByVal recurIterFluentOf As cFluentOf)
     Dim TestingInfoDev As ITestingFunctionsInfoDev
     Dim counter As Long
     Dim recurIterFuncNameCol As VBA.Collection
@@ -668,7 +668,7 @@ Function validateRecurIterFuncCounts2(recurIterFluentOf As cFluentOf)
     validateRecurIterFuncCounts2 = counter
 End Function
 
-Function validateRecurIterFuncNamesFromFluentOfInDict(recurIterFluentOf As cFluentOf) As Boolean
+Function validateRecurIterFuncNamesFromFluentOfInDict(ByVal recurIterFluentOf As cFluentOf) As Boolean
     Dim elem As Variant
     Dim counter As Long
     Dim recurIterFuncNamesCol As VBA.Collection
@@ -688,7 +688,7 @@ Function validateRecurIterFuncNamesFromFluentOfInDict(recurIterFluentOf As cFlue
     validateRecurIterFuncNamesFromFluentOfInDict = (recurIterFuncNamesCol.Count) = counter And (mRecurIterFuncNamesDict.Count = counter)
 End Function
 
-Sub runRecurIterTests(testFluent As cFluentOf)
+Sub runRecurIterTests(ByVal testFluent As cFluentOf)
     Dim recurCount1 As Long, iterCount1 As Long
     Dim recurCount2 As Long, iterCount2 As Long
     
@@ -6195,7 +6195,7 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col.Add 1
     col2.Add 1
 
-    With testFluent.Of(Array(1)).Should.Have
+    With testFluent.Of(VBA.[_HiddenModule].Array(1)).Should.Have
         fluent.TestValue = .ExactSameElementsAs(col)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         fluent.TestValue = .ExactSameElementsAs(col2)
@@ -8883,7 +8883,7 @@ Private Function validateNegativeCounters(ByVal testFluent As IFluentOf) As Bool
     validateNegativeCounters = (d.Count = counter)
 End Function
 
-Private Sub CheckTestFuncInfos(testFluent As IFluentOf)
+Private Sub CheckTestFuncInfos(ByVal testFluent As IFluentOf)
     Dim d As Scripting.Dictionary
     Dim testFuncInfo As ITestingFunctionsInfo
     Dim testFuncInfo2 As ITestingFunctionsInfo

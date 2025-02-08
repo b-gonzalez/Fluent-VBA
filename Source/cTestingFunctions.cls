@@ -1516,7 +1516,7 @@ Public Function IHaveTestFuncs_ElementsInDataStructure( _
     Call pExpressions.addToTestAndFluentPath("ElementsInDataStructure", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential, TestingInputIsSelfReferential:=testingInputIsNotSelfReferential)
 End Function
 
-Private Function IHaveTestFuncs_getDepthCountRecur(ds As Variant, Optional counter As Long = 1, Optional depthCounter As Long = 0) As Long
+Private Function IHaveTestFuncs_getDepthCountRecur(ByVal ds As Variant, Optional ByVal counter As Long = 1, Optional ByVal depthCounter As Long = 0) As Long
     Dim elem As Variant
 
     For Each elem In ds
@@ -1536,7 +1536,7 @@ Private Function IHaveTestFuncs_getDepthCountRecur(ds As Variant, Optional count
     IHaveTestFuncs_getDepthCountRecur = depthCounter
 End Function
 
-Private Function IHaveTestFuncs_getDepthCountIter(ds As Variant) As Long
+Private Function IHaveTestFuncs_getDepthCountIter(ByVal ds As Variant) As Long
     Dim counter As Long
     Dim depthCounter As Long
     Dim hasNestedElements As Boolean

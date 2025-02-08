@@ -676,7 +676,7 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
     
 End Sub
 
-Private Function IExpressions_InputToString(ByVal nv As Variant, Optional algo As Variant) As String
+Private Function IExpressions_InputToString(ByVal nv As Variant, Optional ByVal algo As Variant) As String
     Dim strArgs() As String
     Dim strObj As String
     Dim tempNVTS As String
