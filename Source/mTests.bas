@@ -3477,7 +3477,7 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     
 'bitwise flags tests
 
-    Set tfBitwiseFlag = New cFluentOf
+    Set tfBitwiseFlag = MakeFluentOf
     tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
     
     arr = VBA.[_HiddenModule].Array(9, 10, 11)
@@ -4515,7 +4515,7 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     
 'bitwise flags tests
 
-    Set tfBitwiseFlag = New cFluentOf
+    Set tfBitwiseFlag = MakeFluentOf
     tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
     
     arr = VBA.[_HiddenModule].Array(9, 10, 11)
@@ -8099,7 +8099,7 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     
 'bitwise flags tests
 
-    Set tfBitwiseFlag = New cFluentOf
+    Set tfBitwiseFlag = MakeFluentOf
     tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
     
     arr = VBA.[_HiddenModule].Array(1)
@@ -8519,7 +8519,7 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     
 'bitwise flags tests
 
-    Set tfBitwiseFlag = New cFluentOf
+    Set tfBitwiseFlag = MakeFluentOf
     tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
     
     arr = VBA.[_HiddenModule].Array(1)
