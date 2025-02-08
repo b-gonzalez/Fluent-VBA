@@ -28,20 +28,20 @@ Private pTestValueSet As Boolean
 Private pFluentPath As String
 Private pExpressions As IExpressions
 Private pTestValueClean As String
-Private phasSelfReferential As Boolean
 
 Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
 Private Const RECUR_ITER_INPUTS_NOT_IDENTICAL_ERROR As Long = vbObjectError + 517
 
-Private Function inputIsValid(ByVal inputValue As Variant, ByVal inputConditions As flTestType)
+Private Function ITestingFunctions_inputIsValid(ByVal inputValue As Variant, ByVal inputConditions As flTestType)
     Dim b As Boolean
-    Dim col As Collection
+    Dim col As VBA.Collection
     Dim elem As Variant
     Dim testTypeCount As Long
     Dim boolCount As Long
+    Dim HasSelfReferential As Boolean
     
     b = False
-    Set col = New Collection
+    Set col = New VBA.Collection
     testTypeCount = 0
     
     If pTestValueSet Then
@@ -84,11 +84,17 @@ Private Function inputIsValid(ByVal inputValue As Variant, ByVal inputConditions
             If VBA.Information.TypeName(inputValue) = "String" Then col.Add True
             testTypeCount = testTypeCount + 1
         End If
+        
+        If inputConditions And flTestType.flIsNotSelfReferential Then
+            If pMeta.Tests.IsDataStructure(inputValue) Then
+                HasSelfReferential = pMeta.Tests.DatastructureIsSelfReferential(inputValue, pMeta.Tests.Algorithm)
+                If Not HasSelfReferential Then col.Add True
+                testTypeCount = testTypeCount + 1
+            End If
+        End If
     End If
     
-    inputIsValid = ((testTypeCount = col.Count) And pTestValueSet)
-    
-    'comment
+    ITestingFunctions_inputIsValid = ((testTypeCount = col.Count) And pTestValueSet)
 End Function
 
 Private Property Let ITestingFunctions_TestValue(ByVal value As Variant)
@@ -205,12 +211,12 @@ Private Function IBeTestFuncs_InDataStructures( _
     
     method = pMeta.Tests.Algorithm
     
-    IsDataStructure = inputIsValid(testingInput, flIsDataStructure)
-    testingInputIsNotSelfReferential = inputIsValid(testingInput, flIsNotSelfReferential)
+    IsDataStructure = ITestingFunctions_inputIsValid(testingInput, flIsDataStructure)
+    testingInputIsNotSelfReferential = ITestingFunctions_inputIsValid(testingInput, flIsNotSelfReferential)
     
     If IsDataStructure And testingInputIsNotSelfReferential Then
         For i = LBound(testingInput) To UBound(testingInput)
-            If inputIsValid(testingInput(i), flIsDataStructure + flIsNotSelfReferential) Then
+            If ITestingFunctions_inputIsValid(testingInput(i), flIsDataStructure + flIsNotSelfReferential) Then
             
                 If method And flAlgorithm.flRecursive Then
                    Set recurCol = IBeTestFuncs_getNestedElementsRecur(testingInput(i))
@@ -247,7 +253,7 @@ Private Function IBeTestFuncs_InDataStructures( _
     
     IBeTestFuncs_InDataStructures = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("InDataStructures", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, recurIterFunc:=True)
+    Call pExpressions.addToTestAndFluentPath("InDataStructures", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, recurIterFunc:=True, TestingInputIsSelfReferential:=testingInputIsNotSelfReferential)
     
 End Function
 
@@ -271,8 +277,8 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     method = pMeta.Tests.Algorithm
     
-    IsDataStructure = inputIsValid(dataStructure, flIsDataStructure)
-    testingInputIsNotSelfReferential = inputIsValid(dataStructure, flIsNotSelfReferential)
+    IsDataStructure = ITestingFunctions_inputIsValid(dataStructure, flIsDataStructure)
+    testingInputIsNotSelfReferential = ITestingFunctions_inputIsValid(dataStructure, flIsNotSelfReferential)
         
     If IsDataStructure And testingInputIsNotSelfReferential Then
         tempBool = False
@@ -318,7 +324,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     IBeTestFuncs_InDataStructure = funcVal
     
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("InDataStructure", funcVal, VBA.Conversion.CBool(negateValue), testingValue, dataStructure, recurIterFunc:=True)
+        Call pExpressions.addToTestAndFluentPath("InDataStructure", funcVal, VBA.Conversion.CBool(negateValue), testingValue, dataStructure, recurIterFunc:=True, TestingInputIsSelfReferential:=testingInputIsNotSelfReferential)
     End If
     
 End Function
@@ -418,9 +424,7 @@ Private Function IBeTestFuncs_GreaterThan(ByVal testingValue As Variant, ByVal t
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
-'    If VBA.Information.IsNumeric(testingValue) And VBA.Information.IsNumeric(testingInput) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNumeric) And inputIsValid(testingInput, flIsNumeric) Then
-
+    If ITestingFunctions_inputIsValid(testingValue, flIsNumeric) And ITestingFunctions_inputIsValid(testingInput, flIsNumeric) Then
         funcVal = (testingValue > testingInput)
     End If
     
@@ -439,8 +443,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If VBA.Information.IsNumeric(testingValue) And VBA.Information.IsNumeric(testingInput) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNumeric) And inputIsValid(testingInput, flIsNumeric) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNumeric) And ITestingFunctions_inputIsValid(testingInput, flIsNumeric) Then
         funcVal = (testingValue >= testingInput)
     End If
     
@@ -460,8 +463,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
-'    If VBA.Information.IsNumeric(testingValue) And VBA.Information.IsNumeric(testingInput) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNumeric) And inputIsValid(testingInput, flIsNumeric) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNumeric) And ITestingFunctions_inputIsValid(testingInput, flIsNumeric) Then
         funcVal = (testingValue < testingInput)
     End If
     
@@ -480,8 +482,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If VBA.Information.IsNumeric(testingValue) And VBA.Information.IsNumeric(testingInput) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNumeric) And inputIsValid(testingInput, flIsNumeric) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNumeric) And ITestingFunctions_inputIsValid(testingInput, flIsNumeric) Then
         funcVal = (testingValue <= testingInput)
     End If
     
@@ -542,10 +543,8 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     tempBool = False
     
-'    If Not VBA.Information.IsObject(testingValue) And Not pMeta.Tests.IsDataStructure(testingValue) And _
-'    Not VBA.Information.IsObject(testingInput) And Not pMeta.Tests.IsDataStructure(testingInput) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotObject + flIsNotDataStructure) And _
-    inputIsValid(testingInput, flIsNotObject + flIsNotDataStructure) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotObject + flIsNotDataStructure) And _
+    ITestingFunctions_inputIsValid(testingInput, flIsNotObject + flIsNotDataStructure) Then
     
         If VBA.Information.IsNull(testingValue) Or VBA.Information.IsNull(testingInput) Then
             tempBool = (VBA.Information.TypeName(testingValue) = VBA.Information.TypeName(testingInput))
@@ -596,8 +595,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If Not pMeta.Tests.IsDataStructure(testingValue) And Not VBA.Information.IsNull(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
         tempTestInput = ITestingFunctions_getTempTestInput(testingInput)
     
@@ -621,8 +619,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If Not pMeta.Tests.IsDataStructure(testingValue) And Not VBA.Information.IsNull(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
         tempTestInput = ITestingFunctions_getTempTestInput(testingInput)
     
@@ -647,8 +644,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If Not pMeta.Tests.IsDataStructure(testingValue) And Not VBA.Information.IsNull(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
         tempTestInput = ITestingFunctions_getTempTestInput(testingInput)
     
@@ -671,8 +667,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If Not pMeta.Tests.IsDataStructure(testingValue) And Not VBA.Information.IsNull(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
     
         funcVal = (VBA.Strings.Len(VBA.Conversion.CStr(testingValue)) = testingInput)
@@ -694,8 +689,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If Not pMeta.Tests.IsDataStructure(testingValue) And Not VBA.Information.IsNull(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
     
         funcVal = (VBA.Strings.Len(VBA.Conversion.CStr(tempTestValue)) <= testingInput)
@@ -723,8 +717,7 @@ Optional ByVal updateFluentPath As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If Not pMeta.Tests.IsDataStructure(testingValue) And Not VBA.Information.IsNull(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
         
         funcVal = (VBA.Strings.Len(VBA.Conversion.CStr(tempTestValue)) >= testingInput)
@@ -748,8 +741,7 @@ Private Function IBeTestFuncs_Something(ByVal testingValue As Variant, Optional 
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
-'    If VBA.Information.IsObject(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsObject) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsObject) Then
         funcVal = (Not testingValue Is Nothing)
     End If
     
@@ -768,8 +760,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If VBA.Information.IsNumeric(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNumeric) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNumeric) Then
         funcVal = _
         (IBeTestFuncs_GreaterThanOrEqualTo(testingValue, lowerVal, updateFluentPath:=False) And _
         IBeTestFuncs_LessThanOrEqualTo(testingValue, higherVal, updateFluentPath:=False))
@@ -839,8 +830,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
-'    If Not pMeta.Tests.IsDataStructure(testingValue) And Not VBA.Information.IsNull(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
     
         funcVal = _
@@ -868,8 +858,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
 
-'    If Not pMeta.Tests.IsDataStructure(testingValue) And Not VBA.Information.IsNull(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
         tempTestInput = ITestingFunctions_getTempTestInput(testingInput)
         
@@ -891,8 +880,7 @@ Private Function IBeTestFuncs_Alphabetic(ByVal testingValue As Variant, Optional
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If Not pMeta.Tests.IsDataStructure(testingValue) And Not VBA.Information.IsNull(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
     
         For i = 1 To VBA.Strings.Len(tempTestValue)
@@ -924,8 +912,7 @@ Private Function IBeTestFuncs_Numeric(ByVal testingValue As Variant, Optional By
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If Not pMeta.Tests.IsDataStructure(testingValue) And Not VBA.Information.IsNull(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
         
         For i = 1 To VBA.Strings.Len(tempTestValue)
@@ -961,8 +948,7 @@ Private Function IBeTestFuncs_Alphanumeric(ByVal testingValue As Variant, Option
         
     b = False
     
-'    If Not pMeta.Tests.IsDataStructure(testingValue) And Not VBA.Information.IsNull(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsNotDataStructure + flIsNotNull) Then
         tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
         
         For i = 1 To VBA.Strings.Len(tempTestValue)
@@ -1004,8 +990,7 @@ Private Function IBeTestFuncs_Erroneous(ByVal testingValue As Variant, Optional 
         
     temp = False
     
-'    If VBA.Information.TypeName(testingValue) = "ErrObject" Or VBA.Information.TypeName(testingValue) = "String" And pTestValueSet Then
-    If inputIsValid(testingValue, flIsErrObject) Or inputIsValid(testingValue, flIsString) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsErrObject) Or ITestingFunctions_inputIsValid(testingValue, flIsString) Then
         If TypeOf testingValue Is VBA.ErrObject Then
             Set tempErrObj = testingValue
             temp = (tempErrObj.Number <> 0)
@@ -1046,8 +1031,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If VBA.Information.TypeName(testingValue) = "ErrObject" Or VBA.Information.TypeName(testingValue) = "String" And pTestValueSet Then
-    If inputIsValid(testingValue, flIsErrObject) Or inputIsValid(testingValue, flIsString) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsErrObject) Or ITestingFunctions_inputIsValid(testingValue, flIsString) Then
         If TypeOf testingValue Is VBA.ErrObject Then
             Set tempErrObj = testingValue
             temp = tempErrObj.Number
@@ -1084,8 +1068,7 @@ Optional ByVal negateValue As Boolean = False) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
         
-'    If VBA.Information.TypeName(testingValue) = "ErrObject" Or VBA.Information.TypeName(testingValue) = "String" And pTestValueSet Then
-    If inputIsValid(testingValue, flIsErrObject) Or inputIsValid(testingValue, flIsString) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsErrObject) Or ITestingFunctions_inputIsValid(testingValue, flIsString) Then
             tempTestInput = ITestingFunctions_getTempTestInput(testingInput)
         If TypeOf testingValue Is VBA.ErrObject Then
             Set tempErrObj = testingValue
@@ -1153,10 +1136,10 @@ ByVal updateFluentPath As Boolean) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
-    IsDataStructure = inputIsValid(testingInput, flIsDataStructure) And inputIsValid(testingValue, flIsDataStructure)
+    IsDataStructure = ITestingFunctions_inputIsValid(testingInput, flIsDataStructure) And ITestingFunctions_inputIsValid(testingValue, flIsDataStructure)
     
-    testingInputIsNotSelfReferential = inputIsValid(testingInput, flIsNotSelfReferential)
-    testingValueIsNotSelfReferential = inputIsValid(testingValue, flIsNotSelfReferential)
+    testingInputIsNotSelfReferential = ITestingFunctions_inputIsValid(testingInput, flIsNotSelfReferential)
+    testingValueIsNotSelfReferential = ITestingFunctions_inputIsValid(testingValue, flIsNotSelfReferential)
     
     If testingInputIsNotSelfReferential And testingValueIsNotSelfReferential And IsDataStructure Then
 
@@ -1171,7 +1154,7 @@ ByVal updateFluentPath As Boolean) As Variant
     IBeTestFuncs_IdenticalTo = funcVal
     
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("IdenticalTo", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput)
+        Call pExpressions.addToTestAndFluentPath("IdenticalTo", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, TestingInputIsSelfReferential:=testingInputIsNotSelfReferential, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential)
     End If
 
 End Function
@@ -1191,10 +1174,10 @@ ByVal testingInput As Variant) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
-    IsDataStructure = inputIsValid(testingInput, flIsDataStructure) And inputIsValid(testingValue, flIsDataStructure)
+    IsDataStructure = ITestingFunctions_inputIsValid(testingInput, flIsDataStructure) And ITestingFunctions_inputIsValid(testingValue, flIsDataStructure)
     
-    testingInputIsNotSelfReferential = inputIsValid(testingInput, flIsNotSelfReferential)
-    testingValueIsNotSelfReferential = inputIsValid(testingValue, flIsNotSelfReferential)
+    testingInputIsNotSelfReferential = ITestingFunctions_inputIsValid(testingInput, flIsNotSelfReferential)
+    testingValueIsNotSelfReferential = ITestingFunctions_inputIsValid(testingValue, flIsNotSelfReferential)
     
     If testingInputIsNotSelfReferential And testingValueIsNotSelfReferential And IsDataStructure Then
         Set col = New VBA.Collection
@@ -1213,7 +1196,7 @@ ByVal testingInput As Variant) As Variant
     
     IHaveTestFuncs_ExactSameElementsAs = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("ExactSameElementsAs", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("ExactSameElementsAs", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential, TestingInputIsSelfReferential:=testingInputIsNotSelfReferential)
 
 End Function
 
@@ -1231,10 +1214,10 @@ ByVal testingInput As Variant) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
-    IsDataStructure = inputIsValid(testingInput, flIsDataStructure) And inputIsValid(testingValue, flIsDataStructure)
+    IsDataStructure = ITestingFunctions_inputIsValid(testingInput, flIsDataStructure) And ITestingFunctions_inputIsValid(testingValue, flIsDataStructure)
     
-    testingInputIsNotSelfReferential = inputIsValid(testingInput, flIsNotSelfReferential)
-    testingValueIsNotSelfReferential = inputIsValid(testingValue, flIsNotSelfReferential)
+    testingInputIsNotSelfReferential = ITestingFunctions_inputIsValid(testingInput, flIsNotSelfReferential)
+    testingValueIsNotSelfReferential = ITestingFunctions_inputIsValid(testingValue, flIsNotSelfReferential)
     
     If testingInputIsNotSelfReferential And testingValueIsNotSelfReferential And IsDataStructure Then
         Set d = New Scripting.Dictionary
@@ -1263,7 +1246,7 @@ ByVal testingInput As Variant) As Variant
     
     IHaveTestFuncs_SameUniqueElementsAs = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("SameUniqueElementsAs", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("SameUniqueElementsAs", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential, TestingInputIsSelfReferential:=testingInputIsNotSelfReferential)
 
 End Function
 
@@ -1283,10 +1266,10 @@ ByVal testingInput As Variant) As Variant
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
-    IsDataStructure = inputIsValid(testingInput, flIsDataStructure) And inputIsValid(testingValue, flIsDataStructure)
+    IsDataStructure = ITestingFunctions_inputIsValid(testingInput, flIsDataStructure) And ITestingFunctions_inputIsValid(testingValue, flIsDataStructure)
     
-    testingInputIsNotSelfReferential = inputIsValid(testingInput, flIsNotSelfReferential)
-    testingValueIsNotSelfReferential = inputIsValid(testingValue, flIsNotSelfReferential)
+    testingInputIsNotSelfReferential = ITestingFunctions_inputIsValid(testingInput, flIsNotSelfReferential)
+    testingValueIsNotSelfReferential = ITestingFunctions_inputIsValid(testingValue, flIsNotSelfReferential)
     
     If testingInputIsNotSelfReferential And testingValueIsNotSelfReferential And IsDataStructure Then
         i = 1
@@ -1322,7 +1305,7 @@ ByVal testingInput As Variant) As Variant
     
     IHaveTestFuncs_SameElementsAs = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("SameElementsAs", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("SameElementsAs", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential, TestingInputIsSelfReferential:=testingInputIsNotSelfReferential)
 
 End Function
 
@@ -1363,7 +1346,7 @@ Private Function IHaveTestFuncs_Procedure( _
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
 '    If VBA.Information.IsObject(testingValue) And pTestValueSet Then
-    If inputIsValid(testingValue, flIsObject) Then
+    If ITestingFunctions_inputIsValid(testingValue, flIsObject) Then
         If Not testingValue Is Nothing Then
             On Error Resume Next
             'This section uses bitwise flags / composite values
@@ -1483,9 +1466,9 @@ Private Function IHaveTestFuncs_Elements( _
     boolCounter = 0
     elemCount = 0
     
-    IsDataStructure = inputIsValid(testingValue, flIsDataStructure)
+    IsDataStructure = ITestingFunctions_inputIsValid(testingValue, flIsDataStructure)
     
-    testingValueIsNotSelfReferential = inputIsValid(testingValue, flIsNotSelfReferential)
+    testingValueIsNotSelfReferential = ITestingFunctions_inputIsValid(testingValue, flIsNotSelfReferential)
     
     If testingValueIsNotSelfReferential And IsDataStructure Then
         elemCount = pExpressions.getDsCount(testingInput)
@@ -1502,7 +1485,7 @@ Private Function IHaveTestFuncs_Elements( _
     IHaveTestFuncs_Elements = funcVal
     
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("Elements", funcVal, VBA.Conversion.CBool(negateValue), tempTestingValue, testingInput)
+        Call pExpressions.addToTestAndFluentPath("Elements", funcVal, VBA.Conversion.CBool(negateValue), tempTestingValue, testingInput, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential)
     End If
     
 End Function
@@ -1519,10 +1502,10 @@ Public Function IHaveTestFuncs_ElementsInDataStructure( _
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
-    IsDataStructure = inputIsValid(testingInput, flIsDataStructure) And inputIsValid(testingValue, flIsDataStructure)
+    IsDataStructure = ITestingFunctions_inputIsValid(testingInput, flIsDataStructure) And ITestingFunctions_inputIsValid(testingValue, flIsDataStructure)
     
-    testingInputIsNotSelfReferential = inputIsValid(testingInput, flIsNotSelfReferential)
-    testingValueIsNotSelfReferential = inputIsValid(testingValue, flIsNotSelfReferential)
+    testingInputIsNotSelfReferential = ITestingFunctions_inputIsValid(testingInput, flIsNotSelfReferential)
+    testingValueIsNotSelfReferential = ITestingFunctions_inputIsValid(testingValue, flIsNotSelfReferential)
     
     If testingInputIsNotSelfReferential And testingValueIsNotSelfReferential And IsDataStructure Then
         funcVal = IHaveTestFuncs_Elements(testingValue, testingInput, False, False)
@@ -1530,7 +1513,7 @@ Public Function IHaveTestFuncs_ElementsInDataStructure( _
     
     IHaveTestFuncs_ElementsInDataStructure = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("ElementsInDataStructure", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput)
+    Call pExpressions.addToTestAndFluentPath("ElementsInDataStructure", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential, TestingInputIsSelfReferential:=testingInputIsNotSelfReferential)
 End Function
 
 Private Function IHaveTestFuncs_getDepthCountRecur(ds As Variant, Optional counter As Long = 1, Optional depthCounter As Long = 0) As Long
@@ -1650,8 +1633,8 @@ Private Function IHaveTestFuncs_DepthCountOf( _
     
     method = pMeta.Tests.Algorithm
     
-    IsDataStructure = inputIsValid(testingValue, flIsDataStructure)
-    testingValueIsNotSelfReferential = inputIsValid(testingValue, flIsNotSelfReferential)
+    IsDataStructure = ITestingFunctions_inputIsValid(testingValue, flIsDataStructure)
+    testingValueIsNotSelfReferential = ITestingFunctions_inputIsValid(testingValue, flIsNotSelfReferential)
     
     If IsDataStructure And testingValueIsNotSelfReferential Then
         If method And flAlgorithm.flRecursive Then
@@ -1683,7 +1666,7 @@ Private Function IHaveTestFuncs_DepthCountOf( _
     
     IHaveTestFuncs_DepthCountOf = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("DepthCountOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, recurIterFunc:=True)
+    Call pExpressions.addToTestAndFluentPath("DepthCountOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, recurIterFunc:=True, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential)
 End Function
 
 Private Function IHaveTestFuncs_NestedCountOf( _
@@ -1704,8 +1687,8 @@ Private Function IHaveTestFuncs_NestedCountOf( _
     
     method = pMeta.Tests.Algorithm
     
-    IsDataStructure = inputIsValid(testingValue, flIsDataStructure)
-    testingValueIsNotSelfReferential = inputIsValid(testingValue, flIsNotSelfReferential)
+    IsDataStructure = ITestingFunctions_inputIsValid(testingValue, flIsDataStructure)
+    testingValueIsNotSelfReferential = ITestingFunctions_inputIsValid(testingValue, flIsNotSelfReferential)
     
     If IsDataStructure And testingValueIsNotSelfReferential Then
         If method And flAlgorithm.flRecursive Then
@@ -1739,5 +1722,5 @@ Private Function IHaveTestFuncs_NestedCountOf( _
     
     IHaveTestFuncs_NestedCountOf = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("NestedCountOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, recurIterFunc:=True)
+    Call pExpressions.addToTestAndFluentPath("NestedCountOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, recurIterFunc:=True, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential)
 End Function

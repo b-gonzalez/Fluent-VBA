@@ -121,7 +121,7 @@ Private Sub runEqualPosNegTests(ByVal fluent As IFluent, ByVal testFluent As IFl
     testFluent.Meta.Printing.Name = "Test Fluent - abc 123"
     testFluent.Meta.Printing.Category = "Test Fluent - EqualityTests"
     Set equalTestFluent = EqualityDocumentationTests(fluent, testFluent, testFluentResult)
-    Set equalTestingInfo = equalTestFluent.Meta.Tests.TestingInfos
+    Set equalTestingInfo = equalTestFluent.Meta.Tests.TestingFunctionsInfos
     Set equalTestingInfoDict = equalTestingInfo.TestFuncInfoToDict
     
     Set tfRecur = MakeFluentOf
@@ -181,7 +181,9 @@ Private Sub runEqualPosNegTests(ByVal fluent As IFluent, ByVal testFluent As IFl
         counter = 3
     End If
     
-    Set posAndNegTestingInfo = posAndNegTestFluent.Meta.Tests.TestingInfos
+    Call CheckTestFuncInfos(posAndNegTestFluent)
+    
+    Set posAndNegTestingInfo = posAndNegTestFluent.Meta.Tests.TestingFunctionsInfos
     Set posAndNegTestingInfoDict = posAndNegTestingInfo.TestFuncInfoToDict
     
     Debug.Assert posAndNegTestingInfo.validateTfiDictCounters(posAndNegTestingInfoDict, counter)
@@ -502,6 +504,9 @@ Sub validateTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf)
     Dim fluentBool As Boolean
     Dim valueBool As Boolean
     Dim inputBool As Boolean
+    Dim selfReferentialBool As Boolean
+    Dim inputSelfReferential As Boolean
+    Dim valueSelfReferential As Boolean
     
     For Each test In fluent.Meta.Tests
         Debug.Assert test.result
@@ -520,7 +525,25 @@ Sub validateTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf)
             valueBool = test.strTestValue = .Tests(i).strTestValue
             inputBool = test.StrTestInput = .Tests(i).StrTestInput
             
-            Debug.Assert resultBool And fluentBool And valueBool And inputBool
+            If test.HasSelfReferential And .Tests(i).HasSelfReferential Then
+                If VBA.Information.IsNull(test.TestingInputIsSelfReferential) Then
+                    inputSelfReferential = VBA.Information.IsNull(test.TestingInputIsSelfReferential) And VBA.Information.IsNull(.Tests(i).TestingInputIsSelfReferential)
+                Else
+                    inputSelfReferential = test.TestingInputIsSelfReferential = .Tests(i).TestingInputIsSelfReferential
+                End If
+                
+                If VBA.Information.IsNull(test.TestingValueIsSelfReferential) Then
+                    valueSelfReferential = VBA.Information.IsNull(test.TestingValueIsSelfReferential) And VBA.Information.IsNull(.Tests(i).TestingValueIsSelfReferential)
+                Else
+                    valueSelfReferential = test.TestingValueIsSelfReferential = .Tests(i).TestingValueIsSelfReferential
+                End If
+                
+                selfReferentialBool = inputSelfReferential And valueSelfReferential
+                
+                Debug.Assert resultBool And fluentBool And valueBool And inputBool And selfReferentialBool
+            Else
+                Debug.Assert resultBool And fluentBool And valueBool And inputBool
+            End If
             
             i = i + 1
         Next test
@@ -601,7 +624,7 @@ Function validateRecurIterFuncCounts(recurIterFluentOf As cFluentOf) As Long
     Dim counter As Long
     
     With recurIterFluentOf.Meta.Tests
-        Set TestingInfoDev = .TestingInfos
+        Set TestingInfoDev = .TestingFunctionsInfos
         
         With TestingInfoDev
             Debug.Assert .DepthCountOfIter.Count = .DepthCountOfRecur.Count
@@ -629,7 +652,7 @@ Function validateRecurIterFuncCounts2(recurIterFluentOf As cFluentOf)
     Dim testSubInfoRecur As ITestingFunctionsInfo
     Dim testSubInfoIter As ITestingFunctionsInfo
     
-    Set TestingInfoDev = recurIterFluentOf.Meta.Tests.TestingInfos
+    Set TestingInfoDev = recurIterFluentOf.Meta.Tests.TestingFunctionsInfos
     Set recurIterFuncNameCol = TestingInfoDev.getRecurIterFuncNameCol
     counter = 0
     
@@ -651,7 +674,7 @@ Function validateRecurIterFuncNamesFromFluentOfInDict(recurIterFluentOf As cFlue
     Dim recurIterFuncNamesCol As VBA.Collection
     Dim TestingInfoDev As ITestingFunctionsInfoDev
     
-    Set TestingInfoDev = recurIterFluentOf.Meta.Tests.TestingInfos
+    Set TestingInfoDev = recurIterFluentOf.Meta.Tests.TestingFunctionsInfos
     Set recurIterFuncNamesCol = TestingInfoDev.getRecurIterFuncNameCol
     
     Debug.Assert recurIterFuncNamesCol.Count = mRecurIterFuncNamesDict.Count
@@ -3463,7 +3486,7 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     arr = VBA.[_HiddenModule].Array(9, 11)
     Debug.Assert tfBitwiseFlag.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
     
-    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingInfos
+    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingFunctionsInfos
     
     With testInfoDev
         Debug.Assert .InDataStructureRecur.Count > 0 And .InDataStructureIter.Count > 0
@@ -4501,7 +4524,7 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     arr = VBA.[_HiddenModule].Array(9, 11)
     Debug.Assert tfBitwiseFlag.Of(10).ShouldNot.Be.InDataStructures(arr) 'with implicit recur
     
-    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingInfos
+    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingFunctionsInfos
     
     With testInfoDev
         Debug.Assert .InDataStructuresRecur.Count > 0 And .InDataStructuresIter.Count > 0
@@ -8085,7 +8108,7 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     arr = VBA.[_HiddenModule].Array()
     Debug.Assert tfBitwiseFlag.Of(arr).ShouldNot.Have.DepthCountOf(1) 'with implicit recur
     
-    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingInfos
+    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingFunctionsInfos
     
     With testInfoDev
         Debug.Assert .DepthCountOfRecur.Count > 0 And .DepthCountOfIter.Count > 0
@@ -8505,7 +8528,7 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     arr = VBA.[_HiddenModule].Array()
     Debug.Assert tfBitwiseFlag.Of(arr).ShouldNot.Have.NestedCountOf(1) 'with implicit recur
     
-    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingInfos
+    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingFunctionsInfos
     
     With testInfoDev
         Debug.Assert .NestedCountOfRecur.Count > 0 And .NestedCountOfIter.Count > 0
@@ -8641,6 +8664,7 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     Dim q As Object
     Dim elem As Variant
     Dim fluent2 As cFluent
+    Dim col As Collection
     
     Set mEvents.setFluentEventDuplicate = fluent
 
@@ -8715,6 +8739,46 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
         Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbGet + VbSet + VbMethod)
         Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbLet + VbGet + VbSet + VbMethod)
     End If
+    
+    '//self referential tests
+    
+    '//All self referential flags should be false
+    
+    Set col = New Collection
+    
+    Set fluent.TestValue = col
+    
+    fluent.Should.Be.Something
+    
+    With fluent.Meta
+        Debug.Assert VBA.Information.IsNull(.Tests(.Tests.Count).TestingValueIsSelfReferential)
+        Debug.Assert VBA.Information.IsNull(.Tests(.Tests.Count).TestingInputIsSelfReferential)
+        Debug.Assert VBA.Information.IsNull(.Tests(.Tests.Count).HasSelfReferential)
+    End With
+    
+    col.Add col
+    
+    '//testingValueIsSelfReferential and hasSelfReferential should be true
+    
+    Debug.Assert fluent.Should.Be.Something
+    
+    With fluent.Meta
+        Debug.Assert .Tests(.Tests.Count).strTestValue = "Null"
+        Debug.Assert .Tests(.Tests.Count).TestingValueIsSelfReferential = True
+        Debug.Assert .Tests(.Tests.Count).HasSelfReferential = True
+    End With
+    
+    '//testingValueIsSelfReferential, testingInputIsSelfReferential, and hasSelfReferential should be true
+    
+    Debug.Assert fluent.Should.Have.SameTypeAs(col)
+    
+    With fluent.Meta
+        Debug.Assert .Tests(.Tests.Count).strTestValue = "Null"
+        Debug.Assert .Tests(.Tests.Count).StrTestInput = "Null"
+        Debug.Assert .Tests(.Tests.Count).TestingValueIsSelfReferential = True
+        Debug.Assert .Tests(.Tests.Count).TestingInputIsSelfReferential = True
+        Debug.Assert .Tests(.Tests.Count).HasSelfReferential = True
+    End With
     
     Debug.Print "Misc tests finished"
     
@@ -8818,3 +8882,30 @@ Private Function validateNegativeCounters(ByVal testFluent As IFluentOf) As Bool
     
     validateNegativeCounters = (d.Count = counter)
 End Function
+
+Private Sub CheckTestFuncInfos(testFluent As IFluentOf)
+    Dim d As Scripting.Dictionary
+    Dim testFuncInfo As ITestingFunctionsInfo
+    Dim testFuncInfo2 As ITestingFunctionsInfo
+    Dim counter As Long
+    
+    Set d = testFluent.Meta.Tests.TestingFunctionsInfos.TestFuncInfoToDict
+    counter = 0
+    
+    With testFluent.Meta.Tests
+        For Each testFuncInfo In .TestingFunctionsInfos
+            Set testFuncInfo2 = d(testFuncInfo.Name)
+            
+            Debug.Assert testFuncInfo.Name = testFuncInfo2.Name
+            Debug.Assert testFuncInfo.Count = testFuncInfo2.Count
+            Debug.Assert testFuncInfo.Failed = testFuncInfo2.Failed
+            Debug.Assert testFuncInfo.Name = testFuncInfo2.Name
+            Debug.Assert testFuncInfo.Passed = testFuncInfo2.Passed
+            Debug.Assert testFuncInfo.Unexpected = testFuncInfo2.Unexpected
+            
+            counter = counter + 1
+        Next testFuncInfo
+    End With
+    
+    'Debug.Print "CheckTestFuncInfos counter is: " & counter & vbNewLine
+End Sub

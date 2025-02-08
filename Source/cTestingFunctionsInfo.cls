@@ -56,3 +56,45 @@ End Property
 Private Property Get ITestingFunctionsInfo_Name() As String
     ITestingFunctionsInfo_Name = pName
 End Property
+
+'PUBLIC PROPERTIES
+
+Public Property Let Count(ByVal value As Long)
+    pCount = value
+End Property
+
+Public Property Get Count() As Long
+    Count = pCount
+End Property
+
+Public Property Let Passed(ByVal value As Long)
+    pPassed = value
+End Property
+
+Public Property Get Passed() As Long
+    Passed = pPassed
+End Property
+
+Public Property Let Failed(ByVal value As Long)
+    pFailed = value
+End Property
+
+Public Property Get Failed() As Long
+    Failed = pFailed
+End Property
+
+Public Property Let Unexpected(ByVal value As Long)
+    pUnexpected = value
+End Property
+
+Public Property Get Unexpected() As Long
+    Unexpected = pUnexpected
+End Property
+
+Public Property Let Name(ByVal value As String)
+    pName = value
+End Property
+
+Public Property Get Name() As String
+    Name = pName
+End Property

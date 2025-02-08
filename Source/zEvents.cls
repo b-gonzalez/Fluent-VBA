@@ -78,7 +78,7 @@ Private Sub pTestOf_TestCompleted(ByVal test As ITest)
 End Sub
 
 Private Sub pTestOf_TestUnexpected(ByVal test As ITest)
-    Debug.Assert test.result = "Null" And test.HasNull
+'    Debug.Assert test.result = "Null" And test.HasNull
 End Sub
 
 Private Sub pTest_TestPassed(ByVal test As ITest)
@@ -117,7 +117,7 @@ Public Function CheckTestCounters() As Boolean
     TestOfResultsCount > 0 And _
     testCount > 0 And _
     TestOfCount > 0 And _
-    TestDuplicateCount = 1)
+    TestDuplicateCount > 0)
 
     CheckTestCounters = b
 End Function

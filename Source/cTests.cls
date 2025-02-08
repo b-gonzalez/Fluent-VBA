@@ -28,7 +28,7 @@ Private pFluentPathDict As Scripting.Dictionary
 Private pResult As Variant
 Private pSkipDupCheck As Boolean
 Private pTestDictCounter As Scripting.Dictionary
-Private pTestingInfos As cTestingFunctionsInfos
+Private pTestingFunctionsInfos As cTestingFunctionsInfos
 Private pToStrDev As Boolean
 Private pTestStrings As ITestStrings
 
@@ -107,8 +107,8 @@ Public Property Get SkipDupCheck() As Boolean
     SkipDupCheck = pSkipDupCheck
 End Property
 
-Public Property Get TestingInfos() As cTestingFunctionsInfos
-    Set TestingInfos = pTestingInfos
+Public Property Get TestingFunctionsInfos() As cTestingFunctionsInfos
+    Set TestingFunctionsInfos = pTestingFunctionsInfos
 End Property
 
 Public Property Get TestStrings() As ITestStrings
@@ -192,7 +192,7 @@ Public Sub CheckTest(ByVal test As ITest)
         RaiseEvent TestPassed(test)
     ElseIf test.result = False Then
         RaiseEvent TestFailed(test)
-    ElseIf VBA.Information.IsNull(test.result) Or VBA.Information.IsEmpty(test.result) Then
+    ElseIf VBA.Information.IsNull(test.result) Or VBA.Information.IsEmpty(test.result) Or test.HasSelfReferential Then
         RaiseEvent TestUnexpected(test)
     End If
     
@@ -204,12 +204,168 @@ Public Sub CheckTest(ByVal test As ITest)
 End Sub
 
 Public Sub resetTestingInfo()
-    pTestingInfos.initTestingFunctionsInfo
+    pTestingFunctionsInfos.initTestingFunctionsInfo
 End Sub
 
 Public Sub ResetCounter()
     pCount = 0
 End Sub
+
+Public Function DatastructureIsSelfReferential(ByVal ds As Variant, ByVal Algorithm As flAlgorithm) As Boolean
+    Dim iterFuncCalled As Boolean
+    Dim recurFuncCalled As Boolean
+    Dim hasSelfReferentialIter As Boolean
+    Dim hasSelfReferentialRecur As Boolean
+    Dim b As Boolean
+    
+    If Algorithm And flIterative Then
+        hasSelfReferentialIter = datastructureIsSelfReferentialIter(ds)
+        iterFuncCalled = True
+    End If
+    
+    If Algorithm And flRecursive Then
+        hasSelfReferentialRecur = datastructureIsSelfReferentialRecur(ds)
+        recurFuncCalled = True
+    End If
+    
+    If iterFuncCalled And recurFuncCalled Then
+        b = hasSelfReferentialIter And hasSelfReferentialRecur
+    ElseIf iterFuncCalled Then
+        b = hasSelfReferentialIter
+    ElseIf recurFuncCalled Then
+        b = hasSelfReferentialRecur
+    End If
+    
+    DatastructureIsSelfReferential = b
+        
+End Function
+
+Private Function datastructureIsSelfReferentialRecur( _
+    ByVal ds As Variant, _
+    Optional ByVal objPtrCol As VBA.Collection = Nothing, _
+    Optional ByVal objCol As VBA.Collection = Nothing _
+) As Boolean
+    Dim elem As Variant
+    Dim elem2 As Variant
+    Dim objPtrAddress As Variant
+
+    If objPtrCol Is Nothing Then
+        Set objPtrCol = New VBA.Collection
+
+        If IsObject(ds) Then
+            objPtrCol.Add VBA.[_HiddenModule].ObjPtr(ds)
+        End If
+    End If
+
+    For Each elem In ds
+        If IsDataStructure(ds) Then
+            If VBA.Information.IsObject(elem) Then
+                objPtrAddress = VBA.[_HiddenModule].ObjPtr(elem)
+
+                For Each elem2 In objPtrCol
+                    If objPtrAddress = elem2 Then
+                        datastructureIsSelfReferentialRecur = True
+                        Exit Function
+                    End If
+                Next elem2
+
+                If objPtrCol.Count = 0 Then objPtrCol.Add objPtrAddress
+            ElseIf VBA.Information.IsArray(elem) Then
+                datastructureIsSelfReferentialRecur = datastructureIsSelfReferentialRecur(elem, objPtrCol)
+            End If
+        End If
+    Next elem
+End Function
+
+Private Function datastructureIsSelfReferentialIter(ByVal ds As Variant) As Boolean
+    Dim elem As Variant
+    Dim elem2 As Variant
+    Dim col As VBA.Collection
+    Dim tempCol As VBA.Collection
+    Dim objPtrCol As VBA.Collection
+    Dim IsSelfReferential As Boolean
+
+    Set col = New VBA.Collection
+    Set tempCol = New VBA.Collection
+    Set objPtrCol = New VBA.Collection
+    IsSelfReferential = False
+
+    If IsObject(ds) Then objPtrCol.Add VBA.[_HiddenModule].ObjPtr(ds)
+
+    For Each elem In ds
+        col.Add elem
+    Next elem
+
+    If Not IsSelfReferential Then
+        Do
+            For Each elem In col
+                If IsDataStructure(elem) Then
+                    If VBA.Information.IsObject(elem) Then
+                        IsSelfReferential = itemInObjPtrCol(elem, objPtrCol)
+                        If IsSelfReferential Then Exit Do
+                    Else
+                        For Each elem2 In elem
+                            If VBA.Information.IsObject(elem2) Then
+                                IsSelfReferential = itemInObjPtrCol(elem2, objPtrCol)
+                                If IsSelfReferential Then Exit Do
+                            ElseIf IsDataStructure(elem2) Then
+                                tempCol.Add elem2
+                            End If
+                        Next elem2
+                    End If
+                Else
+                    If IsDataStructure(elem) Then
+                        For Each elem2 In elem
+                            If VBA.Information.IsObject(elem2) Then
+                                objPtrCol.Add VBA.[_HiddenModule].ObjPtr(elem2)
+                            End If
+
+                            If IsDataStructure(elem2) Then tempCol.Add elem2
+                        Next elem2
+                    End If
+                End If
+            Next elem
+
+            Set col = tempCol
+            Set tempCol = New Collection
+        Loop While col.Count > 0
+    End If
+
+    datastructureIsSelfReferentialIter = IsSelfReferential
+End Function
+
+Private Function itemInObjPtrCol(ByVal Item As Variant, ByVal objPtrCol As VBA.Collection) As Boolean
+    Dim elem As Variant
+    Dim b As Boolean
+    Dim objPtrAddress As Variant
+    
+    b = False
+    objPtrAddress = VBA.[_HiddenModule].ObjPtr(Item)
+
+    For Each elem In objPtrCol
+         If elem = objPtrAddress Then
+             b = True
+         End If
+     Next elem
+     
+     itemInObjPtrCol = b
+End Function
+
+Private Function elementIsInCollection(ByVal elem As Variant, ByVal col As VBA.Collection) As Boolean
+    Dim b As Boolean
+    Dim e As Variant
+    
+    For Each e In col
+        If VBA.Information.IsObject(e) Then
+            If e Is elem Then
+                b = True
+                Exit For
+            End If
+        End If
+    Next e
+    
+    elementIsInCollection = b
+End Function
 
 Private Sub Class_Initialize()
     Set pCol = New VBA.Collection
@@ -220,7 +376,7 @@ Private Sub Class_Initialize()
     
     Set pFluentPathDict = New Scripting.Dictionary
     
-    Set pTestingInfos = New cTestingFunctionsInfos
+    Set pTestingFunctionsInfos = New cTestingFunctionsInfos
     
     Set pTestStrings = New cTestStrings
         
