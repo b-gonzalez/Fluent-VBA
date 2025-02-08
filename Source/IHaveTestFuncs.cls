@@ -107,7 +107,7 @@ End Function
 Private Function getDepthCountRecur( _
     ByVal testingValue As Variant, _
     Optional ByVal counter As Long = 1, _
-    Optional ByVal depthCounter As Long = 0 _
+    Optional ByRef depthCounter As Long = 0 _
 ) As Long
 End Function
 

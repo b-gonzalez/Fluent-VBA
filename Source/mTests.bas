@@ -644,7 +644,7 @@ Function validateRecurIterFuncCounts(ByVal recurIterFluentOf As cFluentOf) As Lo
     validateRecurIterFuncCounts = counter
 End Function
 
-Function validateRecurIterFuncCounts2(ByVal recurIterFluentOf As cFluentOf)
+Function validateRecurIterFuncCounts2(ByVal recurIterFluentOf As cFluentOf) As Long
     Dim TestingInfoDev As ITestingFunctionsInfoDev
     Dim counter As Long
     Dim recurIterFuncNameCol As VBA.Collection
@@ -8788,7 +8788,7 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     MiscTests = testCount
 End Function
 
-Public Function checkResetCounters(ByVal fluent As IFluent, ByVal testFluent As IFluentOf)
+Public Function checkResetCounters(ByVal fluent As IFluent, ByVal testFluent As IFluentOf) As Boolean
     Dim b As Boolean
     
     testFluent.Meta.Tests.ResetCounter
@@ -8799,7 +8799,7 @@ Public Function checkResetCounters(ByVal fluent As IFluent, ByVal testFluent As 
    checkResetCounters = b
 End Function
 
-Public Function getFluentCounts(ByVal fluent As IFluent)
+Public Function getFluentCounts(ByVal fluent As IFluent) As Boolean
     Dim test As ITest
     Dim d As Scripting.Dictionary
     Dim temp As String
@@ -8825,7 +8825,7 @@ Public Function getFluentCounts(ByVal fluent As IFluent)
     getFluentCounts = temp
 End Function
 
-Public Function getFluentOfCounts(ByVal fluentOf As IFluentOf)
+Public Function getFluentOfCounts(ByVal fluentOf As IFluentOf) As Boolean
     Dim test As ITest
     Dim d As Scripting.Dictionary
     Dim temp As String

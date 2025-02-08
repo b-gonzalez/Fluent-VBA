@@ -32,7 +32,7 @@ Private pTestValueClean As String
 Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
 Private Const RECUR_ITER_INPUTS_NOT_IDENTICAL_ERROR As Long = vbObjectError + 517
 
-Private Function ITestingFunctions_inputIsValid(ByVal inputValue As Variant, ByVal inputConditions As flTestType)
+Private Function ITestingFunctions_inputIsValid(ByVal inputValue As Variant, ByVal inputConditions As flTestType) As Boolean
     Dim b As Boolean
     Dim col As VBA.Collection
     Dim elem As Variant
@@ -1516,7 +1516,7 @@ Public Function IHaveTestFuncs_ElementsInDataStructure( _
     Call pExpressions.addToTestAndFluentPath("ElementsInDataStructure", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential, TestingInputIsSelfReferential:=testingInputIsNotSelfReferential)
 End Function
 
-Private Function IHaveTestFuncs_getDepthCountRecur(ByVal ds As Variant, Optional ByVal counter As Long = 1, Optional ByVal depthCounter As Long = 0) As Long
+Private Function IHaveTestFuncs_getDepthCountRecur(ByVal ds As Variant, Optional ByVal counter As Long = 1, Optional ByRef depthCounter As Long = 0) As Long
     Dim elem As Variant
 
     For Each elem In ds
