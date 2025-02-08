@@ -45,8 +45,8 @@ End Property
 
 Private Property Set IExpressions_setMeta(ByVal value As cMeta)
     Set pMeta = value
-    Set pTestDictCounter = pMeta.Tests.TestingInfos.TestFuncInfoToDict
-    Set pTestingInfos = pMeta.Tests.TestingInfos
+    Set pTestDictCounter = pMeta.Tests.TestingFunctionsInfos.TestFuncInfoToDict
+    Set pTestingInfos = pMeta.Tests.TestingFunctionsInfos
 End Property
 
 Private Function setTestResultProps(ByVal test As ITest, ByVal result As Variant, ByVal negateValue As Boolean) As ITest
@@ -196,7 +196,9 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     Optional ByVal cleanedTestValue As Variant, _
     Optional ByVal cleanedTestInput As Variant, _
     Optional ByVal Actual As Variant, _
-    Optional ByVal recurIterFunc As Variant _
+    Optional ByVal recurIterFunc As Variant, _
+    Optional ByVal TestingValueIsSelfReferential As Variant, _
+    Optional ByVal TestingInputIsSelfReferential As Variant _
 )
 
     'Consider refactoring to add a method to sets all test properties if not missing.
@@ -206,9 +208,59 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     
     Dim test As ITest
     Dim testDev As ITestDev
+    Dim tempTestingInput As Variant
+    Dim tempTestingValue As Variant
     
     Set test = New cTest
     Set testDev = test
+    
+    test.TestingInputIsSelfReferential = Null
+    test.TestingValueIsSelfReferential = Null
+    test.HasSelfReferential = Null
+    
+    If VBA.Information.IsObject(testingInput) Then
+        Set tempTestingInput = testingInput
+    Else
+        tempTestingInput = testingInput
+    End If
+
+    If VBA.Information.IsObject(testingValue) Then
+        Set tempTestingValue = testingValue
+    Else
+        tempTestingValue = testingValue
+    End If
+    
+    If Not VBA.Information.IsMissing(TestingValueIsSelfReferential) Then
+        If Not TestingValueIsSelfReferential Then
+            tempTestingValue = Null
+        End If
+    Else
+        If pMeta.Tests.IsDataStructure(testingValue) Then
+            If pMeta.Tests.DatastructureIsSelfReferential(testingValue, pMeta.Tests.Algorithm) Then
+                tempTestingValue = Null
+            End If
+        End If
+    End If
+    
+    If VBA.Information.IsNull(tempTestingValue) Then test.TestingValueIsSelfReferential = True
+
+    If Not VBA.Information.IsMissing(TestingInputIsSelfReferential) Then
+        If Not TestingInputIsSelfReferential Then
+            tempTestingInput = Null
+        End If
+    Else
+        If pMeta.Tests.IsDataStructure(testingInput) Then
+            If pMeta.Tests.DatastructureIsSelfReferential(testingInput, pMeta.Tests.Algorithm) Then
+                tempTestingInput = Null
+            End If
+        End If
+    End If
+    
+    If VBA.Information.IsNull(tempTestingInput) Then test.TestingInputIsSelfReferential = True
+    
+    If VBA.Information.IsNull(tempTestingValue) Or VBA.Information.IsNull(tempTestingInput) Then
+        test.HasSelfReferential = True
+    End If
     
     test.TestValueSet = True
     
@@ -223,7 +275,7 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     If pPrinting.Category <> "" Then iPrint.CategorySet = True
     If pPrinting.Name <> "" Then iPrint.NameSet = True
 
-    Set test = setTestValueTestInput(test, testingValue, testingInput)
+    Set test = setTestValueTestInput(test, tempTestingValue, tempTestingInput)
 
     If Not VBA.Information.IsMissing(lowerVal) And Not VBA.Information.IsMissing(higherVal) Then
         Set test = setLowerValHigherVal(test, lowerVal, higherVal)
@@ -242,6 +294,16 @@ Private Sub IExpressions_addToTestAndFluentPath( _
             testDev.AlgorithmValueSet = pMeta.Tests.AlgorithmValueSet
             
             testDev.IsRecurIterFunc = recurIterFunc
+                
+            If Not VBA.Information.IsMissing(TestingInputIsSelfReferential) Then
+                If TestingInputIsSelfReferential Then test.HasSelfReferential = True
+                test.TestingInputIsSelfReferential = TestingInputIsSelfReferential
+            End If
+            
+            If Not VBA.Information.IsMissing(TestingValueIsSelfReferential) Then
+                If TestingValueIsSelfReferential Then test.HasSelfReferential = True
+                test.TestingValueIsSelfReferential = TestingValueIsSelfReferential
+            End If
         End If
     End If
     

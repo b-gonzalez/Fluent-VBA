@@ -41,7 +41,9 @@ Private pTestValueIter As String
 Private pTestValueRecur As String
 Private pTestValueSet As Boolean
 Private pTestingValue As Variant
-
+Private phasSelfReferential As Variant
+Private pTestingValueIsSelfReferential As Variant
+Private pTestingInputIsSelfReferential As Variant
 
 Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
 
@@ -224,6 +226,32 @@ End Property
 Private Property Get ITest_Actual() As String
     ITest_Actual = pAcutal
 End Property
+
+Private Property Let ITest_HasSelfReferential(ByVal value As Variant)
+    phasSelfReferential = value
+End Property
+
+Private Property Get ITest_HasSelfReferential() As Variant
+    ITest_HasSelfReferential = phasSelfReferential
+End Property
+
+Private Property Let ITest_TestingValueIsSelfReferential(ByVal value As Variant)
+    pTestingValueIsSelfReferential = value
+End Property
+
+Private Property Get ITest_TestingValueIsSelfReferential() As Variant
+    ITest_TestingValueIsSelfReferential = pTestingValueIsSelfReferential
+End Property
+
+Private Property Let ITest_TestingInputIsSelfReferential(ByVal value As Variant)
+    pTestingInputIsSelfReferential = value
+End Property
+
+Private Property Get ITest_TestingInputIsSelfReferential() As Variant
+    ITest_TestingInputIsSelfReferential = pTestingInputIsSelfReferential
+End Property
+
+'TESTDEV
 
 Private Property Let ITestDev_negateValue(ByVal value As Boolean)
     pNegateValue = value
@@ -479,3 +507,26 @@ Public Property Get Actual() As String
     Actual = ITest_Actual
 End Property
 
+Public Property Let HasSelfReferential(ByVal value As Variant)
+    ITest_HasSelfReferential = value
+End Property
+
+Public Property Get HasSelfReferential() As Variant
+    HasSelfReferential = ITest_HasSelfReferential
+End Property
+
+Public Property Let TestingValueIsSelfReferential(ByVal value As Variant)
+    ITest_TestingValueIsSelfReferential = value
+End Property
+
+Public Property Get TestingValueIsSelfReferential() As Variant
+    TestingValueIsSelfReferential = ITest_TestingValueIsSelfReferential
+End Property
+
+Public Property Let TestingInputIsSelfReferential(ByVal value As Variant)
+    ITest_TestingInputIsSelfReferential = value
+End Property
+
+Public Property Get TestingInputIsSelfReferential() As Variant
+    TestingInputIsSelfReferential = ITest_TestingInputIsSelfReferential
+End Property

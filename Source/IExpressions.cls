@@ -78,7 +78,9 @@ Public Sub addToTestAndFluentPath( _
     Optional ByVal cleanedTestValue As Variant, _
     Optional ByVal cleanedTestInput As Variant, _
     Optional ByVal Actual As Variant, _
-    Optional ByVal recurIterFunc As Variant _
+    Optional ByVal recurIterFunc As Variant, _
+    Optional ByVal TestingValueIsSelfReferential As Variant, _
+    Optional ByVal TestingInputIsSelfReferential As Variant _
 )
 End Sub
 

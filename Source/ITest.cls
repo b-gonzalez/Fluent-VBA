@@ -134,3 +134,21 @@ End Property
 
 Public Property Get Actual() As String
 End Property
+
+Public Property Let HasSelfReferential(ByVal value As Variant)
+End Property
+
+Public Property Get HasSelfReferential() As Variant
+End Property
+
+Public Property Let TestingValueIsSelfReferential(ByVal value As Variant)
+End Property
+
+Public Property Get TestingValueIsSelfReferential() As Variant
+End Property
+
+Public Property Let TestingInputIsSelfReferential(ByVal value As Variant)
+End Property
+
+Public Property Get TestingInputIsSelfReferential() As Variant
+End Property
