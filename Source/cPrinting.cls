@@ -95,7 +95,7 @@ Private Property Get IPrinting_FluentPath() As String
     IPrinting_FluentPath = pFluentPath
 End Property
 
-Private Function IPrinting_ArrayFromTests(ByVal col As VBA.Collection, ByVal tp As TestProperty) As Variant()
+Private Function ArrayFromTests(ByVal col As VBA.Collection, ByVal tp As TestProperty) As Variant()
     Dim test As ITest
     Dim testDev As ITestDev
     Dim elem As Variant
@@ -113,7 +113,7 @@ Private Function IPrinting_ArrayFromTests(ByVal col As VBA.Collection, ByVal tp 
             Case TestProperty.TestCategory
                 arr(i, 1) = test.Category
             Case TestProperty.testInfo
-                arr(i, 1) = IPrinting_getTestMessageFromResultNumber(testDev.ResultNumber) & " - " & test.FluentPath
+                arr(i, 1) = getTestMessageFromResultNumber(testDev.ResultNumber) & " - " & test.FluentPath
             Case TestProperty.TestName
                 arr(i, 1) = test.TestName
             Case TestProperty.TestResultNumber
@@ -122,7 +122,7 @@ Private Function IPrinting_ArrayFromTests(ByVal col As VBA.Collection, ByVal tp 
         i = i + 1
     Next elem
     
-    IPrinting_ArrayFromTests = arr
+    ArrayFromTests = arr
 End Function
 
 Private Sub IPrinting_PrintToImmediate()
@@ -140,13 +140,13 @@ Private Sub IPrinting_PrintToImmediate()
     TestName = 1
     temp = ""
     
-    If pCategorySet Then testCategoryArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestCategory)
+    If pCategorySet Then testCategoryArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestCategory)
     
-    If pNameSet Then testNameArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestName)
+    If pNameSet Then testNameArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestName)
     
-    testInfoArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.testInfo)
+    testInfoArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.testInfo)
     
-    testResultArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestResultNumber)
+    testResultArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestResultNumber)
     
     For Each test In pTestCollection
         Set testDev = test
@@ -159,7 +159,7 @@ Private Sub IPrinting_PrintToImmediate()
             temp = temp & test.TestName & " - "
         End If
 
-        temp = temp & IPrinting_getTestMessageFromResultNumber(testDev.ResultNumber) & " - " & test.FluentPath
+        temp = temp & getTestMessageFromResultNumber(testDev.ResultNumber) & " - " & test.FluentPath
         
         Debug.Print temp
         
@@ -183,13 +183,13 @@ Private Sub IPrinting_PrintToSheet()
     Dim testNameArr() As Variant
     Dim testCategoryArr() As Variant
 
-    Set wb = IPrinting_getWorkbook
+    Set wb = getWorkbook
     
-    testInfoArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.testInfo)
+    testInfoArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.testInfo)
     
     wb.ActiveSheet.Range("A2").Resize(UBound(testInfoArr, 1), UBound(testInfoArr, 2)).value = testInfoArr
     
-    Call IPrinting_addTableToWorkbook(wb)
+    Call addTableToWorkbook(wb)
     
     Set ws = wb.ActiveSheet
     
@@ -197,7 +197,7 @@ Private Sub IPrinting_PrintToSheet()
     
     Set testInfoCol = lo.ListColumns("Test info")
 
-    testResultArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestResultNumber)
+    testResultArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestResultNumber)
     
     Set testResultCol = lo.ListColumns.Add(Position:=1)
 
@@ -208,20 +208,20 @@ Private Sub IPrinting_PrintToSheet()
     If pNameSet Then
         Set testNameCol = lo.ListColumns.Add(Position:=1)
         testNameCol.Name = "Test name"
-        testNameArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestName)
+        testNameArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestName)
         testNameCol.DataBodyRange.value = testNameArr
     End If
 
     If pCategorySet Then
         Set testCategoryCol = lo.ListColumns.Add(Position:=1)
         testCategoryCol.Name = "Category"
-        testCategoryArr = IPrinting_ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestCategory)
+        testCategoryArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestCategory)
         testCategoryCol.DataBodyRange.value = testCategoryArr
     End If
     
-    Call IPrinting_addValueConditColors(lo, "-1", "0", "1")
+    Call addValueConditColors(lo, "-1", "0", "1")
     
-    Call IPrinting_addResultsIconSets(testResultCol)
+    Call addResultsIconSets(testResultCol)
     
     testInfoCol.Range.EntireColumn.AutoFit
     
@@ -231,7 +231,7 @@ Private Sub IPrinting_PrintToSheet()
 
 End Sub
 
-Private Function IPrinting_getWorkbook() As Workbook
+Private Function getWorkbook() As Workbook
     Dim xl As Excel.Application
     
     If pExcel Is Nothing Then
@@ -248,10 +248,10 @@ Private Function IPrinting_getWorkbook() As Workbook
         Set pWorkbook = pExcel.Workbooks.Add
     End If
         
-    Set IPrinting_getWorkbook = pWorkbook
+    Set getWorkbook = pWorkbook
 End Function
 
-Private Sub IPrinting_addTableToWorkbook(ByVal wb As Workbook)
+Private Sub addTableToWorkbook(ByVal wb As Workbook)
     Dim ws As Excel.Worksheet
     Dim lo As Excel.ListObject
     Dim lc As Excel.ListColumn
@@ -264,12 +264,12 @@ Private Sub IPrinting_addTableToWorkbook(ByVal wb As Workbook)
     lo.Name = "Table1"
 End Sub
 
-Private Sub IPrinting_addResultsIconSets(ByVal lc As Excel.ListColumn)
+Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
     Dim wb As Workbook
 
     lc.Range.Select
     
-    Set wb = IPrinting_getWorkbook()
+    Set wb = getWorkbook()
     
     With lc.DataBodyRange
         .FormatConditions.AddIconSetCondition
@@ -295,7 +295,7 @@ Private Sub IPrinting_addResultsIconSets(ByVal lc As Excel.ListColumn)
     End With
 End Sub
 
-Private Sub IPrinting_addValueConditColors(ByVal lo As Excel.ListObject, ByVal passedMsg As String, ByVal failedMsg As String, ByVal unexpectedMsg As String)
+Private Sub addValueConditColors(ByVal lo As Excel.ListObject, ByVal passedMsg As String, ByVal failedMsg As String, ByVal unexpectedMsg As String)
     Dim lc As Excel.ListColumn
     Dim index As Long
     Dim temp As Variant
@@ -339,7 +339,7 @@ Private Sub IPrinting_addValueConditColors(ByVal lo As Excel.ListObject, ByVal p
     On Error GoTo 0
 End Sub
 
-Private Function IPrinting_getTestMessageFromResultNumber(ByVal ResultNumber As Long) As String
+Private Function getTestMessageFromResultNumber(ByVal ResultNumber As Long) As String
     Dim tempMessage As String
     
     Select Case ResultNumber
@@ -351,7 +351,7 @@ Private Function IPrinting_getTestMessageFromResultNumber(ByVal ResultNumber As 
             tempMessage = pUnexpectedMessage
     End Select
     
-    IPrinting_getTestMessageFromResultNumber = tempMessage
+    getTestMessageFromResultNumber = tempMessage
 End Function
 
 Private Sub Class_Initialize()

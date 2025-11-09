@@ -69,6 +69,18 @@ End Property
 Public Property Get StrTestInput() As String
 End Property
 
+Public Property Let strTestValuePretty(ByVal value As String)
+End Property
+
+Public Property Get strTestValuePretty() As String
+End Property
+
+Public Property Let StrTestInputPretty(ByVal value As String)
+End Property
+
+Public Property Get StrTestInputPretty() As String
+End Property
+
 Public Property Let HasNull(ByVal value As Boolean)
 End Property
 

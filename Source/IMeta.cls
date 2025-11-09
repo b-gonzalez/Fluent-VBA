@@ -15,7 +15,7 @@ End Property
 Public Property Get Utilities() As IUtilities
 End Property
 
-Public Property Get Tests() As cTests
+Public Property Get tests() As ITests
 End Property
 
 Public Property Get ToString() As IToString

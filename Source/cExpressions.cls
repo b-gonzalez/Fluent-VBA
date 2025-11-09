@@ -11,12 +11,12 @@ Option Explicit
 
 Implements IExpressions
 
-Private pTestingInfos As cTestingFunctionsInfos
+Private pTestingInfos As ITestingFunctionsInfos
 Private pTestingInfo As ITestingFunctionsInfo
 Private pPrinting As IPrinting
 Private iPrint As IPrintExpr
 Private pMeta As IMeta
-Private pTests As cTests
+Private pTests As ITests
 Private pTestDictCounter As Scripting.Dictionary
 
 'Visual Basic errors (both Visual Basic-defined and user-defined errors) are in the range 0–65535.
@@ -45,8 +45,8 @@ End Property
 
 Private Property Set IExpressions_setMeta(ByVal value As cMeta)
     Set pMeta = value
-    Set pTestDictCounter = pMeta.Tests.TestingFunctionsInfos.TestFuncInfoToDict
-    Set pTestingInfos = pMeta.Tests.TestingFunctionsInfos
+    Set pTestDictCounter = pMeta.tests.TestingFunctionsInfos.TestFuncInfoToDict
+    Set pTestingInfos = pMeta.tests.TestingFunctionsInfos
 End Property
 
 Private Function setTestResultProps(ByVal test As ITest, ByVal result As Variant, ByVal negateValue As Boolean) As ITest
@@ -152,13 +152,15 @@ Private Function setStrTestValueStrTestInput(ByVal test As ITest, ByVal Meta As 
     Dim algo As flAlgorithm
     
     With test
-        .StrTestInput = IExpressions_InputToString(.testingInput)
-        .strTestValue = IExpressions_InputToString(.testingValue)
+        .StrTestInputPretty = IExpressions_InputToString(.testingInput, indent:=True)
+        .strTestValuePretty = IExpressions_InputToString(.testingValue, indent:=True)
+        .StrTestInput = deprettify(.StrTestInputPretty)
+        .strTestValue = deprettify(.strTestValuePretty)
     End With
     
     Set testDev = test
     
-    With pMeta.Tests
+    With pMeta.tests
         If .ToStrDev Then
             algo = .Algorithm
             
@@ -166,14 +168,14 @@ Private Function setStrTestValueStrTestInput(ByVal test As ITest, ByVal Meta As 
                 testDev.TestValueRecur = test.strTestValue
                 testDev.TestInputRecur = test.StrTestInput
                 
-                testDev.TestValueIter = IExpressions_InputToString(test.testingValue, flAlgorithm.flIterative)
-                testDev.TestInputIter = IExpressions_InputToString(test.testingInput, flAlgorithm.flIterative)
+                testDev.TestValueIter = IExpressions_InputToString(test.testingValue, flAlgorithm.flIterative, False)
+                testDev.TestInputIter = IExpressions_InputToString(test.testingInput, flAlgorithm.flIterative, False)
             ElseIf algo = flAlgorithm.flIterative Then
                 testDev.TestValueIter = test.strTestValue
                 testDev.TestInputIter = test.StrTestInput
                 
-                testDev.TestValueRecur = IExpressions_InputToString(test.testingValue, flAlgorithm.flRecursive)
-                testDev.TestInputRecur = IExpressions_InputToString(test.testingInput, flAlgorithm.flRecursive)
+                testDev.TestValueRecur = IExpressions_InputToString(test.testingValue, flAlgorithm.flRecursive, False)
+                testDev.TestInputRecur = IExpressions_InputToString(test.testingInput, flAlgorithm.flRecursive, False)
             Else
                 Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
             End If
@@ -235,8 +237,8 @@ Private Sub IExpressions_addToTestAndFluentPath( _
             tempTestingValue = Null
         End If
     Else
-        If pMeta.Tests.IsDataStructure(testingValue) Then
-            If pMeta.Tests.DatastructureIsSelfReferential(testingValue, pMeta.Tests.Algorithm) Then
+        If pMeta.tests.IsDataStructure(testingValue) Then
+            If pMeta.tests.DatastructureIsSelfReferential(testingValue, pMeta.tests.Algorithm) Then
                 tempTestingValue = Null
             End If
         End If
@@ -249,8 +251,8 @@ Private Sub IExpressions_addToTestAndFluentPath( _
             tempTestingInput = Null
         End If
     Else
-        If pMeta.Tests.IsDataStructure(testingInput) Then
-            If pMeta.Tests.DatastructureIsSelfReferential(testingInput, pMeta.Tests.Algorithm) Then
+        If pMeta.tests.IsDataStructure(testingInput) Then
+            If pMeta.tests.DatastructureIsSelfReferential(testingInput, pMeta.tests.Algorithm) Then
                 tempTestingInput = Null
             End If
         End If
@@ -289,9 +291,15 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     
     If Not VBA.Information.IsMissing(recurIterFunc) Then
         If recurIterFunc Then
-            testDev.Algorithm = pMeta.Tests.Algorithm
+            testDev.Algorithm = pMeta.tests.Algorithm
         
-            testDev.AlgorithmValueSet = pMeta.Tests.AlgorithmValueSet
+            testDev.AlgorithmValueSet = pMeta.tests.AlgorithmValueSet
+            
+            If testDev.Algorithm And flAlgorithm.flIterative Then
+                testDev.IsBaseCaseIter = True
+            ElseIf testDev.Algorithm And flAlgorithm.flRecursive Then
+                testDev.IsBaseCaseRecur = True
+            End If
             
             testDev.IsRecurIterFunc = recurIterFunc
                 
@@ -465,7 +473,7 @@ Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentP
         finalFluentPath = FluentPath & _
             "Testing value: " & .strTestValue & ";"
             
-            If pMeta.Tests.TestStrings.CleanTestValueStr Then
+            If pMeta.tests.TestStrings.CleanTestValueStr Then
                 If .cleanedTestValue <> "" Then
                     finalFluentPath = finalFluentPath & " Cleaned test value: " & pMeta.ToString.WrapIfString(.cleanedTestValue)
                 End If
@@ -473,7 +481,7 @@ Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentP
 
             If .StrTestInput <> "" Then finalFluentPath = finalFluentPath & " Testing input: " & .StrTestInput & ";"
             
-            If pMeta.Tests.TestStrings.CleanTestInputStr Then
+            If pMeta.tests.TestStrings.CleanTestInputStr Then
                 If .cleanedTestInput <> "" Then
                     finalFluentPath = finalFluentPath & " Cleaned test input: " & pMeta.ToString.WrapIfString(.cleanedTestInput)
                 End If
@@ -676,7 +684,11 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
     
 End Sub
 
-Private Function IExpressions_InputToString(ByVal nv As Variant, Optional ByVal algo As Variant) As String
+Private Function IExpressions_InputToString( _
+    ByVal nv As Variant, _
+    Optional ByVal algo As Variant, _
+    Optional ByVal indent As Boolean = False _
+) As String
     Dim strArgs() As String
     Dim strObj As String
     Dim tempNVTS As String
@@ -689,25 +701,29 @@ Private Function IExpressions_InputToString(ByVal nv As Variant, Optional ByVal 
     Dim iterStr As String
     Dim recurBool As Boolean
     Dim iterBool As Boolean
+    Dim recurCol As Collection
+    Dim iterCol As Collection
     
     i = 0
     counter = 0
     Set col = New VBA.Collection
     
     If IsMissing(algo) Then 'a value of 0 is equivalent to
-        method = pMeta.Tests.Algorithm
+        method = pMeta.tests.Algorithm
     Else
         method = algo
     End If
     
     Select Case True
-        Case pMeta.Tests.IsDataStructure(nv)
+        Case pMeta.tests.IsDataStructure(nv)
             If method And flAlgorithm.flRecursive Then
-                recurStr = IExpressions_InputToStringRecur(nv)
+                Set recurCol = IExpressions_InputToStringRecur(nv, indent:=indent)
+                recurStr = Join(collectionToStrArray(recurCol), "")
             End If
 
             If method And flAlgorithm.flIterative Then
-                iterStr = IExpressions_inputToStringIter(nv)
+                Set iterCol = IExpressions_inputToStringIter(nv, indent:=indent)
+                iterStr = Join(collectionToStrArray(iterCol), "")
             End If
             
             If recurStr <> "" And iterStr <> "" Then
@@ -718,9 +734,11 @@ Private Function IExpressions_InputToString(ByVal nv As Variant, Optional ByVal 
                 End If
             Else
                 If recurStr <> "" Then
-                    tempNVTS = IExpressions_InputToStringRecur(nv)
+                    Set recurCol = IExpressions_InputToStringRecur(nv, indent:=indent)
+                    tempNVTS = Join(collectionToStrArray(recurCol), "")
                 ElseIf iterStr <> "" Then
-                    tempNVTS = IExpressions_inputToStringIter(nv)
+                    Set iterCol = IExpressions_inputToStringIter(nv, indent:=indent)
+                    tempNVTS = Join(collectionToStrArray(iterCol), "")
                 Else
                     Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
                 End If
@@ -780,138 +798,255 @@ Private Function IExpressions_DatastructureIsEmpty(ByVal v As Variant) As Boolea
     IExpressions_DatastructureIsEmpty = b
 End Function
 
-Private Function IExpressions_InputToStringRecur(ByVal v As Variant) As String
-    Dim temp As String
+Private Function IExpressions_InputToStringRecur( _
+    ByVal v As Variant, _
+    Optional ByVal col As Collection = Nothing, _
+    Optional ByVal counter As Long = 1, _
+    Optional ByVal indent As Boolean = False _
+) As Collection
     Dim elem As Variant
     Dim emptyDS As Boolean
+    Dim dsCount As Long
+    Dim tempCount As Long
+    Dim arr() As String
+    Dim i As Long
+    
+    If col Is Nothing Then
+        Set col = New Collection
+    End If
 
-    temp = IExpressions_getDsType(v)
+    col.Add getDsType(v)
+
+    If indent Then
+        col.Add vbNewLine
+    End If
+    
+    tempCount = 1
 
     Select Case True
-        Case pMeta.Tests.IsDataStructure(v) And Not IExpressions_DatastructureIsEmpty(v)
+        Case pMeta.tests.IsDataStructure(v) And Not IExpressions_DatastructureIsEmpty(v)
+            dsCount = IExpressions_getDsCount(v)
+                        
             If Not TypeOf v Is Scripting.Dictionary Then
                 For Each elem In v
-                    If pMeta.Tests.IsDataStructure(elem) Then
-                        temp = temp & IExpressions_InputToStringRecur(elem) & ", "
+                    If indent Then
+                        col.Add getIndent(counter)
+                    End If
+                                        
+                    If pMeta.tests.IsDataStructure(elem) Then
+                        Set col = IExpressions_InputToStringRecur(elem, col, counter + 1, indent)
                     ElseIf VBA.Information.IsObject(elem) Then
-                        temp = temp & VBA.Information.TypeName(elem) & ", "
+                        col.Add VBA.Information.TypeName(elem)
                     ElseIf VBA.Information.TypeName(elem) = "String" Then
-                        temp = temp & pMeta.ToString.WrapIfString(elem) & ", "
+                        col.Add pMeta.ToString.WrapIfString(elem)
+                    ElseIf VBA.Information.TypeName(elem) = "Date" Then
+                        col.Add "#" & elem & "#"
                     Else
-                        temp = temp & elem & ", "
+                        col.Add elem
+                    End If
+                    
+                    If tempCount < dsCount Then
+                        col.Add ", "
+                        tempCount = tempCount + 1
+                    End If
+                                        
+                    If indent Then
+                        col.Add vbNewLine
                     End If
                 Next elem
             Else
                 For Each elem In v.Keys
-                    If pMeta.Tests.IsDataStructure(v(elem)) Then
-                        temp = temp & elem & ": " & IExpressions_InputToStringRecur(v(elem)) & ", "
-                    ElseIf VBA.Information.IsObject(v(elem)) Then
-                        temp = temp & elem & ": " & VBA.Information.TypeName(v(elem)) & ", "
-                    ElseIf VBA.Information.TypeName(v(elem)) = "String" Then
-                        temp = temp & elem & ": " & pMeta.ToString.WrapIfString(v(elem)) & ", "
-                    Else
-                        temp = temp & elem & ": " & v(elem) & ", "
+                    If indent Then
+                        col.Add getIndent(counter)
                     End If
+                    
+                    If VBA.Information.TypeName(elem) = "String" Then
+                        col.Add pMeta.ToString.WrapIfString(elem)
+                    Else
+                        col.Add elem
+                    End If
+                    
+                    col.Add ":"
+                    
+                    If pMeta.tests.IsDataStructure(v(elem)) Then
+                        Set col = IExpressions_InputToStringRecur(v(elem), col, counter + 1, indent)
+                    ElseIf VBA.Information.IsObject(v(elem)) Then
+                        col.Add VBA.Information.TypeName(v(elem))
+                    ElseIf VBA.Information.TypeName(v(elem)) = "String" Then
+                        col.Add pMeta.ToString.WrapIfString(v(elem))
+                    ElseIf VBA.Information.TypeName(v(elem)) = "Date" Then
+                        col.Add "#" & v(elem) & "#"
+                    Else
+                        col.Add v(elem)
+                    End If
+                    
+                    If tempCount < dsCount Then
+                        col.Add ", "
+                        tempCount = tempCount + 1
+                    End If
+                    
+                    If indent Then
+                        col.Add vbNewLine
+                    End If
+                    
                 Next elem
             End If
         Case Else
-            temp = temp & elem & ", "
+            col.Add elem
+            
+            If tempCount < dsCount Then
+                col.Add ", "
+                tempCount = tempCount + 1
+            End If
     End Select
 
-    If VBA.Right$(temp, 2) = ", " Then
-        temp = VBA.Left$(temp, VBA.Strings.Len(temp) - 2)
+    If indent And counter > 1 Then
+        col.Add getIndent(counter - 1)
     End If
+    
+    col.Add ")"
 
-    temp = temp & ")"
-
-    IExpressions_InputToStringRecur = temp
+    Set IExpressions_InputToStringRecur = col
 End Function
 
-Function IExpressions_inputToStringIter(ByVal v As Variant) As String
+Private Function getCollectionFromDataStructure( _
+    ByVal ds As Variant, _
+    ByVal col1 As VBA.Collection, _
+    Optional ByVal counter As Long = 1, _
+    Optional ByVal indent As Boolean = False _
+) As VBA.Collection
     Dim elem As Variant
     Dim tempCol As VBA.Collection
-    Dim tempCount As Long
-    Dim finalCol As VBA.Collection
-    Dim elemStr As String
-    Dim temp As String
-    Dim vCounter As String
-    Dim dsCount As Long
+    Dim parentDsCount As Long
+    Dim childDsCount As Long
+
+    parentDsCount = 1
+    childDsCount = 1
+    parentDsCount = IExpressions_getDsCount(ds)
     
-    Set tempCol = New VBA.Collection
-    tempCount = 1
+    Set tempCol = col1
     
-    vCounter = IExpressions_getDsCount(v)
-    
-    temp = IExpressions_getDsType(v)
-    
-    tempCol.Add temp
-    
-    For Each elem In v
-        If Not pMeta.Tests.IsDataStructure(elem) Then
-            
-            'This section is needed in case v is a dictionary
-            'if so, then elem will be a key. And that key is
-            'concatenated with a colon and the corresponding
-            'value or object it is associated with
-            
-            If Not TypeOf v Is Scripting.Dictionary Then
-                If VBA.Information.IsObject(elem) Then
-                    tempCol.Add VBA.Information.TypeName(elem)
-                ElseIf VBA.Information.TypeName(elem) = "String" Then
+    If indent Then
+        tempCol.Add getDsType(ds) & vbNewLine
+    Else
+        tempCol.Add getDsType(ds)
+    End If
+
+    If parentDsCount > 0 Then
+        If TypeOf ds Is Scripting.Dictionary Then
+            For Each elem In ds.Keys
+                If indent Then
+                    tempCol.Add getIndent(counter)
+                End If
+                
+                If VBA.Information.TypeName(elem) = "String" Then
+                    tempCol.Add pMeta.ToString.WrapIfString(elem) & ":"
+                Else
+                    tempCol.Add elem & ":"
+                End If
+                                
+                If VBA.Information.TypeName(ds(elem)) = "String" Then
+                    tempCol.Add pMeta.ToString.WrapIfString(ds(elem))
+                ElseIf VBA.Information.TypeName(ds(elem)) = "Date" Then
+                    tempCol.Add "#" & ds(elem) & "#"
+                Else
+                    tempCol.Add ds(elem)
+                End If
+
+                If childDsCount < parentDsCount Then
+                    tempCol.Add ", "
+                End If
+                
+                If indent Then
+                    tempCol.Add vbNewLine
+                End If
+
+                childDsCount = childDsCount + 1
+            Next elem
+        Else
+            For Each elem In ds
+                If indent Then
+                    tempCol.Add getIndent(counter)
+                End If
+                
+                If VBA.Information.TypeName(elem) = "String" Then
                     tempCol.Add pMeta.ToString.WrapIfString(elem)
+                ElseIf VBA.Information.TypeName(elem) = "Date" Then
+                    tempCol.Add "#" & elem & "#"
                 Else
                     tempCol.Add elem
                 End If
-            Else
-                'v(elem) is a dictionary
-                tempCol.Add elem & ": "
-                
-                If Not TypeOf v(elem) Is Scripting.Dictionary Then
-                    tempCol.Add pMeta.ToString.WrapIfString(v(elem))
-                Else
-                    tempCol.Add v(elem)
+
+                If childDsCount < parentDsCount Then
+                    tempCol.Add ", "
                 End If
-            End If
-        Else
-            dsCount = IExpressions_getDsCount(elem)
-            
-            If dsCount > 0 Then
-                tempCol.Add elem
-            ElseIf dsCount = 0 Then
-                tempCol.Add IExpressions_getDsType(elem) & ")"
-            End If
+                
+                If indent Then
+                    tempCol.Add vbNewLine
+                End If
+
+                childDsCount = childDsCount + 1
+            Next elem
         End If
-        
-        If tempCount < vCounter Then
-            tempCol.Add ", "
-        ElseIf tempCount = vCounter Then
-            tempCol.Add ")"
-        End If
-        
-        tempCount = tempCount + 1
-    Next elem
-    
-    If tempCol.Count > 1 Then
-        Set finalCol = IExpressions_getNestedElementsFromCollection(tempCol)
-    ElseIf tempCol.Count = 1 Then
-        'If tempCol.count equals 1, that means that the data structure
-        'has no elements except for the typename of the data structure
-        'and an open parentheses. So all you need to set finalCol to
-        'tempCol and add a closing parentheses
-        
-        Set finalCol = tempCol
-        finalCol.Add ")"
     End If
     
-    For Each elem In finalCol
-        elemStr = elemStr & elem
-    Next elem
+    If counter > 1 Then
+        If indent Then
+            tempCol.Add getIndent(counter - 1)
+        End If
+    End If
     
-    IExpressions_inputToStringIter = elemStr
-    
+    tempCol.Add ")"
+
+    Set getCollectionFromDataStructure = tempCol
 End Function
 
-Function IExpressions_getNestedElementsFromCollection(ByVal col As VBA.Collection) As VBA.Collection
+Function IExpressions_inputToStringIter(ByVal ds As Variant, Optional ByVal indent As Boolean = False) As Collection
+    Dim col1 As VBA.Collection
+    Dim tempCol As VBA.Collection
+    Dim elem As Variant
+    Dim hasDataStructure As Boolean
+    Dim finalStr As String
+    Dim indentCounter As Long
+    
+    Set col1 = New VBA.Collection
+    Set tempCol = New VBA.Collection
+    indentCounter = 0
+
+    col1.Add ds
+    
+    Do
+        hasDataStructure = False
+            
+        If IExpressions_getDsCount(col1) > 0 Then
+            For Each elem In col1
+                If pMeta.tests.IsDataStructure(elem) Then
+                    hasDataStructure = True
+                    
+                    indentCounter = indentCounter + 1
+                    
+                    Set tempCol = getCollectionFromDataStructure(elem, tempCol, indentCounter, indent)
+                ElseIf IsObject(elem) Then
+                    tempCol.Add getDsType(elem)
+                Else
+                    tempCol.Add elem
+                End If
+
+            Next elem
+        End If
+    
+        Set col1 = tempCol
+        Set tempCol = New VBA.Collection
+    Loop While hasDataStructure = True
+    
+'    For Each elem In col1
+'        finalStr = finalStr & elem
+'    Next elem
+    
+    Set IExpressions_inputToStringIter = col1
+End Function
+
+Function getNestedElementsFromCollection(ByVal col As VBA.Collection) As VBA.Collection
     Dim elem As Variant
     Dim elem2 As Variant
     Dim counter As Long
@@ -934,11 +1069,11 @@ Function IExpressions_getNestedElementsFromCollection(ByVal col As VBA.Collectio
             elem = tempCol(counter)
         End If
         
-        If pMeta.Tests.IsDataStructure(elem) Then
+        If pMeta.tests.IsDataStructure(elem) Then
             If IExpressions_getDsCount(elem) > 0 Then
                 hasDataStructure = True
                 
-                tempCol.Add IExpressions_getDsType(elem), before:=counter
+                tempCol.Add getDsType(elem), before:=counter
                 
                 'counter needs to get incremented every time an element is added
                 'to tempCol or when the loop continues to the next element
@@ -958,7 +1093,7 @@ Function IExpressions_getNestedElementsFromCollection(ByVal col As VBA.Collectio
                     Else
                         Set d = elem
                         
-                        If pMeta.Tests.IsDataStructure(d(elem2)) Then
+                        If pMeta.tests.IsDataStructure(d(elem2)) Then
                             tempCol.Add elem2 & ": ", before:=counter
                             counter = counter + 1
                             
@@ -996,7 +1131,7 @@ Function IExpressions_getNestedElementsFromCollection(ByVal col As VBA.Collectio
                 
                 elemCounter = 1
             Else
-                tempCol.Add IExpressions_getDsType(elem), before:=counter
+                tempCol.Add getDsType(elem), before:=counter
                 counter = counter + 1
                 tempCol.Add ")", before:=counter
                 counter = counter + 1
@@ -1009,7 +1144,7 @@ Function IExpressions_getNestedElementsFromCollection(ByVal col As VBA.Collectio
         If counter >= tempCol.Count And hasDataStructure = False Then Exit Do
     Loop While counter < tempCol.Count
     
-    Set IExpressions_getNestedElementsFromCollection = tempCol
+    Set getNestedElementsFromCollection = tempCol
 End Function
 
 Public Function IExpressions_getDsCount(ByVal dataStructure As Variant) As Long
@@ -1025,22 +1160,21 @@ Public Function IExpressions_getDsCount(ByVal dataStructure As Variant) As Long
     IExpressions_getDsCount = counter
 End Function
 
-Private Function IExpressions_getDsType(ByVal v As Variant) As String
+Private Function getDsType(ByVal v As Variant) As String
     Dim counter As Long
     Dim elem As Variant
     Dim temp As String
     
     If VBA.Information.IsArray(v) Then
         temp = VBA.Strings.Left$(VBA.Information.TypeName(v), VBA.Strings.Len(VBA.Information.TypeName(v)) - 2) & "("
-    ElseIf pMeta.Tests.IsDataStructure(v) Then
+    ElseIf pMeta.tests.IsDataStructure(v) Then
         temp = VBA.Information.TypeName(v) & "("
     ElseIf VBA.Information.IsObject(v) Then
         temp = VBA.Information.TypeName(v)
     End If
     
-    IExpressions_getDsType = temp
+    getDsType = temp
 End Function
-
 
 Private Function IExpressions_getResultNumber(ByVal result As Variant) As Long
     Dim ResultNumber As Variant
@@ -1054,4 +1188,44 @@ Private Function IExpressions_getResultNumber(ByVal result As Variant) As Long
     End If
     
     IExpressions_getResultNumber = ResultNumber
+End Function
+
+Private Function getIndent(ByVal num As Long) As String
+    ReDim arr(num - 1) As Variant
+    
+    Dim i As Long
+    
+    For i = 0 To num - 1
+'        arr(i) = String$(4, " ")
+        arr(i) = vbTab
+    Next i
+    
+    getIndent = Join(arr, "")
+End Function
+
+Private Function deprettify(ByVal str As String) As String
+    Dim temp As String
+
+    temp = str
+    temp = Replace(temp, vbNewLine, "")
+    temp = Replace(temp, vbTab, "")
+
+    deprettify = temp
+End Function
+
+Private Function collectionToStrArray(ByVal col As Collection) As String()
+    Dim arr() As String
+    Dim i As Long
+    
+    ReDim arr(col.Count - 1)
+    
+    For i = 1 To col.Count
+        If VBA.Information.IsNull(col(i)) Then
+            arr(i - 1) = "Null"
+        Else
+            arr(i - 1) = col(i)
+        End If
+    Next i
+    
+    collectionToStrArray = arr
 End Function

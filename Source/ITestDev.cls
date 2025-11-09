@@ -62,3 +62,15 @@ End Property
 
 Public Property Get IsRecurIterFunc() As Boolean
 End Property
+
+Public Property Let IsBaseCaseRecur(ByVal value As Boolean)
+End Property
+
+Public Property Get IsBaseCaseRecur() As Boolean
+End Property
+
+Public Property Let IsBaseCaseIter(ByVal value As Boolean)
+End Property
+
+Public Property Get IsBaseCaseIter() As Boolean
+End Property

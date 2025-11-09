@@ -83,7 +83,7 @@ Private Function getAndInitTestFluent() As IFluentOf
         .Printing.FailedMessage = "Failure"
         .Printing.UnexpectedMessage = "What?"
         
-        .Tests.ToStrDev = True
+        .tests.ToStrDev = True
     End With
     
     
@@ -111,8 +111,8 @@ Private Sub runEqualPosNegTests(ByVal fluent As IFluent, ByVal testFluent As IFl
     Dim negDict As Scripting.Dictionary
     Dim elem As Variant
     Dim i As Long
-    Dim equalTestingInfo As cTestingFunctionsInfos
-    Dim posAndNegTestingInfo As cTestingFunctionsInfos
+    Dim equalTestingInfo As ITestingFunctionsInfos
+    Dim posAndNegTestingInfo As ITestingFunctionsInfos
     Dim equalTestingInfoDict As Scripting.Dictionary
     Dim posAndNegTestingInfoDict As Scripting.Dictionary
     Dim counter As Long
@@ -121,19 +121,19 @@ Private Sub runEqualPosNegTests(ByVal fluent As IFluent, ByVal testFluent As IFl
     testFluent.Meta.Printing.Name = "Test Fluent - abc 123"
     testFluent.Meta.Printing.Category = "Test Fluent - EqualityTests"
     Set equalTestFluent = EqualityDocumentationTests(fluent, testFluent, testFluentResult)
-    Set equalTestingInfo = equalTestFluent.Meta.Tests.TestingFunctionsInfos
+    Set equalTestingInfo = equalTestFluent.Meta.tests.TestingFunctionsInfos
     Set equalTestingInfoDict = equalTestingInfo.TestFuncInfoToDict
     
     Set tfRecur = MakeFluentOf
     Set tfIter = MakeFluentOf
     
-    tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
-    tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
+    tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
+    tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
     
     'The equality tests cannot use validateTestDict counter since it will fail since they
     'only run the equality tests
     
-    testFluent.Meta.Tests.resetTestingInfo
+    testFluent.Meta.tests.resetTestingInfo
 
     fluent.Meta.Printing.Category = "Fluent - positiveAndNegativeDocumentationTests"
     testFluent.Meta.Printing.Category = "Test Fluent - positiveAndNegativeDocumentationTests"
@@ -183,7 +183,7 @@ Private Sub runEqualPosNegTests(ByVal fluent As IFluent, ByVal testFluent As IFl
     
     Call CheckTestFuncInfos(posAndNegTestFluent)
     
-    Set posAndNegTestingInfo = posAndNegTestFluent.Meta.Tests.TestingFunctionsInfos
+    Set posAndNegTestingInfo = posAndNegTestFluent.Meta.tests.TestingFunctionsInfos
     Set posAndNegTestingInfoDict = posAndNegTestingInfo.TestFuncInfoToDict
     
     Debug.Assert posAndNegTestingInfo.validateTfiDictCounters(posAndNegTestingInfoDict, counter)
@@ -224,9 +224,9 @@ Private Sub TrueAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent A
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
     
-    Debug.Assert testFluent.Meta.Tests.Count = mCounter
+    Debug.Assert testFluent.Meta.tests.Count = mCounter
 
-    With fluent.Meta.Tests
+    With fluent.Meta.tests
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.result).Should.Be.EqualTo(True)
@@ -235,9 +235,9 @@ Private Sub TrueAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent A
         testFluentResult.Of(.result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
     
-    If testFluent.Meta.Tests.ToStrDev Then
-        With testFluent.Meta.Tests
-            Set td = .Item(.Count)
+    If testFluent.Meta.tests.ToStrDev Then
+        With testFluent.Meta.tests
+            Set td = .item(.Count)
         End With
     
         inputIter = td.TestInputIter
@@ -261,9 +261,9 @@ Private Sub FalseAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent 
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
     
-    Debug.Assert testFluent.Meta.Tests.Count = mCounter
+    Debug.Assert testFluent.Meta.tests.Count = mCounter
 
-    With fluent.Meta.Tests
+    With fluent.Meta.tests
         Debug.Assert fluent.Should.Be.EqualTo(False)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.result).Should.Be.EqualTo(True)
@@ -272,9 +272,9 @@ Private Sub FalseAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent 
         testFluentResult.Of(.result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
     
-    If testFluent.Meta.Tests.ToStrDev Then
-        With testFluent.Meta.Tests
-            Set td = .Item(.Count)
+    If testFluent.Meta.tests.ToStrDev Then
+        With testFluent.Meta.tests
+            Set td = .item(.Count)
         End With
     
         inputIter = td.TestInputIter
@@ -292,7 +292,7 @@ Private Sub NullAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent A
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
     
-    Debug.Assert testFluent.Meta.Tests.Count = mCounter
+    Debug.Assert testFluent.Meta.tests.Count = mCounter
 
     With fluent
         Debug.Assert testFluentResult.Of(.TestValue).Should.Be.EqualTo(Null)
@@ -310,9 +310,9 @@ Private Sub EmptyAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent 
     
 '    Debug.Assert testFluent.Meta.Tests(testFluent.Meta.Tests.Count).TestValueSet = False
     
-    Debug.Assert testFluent.Meta.Tests.Count = mCounter
+    Debug.Assert testFluent.Meta.tests.Count = mCounter
     
-    Debug.Assert testFluent.Meta.Tests(mCounter).TestValueSet = False
+    Debug.Assert testFluent.Meta.tests(mCounter).TestValueSet = False
 
     With fluent
         Debug.Assert VBA.Information.IsEmpty(fluent.TestValue)
@@ -330,7 +330,7 @@ Private Function EqualityDocumentationTests(ByVal fluent As IFluent, ByVal testF
     
     counter = 0
 
-    With fluent.Meta.Tests
+    With fluent.Meta.tests
     
         fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -382,7 +382,7 @@ Private Function EqualityDocumentationTests(ByVal fluent As IFluent, ByVal testF
         
         '//Approximate equality tests
     
-        testFluent.Meta.Tests.ApproximateEqual = True
+        testFluent.Meta.tests.ApproximateEqual = True
         fluent.TestValue = testFluent.Of("TRUE").Should.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
@@ -431,7 +431,7 @@ Private Function EqualityDocumentationTests(ByVal fluent As IFluent, ByVal testF
         fluent.TestValue = testFluent.Of("false").ShouldNot.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        testFluent.Meta.Tests.ApproximateEqual = False
+        testFluent.Meta.tests.ApproximateEqual = False
         
         '//Null and Empty tests
         
@@ -467,22 +467,22 @@ Private Function EqualityDocumentationTests(ByVal fluent As IFluent, ByVal testF
         
     End With
     
-    For Each test In fluent.Meta.Tests
+    For Each test In fluent.Meta.tests
         Debug.Assert test.result
     Next test
     
-    For i = 1 To fluent.Meta.Tests.Count
-        Debug.Assert fluent.Meta.Tests(i).result
+    For i = 1 To fluent.Meta.tests.Count
+        Debug.Assert fluent.Meta.tests(i).result
     Next i
     
     i = 1
     
     With testFluent.Meta
-        For Each test In .Tests
-            resultBool = test.result = .Tests(i).result
-            fluentBool = test.FluentPath = .Tests(i).FluentPath
-            valueBool = test.testingValue = .Tests(i).testingValue
-            inputBool = test.testingInput = .Tests(i).testingInput
+        For Each test In .tests
+            resultBool = test.result = .tests(i).result
+            fluentBool = test.FluentPath = .tests(i).FluentPath
+            valueBool = test.testingValue = .tests(i).testingValue
+            inputBool = test.testingInput = .tests(i).testingInput
             
             Debug.Assert resultBool And fluentBool And valueBool And inputBool
             
@@ -504,38 +504,42 @@ Sub validateTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf)
     Dim fluentBool As Boolean
     Dim valueBool As Boolean
     Dim inputBool As Boolean
+    Dim valueBool2 As Boolean
+    Dim inputBool2 As Boolean
     Dim selfReferentialBool As Boolean
     Dim inputSelfReferential As Boolean
     Dim valueSelfReferential As Boolean
     
-    For Each test In fluent.Meta.Tests
+    For Each test In fluent.Meta.tests
         Debug.Assert test.result
     Next test
     
-    For i = 1 To fluent.Meta.Tests.Count
-        Debug.Assert fluent.Meta.Tests(i).result
+    For i = 1 To fluent.Meta.tests.Count
+        Debug.Assert fluent.Meta.tests(i).result
     Next i
     
     i = 1
     
     With testFluent.Meta
-        For Each test In .Tests
-            resultBool = test.result = .Tests(i).result
-            fluentBool = test.FluentPath = .Tests(i).FluentPath
-            valueBool = test.strTestValue = .Tests(i).strTestValue
-            inputBool = test.StrTestInput = .Tests(i).StrTestInput
+        For Each test In .tests
+            resultBool = test.result = .tests(i).result
+            fluentBool = test.FluentPath = .tests(i).FluentPath
+            valueBool = test.strTestValue = .tests(i).strTestValue
+            inputBool = test.StrTestInput = .tests(i).StrTestInput
+            valueBool2 = test.strTestValuePretty = .tests(i).strTestValuePretty
+            inputBool2 = test.StrTestInputPretty = .tests(i).StrTestInputPretty
             
-            If test.HasSelfReferential And .Tests(i).HasSelfReferential Then
+            If test.HasSelfReferential And .tests(i).HasSelfReferential Then
                 If VBA.Information.IsNull(test.TestingInputIsSelfReferential) Then
-                    inputSelfReferential = VBA.Information.IsNull(test.TestingInputIsSelfReferential) And VBA.Information.IsNull(.Tests(i).TestingInputIsSelfReferential)
+                    inputSelfReferential = VBA.Information.IsNull(test.TestingInputIsSelfReferential) And VBA.Information.IsNull(.tests(i).TestingInputIsSelfReferential)
                 Else
-                    inputSelfReferential = test.TestingInputIsSelfReferential = .Tests(i).TestingInputIsSelfReferential
+                    inputSelfReferential = test.TestingInputIsSelfReferential = .tests(i).TestingInputIsSelfReferential
                 End If
                 
                 If VBA.Information.IsNull(test.TestingValueIsSelfReferential) Then
-                    valueSelfReferential = VBA.Information.IsNull(test.TestingValueIsSelfReferential) And VBA.Information.IsNull(.Tests(i).TestingValueIsSelfReferential)
+                    valueSelfReferential = VBA.Information.IsNull(test.TestingValueIsSelfReferential) And VBA.Information.IsNull(.tests(i).TestingValueIsSelfReferential)
                 Else
-                    valueSelfReferential = test.TestingValueIsSelfReferential = .Tests(i).TestingValueIsSelfReferential
+                    valueSelfReferential = test.TestingValueIsSelfReferential = .tests(i).TestingValueIsSelfReferential
                 End If
                 
                 selfReferentialBool = inputSelfReferential And valueSelfReferential
@@ -552,6 +556,7 @@ End Sub
 
 Sub validateRecurIterFluentOfs(ByVal testFluent As cFluentOf, ByVal tfRecur As cFluentOf, ByVal tfIter As cFluentOf, ByVal recurIterFuncName As String)
     Dim test As ITestDev
+    Dim test2 As cTest
     Dim implicitRecurCount As Long
     Dim explicitRecurCount As Long
     Dim explicitIterCount As Long
@@ -564,8 +569,10 @@ Sub validateRecurIterFluentOfs(ByVal testFluent As cFluentOf, ByVal tfRecur As c
     b1 = False
     b2 = False
     
-    For Each test In testFluent.Meta.Tests
+    For Each test In testFluent.Meta.tests
         If Not VBA.Information.IsNull(test.Algorithm) Then
+            Set test2 = test
+            
             b1 = test.AlgorithmValueSet = False 'False because testFluent should use implicit flAlgorithm.flRecursive
             b2 = test.Algorithm = flAlgorithm.flRecursive
             
@@ -582,13 +589,14 @@ Sub validateRecurIterFluentOfs(ByVal testFluent As cFluentOf, ByVal tfRecur As c
     b1 = False
     b2 = False
     
-    For Each test In tfRecur.Meta.Tests
+    For Each test In tfRecur.Meta.tests
         b1 = test.AlgorithmValueSet = True 'True because tfRecur should use explicit flAlgorithm.flRecursive
         b2 = test.Algorithm = flAlgorithm.flRecursive
         
-        Debug.Assert b1 'False because testFluent should use implicit flAlgorithm.flRecursive
+        Debug.Assert b1
         Debug.Assert b2
         Debug.Assert test.IsRecurIterFunc
+        Debug.Assert test.IsBaseCaseRecur
         
         If b1 And b2 Then
             explicitRecurCount = explicitRecurCount + 1
@@ -598,19 +606,19 @@ Sub validateRecurIterFluentOfs(ByVal testFluent As cFluentOf, ByVal tfRecur As c
     b1 = False
     b2 = False
     
-    For Each test In tfIter.Meta.Tests
+    For Each test In tfIter.Meta.tests
         b1 = test.AlgorithmValueSet = True 'True because tfIter should use explicit flAlgorithm.flIterative
         b2 = test.Algorithm = flAlgorithm.flIterative
         
-        Debug.Assert b1 'False because testFluent should use implicit flAlgorithm.flRecursive
+        Debug.Assert b1
         Debug.Assert b2
         Debug.Assert test.IsRecurIterFunc
+        Debug.Assert test.IsBaseCaseIter
         
         If b1 And b2 Then
             explicitIterCount = explicitIterCount + 1
         End If
     Next test
-    
     
     Debug.Assert (implicitRecurCount = explicitRecurCount) And (explicitRecurCount = explicitIterCount)
     
@@ -623,7 +631,7 @@ Function validateRecurIterFuncCounts(ByVal recurIterFluentOf As cFluentOf) As Lo
     Dim TestingInfoDev As ITestingFunctionsInfoDev
     Dim counter As Long
     
-    With recurIterFluentOf.Meta.Tests
+    With recurIterFluentOf.Meta.tests
         Set TestingInfoDev = .TestingFunctionsInfos
         
         With TestingInfoDev
@@ -652,7 +660,7 @@ Function validateRecurIterFuncCounts2(ByVal recurIterFluentOf As cFluentOf) As L
     Dim testSubInfoRecur As ITestingFunctionsInfo
     Dim testSubInfoIter As ITestingFunctionsInfo
     
-    Set TestingInfoDev = recurIterFluentOf.Meta.Tests.TestingFunctionsInfos
+    Set TestingInfoDev = recurIterFluentOf.Meta.tests.TestingFunctionsInfos
     Set recurIterFuncNameCol = TestingInfoDev.getRecurIterFuncNameCol
     counter = 0
     
@@ -674,7 +682,7 @@ Function validateRecurIterFuncNamesFromFluentOfInDict(ByVal recurIterFluentOf As
     Dim recurIterFuncNamesCol As VBA.Collection
     Dim TestingInfoDev As ITestingFunctionsInfoDev
     
-    Set TestingInfoDev = recurIterFluentOf.Meta.Tests.TestingFunctionsInfos
+    Set TestingInfoDev = recurIterFluentOf.Meta.tests.TestingFunctionsInfos
     Set recurIterFuncNamesCol = TestingInfoDev.getRecurIterFuncNameCol
     
     Debug.Assert recurIterFuncNamesCol.Count = mRecurIterFuncNamesDict.Count
@@ -726,7 +734,7 @@ Private Function EqualToTests(ByVal fluent As IFluent, ByVal testFluent As IFlue
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     ' //Approximate equality tests
-    testFluent.Meta.Tests.ApproximateEqual = True
+    testFluent.Meta.tests.ApproximateEqual = True
     fluent.TestValue = testFluent.Of("10").Should.Be.EqualTo(10)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
@@ -753,7 +761,7 @@ Private Function EqualToTests(ByVal fluent As IFluent, ByVal testFluent As IFlue
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     ' //Approximate equality tests
-    testFluent.Meta.Tests.ApproximateEqual = True
+    testFluent.Meta.tests.ApproximateEqual = True
     
     fluent.TestValue = testFluent.Of("10").ShouldNot.Be.EqualTo(10)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -3395,8 +3403,9 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'empty documention tests
-        
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure("Hello World")
+    
+    val = "Hello World"
+    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructure(val)) And _
@@ -3404,8 +3413,8 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure("Hello World")
+    
+    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
@@ -3414,7 +3423,8 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure("""Hello world""")
+    val = """Hello world"""
+    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructure(val)) And _
@@ -3422,8 +3432,8 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure("""Hello world""")
+    
+    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
@@ -3432,6 +3442,7 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
+    val = " ""Hello world"" "
     fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(" ""Hello world"" ")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
@@ -3440,8 +3451,8 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(" ""Hello world"" ")
+    
+    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
@@ -3449,8 +3460,9 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
     fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(""" Hello world """)
+    
+    val = """ Hello world """
+    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructure(val)) And _
@@ -3459,7 +3471,7 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(""" Hello world """)
+    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
@@ -3468,8 +3480,8 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
-    Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
+    Debug.Assert tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
+    Debug.Assert tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
     
     Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "InDataStructure")
     
@@ -3478,7 +3490,7 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
 'bitwise flags tests
 
     Set tfBitwiseFlag = MakeFluentOf
-    tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
+    tfBitwiseFlag.Meta.tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
     
     arr = VBA.[_HiddenModule].Array(9, 10, 11)
     Debug.Assert tfBitwiseFlag.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
@@ -3486,7 +3498,7 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     arr = VBA.[_HiddenModule].Array(9, 11)
     Debug.Assert tfBitwiseFlag.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
     
-    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingFunctionsInfos
+    Set testInfoDev = tfBitwiseFlag.Meta.tests.TestingFunctionsInfos
     
     With testInfoDev
         Debug.Assert .InDataStructureRecur.Count > 0 And .InDataStructureIter.Count > 0
@@ -4506,8 +4518,8 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
-    Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
+    Debug.Assert tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
+    Debug.Assert tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
 
     Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "InDataStructures")
     
@@ -4516,7 +4528,7 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
 'bitwise flags tests
 
     Set tfBitwiseFlag = MakeFluentOf
-    tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
+    tfBitwiseFlag.Meta.tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
     
     arr = VBA.[_HiddenModule].Array(9, 10, 11)
     Debug.Assert tfBitwiseFlag.Of(10).Should.Be.InDataStructures(arr) 'with implicit recur
@@ -4524,7 +4536,7 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     arr = VBA.[_HiddenModule].Array(9, 11)
     Debug.Assert tfBitwiseFlag.Of(10).ShouldNot.Be.InDataStructures(arr) 'with implicit recur
     
-    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingFunctionsInfos
+    Set testInfoDev = tfBitwiseFlag.Meta.tests.TestingFunctionsInfos
     
     With testInfoDev
         Debug.Assert .InDataStructuresRecur.Count > 0 And .InDataStructuresIter.Count > 0
@@ -4790,7 +4802,7 @@ Private Function AlphabeticTests(ByVal fluent As IFluent, ByVal testFluent As IF
     fluent.TestValue = testFluent.Of("!@#").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = True
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
     fluent.TestValue = testFluent.Of("abc def").Should.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -4843,7 +4855,7 @@ Private Function AlphabeticTests(ByVal fluent As IFluent, ByVal testFluent As IF
     fluent.TestValue = testFluent.Of(""" !@# """).Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = False
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = False
 
     'negative documentation tests
     
@@ -4859,7 +4871,7 @@ Private Function AlphabeticTests(ByVal fluent As IFluent, ByVal testFluent As IF
     fluent.TestValue = testFluent.Of("!@#").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = True
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
     fluent.TestValue = testFluent.Of("abc def").ShouldNot.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -4912,7 +4924,7 @@ Private Function AlphabeticTests(ByVal fluent As IFluent, ByVal testFluent As IF
     fluent.TestValue = testFluent.Of(""" !@# """).ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = False
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = False
     
     'positive null documentation tests
     
@@ -4984,7 +4996,7 @@ Private Function NumericTests(ByVal fluent As IFluent, ByVal testFluent As IFlue
     fluent.TestValue = testFluent.Of("!@#").Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = True
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
     fluent.TestValue = testFluent.Of("123 456").Should.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -5025,7 +5037,7 @@ Private Function NumericTests(ByVal fluent As IFluent, ByVal testFluent As IFlue
     fluent.TestValue = testFluent.Of(""" !@# """).Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = False
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = False
     
     'negative documentation tests
     
@@ -5044,7 +5056,7 @@ Private Function NumericTests(ByVal fluent As IFluent, ByVal testFluent As IFlue
     fluent.TestValue = testFluent.Of("!@#").ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = True
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
     fluent.TestValue = testFluent.Of("123 456").ShouldNot.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -5085,7 +5097,7 @@ Private Function NumericTests(ByVal fluent As IFluent, ByVal testFluent As IFlue
     fluent.TestValue = testFluent.Of(""" !@# """).ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = False
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = False
     
     'positive null documentation tests
     
@@ -5154,7 +5166,7 @@ Private Function AlphanumericTests(ByVal fluent As IFluent, ByVal testFluent As 
     fluent.TestValue = testFluent.Of("!@#").Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = True
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
     fluent.TestValue = testFluent.Of("abc 123").Should.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -5195,7 +5207,7 @@ Private Function AlphanumericTests(ByVal fluent As IFluent, ByVal testFluent As 
     fluent.TestValue = testFluent.Of(""" !@# """).Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = False
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = False
     
     'negative documentation tests
     
@@ -5211,7 +5223,7 @@ Private Function AlphanumericTests(ByVal fluent As IFluent, ByVal testFluent As 
     fluent.TestValue = testFluent.Of("!@#").ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = True
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
     fluent.TestValue = testFluent.Of("abc 123").ShouldNot.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
@@ -5252,7 +5264,7 @@ Private Function AlphanumericTests(ByVal fluent As IFluent, ByVal testFluent As 
     fluent.TestValue = testFluent.Of(""" !@# """).ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    testFluent.Meta.Tests.TestStrings.CleanTestStrings = False
+    testFluent.Meta.tests.TestStrings.CleanTestStrings = False
 
     'positive null documentation tests
     
@@ -8090,8 +8102,8 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
-    Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
+    Debug.Assert tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
+    Debug.Assert tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
     
     Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "DepthCountOf")
     
@@ -8100,7 +8112,7 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
 'bitwise flags tests
 
     Set tfBitwiseFlag = MakeFluentOf
-    tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
+    tfBitwiseFlag.Meta.tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
     
     arr = VBA.[_HiddenModule].Array(1)
     Debug.Assert tfBitwiseFlag.Of(arr).Should.Have.DepthCountOf(1)  'with implicit recur
@@ -8108,7 +8120,7 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     arr = VBA.[_HiddenModule].Array()
     Debug.Assert tfBitwiseFlag.Of(arr).ShouldNot.Have.DepthCountOf(1) 'with implicit recur
     
-    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingFunctionsInfos
+    Set testInfoDev = tfBitwiseFlag.Meta.tests.TestingFunctionsInfos
     
     With testInfoDev
         Debug.Assert .DepthCountOfRecur.Count > 0 And .DepthCountOfIter.Count > 0
@@ -8510,8 +8522,8 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     
-    Debug.Assert tfIter.Meta.Tests.Algorithm = flAlgorithm.flIterative
-    Debug.Assert tfRecur.Meta.Tests.Algorithm = flAlgorithm.flRecursive
+    Debug.Assert tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
+    Debug.Assert tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
     
     Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "NestedCountOf")
     
@@ -8520,7 +8532,7 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
 'bitwise flags tests
 
     Set tfBitwiseFlag = MakeFluentOf
-    tfBitwiseFlag.Meta.Tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
+    tfBitwiseFlag.Meta.tests.Algorithm = flAlgorithm.flIterative + flAlgorithm.flRecursive
     
     arr = VBA.[_HiddenModule].Array(1)
     Debug.Assert tfBitwiseFlag.Of(arr).Should.Have.NestedCountOf(1)  'with implicit recur
@@ -8528,7 +8540,7 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     arr = VBA.[_HiddenModule].Array()
     Debug.Assert tfBitwiseFlag.Of(arr).ShouldNot.Have.NestedCountOf(1) 'with implicit recur
     
-    Set testInfoDev = tfBitwiseFlag.Meta.Tests.TestingFunctionsInfos
+    Set testInfoDev = tfBitwiseFlag.Meta.tests.TestingFunctionsInfos
     
     With testInfoDev
         Debug.Assert .NestedCountOfRecur.Count > 0 And .NestedCountOfIter.Count > 0
@@ -8572,28 +8584,28 @@ End Function
 Private Function cleanStringTests(ByVal fluent As IFluent) As Long
     Dim testCount As Long
     
-    fluent.Meta.Tests.TestStrings.CleanTestValueStr = True
+    fluent.Meta.tests.TestStrings.CleanTestValueStr = True
     
     fluent.TestValue = """abc"""
     
     Debug.Assert fluent.Should.Be.EqualTo("abc")
     
-    fluent.Meta.Tests.TestStrings.CleanTestValueStr = False
-    fluent.Meta.Tests.TestStrings.CleanTestInputStr = True
+    fluent.Meta.tests.TestStrings.CleanTestValueStr = False
+    fluent.Meta.tests.TestStrings.CleanTestInputStr = True
     
     fluent.TestValue = "abc"
 
     Debug.Assert fluent.Should.Be.EqualTo("""abc""")
     
-    fluent.Meta.Tests.TestStrings.CleanTestValueStr = True
-    fluent.Meta.Tests.TestStrings.CleanTestInputStr = True
+    fluent.Meta.tests.TestStrings.CleanTestValueStr = True
+    fluent.Meta.tests.TestStrings.CleanTestInputStr = True
 
     fluent.TestValue = """abc"""
     
-    fluent.Meta.Tests.TestStrings.CleanTestValueStr = False
-    fluent.Meta.Tests.TestStrings.CleanTestInputStr = False
+    fluent.Meta.tests.TestStrings.CleanTestValueStr = False
+    fluent.Meta.tests.TestStrings.CleanTestInputStr = False
     
-    fluent.Meta.Tests.TestStrings.CleanTestStrings = True
+    fluent.Meta.tests.TestStrings.CleanTestStrings = True
 
     fluent.TestValue = """abc"""
 
@@ -8601,35 +8613,35 @@ Private Function cleanStringTests(ByVal fluent As IFluent) As Long
     
     'Add to clean strings tests
     
-    fluent.Meta.Tests.TestStrings.AddToCleanStringDict ("'")
+    fluent.Meta.tests.TestStrings.AddToCleanStringDict ("'")
 
-    fluent.Meta.Tests.TestStrings.CleanTestValueStr = True
+    fluent.Meta.tests.TestStrings.CleanTestValueStr = True
     
     fluent.TestValue = "'abc def'"
 
     Debug.Assert fluent.Should.Be.EqualTo("abcdef")
 
-    fluent.Meta.Tests.TestStrings.CleanTestValueStr = False
-    fluent.Meta.Tests.TestStrings.CleanTestInputStr = True
+    fluent.Meta.tests.TestStrings.CleanTestValueStr = False
+    fluent.Meta.tests.TestStrings.CleanTestInputStr = True
     
     fluent.TestValue = "abcdef"
     
     Debug.Assert fluent.Should.Be.EqualTo("'abc def'")
 
-    fluent.Meta.Tests.TestStrings.CleanTestValueStr = False
-    fluent.Meta.Tests.TestStrings.CleanTestInputStr = True
+    fluent.Meta.tests.TestStrings.CleanTestValueStr = False
+    fluent.Meta.tests.TestStrings.CleanTestInputStr = True
     
-    fluent.Meta.Tests.TestStrings.AddToCleanStringDict " ", "_", True
+    fluent.Meta.tests.TestStrings.AddToCleanStringDict " ", "_", True
     
-    fluent.Meta.Tests.TestStrings.CleanTestValueStr = True
-    fluent.Meta.Tests.TestStrings.CleanTestInputStr = False
+    fluent.Meta.tests.TestStrings.CleanTestValueStr = True
+    fluent.Meta.tests.TestStrings.CleanTestInputStr = False
     
     fluent.TestValue = "'abc def'"
     
     Debug.Assert fluent.Should.Be.EqualTo("abc_def")
     
-    fluent.Meta.Tests.TestStrings.CleanTestValueStr = False
-    fluent.Meta.Tests.TestStrings.CleanTestInputStr = True
+    fluent.Meta.tests.TestStrings.CleanTestValueStr = False
+    fluent.Meta.tests.TestStrings.CleanTestInputStr = True
     
     fluent.TestValue = "abc_def"
     
@@ -8637,23 +8649,23 @@ Private Function cleanStringTests(ByVal fluent As IFluent) As Long
     
     'Explicit clean strings using cUtilities
     
-    fluent.Meta.Tests.TestStrings.CleanTestStrings = False
+    fluent.Meta.tests.TestStrings.CleanTestStrings = False
     
     fluent.TestValue = """abc"""
     
-    fluent.TestValue = fluent.Meta.Tests.TestStrings.CleanString(fluent.TestValue)
+    fluent.TestValue = fluent.Meta.tests.TestStrings.CleanString(fluent.TestValue)
     
     Debug.Assert fluent.Should.Be.EqualTo("abc")
     
     fluent.TestValue = """bcd"""
     
-    fluent.TestValue = fluent.Meta.Tests.TestStrings.CleanString(fluent.TestValue)
+    fluent.TestValue = fluent.Meta.tests.TestStrings.CleanString(fluent.TestValue)
     
-    Debug.Assert fluent.Should.Be.EqualTo(fluent.Meta.Tests.TestStrings.CleanString("""bcd"""))
+    Debug.Assert fluent.Should.Be.EqualTo(fluent.Meta.tests.TestStrings.CleanString("""bcd"""))
     
     Debug.Print "Clean string tests finished"
     
-    testCount = fluent.Meta.Tests.Count
+    testCount = fluent.Meta.tests.Count
     printTestCount (testCount)
     
     cleanStringTests = testCount
@@ -8674,7 +8686,7 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     'test to ensure that a duplicate test event is not raised since skipDupCheck
     'is set to true
     
-    With fluent.Meta.Tests
+    With fluent.Meta.tests
         .SkipDupCheck = True
             Debug.Assert VBA.Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
         .SkipDupCheck = False
@@ -8700,7 +8712,7 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     
     q.Enqueue ("Hello")
     
-    fluent.Meta.Tests.AddDataStructure q
+    fluent.Meta.tests.AddDataStructure q
     
     fluent.TestValue = "Hello"
     
@@ -8709,8 +8721,8 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     'test to ensure that StrTestValue and StrTestInput are working with non-default datastructure
     
     With fluent.Meta
-        Debug.Assert .Tests(.Tests.Count).strTestValue = "`Hello`"
-        Debug.Assert .Tests(.Tests.Count).StrTestInput = "Queue(`Hello`)"
+        Debug.Assert .tests(.tests.Count).strTestValue = "`Hello`"
+        Debug.Assert .tests(.tests.Count).StrTestInput = "Queue(`Hello`)"
     End With
     
     'Procedure bitwise flag tests
@@ -8751,9 +8763,9 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     fluent.Should.Be.Something
     
     With fluent.Meta
-        Debug.Assert VBA.Information.IsNull(.Tests(.Tests.Count).TestingValueIsSelfReferential)
-        Debug.Assert VBA.Information.IsNull(.Tests(.Tests.Count).TestingInputIsSelfReferential)
-        Debug.Assert VBA.Information.IsNull(.Tests(.Tests.Count).HasSelfReferential)
+        Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).TestingValueIsSelfReferential)
+        Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).TestingInputIsSelfReferential)
+        Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).HasSelfReferential)
     End With
     
     col.Add col
@@ -8763,9 +8775,9 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     Debug.Assert fluent.Should.Be.Something
     
     With fluent.Meta
-        Debug.Assert .Tests(.Tests.Count).strTestValue = "Null"
-        Debug.Assert .Tests(.Tests.Count).TestingValueIsSelfReferential = True
-        Debug.Assert .Tests(.Tests.Count).HasSelfReferential = True
+        Debug.Assert .tests(.tests.Count).strTestValue = "Null"
+        Debug.Assert .tests(.tests.Count).TestingValueIsSelfReferential = True
+        Debug.Assert .tests(.tests.Count).HasSelfReferential = True
     End With
     
     '//testingValueIsSelfReferential, testingInputIsSelfReferential, and hasSelfReferential should be true
@@ -8773,16 +8785,16 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     Debug.Assert fluent.Should.Have.SameTypeAs(col)
     
     With fluent.Meta
-        Debug.Assert .Tests(.Tests.Count).strTestValue = "Null"
-        Debug.Assert .Tests(.Tests.Count).StrTestInput = "Null"
-        Debug.Assert .Tests(.Tests.Count).TestingValueIsSelfReferential = True
-        Debug.Assert .Tests(.Tests.Count).TestingInputIsSelfReferential = True
-        Debug.Assert .Tests(.Tests.Count).HasSelfReferential = True
+        Debug.Assert .tests(.tests.Count).strTestValue = "Null"
+        Debug.Assert .tests(.tests.Count).StrTestInput = "Null"
+        Debug.Assert .tests(.tests.Count).TestingValueIsSelfReferential = True
+        Debug.Assert .tests(.tests.Count).TestingInputIsSelfReferential = True
+        Debug.Assert .tests(.tests.Count).HasSelfReferential = True
     End With
     
     Debug.Print "Misc tests finished"
     
-    testCount = fluent.Meta.Tests.Count
+    testCount = fluent.Meta.tests.Count
     printTestCount (testCount)
     
     MiscTests = testCount
@@ -8791,10 +8803,10 @@ End Function
 Public Function checkResetCounters(ByVal fluent As IFluent, ByVal testFluent As IFluentOf) As Boolean
     Dim b As Boolean
     
-    testFluent.Meta.Tests.ResetCounter
-    fluent.Meta.Tests.ResetCounter
+    testFluent.Meta.tests.ResetCounter
+    fluent.Meta.tests.ResetCounter
     
-    b = (testFluent.Meta.Tests.Count = 0 And fluent.Meta.Tests.Count = 0)
+    b = (testFluent.Meta.tests.Count = 0 And fluent.Meta.tests.Count = 0)
    
    checkResetCounters = b
 End Function
@@ -8809,7 +8821,7 @@ Public Function getFluentCounts(ByVal fluent As IFluent) As Boolean
     temp = ""
     Set d = New Scripting.Dictionary
     
-    For Each test In fluent.Meta.Tests
+    For Each test In fluent.Meta.tests
         fn = test.functionName
         If Not d.Exists(fn) Then
             d.Add fn, 1
@@ -8835,7 +8847,7 @@ Public Function getFluentOfCounts(ByVal fluentOf As IFluentOf) As Boolean
     temp = ""
     Set d = New Scripting.Dictionary
     
-    For Each test In fluentOf.Meta.Tests
+    For Each test In fluentOf.Meta.tests
         fn = test.functionName
         If Not d.Exists(fn) Then
             d.Add fn, 1
@@ -8863,7 +8875,7 @@ Private Function validateNegativeCounters(ByVal testFluent As IFluentOf) As Bool
     
     counter = 0
     
-    For Each test In testFluent.Meta.Tests
+    For Each test In testFluent.Meta.tests
         Set testDev = test
         If testDev.negateValue Then
             fn = test.functionName
@@ -8886,13 +8898,15 @@ End Function
 Private Sub CheckTestFuncInfos(ByVal testFluent As IFluentOf)
     Dim d As Scripting.Dictionary
     Dim testFuncInfo As ITestingFunctionsInfo
+    Dim testFuncInfoClass As cTestingFunctionsInfo
     Dim testFuncInfo2 As ITestingFunctionsInfo
+    Dim testFuncInfoClass2 As cTestingFunctionsInfo
     Dim counter As Long
     
-    Set d = testFluent.Meta.Tests.TestingFunctionsInfos.TestFuncInfoToDict
+    Set d = testFluent.Meta.tests.TestingFunctionsInfos.TestFuncInfoToDict
     counter = 0
     
-    With testFluent.Meta.Tests
+    With testFluent.Meta.tests
         For Each testFuncInfo In .TestingFunctionsInfos
             Set testFuncInfo2 = d(testFuncInfo.Name)
             
@@ -8905,6 +8919,19 @@ Private Sub CheckTestFuncInfos(ByVal testFluent As IFluentOf)
             
             counter = counter + 1
         Next testFuncInfo
+        
+        For Each testFuncInfoClass In .TestingFunctionsInfos
+            Set testFuncInfoClass2 = d(testFuncInfoClass.Name)
+            
+            Debug.Assert testFuncInfoClass.Name = testFuncInfoClass2.Name
+            Debug.Assert testFuncInfoClass.Count = testFuncInfoClass2.Count
+            Debug.Assert testFuncInfoClass.Failed = testFuncInfoClass2.Failed
+            Debug.Assert testFuncInfoClass.Name = testFuncInfoClass2.Name
+            Debug.Assert testFuncInfoClass.Passed = testFuncInfoClass2.Passed
+            Debug.Assert testFuncInfoClass.Unexpected = testFuncInfoClass2.Unexpected
+            
+            counter = counter + 1
+        Next testFuncInfoClass
     End With
     
     'Debug.Print "CheckTestFuncInfos counter is: " & counter & vbNewLine

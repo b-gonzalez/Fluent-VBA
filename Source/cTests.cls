@@ -11,6 +11,8 @@ Option Explicit
 
 'AlgorithmValueSet
 
+Implements ITests
+
 Public Event TestPassed(ByVal test As ITest)
 Public Event TestFailed(ByVal test As ITest)
 Public Event TestCompleted(ByVal test As ITest)
@@ -28,28 +30,26 @@ Private pFluentPathDict As Scripting.Dictionary
 Private pResult As Variant
 Private pSkipDupCheck As Boolean
 Private pTestDictCounter As Scripting.Dictionary
-Private pTestingFunctionsInfos As cTestingFunctionsInfos
+Private pTestingFunctionsInfos As ITestingFunctionsInfos
 Private pToStrDev As Boolean
 Private pTestStrings As ITestStrings
 
 Private Const defaultEpsilon As Double = 0.000001
 Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
 
-Public Property Get result() As Boolean
-    result = pResult
+Private Property Get ITests_result() As Boolean
+    ITests_result = pResult
 End Property
 
-Public Property Get Item(ByVal OneBasedIndex As Long) As ITest
-Attribute Item.VB_UserMemId = 0
-    Set Item = pCol(OneBasedIndex)
+Private Property Get ITests_item(ByVal OneBasedIndex As Long) As ITest
+    Set ITests_item = pCol(OneBasedIndex)
 End Property
 
-Public Property Get NewEnum() As IUnknown
-Attribute NewEnum.VB_UserMemId = -4
-    Set NewEnum = pCol.[_NewEnum]
+Private Property Get ITests_NewEnum() As IUnknown
+    Set ITests_NewEnum = pCol.[_NewEnum]
 End Property
 
-Public Property Let Algorithm(ByVal value As flAlgorithm)
+Private Property Let ITests_Algorithm(ByVal value As flAlgorithm)
     If value And flAlgorithm.flIterative Or value And flAlgorithm.flRecursive Then
         pAlgorithm = value
     Else
@@ -59,63 +59,63 @@ Public Property Let Algorithm(ByVal value As flAlgorithm)
     pAlgorithmValueSet = True
 End Property
 
-Public Property Get Algorithm() As flAlgorithm
-    Algorithm = pAlgorithm
+Private Property Get ITests_Algorithm() As flAlgorithm
+    ITests_Algorithm = pAlgorithm
 End Property
 
-Public Property Get AlgorithmValueSet() As Boolean
-    AlgorithmValueSet = pAlgorithmValueSet
+Private Property Get ITests_AlgorithmValueSet() As Boolean
+    ITests_AlgorithmValueSet = pAlgorithmValueSet
 End Property
 
-Public Property Let ToStrDev(ByVal value As Boolean)
+Private Property Let ITests_ToStrDev(ByVal value As Boolean)
     pToStrDev = value
 End Property
 
-Public Property Get ToStrDev() As Boolean
-    ToStrDev = pToStrDev
+Private Property Get ITests_ToStrDev() As Boolean
+    ITests_ToStrDev = pToStrDev
 End Property
 
-Public Property Get Count() As Long
-    Count = pCount
+Private Property Get ITests_Count() As Long
+    ITests_Count = pCount
 End Property
 
-Public Property Let ApproximateEqual(ByVal value As Boolean)
+Private Property Let ITests_ApproximateEqual(ByVal value As Boolean)
     pApproximateEqual = value
 End Property
 
-Public Property Get ApproximateEqual() As Boolean
-    ApproximateEqual = pApproximateEqual
+Private Property Get ITests_ApproximateEqual() As Boolean
+    ITests_ApproximateEqual = pApproximateEqual
 End Property
 
-Public Property Let Epsilon(ByVal value As Double)
+Private Property Let ITests_Epsilon(ByVal value As Double)
     pEpsilon = value
 End Property
 
-Public Property Get Epsilon() As Double
-    Epsilon = pEpsilon
+Private Property Get ITests_Epsilon() As Double
+    ITests_Epsilon = pEpsilon
 End Property
 
-Public Property Get DataStructures() As VBA.Collection
-    Set DataStructures = pDataStructures
+Private Property Get ITests_DataStructures() As VBA.Collection
+    Set ITests_DataStructures = pDataStructures
 End Property
 
-Public Property Let SkipDupCheck(ByVal value As Boolean)
+Private Property Let ITests_SkipDupCheck(ByVal value As Boolean)
     pSkipDupCheck = value
 End Property
 
-Public Property Get SkipDupCheck() As Boolean
-    SkipDupCheck = pSkipDupCheck
+Private Property Get ITests_SkipDupCheck() As Boolean
+    ITests_SkipDupCheck = pSkipDupCheck
 End Property
 
-Public Property Get TestingFunctionsInfos() As cTestingFunctionsInfos
-    Set TestingFunctionsInfos = pTestingFunctionsInfos
+Private Property Get ITests_TestingFunctionsInfos() As ITestingFunctionsInfos
+    Set ITests_TestingFunctionsInfos = pTestingFunctionsInfos
 End Property
 
-Public Property Get TestStrings() As ITestStrings
-    Set TestStrings = pTestStrings
+Private Property Get ITests_TestStrings() As ITestStrings
+    Set ITests_TestStrings = pTestStrings
 End Property
 
-Public Sub AddDataStructure(ByVal dataStructure As Variant)
+Private Sub ITests_AddDataStructure(ByVal dataStructure As Variant)
     Dim dsType As String
 
     dsType = VBA.Information.TypeName(dataStructure)
@@ -125,7 +125,7 @@ Public Sub AddDataStructure(ByVal dataStructure As Variant)
     End If
 End Sub
 
-Public Function datastructureInCollection(ByVal dsName As String, ByVal col As VBA.Collection) As Boolean
+Private Function datastructureInCollection(ByVal dsName As String, ByVal col As VBA.Collection) As Boolean
     Dim elem As Variant
     Dim b As Boolean
     
@@ -141,7 +141,7 @@ Public Function datastructureInCollection(ByVal dsName As String, ByVal col As V
     datastructureInCollection = b
 End Function
 
-Public Function IsDataStructure(ByVal dataStructure As Variant) As Boolean
+Private Function ITests_IsDataStructure(ByVal dataStructure As Variant) As Boolean
     Dim dsTypeName As String
     Dim tempBool As Boolean
     Dim fluentBool As Boolean
@@ -157,10 +157,10 @@ Public Function IsDataStructure(ByVal dataStructure As Variant) As Boolean
         tempBool = IsIterable(dataStructure)
     End If
     
-    IsDataStructure = tempBool
+    ITests_IsDataStructure = tempBool
 End Function
 
-Public Function IsIterable(ByVal dataStructure As Variant) As Boolean
+Private Function IsIterable(ByVal dataStructure As Variant) As Boolean
     Dim tempBool As Boolean
     Dim elem As Variant
     Dim tempErr As Long
@@ -179,7 +179,7 @@ Public Function IsIterable(ByVal dataStructure As Variant) As Boolean
     IsIterable = tempBool
 End Function
 
-Public Sub CheckTest(ByVal test As ITest)
+Private Sub ITests_CheckTest(ByVal test As ITest)
     pResult = test.result
     
     pCol.Add test
@@ -203,15 +203,15 @@ Public Sub CheckTest(ByVal test As ITest)
     End If
 End Sub
 
-Public Sub resetTestingInfo()
+Private Sub ITests_resetTestingInfo()
     pTestingFunctionsInfos.initTestingFunctionsInfo
 End Sub
 
-Public Sub ResetCounter()
+Private Sub ITests_ResetCounter()
     pCount = 0
 End Sub
 
-Public Function DatastructureIsSelfReferential(ByVal ds As Variant, ByVal Algorithm As flAlgorithm) As Boolean
+Private Function ITests_DatastructureIsSelfReferential(ByVal ds As Variant, ByVal Algorithm As flAlgorithm) As Boolean
     Dim iterFuncCalled As Boolean
     Dim recurFuncCalled As Boolean
     Dim hasSelfReferentialIter As Boolean
@@ -236,7 +236,7 @@ Public Function DatastructureIsSelfReferential(ByVal ds As Variant, ByVal Algori
         b = hasSelfReferentialRecur
     End If
     
-    DatastructureIsSelfReferential = b
+    ITests_DatastructureIsSelfReferential = b
         
 End Function
 
@@ -258,7 +258,7 @@ Private Function datastructureIsSelfReferentialRecur( _
     End If
 
     For Each elem In ds
-        If IsDataStructure(ds) Then
+        If ITests_IsDataStructure(ds) Then
             If VBA.Information.IsObject(elem) Then
                 objPtrAddress = VBA.[_HiddenModule].ObjPtr(elem)
 
@@ -283,12 +283,12 @@ Private Function datastructureIsSelfReferentialIter(ByVal ds As Variant) As Bool
     Dim col As VBA.Collection
     Dim tempCol As VBA.Collection
     Dim objPtrCol As VBA.Collection
-    Dim IsSelfReferential As Boolean
+    Dim isSelfReferential As Boolean
 
     Set col = New VBA.Collection
     Set tempCol = New VBA.Collection
     Set objPtrCol = New VBA.Collection
-    IsSelfReferential = False
+    isSelfReferential = False
 
     If IsObject(ds) Then objPtrCol.Add VBA.[_HiddenModule].ObjPtr(ds)
 
@@ -296,31 +296,31 @@ Private Function datastructureIsSelfReferentialIter(ByVal ds As Variant) As Bool
         col.Add elem
     Next elem
 
-    If Not IsSelfReferential Then
+    If Not isSelfReferential Then
         Do
             For Each elem In col
-                If IsDataStructure(elem) Then
+                If ITests_IsDataStructure(elem) Then
                     If VBA.Information.IsObject(elem) Then
-                        IsSelfReferential = itemInObjPtrCol(elem, objPtrCol)
-                        If IsSelfReferential Then Exit Do
+                        isSelfReferential = itemInObjPtrCol(elem, objPtrCol)
+                        If isSelfReferential Then Exit Do
                     Else
                         For Each elem2 In elem
                             If VBA.Information.IsObject(elem2) Then
-                                IsSelfReferential = itemInObjPtrCol(elem2, objPtrCol)
-                                If IsSelfReferential Then Exit Do
-                            ElseIf IsDataStructure(elem2) Then
+                                isSelfReferential = itemInObjPtrCol(elem2, objPtrCol)
+                                If isSelfReferential Then Exit Do
+                            ElseIf ITests_IsDataStructure(elem2) Then
                                 tempCol.Add elem2
                             End If
                         Next elem2
                     End If
                 Else
-                    If IsDataStructure(elem) Then
+                    If ITests_IsDataStructure(elem) Then
                         For Each elem2 In elem
                             If VBA.Information.IsObject(elem2) Then
                                 objPtrCol.Add VBA.[_HiddenModule].ObjPtr(elem2)
                             End If
 
-                            If IsDataStructure(elem2) Then tempCol.Add elem2
+                            If ITests_IsDataStructure(elem2) Then tempCol.Add elem2
                         Next elem2
                     End If
                 End If
@@ -331,16 +331,16 @@ Private Function datastructureIsSelfReferentialIter(ByVal ds As Variant) As Bool
         Loop While col.Count > 0
     End If
 
-    datastructureIsSelfReferentialIter = IsSelfReferential
+    datastructureIsSelfReferentialIter = isSelfReferential
 End Function
 
-Private Function itemInObjPtrCol(ByVal Item As Variant, ByVal objPtrCol As VBA.Collection) As Boolean
+Private Function itemInObjPtrCol(ByVal item As Variant, ByVal objPtrCol As VBA.Collection) As Boolean
     Dim elem As Variant
     Dim b As Boolean
     Dim objPtrAddress As Variant
     
     b = False
-    objPtrAddress = VBA.[_HiddenModule].ObjPtr(Item)
+    objPtrAddress = VBA.[_HiddenModule].ObjPtr(item)
 
     For Each elem In objPtrCol
          If elem = objPtrAddress Then
@@ -366,6 +366,38 @@ Private Function elementIsInCollection(ByVal elem As Variant, ByVal col As VBA.C
     
     elementIsInCollection = b
 End Function
+
+Private Sub ITests_AddFromFluent(ByVal fluent As cFluent)
+    Dim test As cTest
+    
+    For Each test In fluent.Meta.tests
+        pCol.Add test
+        pCount = pCount + 1
+    Next test
+End Sub
+
+Private Sub ITests_AddFromFluentOf(ByVal fluentOf As cFluentOf)
+    Dim test As cTest
+    
+    For Each test In fluentOf.Meta.tests
+        pCol.Add test
+        pCount = pCount + 1
+    Next test
+End Sub
+
+Private Sub ITests_AddFromTests(ByVal tests As cTests)
+    Dim test As cTest
+    
+    For Each test In tests
+        pCol.Add test
+        pCount = pCount + 1
+    Next test
+End Sub
+
+Public Property Get NewEnum() As IUnknown
+Attribute NewEnum.VB_UserMemId = -4
+    Set NewEnum = pCol.[_NewEnum]
+End Property
 
 Private Sub Class_Initialize()
     Set pCol = New VBA.Collection

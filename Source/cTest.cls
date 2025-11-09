@@ -33,6 +33,8 @@ Private pResult As Variant
 Private pResultNumber As Long
 Private pStrTestInput As String
 Private pStrTestValue As String
+Private pStrTestInputPretty As String
+Private pStrTestValuePretty As String
 Private pTestingInput As Variant
 Private pTestName As String
 Private pTestInputIter As String
@@ -44,6 +46,8 @@ Private pTestingValue As Variant
 Private phasSelfReferential As Variant
 Private pTestingValueIsSelfReferential As Variant
 Private pTestingInputIsSelfReferential As Variant
+Private pIsBaseCaseRecur As Boolean
+Private pIsBaseCaseIter As Boolean
 
 Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
 
@@ -137,6 +141,22 @@ End Property
 
 Private Property Get ITest_StrTestInput() As String
     ITest_StrTestInput = pStrTestInput
+End Property
+
+Private Property Let ITest_StrTestValuePretty(ByVal value As String)
+    pStrTestValuePretty = value
+End Property
+
+Private Property Get ITest_StrTestValuePretty() As String
+    ITest_StrTestValuePretty = pStrTestValuePretty
+End Property
+
+Private Property Let ITest_StrTestInputPretty(ByVal value As String)
+    pStrTestInputPretty = value
+End Property
+
+Private Property Get ITest_StrTestInputPretty() As String
+    ITest_StrTestInputPretty = pStrTestInputPretty
 End Property
 
 Private Property Let ITest_HasNull(ByVal value As Boolean)
@@ -327,6 +347,22 @@ End Property
 
 Private Property Get ITestDev_IsRecurIterFunc() As Boolean
     ITestDev_IsRecurIterFunc = pIsRecurIterFunc
+End Property
+
+Private Property Let ITestDev_IsBaseCaseRecur(ByVal value As Boolean)
+    pIsBaseCaseRecur = value
+End Property
+
+Private Property Get ITestDev_IsBaseCaseRecur() As Boolean
+    ITestDev_IsBaseCaseRecur = pIsBaseCaseRecur
+End Property
+
+Private Property Let ITestDev_IsBaseCaseIter(ByVal value As Boolean)
+    pIsBaseCaseIter = value
+End Property
+
+Private Property Get ITestDev_IsBaseCaseIter() As Boolean
+    ITestDev_IsBaseCaseIter = pIsBaseCaseIter
 End Property
 
 'PUBLIC PROPERTIES

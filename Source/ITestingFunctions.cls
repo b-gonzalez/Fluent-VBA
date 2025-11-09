@@ -66,7 +66,3 @@ End Function
 
 Public Function GetTempTestInput(ByVal testingInput As Variant) As Variant
 End Function
-
-Private Function inputIsValid(ByVal inputValue As Variant, ByVal inputConditions As flTestType) As Boolean
-
-End Function

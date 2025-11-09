@@ -54,25 +54,3 @@ End Sub
 
 Public Sub PrintToSheet()
 End Sub
-
-Private Function getWorkbook() As Workbook
-End Function
-
-Private Sub addTableToWorkbook(ByVal wb As Workbook)
-End Sub
-
-Private Sub addResultsIconSets(ByVal lc As Excel.ListColumn)
-End Sub
-
-Private Sub addValueConditColors( _
-    ByVal lo As Excel.ListObject, _
-    ByVal passedMsg As String, _
-    ByVal failedMsg As String, _
-    ByVal unexpectedMsg As String)
-End Sub
-
-Private Function ArrayFromTests(ByVal col As VBA.Collection, ByVal tp As TestProperty) As Variant()
-End Function
-
-Private Function getTestMessageFromResultNumber(ByVal ResultNumber As Long) As String
-End Function

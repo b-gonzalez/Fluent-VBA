@@ -75,8 +75,6 @@ Public Property Get TestValue() As Variant
     End If
 End Property
 
-
-
 Private Sub Class_Initialize()
     Set pUnit = New cUnit
     Set pUnitShould = pUnit

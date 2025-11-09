@@ -45,7 +45,7 @@ Private Property Let IUnit_testValue(ByVal value As Variant)
     pTestingFunctions.TestValue = value
     pUnitVal = pTestingFunctions.TestValue
     
-    With pMeta.Tests.TestStrings
+    With pMeta.tests.TestStrings
         If .CleanTestValueStr Or .CleanTestStrings Then
             pTestingFunctions.TestValueClean = value
         End If
@@ -107,7 +107,7 @@ Private Sub Class_Initialize()
     Set iPrint = pMeta.Printing
     
     Set iPrint.Expressions.setMeta = pMeta
-    Set iPrint.Expressions.setTests = pMeta.Tests
+    Set iPrint.Expressions.setTests = pMeta.tests
     Set iPrint.Expressions.setPrinting = pMeta.Printing
     
     Set pTestingFunctions.Expressions = iPrint.Expressions

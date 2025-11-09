@@ -114,26 +114,25 @@ End Function
 Public Sub addFluentPathNew(ByVal test As ITest, ByVal negateValue As Boolean)
 End Sub
 
-Public Function InputToString(ByVal nv As Variant, Optional ByVal algo As Variant) As String
+Public Function InputToString(ByVal nv As Variant, Optional ByVal algo As Variant, Optional ByVal indent As Boolean = False) As String
 End Function
 
 Public Function DatastructureIsEmpty(ByVal v As Variant) As Boolean
 End Function
 
-Public Function inputToStringRecur(ByVal v As Variant) As String
+Public Function InputToStringRecur( _
+    ByVal v As Variant, _
+    Optional ByVal col As Collection = Nothing, _
+    Optional ByVal counter As Long = 1, _
+    Optional ByVal indent As Boolean = False _
+) As Collection
 End Function
 
 Public Function getResultNumber(ByVal result As Variant) As Long
 End Function
 
-Public Function inputToStringIter(ByVal v As Variant) As String
-End Function
-
-Private Function getNestedElementsFromCollection(ByVal col As VBA.Collection) As VBA.Collection
+Public Function inputToStringIter(ByVal v As Variant, Optional ByVal indent As Boolean = False) As Collection
 End Function
 
 Public Function getDsCount(ByVal dataStructure As Variant) As Long
-End Function
-
-Private Function getDsType(ByVal v As Variant) As String
 End Function

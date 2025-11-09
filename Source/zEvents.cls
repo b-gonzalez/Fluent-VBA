@@ -44,37 +44,37 @@ End Sub
 
 Public Property Set setFluent(ByVal value As IFluent)
     Set pFluentEvent = value
-    Set pTest = pFluentEvent.Meta.Tests
+    Set pTest = pFluentEvent.Meta.tests
 End Property
 
 Public Property Set setFluentOf(ByVal value As IFluentOf)
     Set pFluentEventOf = value
-    Set pTestOf = pFluentEventOf.Meta.Tests
+    Set pTestOf = pFluentEventOf.Meta.tests
 End Property
 
 Public Property Set setFluentEventOfResult(ByVal value As IFluentOf)
     Set pFluentEventOfResult = value
-    Set pTestOfResults = pFluentEventOfResult.Meta.Tests
+    Set pTestOfResults = pFluentEventOfResult.Meta.tests
 End Property
 
 Public Property Set setFluentEventDuplicate(ByVal value As IFluent)
     Set pFluentEventDuplicate = value
-    Set pTestDuplicate = pFluentEventDuplicate.Meta.Tests
+    Set pTestDuplicate = pFluentEventDuplicate.Meta.tests
 End Property
 
 Private Sub pTestOf_TestPassed(ByVal test As ITest)
-    Debug.Assert pFluentEventOf.Meta.Tests.result = test.result
+    Debug.Assert pFluentEventOf.Meta.tests.result = test.result
     Debug.Assert pFluentEventOf.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
 Private Sub pTestOf_TestFailed(ByVal test As ITest)
-    Debug.Assert pFluentEventOf.Meta.Tests.result = test.result
+    Debug.Assert pFluentEventOf.Meta.tests.result = test.result
     Debug.Assert pFluentEventOf.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
 Private Sub pTestOf_TestCompleted(ByVal test As ITest)
     TestOfCount = TestOfCount + 1
-    Debug.Assert pFluentEventOf.Meta.Tests.Count = TestOfCount
+    Debug.Assert pFluentEventOf.Meta.tests.Count = TestOfCount
 End Sub
 
 Private Sub pTestOf_TestUnexpected(ByVal test As ITest)
@@ -82,18 +82,18 @@ Private Sub pTestOf_TestUnexpected(ByVal test As ITest)
 End Sub
 
 Private Sub pTest_TestPassed(ByVal test As ITest)
-    Debug.Assert pFluentEvent.Meta.Tests.result = test.result
+    Debug.Assert pFluentEvent.Meta.tests.result = test.result
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
 Private Sub pTest_TestFailed(ByVal test As ITest)
-    Debug.Assert pFluentEvent.Meta.Tests.result = test.result
+    Debug.Assert pFluentEvent.Meta.tests.result = test.result
     Debug.Assert pFluentEvent.Meta.Printing.FluentPath = test.FluentPath
 End Sub
 
 Private Sub pTest_TestCompleted(ByVal test As ITest)
     testCount = testCount + 1
-    Debug.Assert pFluentEvent.Meta.Tests.Count = testCount
+    Debug.Assert pFluentEvent.Meta.tests.Count = testCount
 End Sub
 
 Private Sub pTestOfResult_TestPassed(ByVal test As ITest)

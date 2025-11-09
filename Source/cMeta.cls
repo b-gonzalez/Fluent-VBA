@@ -12,7 +12,7 @@ Option Explicit
 Implements IMeta
 
 Private pPrinting As IPrinting
-Private pTests As cTests
+Private pTests As ITests
 Private pUtilities As IUtilities
 Private pToString As IToString
 
@@ -20,7 +20,7 @@ Private Property Get IMeta_Printing() As IPrinting
     Set IMeta_Printing = pPrinting
 End Property
 
-Private Property Get IMeta_Tests() As cTests
+Private Property Get IMeta_Tests() As ITests
     Set IMeta_Tests = pTests
 End Property
 

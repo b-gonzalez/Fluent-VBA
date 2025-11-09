@@ -104,16 +104,6 @@ Public Function DepthCountOf( _
     ) As Variant
 End Function
 
-Private Function getDepthCountRecur( _
-    ByVal testingValue As Variant, _
-    Optional ByVal counter As Long = 1, _
-    Optional ByRef depthCounter As Long = 0 _
-) As Long
-End Function
-
-Private Function getDepthCountIter(ByVal ds As Variant) As Long
-End Function
-
 Public Function NestedCountOf( _
     ByVal testingValue As Variant, _
     ByRef testingInput As Long, _
