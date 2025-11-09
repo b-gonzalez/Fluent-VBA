@@ -738,16 +738,31 @@ End Function
 Private Function IBeTestFuncs_Something(ByVal testingValue As Variant, Optional ByVal negateValue As Boolean = False) As Variant
     Dim funcVal As Variant
     Dim tempTestValue As Variant
+    Dim testingValueIsNotSelfReferential As Boolean
+    Dim IsDataStructure As Boolean
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
-    If inputIsValid(testingValue, flIsObject) Then
-        funcVal = (Not testingValue Is Nothing)
+    If pMeta.tests.IsDataStructure(testingValue) Then
+        IsDataStructure = inputIsValid(testingValue, flIsDataStructure)
+        testingValueIsNotSelfReferential = inputIsValid(testingValue, flIsNotSelfReferential)
+        
+        If testingValueIsNotSelfReferential And IsDataStructure Then
+            funcVal = (Not testingValue Is Nothing)
+        End If
+    Else
+        If inputIsValid(testingValue, flIsObject) Then
+            funcVal = (Not testingValue Is Nothing)
+        End If
     End If
     
     IBeTestFuncs_Something = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("Something", funcVal, VBA.Conversion.CBool(negateValue), testingValue)
+    If testingValueIsNotSelfReferential And IsDataStructure Then
+        Call pExpressions.addToTestAndFluentPath("Something", funcVal, VBA.Conversion.CBool(negateValue), testingValue, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential)
+    Else
+        Call pExpressions.addToTestAndFluentPath("Something", funcVal, VBA.Conversion.CBool(negateValue), testingValue)
+    End If
         
 End Function
 
