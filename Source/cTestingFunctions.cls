@@ -258,10 +258,11 @@ Private Function IBeTestFuncs_InDataStructures( _
 End Function
 
 Private Function IBeTestFuncs_InDataStructure( _
-ByVal testingValue As Variant, _
-ByVal dataStructure As Variant, _
-Optional ByVal negateValue As Boolean = False, _
-Optional ByVal updateFluentPath As Boolean = False) As Variant
+    ByVal testingValue As Variant, _
+    ByVal dataStructure As Variant, _
+    Optional ByVal negateValue As Boolean = False, _
+    Optional ByVal updateFluentPath As Boolean = False _
+) As Variant
     Dim elem As Variant
     Dim col As VBA.Collection
     Dim tempBool As Boolean
