@@ -65,6 +65,12 @@ End Property
 Public Property Get TestStrings() As ITestStrings
 End Property
 
+Public Property Let ContinueWithSelfReferentialIfPossible(value As Boolean)
+End Property
+
+Public Property Get ContinueWithSelfReferentialIfPossible() As Boolean
+End Property
+
 Public Sub AddDataStructure(ByVal dataStructure As Variant)
 End Sub
 

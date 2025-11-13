@@ -8772,6 +8772,8 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     
     '//testingValueIsSelfReferential and hasSelfReferential should be true
     
+    fluent.Meta.tests.ContinueWithSelfReferentialIfPossible = True
+    
     Debug.Assert fluent.Should.Be.Something
     
     With fluent.Meta

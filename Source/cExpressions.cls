@@ -304,19 +304,13 @@ Private Sub IExpressions_addToTestAndFluentPath( _
             testDev.IsRecurIterFunc = recurIterFunc
                 
             If Not VBA.Information.IsMissing(TestingInputIsSelfReferential) Then
-                If Not TestingInputIsSelfReferential Then
-                    test.HasSelfReferential = True
-                End If
-                
-                test.TestingInputIsSelfReferential = Not TestingInputIsSelfReferential
+                If TestingInputIsSelfReferential Then test.HasSelfReferential = True
+                test.TestingInputIsSelfReferential = TestingInputIsSelfReferential
             End If
             
             If Not VBA.Information.IsMissing(TestingValueIsSelfReferential) Then
-                If Not TestingValueIsSelfReferential Then
-                    test.HasSelfReferential = True
-                End If
-                
-                test.TestingValueIsSelfReferential = Not TestingValueIsSelfReferential
+                If TestingValueIsSelfReferential Then test.HasSelfReferential = True
+                test.TestingValueIsSelfReferential = TestingValueIsSelfReferential
             End If
         End If
     End If

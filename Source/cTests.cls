@@ -33,6 +33,7 @@ Private pTestDictCounter As Scripting.Dictionary
 Private pTestingFunctionsInfos As ITestingFunctionsInfos
 Private pToStrDev As Boolean
 Private pTestStrings As ITestStrings
+Private pContinueWithSelfReferentialIfPossible As Boolean
 
 Private Const defaultEpsilon As Double = 0.000001
 Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
@@ -113,6 +114,14 @@ End Property
 
 Private Property Get ITests_TestStrings() As ITestStrings
     Set ITests_TestStrings = pTestStrings
+End Property
+
+Private Property Let ITests_ContinueWithSelfReferentialIfPossible(value As Boolean)
+    pContinueWithSelfReferentialIfPossible = value
+End Property
+
+Private Property Get ITests_ContinueWithSelfReferentialIfPossible() As Boolean
+    ITests_ContinueWithSelfReferentialIfPossible = pContinueWithSelfReferentialIfPossible
 End Property
 
 Private Sub ITests_AddDataStructure(ByVal dataStructure As Variant)
