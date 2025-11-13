@@ -8770,9 +8770,14 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     
     col.Add col
     
-    '//testingValueIsSelfReferential and hasSelfReferential should be true
+    '//is null because col is now a self-referential data structure and
+    '//ContinueWithSelfReferentialIfPossible is false
+    Debug.Assert VBA.Information.IsNull(fluent.Should.Be.Something)
     
     fluent.Meta.tests.ContinueWithSelfReferentialIfPossible = True
+    
+    '//col is self-referential data structure but ContinueWithSelfReferentialIfPossible
+    '//is set to true so the test now passes.
     
     Debug.Assert fluent.Should.Be.Something
     
