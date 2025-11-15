@@ -10,61 +10,46 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Public Function Alphabetic() As Variant
-
 End Function
 
 Public Function Alphanumeric() As Variant
-
 End Function
 
 Public Function Between(ByVal lowerVal As Double, ByVal higherVal As Double) As Variant
-
 End Function
 
 Public Function Erroneous() As Variant
-
 End Function
 
 Public Function EqualTo(ByVal value As Variant) As Variant
-
 End Function
 
 Public Function GreaterThan(ByVal value As Double) As Variant
-
 End Function
 
 Public Function GreaterThanOrEqualTo(ByVal value As Double) As Variant
-
 End Function
 
 Public Function InDataStructure(ByVal dataStructure As Variant) As Variant
-
 End Function
 
 Public Function InDataStructures(ParamArray DataStructures() As Variant) As Variant
-
 End Function
 
 Public Function LessThan(ByVal value As Double) As Variant
-
 End Function
 
 Public Function LessThanOrEqualTo(ByVal value As Double) As Variant
-
 End Function
 
 Public Function Numeric() As Variant
-
 End Function
 
 Public Function OneOf(ParamArray All() As Variant) As Variant
-
 End Function
 
 Public Function Something() As Variant
-
 End Function
 
 Public Function IdenticalTo(ByVal dataStructure As Variant) As Variant
-
 End Function

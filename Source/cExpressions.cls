@@ -39,14 +39,17 @@ Private Property Set IExpressions_setPrinting(ByVal value As cPrinting)
     Set iPrint = value
 End Property
 
-Private Property Set IExpressions_setTests(ByVal value As cTests)
+Private Property Set IExpressions_setTests(ByVal value As ITests)
     Set pTests = value
 End Property
 
-Private Property Set IExpressions_setMeta(ByVal value As cMeta)
+Private Property Set IExpressions_setMeta(ByVal value As IMeta)
     Set pMeta = value
-    Set pTestDictCounter = pMeta.tests.TestingFunctionsInfos.TestFuncInfoToDict
-    Set pTestingInfos = pMeta.tests.TestingFunctionsInfos
+    
+    If Not pMeta Is Nothing Then
+        Set pTestDictCounter = pMeta.tests.TestingFunctionsInfos.TestFuncInfoToDict
+        Set pTestingInfos = pMeta.tests.TestingFunctionsInfos
+    End If
 End Property
 
 Private Function setTestResultProps(ByVal test As ITest, ByVal result As Variant, ByVal negateValue As Boolean) As ITest
@@ -149,7 +152,7 @@ End Function
 
 Private Function setStrTestValueStrTestInput(ByVal test As ITest, ByVal Meta As IMeta, ByVal negateValue As Boolean) As ITest
     Dim testDev As ITestDev
-    Dim algo As flAlgorithm
+    Dim algo As Long
     
     With test
         .StrTestInputPretty = IExpressions_InputToString(.testingInput, indent:=True)
@@ -164,13 +167,13 @@ Private Function setStrTestValueStrTestInput(ByVal test As ITest, ByVal Meta As 
         If .ToStrDev Then
             algo = .Algorithm
             
-            If algo = flAlgorithm.flRecursive Then
+            If algo And flAlgorithm.flRecursive Then
                 testDev.TestValueRecur = test.strTestValue
                 testDev.TestInputRecur = test.StrTestInput
                 
                 testDev.TestValueIter = IExpressions_InputToString(test.testingValue, flAlgorithm.flIterative, False)
                 testDev.TestInputIter = IExpressions_InputToString(test.testingInput, flAlgorithm.flIterative, False)
-            ElseIf algo = flAlgorithm.flIterative Then
+            ElseIf algo And flAlgorithm.flIterative Then
                 testDev.TestValueIter = test.strTestValue
                 testDev.TestInputIter = test.StrTestInput
                 
@@ -304,13 +307,19 @@ Private Sub IExpressions_addToTestAndFluentPath( _
             testDev.IsRecurIterFunc = recurIterFunc
                 
             If Not VBA.Information.IsMissing(TestingInputIsSelfReferential) Then
-                If TestingInputIsSelfReferential Then test.HasSelfReferential = True
-                test.TestingInputIsSelfReferential = TestingInputIsSelfReferential
+                If Not TestingInputIsSelfReferential Then
+                    test.HasSelfReferential = True
+                End If
+                
+                test.TestingInputIsSelfReferential = Not TestingInputIsSelfReferential
             End If
             
             If Not VBA.Information.IsMissing(TestingValueIsSelfReferential) Then
-                If TestingValueIsSelfReferential Then test.HasSelfReferential = True
-                test.TestingValueIsSelfReferential = TestingValueIsSelfReferential
+                If Not TestingValueIsSelfReferential Then
+                    test.HasSelfReferential = True
+                End If
+                
+                test.TestingValueIsSelfReferential = Not TestingValueIsSelfReferential
             End If
         End If
     End If
@@ -319,19 +328,19 @@ Private Sub IExpressions_addToTestAndFluentPath( _
 
 End Sub
 
-Private Function IExpressions_Should(ByVal shouldType As flShould, Optional ByVal testingInput As Variant) As String
+Private Function IExpressions_Should(ByVal shouldType As Long, Optional ByVal testingInput As Variant) As String
     Dim shouldStr As String
     
     shouldStr = ""
     
     Select Case shouldType
-        Case Contain_
+        Case flShould.Contain_
             shouldStr = "contain"
-        Case EndWith_
+        Case flShould.EndWith_
             shouldStr = "endWith"
-        Case EvaluateTo_
+        Case flShould.EvaluateTo_
             shouldStr = "evaluate to"
-        Case StartWith_
+        Case flShould.StartWith_
             shouldStr = "start with"
         Case Else
             Err.Raise NOT_IMPLEMENTED_ERROR, "Function not implemented"
@@ -345,45 +354,46 @@ Private Function IExpressions_Should(ByVal shouldType As flShould, Optional ByVa
 End Function
 
 Private Function IExpressions_Be( _
-ByVal beType As flBe, _
-Optional ByVal TesingInput As String = "", _
-Optional ByVal lowerVal As Variant, _
-Optional ByVal higherVal As Variant) As String
+    ByVal beType As Long, _
+    Optional ByVal TesingInput As String = "", _
+    Optional ByVal lowerVal As Variant, _
+    Optional ByVal higherVal As Variant _
+) As String
     Dim beStr As String
     Dim funcStr As String
     
     beStr = "be "
     
     Select Case beType
-        Case Alphabetic_
+        Case flBe.Alphabetic_
             funcStr = "alphabetic"
-        Case Alphanumeric_
+        Case flBe.Alphanumeric_
             funcStr = "alphanumeric"
-        Case Between_
+        Case flBe.Between_
             funcStr = "between"
-        Case Erroneous_
+        Case flBe.Erroneous_
             funcStr = "erroneous"
-        Case EqualTo_
+        Case flBe.EqualTo_
             funcStr = "equal to"
-        Case GreaterThan_
+        Case flBe.GreaterThan_
             funcStr = "greater than"
-        Case GreaterThanOrEqualTo_
+        Case flBe.GreaterThanOrEqualTo_
             funcStr = "greater than or equal to"
-        Case IdenticalTo_
+        Case flBe.IdenticalTo_
             funcStr = "identical to"
-        Case InDataStructure_
+        Case flBe.InDataStructure_
             funcStr = "in data structure"
-        Case InDataStructures_
+        Case flBe.InDataStructures_
             funcStr = "in data structures"
-        Case LessThan_
+        Case flBe.LessThan_
             funcStr = "less than"
-        Case LessThanOrEqualTo_
+        Case flBe.LessThanOrEqualTo_
             funcStr = "less than or equal to"
-        Case Numeric_
+        Case flBe.Numeric_
             funcStr = "numeric"
-        Case OneOf_
+        Case flBe.OneOf_
             funcStr = "one of"
-        Case Something_
+        Case flBe.Something_
             funcStr = "something"
         Case Else
             Err.Raise NOT_IMPLEMENTED_ERROR, "Function not implemented"
@@ -404,45 +414,46 @@ Optional ByVal higherVal As Variant) As String
 End Function
 
 Private Function IExpressions_Have( _
-ByVal haveType As flHave, _
-Optional ByVal TesingInput As String = "", _
-Optional ByVal lowerVal As Variant, _
-Optional ByVal higherVal As Variant) As String
+    ByVal haveType As Long, _
+    Optional ByVal TesingInput As String = "", _
+    Optional ByVal lowerVal As Variant, _
+    Optional ByVal higherVal As Variant _
+) As String
     Dim haveStr As String
     Dim funcStr As String
     
     haveStr = "have "
     
     Select Case haveType
-        Case DepthCountOf_
+        Case flHave.DepthCountOf_
             funcStr = "depth count of"
-        Case Elements_
+        Case flHave.Elements_
             funcStr = "elements"
-        Case ElementsInDataStructure_
+        Case flHave.ElementsInDataStructure_
             funcStr = "elements in data structure"
-        Case ErrorDescriptionOf_
+        Case flHave.ErrorDescriptionOf_
             funcStr = "error description of"
-        Case ErrorNumberOf_
+        Case flHave.ErrorNumberOf_
             funcStr = "error number of"
-        Case ExactSameElementsAs_
+        Case flHave.ExactSameElementsAs_
             funcStr = "exact same elements as"
-        Case LengthBetween_
+        Case flHave.LengthBetween_
             funcStr = "length between"
-        Case LengthOf_
+        Case flHave.LengthOf_
             funcStr = "length of"
-        Case MaxLengthOf_
+        Case flHave.MaxLengthOf_
             funcStr = "max length of"
-        Case MinLengthOf_
+        Case flHave.MinLengthOf_
             funcStr = "min length of"
-        Case NestedCountOf_
+        Case flHave.NestedCountOf_
             funcStr = "nested count of"
-        Case Procedure_
+        Case flHave.Procedure_
             funcStr = "procedure"
-        Case SameElementsAs_
+        Case flHave.SameElementsAs_
             funcStr = "same elements as"
-        Case SameTypeAs_
+        Case flHave.SameTypeAs_
             funcStr = "same type as"
-        Case SameUniqueElementsAs_
+        Case flHave.SameUniqueElementsAs_
             funcStr = "same unique elements as"
         Case Else
             Err.Raise NOT_IMPLEMENTED_ERROR, "Function not implemented"
@@ -507,73 +518,73 @@ Private Function IExpressions_getFunctionExpr(ByVal test As ITest) As String
     
     Select Case test.functionName
         Case "Alphabetic"
-            tempFluentPath = IExpressions_Be(Alphabetic_)
+            tempFluentPath = IExpressions_Be(flBe.Alphabetic_)
         Case "Alphanumeric"
-            tempFluentPath = IExpressions_Be(Alphanumeric_)
+            tempFluentPath = IExpressions_Be(flBe.Alphanumeric_)
         Case "Between"
-            tempFluentPath = IExpressions_Be(Between_, lowerVal:=test.lowerVal, higherVal:=test.higherVal)
+            tempFluentPath = IExpressions_Be(flBe.Between_, lowerVal:=test.lowerVal, higherVal:=test.higherVal)
         Case "Contain"
-            tempFluentPath = IExpressions_Should(Contain_, testingInput)
+            tempFluentPath = IExpressions_Should(flShould.Contain_, testingInput)
         Case "DepthCountOf"
-            tempFluentPath = IExpressions_Have(DepthCountOf_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.DepthCountOf_, testingInput)
         Case "Elements"
-            tempFluentPath = IExpressions_Have(Elements_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.Elements_, testingInput)
         Case "ElementsInDataStructure"
-            tempFluentPath = IExpressions_Have(ElementsInDataStructure_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.ElementsInDataStructure_, testingInput)
         Case "Erroneous"
-            tempFluentPath = IExpressions_Be(Erroneous_)
+            tempFluentPath = IExpressions_Be(flBe.Erroneous_)
         Case "ErrorNumberOf"
-            tempFluentPath = IExpressions_Have(ErrorNumberOf_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.ErrorNumberOf_, testingInput)
         Case "ErrorDescriptionOf"
-            tempFluentPath = IExpressions_Have(ErrorDescriptionOf_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.ErrorDescriptionOf_, testingInput)
         Case "EqualTo"
-            tempFluentPath = IExpressions_Be(EqualTo_, testingInput)
+            tempFluentPath = IExpressions_Be(flBe.EqualTo_, testingInput)
         Case "EndWith"
-            tempFluentPath = IExpressions_Should(EndWith_, testingInput)
+            tempFluentPath = IExpressions_Should(flShould.EndWith_, testingInput)
         Case "EvaluateTo"
-            tempFluentPath = IExpressions_Should(EvaluateTo_, testingInput)
+            tempFluentPath = IExpressions_Should(flShould.EvaluateTo_, testingInput)
         Case "ExactSameElementsAs"
-            tempFluentPath = IExpressions_Have(ExactSameElementsAs_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.ExactSameElementsAs_, testingInput)
         Case "GreaterThan"
-            tempFluentPath = IExpressions_Be(GreaterThan_, testingInput)
+            tempFluentPath = IExpressions_Be(flBe.GreaterThan_, testingInput)
         Case "GreaterThanOrEqualTo"
-            tempFluentPath = IExpressions_Be(GreaterThanOrEqualTo_, testingInput)
+            tempFluentPath = IExpressions_Be(flBe.GreaterThanOrEqualTo_, testingInput)
         Case "IdenticalTo"
-            tempFluentPath = IExpressions_Be(IdenticalTo_, testingInput)
+            tempFluentPath = IExpressions_Be(flBe.IdenticalTo_, testingInput)
         Case "InDataStructure"
-            tempFluentPath = IExpressions_Be(InDataStructure_, testingInput)
+            tempFluentPath = IExpressions_Be(flBe.InDataStructure_, testingInput)
         Case "InDataStructures"
-            tempFluentPath = IExpressions_Be(InDataStructures_, testingInput)
+            tempFluentPath = IExpressions_Be(flBe.InDataStructures_, testingInput)
         Case "LengthBetween"
-            tempFluentPath = IExpressions_Have(LengthBetween_, lowerVal:=test.lowerVal, higherVal:=test.higherVal)
+            tempFluentPath = IExpressions_Have(flHave.LengthBetween_, lowerVal:=test.lowerVal, higherVal:=test.higherVal)
         Case "LengthOf"
-            tempFluentPath = IExpressions_Have(LengthOf_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.LengthOf_, testingInput)
         Case "LessThan"
-            tempFluentPath = IExpressions_Be(LessThan_, testingInput)
+            tempFluentPath = IExpressions_Be(flBe.LessThan_, testingInput)
         Case "LessThanOrEqualTo"
-            tempFluentPath = IExpressions_Be(LessThanOrEqualTo_, testingInput)
+            tempFluentPath = IExpressions_Be(flBe.LessThanOrEqualTo_, testingInput)
         Case "MaxLengthOf"
-            tempFluentPath = IExpressions_Have(MaxLengthOf_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.MaxLengthOf_, testingInput)
         Case "MinLengthOf"
-            tempFluentPath = IExpressions_Have(MinLengthOf_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.MinLengthOf_, testingInput)
         Case "NestedCountOf"
-            tempFluentPath = IExpressions_Have(NestedCountOf_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.NestedCountOf_, testingInput)
         Case "Numeric"
-            tempFluentPath = IExpressions_Be(Numeric_)
+            tempFluentPath = IExpressions_Be(flBe.Numeric_)
         Case "OneOf"
-            tempFluentPath = IExpressions_Be(OneOf_, testingInput)
+            tempFluentPath = IExpressions_Be(flBe.OneOf_, testingInput)
         Case "Procedure"
-            tempFluentPath = IExpressions_Have(Procedure_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.Procedure_, testingInput)
         Case "SameElementsAs"
-            tempFluentPath = IExpressions_Have(SameElementsAs_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.SameElementsAs_, testingInput)
         Case "SameTypeAs"
-            tempFluentPath = IExpressions_Have(SameTypeAs_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.SameTypeAs_, testingInput)
         Case "SameUniqueElementsAs"
-            tempFluentPath = IExpressions_Have(SameUniqueElementsAs_, testingInput)
+            tempFluentPath = IExpressions_Have(flHave.SameUniqueElementsAs_, testingInput)
         Case "Something"
-            tempFluentPath = IExpressions_Be(Something_)
+            tempFluentPath = IExpressions_Be(flBe.Something_)
         Case "StartWith"
-            tempFluentPath = IExpressions_Should(StartWith_, testingInput)
+            tempFluentPath = IExpressions_Should(flShould.StartWith_, testingInput)
         Case Else
             Err.Raise NOT_IMPLEMENTED_ERROR, "Function not implemented"
     End Select
@@ -696,7 +707,7 @@ Private Function IExpressions_InputToString( _
     Dim elem As Variant
     Dim col As VBA.Collection
     Dim counter As Long
-    Dim method As flAlgorithm
+    Dim method As Long
     Dim recurStr As String
     Dim iterStr As String
     Dim recurBool As Boolean
@@ -1229,3 +1240,7 @@ Private Function collectionToStrArray(ByVal col As Collection) As String()
     
     collectionToStrArray = arr
 End Function
+
+Private Sub Class_Terminate()
+    Set pTestDictCounter = Nothing
+End Sub

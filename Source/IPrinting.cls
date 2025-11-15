@@ -9,13 +9,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Enum TestProperty
-    TestCategory = 1
-    testInfo
-    TestName
-    TestResultNumber
-End Enum
-
 Public Property Let Category(ByVal value As String)
 End Property
 

@@ -9,62 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Enum flShould
-    [_first] = 1
-    Contain_ = [_first]
-    EndWith_
-    EvaluateTo_
-    StartWith_ '4
-    [_last] = 100
-End Enum
-
-Public Enum flHave
-    [_first] = 101
-    DepthCountOf_ = [_first]
-    Elements_
-    ElementsInDataStructure_
-    ErrorDescriptionOf_
-    ErrorNumberOf_
-    ExactSameElementsAs_
-    LengthBetween_
-    LengthOf_
-    MaxLengthOf_
-    MinLengthOf_
-    NestedCountOf_
-    Procedure_
-    SameElementsAs_
-    SameTypeAs_
-    SameUniqueElementsAs_ '115
-    [_last] = 200
-End Enum
-
-Public Enum flBe
-    [_first] = 201
-    Alphabetic_ = [_first]
-    Alphanumeric_
-    Between_
-    Erroneous_
-    EqualTo_
-    GreaterThan_
-    GreaterThanOrEqualTo_
-    IdenticalTo_
-    InDataStructure_
-    InDataStructures_
-    LessThan_
-    LessThanOrEqualTo_
-    Numeric_
-    OneOf_
-    Something_ '215
-    [_last] = 300
-End Enum
-
 Public Property Set setPrinting(ByVal value As cPrinting)
 End Property
 
-Public Property Set setTests(ByVal value As cTests)
+Public Property Set setTests(ByVal value As ITests)
 End Property
 
-Public Property Set setMeta(ByVal value As cMeta)
+Public Property Set setMeta(ByVal value As IMeta)
 End Property
 
 Public Sub addToTestAndFluentPath( _
@@ -84,16 +35,18 @@ Public Sub addToTestAndFluentPath( _
 )
 End Sub
 
-Public Function Should(ByVal shouldType As flShould, Optional ByVal testingInput As Variant) As String
+Public Function Should(ByVal shouldType As Long, Optional ByVal testingInput As Variant) As String
 End Function
 
-Public Function Be(ByVal beType As flBe, _
+Public Function Be( _
+    ByVal beType As Long, _
     Optional ByVal TesingInput As String = "", _
     Optional ByVal lowerVal As Variant, _
     Optional ByVal higherVal As Variant) As String
 End Function
 
-Public Function Have(ByVal haveType As flHave, _
+Public Function Have( _
+    ByVal haveType As Long, _
     Optional ByVal TesingInput As String = "", _
     Optional ByVal lowerVal As Variant, _
     Optional ByVal higherVal As Variant) As String

@@ -21,10 +21,6 @@ Private pShouldFunctions As IShouldTestFuncs
 Private pShouldNotVal As Variant
 Private pUtilities As IUtilities
 
-Private Sub Class_Initialize()
-    Set pUtilities = New cUtilities
-End Sub
-
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
     Set pTestingFunctions = value
     Set pShouldFunctions = value
@@ -98,3 +94,16 @@ Private Function IShould_EvaluateTo(ByVal value As Variant) As Variant
     result = pUtilities.NegateIfBool(result)
     IShould_EvaluateTo = result
 End Function
+
+Private Sub Class_Initialize()
+    Set pUtilities = New cUtilities
+End Sub
+
+Private Sub Class_Terminate()
+    Set pNotBe = Nothing
+    Set pNotBeSet = Nothing
+    Set pNotHave = Nothing
+    Set pNotHaveSet = Nothing
+    Set pTestingFunctions = Nothing
+    Set pShouldFunctions = Nothing
+End Sub

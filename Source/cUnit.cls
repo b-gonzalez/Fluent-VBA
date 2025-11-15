@@ -9,7 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Implements IUnit
+Implements IUnitFluent
+Implements IUnitFluentOf
 
 Private pShouldSet As ISetTestFuncsAndValue
 Private pShouldNotSet As ISetTestFuncsAndValue
@@ -21,27 +22,19 @@ Private iPrint As IPrintExpr
 Private pUnitVal As Variant
 Private pTestCount As Long
 
-Public Property Get Should() As IShould
-    Set Should = getShould
+Private Property Get IUnitFluent_meta() As cMeta
+    Set IUnitFluent_meta = pMeta
 End Property
 
-Public Property Get ShouldNot() As IShould
-    Set ShouldNot = getShouldNot
+Private Property Get IUnitFluent_printing() As cPrinting
+    Set IUnitFluent_printing = pPrinting
 End Property
 
-Private Property Get IUnit_meta() As cMeta
-    Set IUnit_meta = pMeta
+Private Property Get IUnitFluent_TestingFunctions() As cTestingFunctions
+    Set IUnitFluent_TestingFunctions = pTestingFunctions
 End Property
 
-Private Property Get IUnit_printing() As cPrinting
-    Set IUnit_printing = pPrinting
-End Property
-
-Private Property Get IUnit_TestingFunctions() As cTestingFunctions
-    Set IUnit_TestingFunctions = pTestingFunctions
-End Property
-
-Private Property Let IUnit_testValue(ByVal value As Variant)
+Private Property Let IUnitFluent_testValue(ByVal value As Variant)
     pTestingFunctions.TestValue = value
     pUnitVal = pTestingFunctions.TestValue
     
@@ -52,17 +45,33 @@ Private Property Let IUnit_testValue(ByVal value As Variant)
     End With
 End Property
 
-Private Property Set IUnit_testValue(ByVal value As Variant)
+Private Property Set IUnitFluent_testValue(ByVal value As Variant)
     Set pTestingFunctions.TestValue = value
     Set pUnitVal = pTestingFunctions.TestValue
 End Property
 
-Private Property Get IUnit_testValue() As Variant
+Private Property Get IUnitFluent_testValue() As Variant
     If VBA.Information.IsObject(pUnitVal) Then
-        Set IUnit_testValue = pUnitVal
+        Set IUnitFluent_testValue = pUnitVal
     Else
-        IUnit_testValue = pUnitVal
+        IUnitFluent_testValue = pUnitVal
     End If
+End Property
+
+Private Property Get IUnitFluent_Should() As IShould
+    Set IUnitFluent_Should = getShould
+End Property
+
+Private Property Get IUnitFluent_ShouldNot() As IShould
+    Set IUnitFluent_ShouldNot = getShouldNot
+End Property
+
+Private Property Get IUnitFluentOf_Should() As IShould
+    Set IUnitFluentOf_Should = getShould
+End Property
+
+Private Property Get IUnitFluentOf_ShouldNot() As IShould
+    Set IUnitFluentOf_ShouldNot = getShouldNot
 End Property
 
 Private Function getShould() As cShould
@@ -112,4 +121,19 @@ Private Sub Class_Initialize()
     
     Set pTestingFunctions.Expressions = iPrint.Expressions
     Set pTestingFunctions.setMeta = pMeta
+End Sub
+
+Private Sub Class_Terminate()
+    Set pMeta = Nothing
+    
+    Set iPrint.Expressions.setMeta = Nothing
+    Set iPrint.Expressions.setTests = Nothing
+    Set iPrint.Expressions.setPrinting = Nothing
+    
+    Set iPrint = Nothing
+    
+    Set pTestingFunctions.Expressions = Nothing
+    Set pTestingFunctions.setMeta = Nothing
+    
+    Set pTestingFunctions = Nothing
 End Sub

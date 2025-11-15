@@ -8760,7 +8760,10 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     
     Set fluent.TestValue = col
     
-    fluent.Should.Be.Something
+    Debug.Assert fluent.Should.Be.Something
+    
+    '//Checks that all properties self-referential properties should be Null since neither
+    '//the testing value nor testing input is self referential
     
     With fluent.Meta
         Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).TestingValueIsSelfReferential)
@@ -8768,33 +8771,30 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
         Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).HasSelfReferential)
     End With
     
+    col.Add 1
     col.Add col
     
-    '//is null because col is now a self-referential data structure and
-    '//ContinueWithSelfReferentialIfPossible is false
+    '//testingValueIsSelfReferential and hasSelfReferential should be true
+    
     Debug.Assert VBA.Information.IsNull(fluent.Should.Be.Something)
-    
-    fluent.Meta.tests.ContinueWithSelfReferentialIfPossible = True
-    
-    '//col is self-referential data structure but ContinueWithSelfReferentialIfPossible
-    '//is set to true so the test now passes.
-    
-    Debug.Assert fluent.Should.Be.Something
     
     With fluent.Meta
         Debug.Assert .tests(.tests.Count).strTestValue = "Null"
         Debug.Assert .tests(.tests.Count).TestingValueIsSelfReferential = True
+        Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).TestingInputIsSelfReferential)
         Debug.Assert .tests(.tests.Count).HasSelfReferential = True
     End With
     
     '//testingValueIsSelfReferential, testingInputIsSelfReferential, and hasSelfReferential should be true
     
-    Debug.Assert fluent.Should.Have.SameTypeAs(col)
+    fluent.TestValue = 1
+    
+    Debug.Assert VBA.Information.IsNull(fluent.Should.Be.InDataStructure(col))
     
     With fluent.Meta
-        Debug.Assert .tests(.tests.Count).strTestValue = "Null"
+        Debug.Assert Not VBA.Information.IsNull(.tests(.tests.Count).strTestValue)
         Debug.Assert .tests(.tests.Count).StrTestInput = "Null"
-        Debug.Assert .tests(.tests.Count).TestingValueIsSelfReferential = True
+        Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).TestingValueIsSelfReferential)
         Debug.Assert .tests(.tests.Count).TestingInputIsSelfReferential = True
         Debug.Assert .tests(.tests.Count).HasSelfReferential = True
     End With

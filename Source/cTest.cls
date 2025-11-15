@@ -51,10 +51,6 @@ Private pIsBaseCaseIter As Boolean
 
 Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
 
-Private Sub Class_Initialize()
-    pAlgorithm = Null
-End Sub
-
 Private Property Let ITest_testingValue(ByVal value As Variant)
     pTestingValue = value
 End Property
@@ -566,3 +562,11 @@ End Property
 Public Property Get TestingInputIsSelfReferential() As Variant
     TestingInputIsSelfReferential = ITest_TestingInputIsSelfReferential
 End Property
+
+Private Sub Class_Initialize()
+    pAlgorithm = Null
+End Sub
+
+Private Sub Class_Terminate()
+    'Some arrays are no being cleared here. Is this a coincidence?
+End Sub

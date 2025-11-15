@@ -88,3 +88,8 @@ End Function
 Private Function IBe_IdenticalTo(ByVal dataStructure As Variant) As Variant
     IBe_IdenticalTo = pBeTestFuncs.IdenticalTo(pBeValue, False, dataStructure, True)
 End Function
+
+Private Sub Class_Terminate()
+    Set pTestingFunctions = Nothing
+    Set pBeTestFuncs = Nothing
+End Sub

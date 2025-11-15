@@ -12,51 +12,51 @@ Option Explicit
 Implements ITestingFunctionsInfoDev
 Implements ITestingFunctionsInfos
 
-Private pAlphabetic As New cTestingFunctionsInfo
-Private pAlphanumeric As New cTestingFunctionsInfo
-Private pBetween As New cTestingFunctionsInfo
-Private pContain As New cTestingFunctionsInfo
-Private pDepthCountOf As New cTestingFunctionsInfo
-Private pElements As New cTestingFunctionsInfo
-Private pElementsInDataStructure As New cTestingFunctionsInfo
-Private pEndWith As New cTestingFunctionsInfo
-Private pEqualTo As New cTestingFunctionsInfo
-Private pErroneous As New cTestingFunctionsInfo
-Private pErrorDescriptionOf As New cTestingFunctionsInfo
-Private pErrorNumberOf As New cTestingFunctionsInfo
-Private pEvaluateTo As New cTestingFunctionsInfo
-Private pExactSameElementsAs As New cTestingFunctionsInfo
-Private pGreaterThan As New cTestingFunctionsInfo
-Private pGreaterThanOrEqualTo As New cTestingFunctionsInfo
-Private pIdenticalTo As New cTestingFunctionsInfo
-Private pInDataStructure As New cTestingFunctionsInfo
-Private pInDataStructures As New cTestingFunctionsInfo
-Private pLengthBetween As New cTestingFunctionsInfo
-Private pLengthOf As New cTestingFunctionsInfo
-Private pLessThan As New cTestingFunctionsInfo
-Private pLessThanOrEqualTo As New cTestingFunctionsInfo
-Private pMaxLengthOf As New cTestingFunctionsInfo
-Private pMinLengthOf As New cTestingFunctionsInfo
-Private pNestedCountOf As New cTestingFunctionsInfo
-Private pNumeric As New cTestingFunctionsInfo
-Private pOneOf As New cTestingFunctionsInfo
-Private pProcedure As New cTestingFunctionsInfo
-Private pSameElementsAs As New cTestingFunctionsInfo
-Private pSameTypeAs As New cTestingFunctionsInfo
-Private pSameUniqueElementsAs As New cTestingFunctionsInfo
-Private pSomething As New cTestingFunctionsInfo
-Private pStartWith As New cTestingFunctionsInfo
+Private pAlphabetic As cTestingFunctionsInfo
+Private pAlphanumeric As cTestingFunctionsInfo
+Private pBetween As cTestingFunctionsInfo
+Private pContain As cTestingFunctionsInfo
+Private pDepthCountOf As cTestingFunctionsInfo
+Private pElements As cTestingFunctionsInfo
+Private pElementsInDataStructure As cTestingFunctionsInfo
+Private pEndWith As cTestingFunctionsInfo
+Private pEqualTo As cTestingFunctionsInfo
+Private pErroneous As cTestingFunctionsInfo
+Private pErrorDescriptionOf As cTestingFunctionsInfo
+Private pErrorNumberOf As cTestingFunctionsInfo
+Private pEvaluateTo As cTestingFunctionsInfo
+Private pExactSameElementsAs As cTestingFunctionsInfo
+Private pGreaterThan As cTestingFunctionsInfo
+Private pGreaterThanOrEqualTo As cTestingFunctionsInfo
+Private pIdenticalTo As cTestingFunctionsInfo
+Private pInDataStructure As cTestingFunctionsInfo
+Private pInDataStructures As cTestingFunctionsInfo
+Private pLengthBetween As cTestingFunctionsInfo
+Private pLengthOf As cTestingFunctionsInfo
+Private pLessThan As cTestingFunctionsInfo
+Private pLessThanOrEqualTo As cTestingFunctionsInfo
+Private pMaxLengthOf As cTestingFunctionsInfo
+Private pMinLengthOf As cTestingFunctionsInfo
+Private pNestedCountOf As cTestingFunctionsInfo
+Private pNumeric As cTestingFunctionsInfo
+Private pOneOf As cTestingFunctionsInfo
+Private pProcedure As cTestingFunctionsInfo
+Private pSameElementsAs As cTestingFunctionsInfo
+Private pSameTypeAs As cTestingFunctionsInfo
+Private pSameUniqueElementsAs As cTestingFunctionsInfo
+Private pSomething As cTestingFunctionsInfo
+Private pStartWith As cTestingFunctionsInfo
 
 'ITestingFunctionsInfoDev
 
-Private pDepthCountOfRecur As New cTestingFunctionsInfo
-Private pDepthCountOfIter As New cTestingFunctionsInfo
-Private pInDataStructureRecur As New cTestingFunctionsInfo
-Private pInDataStructureIter As New cTestingFunctionsInfo
-Private pInDataStructuresRecur As New cTestingFunctionsInfo
-Private pInDataStructuresIter As New cTestingFunctionsInfo
-Private pNestedCountOfRecur As New cTestingFunctionsInfo
-Private pNestedCountOfIter As New cTestingFunctionsInfo
+Private pDepthCountOfRecur As cTestingFunctionsInfo
+Private pDepthCountOfIter As cTestingFunctionsInfo
+Private pInDataStructureRecur As cTestingFunctionsInfo
+Private pInDataStructureIter As cTestingFunctionsInfo
+Private pInDataStructuresRecur As cTestingFunctionsInfo
+Private pInDataStructuresIter As cTestingFunctionsInfo
+Private pNestedCountOfRecur As cTestingFunctionsInfo
+Private pNestedCountOfIter As cTestingFunctionsInfo
 
 Private pTestingFunctionsDict As Scripting.Dictionary
 Private pRecurIterFuncCol As VBA.Collection
@@ -458,21 +458,110 @@ Private Function ITestingFunctionsInfoDev_getRecurIterFuncNameCol() As VBA.Colle
     Set ITestingFunctionsInfoDev_getRecurIterFuncNameCol = pRecurIterFuncCol
 End Function
 
-Public Property Get item(ByVal OneBasedIndex As Long) As ITest
-Attribute item.VB_UserMemId = 0
-    Set item = pTestingFunctionsInfoCol(OneBasedIndex)
-End Property
-
-Public Property Get NewEnum() As IUnknown
-Attribute NewEnum.VB_UserMemId = -4
-    Set NewEnum = pTestingFunctionsInfoCol.[_NewEnum]
-End Property
-
 Private Sub Class_Initialize()
+    Set pAlphabetic = New cTestingFunctionsInfo
+    Set pAlphanumeric = New cTestingFunctionsInfo
+    Set pBetween = New cTestingFunctionsInfo
+    Set pContain = New cTestingFunctionsInfo
+    Set pDepthCountOf = New cTestingFunctionsInfo
+    Set pElements = New cTestingFunctionsInfo
+    Set pElementsInDataStructure = New cTestingFunctionsInfo
+    Set pEndWith = New cTestingFunctionsInfo
+    Set pEqualTo = New cTestingFunctionsInfo
+    Set pErroneous = New cTestingFunctionsInfo
+    Set pErrorDescriptionOf = New cTestingFunctionsInfo
+    Set pErrorNumberOf = New cTestingFunctionsInfo
+    Set pEvaluateTo = New cTestingFunctionsInfo
+    Set pExactSameElementsAs = New cTestingFunctionsInfo
+    Set pGreaterThan = New cTestingFunctionsInfo
+    Set pGreaterThanOrEqualTo = New cTestingFunctionsInfo
+    Set pIdenticalTo = New cTestingFunctionsInfo
+    Set pInDataStructure = New cTestingFunctionsInfo
+    Set pInDataStructures = New cTestingFunctionsInfo
+    Set pLengthBetween = New cTestingFunctionsInfo
+    Set pLengthOf = New cTestingFunctionsInfo
+    Set pLessThan = New cTestingFunctionsInfo
+    Set pLessThanOrEqualTo = New cTestingFunctionsInfo
+    Set pMaxLengthOf = New cTestingFunctionsInfo
+    Set pMinLengthOf = New cTestingFunctionsInfo
+    Set pNestedCountOf = New cTestingFunctionsInfo
+    Set pNumeric = New cTestingFunctionsInfo
+    Set pOneOf = New cTestingFunctionsInfo
+    Set pProcedure = New cTestingFunctionsInfo
+    Set pSameElementsAs = New cTestingFunctionsInfo
+    Set pSameTypeAs = New cTestingFunctionsInfo
+    Set pSameUniqueElementsAs = New cTestingFunctionsInfo
+    Set pSomething = New cTestingFunctionsInfo
+    Set pStartWith = New cTestingFunctionsInfo
+    
+    'ITestingFunctionsInfoDev
+    
+    Set pDepthCountOfRecur = New cTestingFunctionsInfo
+    Set pDepthCountOfIter = New cTestingFunctionsInfo
+    Set pInDataStructureRecur = New cTestingFunctionsInfo
+    Set pInDataStructureIter = New cTestingFunctionsInfo
+    Set pInDataStructuresRecur = New cTestingFunctionsInfo
+    Set pInDataStructuresIter = New cTestingFunctionsInfo
+    Set pNestedCountOfRecur = New cTestingFunctionsInfo
+    Set pNestedCountOfIter = New cTestingFunctionsInfo
+
     Set pTestingFunctionsDict = New Scripting.Dictionary
     Set pRecurIterFuncCol = New VBA.Collection
     Set pTestingFunctionsInfoCol = New VBA.Collection
     
     Call initTestingFunctionsInfoObjects
     Call populateDictWithTestFuncInfo
+End Sub
+
+Private Sub Class_Terminate()
+    Set pAlphabetic = Nothing
+    Set pAlphanumeric = Nothing
+    Set pBetween = Nothing
+    Set pContain = Nothing
+    Set pDepthCountOf = Nothing
+    Set pElements = Nothing
+    Set pElementsInDataStructure = Nothing
+    Set pEndWith = Nothing
+    Set pEqualTo = Nothing
+    Set pErroneous = Nothing
+    Set pErrorDescriptionOf = Nothing
+    Set pErrorNumberOf = Nothing
+    Set pEvaluateTo = Nothing
+    Set pExactSameElementsAs = Nothing
+    Set pGreaterThan = Nothing
+    Set pGreaterThanOrEqualTo = Nothing
+    Set pIdenticalTo = Nothing
+    Set pInDataStructure = Nothing
+    Set pInDataStructures = Nothing
+    Set pLengthBetween = Nothing
+    Set pLengthOf = Nothing
+    Set pLessThan = Nothing
+    Set pLessThanOrEqualTo = Nothing
+    Set pMaxLengthOf = Nothing
+    Set pMinLengthOf = Nothing
+    Set pNestedCountOf = Nothing
+    Set pNumeric = Nothing
+    Set pOneOf = Nothing
+    Set pProcedure = Nothing
+    Set pSameElementsAs = Nothing
+    Set pSameTypeAs = Nothing
+    Set pSameUniqueElementsAs = Nothing
+    Set pSomething = Nothing
+    Set pStartWith = Nothing
+    
+    'ITestingFunctionsInfoDev
+    
+    Set pDepthCountOfRecur = Nothing
+    Set pDepthCountOfIter = Nothing
+    Set pInDataStructureRecur = Nothing
+    Set pInDataStructureIter = Nothing
+    Set pInDataStructuresRecur = Nothing
+    Set pInDataStructuresIter = Nothing
+    Set pNestedCountOfRecur = Nothing
+    Set pNestedCountOfIter = Nothing
+    
+    Set pTestingFunctionsDict = Nothing
+    Set pRecurIterFuncCol = Nothing
+    
+    Set pTestingFunctionsInfoCol = Nothing
 End Sub

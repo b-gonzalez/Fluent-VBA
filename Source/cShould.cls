@@ -84,3 +84,12 @@ End Function
 Private Function IShould_EvaluateTo(ByVal value As Variant) As Variant
     IShould_EvaluateTo = pShouldFunctions.EvaluateTo(pShouldVal, value)
 End Function
+
+Private Sub Class_Terminate()
+    Set pBe = Nothing
+    Set pBeSet = Nothing
+    Set pHave = Nothing
+    Set pHaveSet = Nothing
+    Set pTestingFunctions = Nothing
+    Set pShouldFunctions = Nothing
+End Sub

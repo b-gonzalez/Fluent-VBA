@@ -19,7 +19,7 @@ Public Event TestCompleted(ByVal test As ITest)
 Public Event TestUnexpected(ByVal test As ITest)
 Public Event DuplicateTest(ByVal test As ITest)
 
-Private pAlgorithm As flAlgorithm
+Private pAlgorithm As Long
 Private pAlgorithmValueSet As Boolean
 Private pApproximateEqual As Boolean
 Private pCol As VBA.Collection
@@ -50,7 +50,9 @@ Private Property Get ITests_NewEnum() As IUnknown
     Set ITests_NewEnum = pCol.[_NewEnum]
 End Property
 
-Private Property Let ITests_Algorithm(ByVal value As flAlgorithm)
+Private Property Let ITests_Algorithm(ByVal value As Long)
+    'This following if statement uses bitwise flags
+    
     If value And flAlgorithm.flIterative Or value And flAlgorithm.flRecursive Then
         pAlgorithm = value
     Else
@@ -60,7 +62,7 @@ Private Property Let ITests_Algorithm(ByVal value As flAlgorithm)
     pAlgorithmValueSet = True
 End Property
 
-Private Property Get ITests_Algorithm() As flAlgorithm
+Private Property Get ITests_Algorithm() As Long
     ITests_Algorithm = pAlgorithm
 End Property
 
@@ -220,19 +222,19 @@ Private Sub ITests_ResetCounter()
     pCount = 0
 End Sub
 
-Private Function ITests_DatastructureIsSelfReferential(ByVal ds As Variant, ByVal Algorithm As flAlgorithm) As Boolean
+Private Function ITests_DatastructureIsSelfReferential(ByVal ds As Variant, ByVal Algorithm As Long) As Boolean
     Dim iterFuncCalled As Boolean
     Dim recurFuncCalled As Boolean
     Dim hasSelfReferentialIter As Boolean
     Dim hasSelfReferentialRecur As Boolean
     Dim b As Boolean
     
-    If Algorithm And flIterative Then
+    If Algorithm And flAlgorithm.flIterative Then
         hasSelfReferentialIter = datastructureIsSelfReferentialIter(ds)
         iterFuncCalled = True
     End If
     
-    If Algorithm And flRecursive Then
+    If Algorithm And flAlgorithm.flRecursive Then
         hasSelfReferentialRecur = datastructureIsSelfReferentialRecur(ds)
         recurFuncCalled = True
     End If
@@ -403,11 +405,6 @@ Private Sub ITests_AddFromTests(ByVal tests As cTests)
     Next test
 End Sub
 
-Public Property Get NewEnum() As IUnknown
-Attribute NewEnum.VB_UserMemId = -4
-    Set NewEnum = pCol.[_NewEnum]
-End Property
-
 Private Sub Class_Initialize()
     Set pCol = New VBA.Collection
     pCount = 0
@@ -427,4 +424,14 @@ Private Sub Class_Initialize()
     pDataStructures.Add "Collection"
     pDataStructures.Add "ArrayList"
     
+    pContinueWithSelfReferentialIfPossible = False
+End Sub
+
+Private Sub Class_Terminate()
+    Set pFluentPathDict = Nothing
+    Set pTestDictCounter = Nothing
+    Set pTestingFunctionsInfos = Nothing
+    Set pTestStrings = Nothing
+    Set pDataStructures = Nothing
+    Set pCol = Nothing
 End Sub

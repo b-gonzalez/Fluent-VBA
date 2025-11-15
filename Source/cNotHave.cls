@@ -17,10 +17,6 @@ Private pHaveTestFuncs As IHaveTestFuncs
 Private pTestingFunctions As ITestingFunctions
 Private pUtilities As IUtilities
 
-Private Sub Class_Initialize()
-    Set pUtilities = New cUtilities
-End Sub
-
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
     Set pTestingFunctions = value
     Set pHaveTestFuncs = value
@@ -153,3 +149,13 @@ Private Function IHave_NestedCountOf( _
     result = pUtilities.NegateIfBool(result)
     IHave_NestedCountOf = result
 End Function
+
+Private Sub Class_Initialize()
+    Set pUtilities = New cUtilities
+End Sub
+
+Private Sub Class_Terminate()
+    Set pUtilities = Nothing
+    Set pTestingFunctions = Nothing
+    Set pHaveTestFuncs = Nothing
+End Sub
