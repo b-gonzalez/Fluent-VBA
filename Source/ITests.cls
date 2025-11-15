@@ -20,10 +20,10 @@ Public Property Get NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
 End Property
 
-Public Property Let Algorithm(ByVal value As flAlgorithm)
+Public Property Let Algorithm(ByVal value As Long)
 End Property
 
-Public Property Get Algorithm() As flAlgorithm
+Public Property Get Algorithm() As Long
 End Property
 
 Public Property Get AlgorithmValueSet() As Boolean
@@ -86,7 +86,7 @@ End Sub
 Public Sub ResetCounter()
 End Sub
 
-Public Function DatastructureIsSelfReferential(ByVal ds As Variant, ByVal Algorithm As flAlgorithm) As Boolean
+Public Function DatastructureIsSelfReferential(ByVal ds As Variant, ByVal Algorithm As Long) As Boolean
 End Function
 
 Public Sub AddFromFluent(ByVal fluent As cFluent)
@@ -97,3 +97,4 @@ End Sub
 
 Public Sub AddFromTests(ByVal tests As cTests)
 End Sub
+

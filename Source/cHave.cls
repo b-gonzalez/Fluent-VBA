@@ -100,3 +100,7 @@ Private Function IHave_NestedCountOf( _
     IHave_NestedCountOf = pHaveTestFuncs.NestedCountOf(pHaveVal, value, False)
 End Function
 
+Private Sub Class_Terminate()
+    Set pTestingFunctions = Nothing
+    Set pHaveTestFuncs = Nothing
+End Sub

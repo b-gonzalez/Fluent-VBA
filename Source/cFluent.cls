@@ -11,18 +11,17 @@ Option Explicit
 
 Implements IFluent
 
-Private pUnit As IUnit
-Private pUnitShould As cUnit
+Private pUnit As IUnitFluent
 Private pMeta As IMeta
 Private pTestingFunctions As cTestingFunctions
 Private pFluentVal As Variant
 
 Private Property Get IFluent_Should() As IShould
-    Set IFluent_Should = pUnitShould.Should
+    Set IFluent_Should = pUnit.Should
 End Property
 
 Private Property Get IFluent_ShouldNot() As IShould
-    Set IFluent_ShouldNot = pUnitShould.ShouldNot
+    Set IFluent_ShouldNot = pUnit.ShouldNot
 End Property
 
 Private Property Get IFluent_Meta() As IMeta
@@ -77,7 +76,12 @@ End Property
 
 Private Sub Class_Initialize()
     Set pUnit = New cUnit
-    Set pUnitShould = pUnit
     Set pTestingFunctions = pUnit.TestingFunctions
     Set pMeta = pUnit.Meta
+End Sub
+
+Private Sub Class_Terminate()
+    Set pUnit = Nothing
+    Set pTestingFunctions = Nothing
+    Set pMeta = Nothing
 End Sub

@@ -33,10 +33,15 @@ Private Property Get IMeta_ToString() As IToString
 End Property
 
 Private Sub Class_Initialize()
-    Dim util As cUtilities
-    
     Set pPrinting = New cPrinting
     Set pTests = New cTests
     Set pUtilities = New cUtilities
     Set pToString = New cToString
+End Sub
+
+Private Sub Class_Terminate()
+    Set pPrinting = Nothing
+    Set pTests = Nothing
+    Set pUtilities = Nothing
+    Set pToString = Nothing
 End Sub

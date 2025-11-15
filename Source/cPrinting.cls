@@ -28,6 +28,8 @@ Private pExpressions As IExpressions
 Private pCategorySet As Boolean
 Private pNameSet As Boolean
 
+Private TestProperty As cTestProperty
+
 Private Property Get IPrintExpr_TestCollection() As VBA.Collection
     If pTestCollection Is Nothing Then
         Set pTestCollection = New VBA.Collection
@@ -95,7 +97,7 @@ Private Property Get IPrinting_FluentPath() As String
     IPrinting_FluentPath = pFluentPath
 End Property
 
-Private Function ArrayFromTests(ByVal col As VBA.Collection, ByVal tp As TestProperty) As Variant()
+Private Function ArrayFromTests(ByVal col As VBA.Collection, ByVal tp As Long) As Variant()
     Dim test As ITest
     Dim testDev As ITestDev
     Dim elem As Variant
@@ -112,7 +114,7 @@ Private Function ArrayFromTests(ByVal col As VBA.Collection, ByVal tp As TestPro
         Select Case tp
             Case TestProperty.TestCategory
                 arr(i, 1) = test.Category
-            Case TestProperty.testInfo
+            Case TestProperty.TestInfo
                 arr(i, 1) = getTestMessageFromResultNumber(testDev.ResultNumber) & " - " & test.FluentPath
             Case TestProperty.TestName
                 arr(i, 1) = test.TestName
@@ -144,7 +146,7 @@ Private Sub IPrinting_PrintToImmediate()
     
     If pNameSet Then testNameArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestName)
     
-    testInfoArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.testInfo)
+    testInfoArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestInfo)
     
     testResultArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestResultNumber)
     
@@ -185,7 +187,7 @@ Private Sub IPrinting_PrintToSheet()
 
     Set wb = getWorkbook
     
-    testInfoArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.testInfo)
+    testInfoArr = ArrayFromTests(IPrintExpr_TestCollection, TestProperty.TestInfo)
     
     wb.ActiveSheet.Range("A2").Resize(UBound(testInfoArr, 1), UBound(testInfoArr, 2)).value = testInfoArr
     
@@ -361,4 +363,15 @@ Private Sub Class_Initialize()
     
     Set pExpressions = New cExpressions
     Set pExpressions.setPrinting = Me
+    Set TestProperty = New cTestProperty
+End Sub
+
+Private Sub Class_Terminate()
+    Set pTestCollection = Nothing
+    Set iPrint = Nothing
+    Set pExcel = Nothing
+    Set pWorkbook = Nothing
+    Set pExpressions.setPrinting = Nothing
+    Set pExpressions = Nothing
+    Set TestProperty = Nothing
 End Sub

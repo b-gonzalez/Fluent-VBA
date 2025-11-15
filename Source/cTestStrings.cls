@@ -17,18 +17,6 @@ Private pCleanTestStrings As Boolean
 
 Private pCleanStringDict As Scripting.Dictionary
 
-Private Sub Class_Initialize()
-    pCleanTestValueStr = False
-    pCleanTestInputStr = False
-    pCleanTestStrings = False
-
-    Set pCleanStringDict = New Scripting.Dictionary
-    
-    pCleanStringDict.Add " ", ""
-    pCleanStringDict.Add """", ""
-    
-End Sub
-
 Private Property Let ITestStrings_CleanTestValueStr(ByVal value As Boolean)
     pCleanTestValueStr = value
 End Property
@@ -86,3 +74,19 @@ Private Function ITestStrings_CleanString(ByVal TestStr As Variant, Optional ByV
 
     ITestStrings_CleanString = tempStr
 End Function
+
+Private Sub Class_Initialize()
+    pCleanTestValueStr = False
+    pCleanTestInputStr = False
+    pCleanTestStrings = False
+
+    Set pCleanStringDict = New Scripting.Dictionary
+    
+    pCleanStringDict.Add " ", ""
+    pCleanStringDict.Add """", ""
+    
+End Sub
+
+Private Sub Class_Terminate()
+    Set pCleanStringDict = Nothing
+End Sub

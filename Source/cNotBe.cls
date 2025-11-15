@@ -19,10 +19,6 @@ Private pBeTestFuncs As IBeTestFuncs
 Private pResult As Variant
 Private pUtilities As IUtilities
 
-Private Sub Class_Initialize()
-    Set pUtilities = New cUtilities
-End Sub
-
 Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFunctions)
     Set pTestingFunctions = value
     Set pBeTestFuncs = value
@@ -147,3 +143,12 @@ Private Function IBe_IdenticalTo(ByVal dataStructure As Variant) As Variant
     IBe_IdenticalTo = result
 End Function
 
+Private Sub Class_Initialize()
+    Set pUtilities = New cUtilities
+End Sub
+
+Private Sub Class_Terminate()
+    Set pUtilities = Nothing
+    Set pTestingFunctions = Nothing
+    Set pBeTestFuncs = Nothing
+End Sub
