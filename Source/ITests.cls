@@ -95,6 +95,6 @@ End Sub
 Public Sub AddFromFluentOf(ByVal fluentOf As cFluentOf)
 End Sub
 
-Public Sub AddFromTests(ByVal tests As cTests)
+Public Sub addFromTests(ByVal tests As ITests)
 End Sub
 

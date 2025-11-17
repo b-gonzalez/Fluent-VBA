@@ -396,8 +396,8 @@ Private Sub ITests_AddFromFluentOf(ByVal fluentOf As cFluentOf)
     Next test
 End Sub
 
-Private Sub ITests_AddFromTests(ByVal tests As cTests)
-    Dim test As cTest
+Private Sub ITests_AddFromTests(ByVal tests As ITests)
+    Dim test As ITest
     
     For Each test In tests
         pCol.Add test
