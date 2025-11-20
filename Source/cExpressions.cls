@@ -475,9 +475,12 @@ End Function
 
 Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentPath As String, ByVal tempFluentPath As String) As String
     Dim finalFluentPath As String
+    Dim testResult As String
     
     If VBA.Information.IsNull(test.result) Or VBA.Information.IsEmpty(test.result) Then
-        test.result = VBA.Information.TypeName(test.result)
+        testResult = VBA.Information.TypeName(test.result)
+    Else
+        testResult = test.result
     End If
 
     With test
@@ -501,7 +504,7 @@ Private Function IExpressions_buildFluentPath(ByVal test As ITest, ByVal FluentP
         finalFluentPath = finalFluentPath & _
             " Expectation: Testing value " & tempFluentPath & _
             ";" & IIf(.Actual <> "", " Actual: " & pMeta.ToString.WrapIfString(.Actual) & ";", "") & _
-            " Result: " & .result
+            " Result: " & testResult
     End With
     
     IExpressions_buildFluentPath = finalFluentPath

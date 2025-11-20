@@ -27,11 +27,11 @@ Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFu
 End Property
 
 Private Property Let ISetTestFuncsAndValue_testValue(ByVal value As Variant)
-    pShouldNotVal = pTestingFunctions.TestValue
+    pShouldNotVal = pTestingFunctions.testValue
 End Property
 
 Private Property Set ISetTestFuncsAndValue_testValue(ByVal value As Variant)
-    Set pShouldNotVal = pTestingFunctions.TestValue
+    Set pShouldNotVal = pTestingFunctions.testValue
 End Property
 
 Private Property Get IShould_have() As IHave
@@ -43,9 +43,9 @@ Private Property Get IShould_have() As IHave
     Set pNotHaveSet.SetTestFunc = pTestingFunctions
     
     If VBA.Information.IsObject(pShouldNotVal) Then
-        Set pNotHaveSet.TestValue = pShouldNotVal
+        Set pNotHaveSet.testValue = pShouldNotVal
     Else
-        pNotHaveSet.TestValue = pShouldNotVal
+        pNotHaveSet.testValue = pShouldNotVal
     End If
     
     Set IShould_have = pNotHaveSet
@@ -59,9 +59,9 @@ Private Property Get IShould_be() As IBe
     Set pNotBeSet.SetTestFunc = pTestingFunctions
     
     If VBA.Information.IsObject(pShouldNotVal) Then
-        Set pNotBeSet.TestValue = pShouldNotVal
+        Set pNotBeSet.testValue = pShouldNotVal
     Else
-        pNotBeSet.TestValue = pShouldNotVal
+        pNotBeSet.testValue = pShouldNotVal
     End If
     
     Set IShould_be = pNotBeSet

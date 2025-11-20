@@ -22,11 +22,11 @@ Private Property Set ISetTestFuncsAndValue_SetTestFunc(ByVal value As cTestingFu
 End Property
 
 Private Property Let ISetTestFuncsAndValue_testValue(ByVal value As Variant)
-    pHaveVal = pTestingFunctions.TestValue
+    pHaveVal = pTestingFunctions.testValue
 End Property
 
 Private Property Set ISetTestFuncsAndValue_testValue(ByVal value As Variant)
-    Set pHaveVal = pTestingFunctions.TestValue
+    Set pHaveVal = pTestingFunctions.testValue
 End Property
 
 Private Function IHave_LengthOf(ByVal value As Long) As Variant

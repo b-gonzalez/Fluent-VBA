@@ -215,6 +215,7 @@ Private Function IBeTestFuncs_InDataStructures( _
     Dim iterCol As VBA.Collection
     Dim IsDataStructure As Boolean
     Dim testingInputIsNotSelfReferential As Boolean
+    Dim tempTestingInput As VBA.Collection
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
@@ -224,15 +225,51 @@ Private Function IBeTestFuncs_InDataStructures( _
     testingInputIsNotSelfReferential = inputIsValid(testingInput, flTestType.flIsNotSelfReferential)
     
     If IsDataStructure And testingInputIsNotSelfReferential Then
-        For i = LBound(testingInput) To UBound(testingInput)
-            If inputIsValid(testingInput(i), flTestType.flIsDataStructure + flTestType.flIsNotSelfReferential) Then
+'        For i = LBound(testingInput) To UBound(testingInput)
+'            If inputIsValid(testingInput(i), flTestType.flIsDataStructure + flTestType.flIsNotSelfReferential) Then
+'
+'                If method And flAlgorithm.flRecursive Then
+'                   Set recurCol = getNestedElementsRecur(testingInput(i))
+'                End If
+'
+'                If method And flAlgorithm.flIterative Then
+'                    Set iterCol = getNestedElementsIter(testingInput(i))
+'                End If
+'
+'                If (Not recurCol Is Nothing And Not iterCol Is Nothing) Then
+'                    If IBeTestFuncs_IdenticalTo(recurCol, negateValue, iterCol, False) Then
+'                        Set col = recurCol
+'                    Else
+'                        Err.Raise RECUR_ITER_INPUTS_NOT_IDENTICAL_ERROR, Description:="Recursive and Iterative collections are not identical"
+'                    End If
+'                Else
+'                    If Not recurCol Is Nothing Then
+'                        Set col = getNestedElementsRecur(testingInput)
+'                    ElseIf Not iterCol Is Nothing Then
+'                        Set col = getNestedElementsIter(testingInput)
+'                    Else
+'                        Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+'                    End If
+'                End If
+'
+'                If Not col Is Nothing Then
+'                    funcVal = IBeTestFuncs_InDataStructure(testingValue, col, negateValue, updateFluentPath:=False)
+'                Else
+'                    Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
+'                End If
+'            End If
+'        Next i
+        Set tempTestingInput = getElementsFromDsUpToFirstMissing(testingInput)
+        
+        For i = 1 To tempTestingInput.Count
+            If inputIsValid(tempTestingInput(i), flTestType.flIsDataStructure + flTestType.flIsNotSelfReferential) Then
             
                 If method And flAlgorithm.flRecursive Then
-                   Set recurCol = getNestedElementsRecur(testingInput(i))
+                   Set recurCol = getNestedElementsRecur(tempTestingInput(i))
                 End If
                 
                 If method And flAlgorithm.flIterative Then
-                    Set iterCol = getNestedElementsIter(testingInput(i))
+                    Set iterCol = getNestedElementsIter(tempTestingInput(i))
                 End If
                 
                 If (Not recurCol Is Nothing And Not iterCol Is Nothing) Then
@@ -243,9 +280,9 @@ Private Function IBeTestFuncs_InDataStructures( _
                     End If
                 Else
                     If Not recurCol Is Nothing Then
-                        Set col = getNestedElementsRecur(testingInput)
+                        Set col = getNestedElementsRecur(tempTestingInput)
                     ElseIf Not iterCol Is Nothing Then
-                        Set col = getNestedElementsIter(testingInput)
+                        Set col = getNestedElementsIter(tempTestingInput)
                     Else
                         Err.Raise INVALID_ENUM_VALUE_ERROR, Description:="Enum value is not valid!"
                     End If
@@ -262,7 +299,7 @@ Private Function IBeTestFuncs_InDataStructures( _
     
     IBeTestFuncs_InDataStructures = funcVal
     
-    Call pExpressions.addToTestAndFluentPath("InDataStructures", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, recurIterFunc:=True, TestingInputIsSelfReferential:=testingInputIsNotSelfReferential)
+    Call pExpressions.addToTestAndFluentPath("InDataStructures", funcVal, VBA.Conversion.CBool(negateValue), testingValue, tempTestingInput, recurIterFunc:=True, TestingInputIsSelfReferential:=testingInputIsNotSelfReferential)
     
 End Function
 
@@ -804,7 +841,7 @@ Private Function IBeTestFuncs_OneOf(ByVal testingValue As Variant, ByVal negateV
     Dim tempBool As Boolean
     Dim funcVal As Variant
     Dim tempTestValue As Variant
-    Dim tempTestInput As Variant
+    Dim tempTestInput As VBA.Collection
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
     
@@ -812,18 +849,36 @@ Private Function IBeTestFuncs_OneOf(ByVal testingValue As Variant, ByVal negateV
         If VBA.Information.TypeName(testingValue) = "String" Then
             tempTestValue = ITestingFunctions_getTempTestValue(testingValue)
         End If
+        
+        Set tempTestInput = getElementsFromDsUpToFirstMissing(testingInput)
     
         tempBool = False
         
-        For i = LBound(testingInput) To UBound(testingInput)
-            If VBA.Information.IsObject(testingInput(i)) Or VBA.Information.IsObject(testingValue) Then
-                If VBA.Information.TypeName(testingInput(i)) = VBA.Information.TypeName(testingValue) Then
+'        For i = LBound(testingInput) To UBound(testingInput)
+'            If VBA.Information.IsObject(testingInput(i)) Or VBA.Information.IsObject(testingValue) Then
+'                If VBA.Information.TypeName(testingInput(i)) = VBA.Information.TypeName(testingValue) Then
+'                    tempBool = True
+'                End If
+'            ElseIf testingInput(i) = testingValue Then
+'                tempBool = True
+'            ElseIf VBA.Information.IsNull(testingInput(i)) Or VBA.Information.IsNull(testingValue) Then
+'                If VBA.Information.TypeName(testingInput(i)) = VBA.Information.TypeName(testingValue) Then
+'                    tempBool = True
+'                End If
+'            End If
+'
+'            If tempBool Then Exit For
+'        Next i
+
+        For i = 1 To tempTestInput.Count
+            If VBA.Information.IsObject(tempTestInput(i)) Or VBA.Information.IsObject(testingValue) Then
+                If VBA.Information.TypeName(tempTestInput(i)) = VBA.Information.TypeName(testingValue) Then
                     tempBool = True
                 End If
-            ElseIf testingInput(i) = testingValue Then
+            ElseIf tempTestInput(i) = testingValue Then
                 tempBool = True
-            ElseIf VBA.Information.IsNull(testingInput(i)) Or VBA.Information.IsNull(testingValue) Then
-                If VBA.Information.TypeName(testingInput(i)) = VBA.Information.TypeName(testingValue) Then
+            ElseIf VBA.Information.IsNull(tempTestInput(i)) Or VBA.Information.IsNull(testingValue) Then
+                If VBA.Information.TypeName(tempTestInput(i)) = VBA.Information.TypeName(testingValue) Then
                     tempBool = True
                 End If
             End If
@@ -839,9 +894,9 @@ Private Function IBeTestFuncs_OneOf(ByVal testingValue As Variant, ByVal negateV
     If TypeOf testingValue Is Object  Then testingValue = VBA.Information.TypeName(testingValue)
     
     If tempTestValue <> "" Then
-        Call pExpressions.addToTestAndFluentPath("OneOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, cleanedTestValue:=tempTestValue)
+        Call pExpressions.addToTestAndFluentPath("OneOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, tempTestInput, cleanedTestValue:=tempTestValue)
     Else
-        Call pExpressions.addToTestAndFluentPath("OneOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput)
+        Call pExpressions.addToTestAndFluentPath("OneOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, tempTestInput)
     End If
         
 End Function
@@ -1486,7 +1541,8 @@ Private Function IHaveTestFuncs_Elements( _
     Dim elem As Variant
     Dim funcVal As Variant
     Dim IsDataStructure As Boolean
-    Dim tempTestingValue As Variant
+'    Dim tempTestingValue As Variant
+    Dim tempTestingInput As VBA.Collection
     Dim testingValueIsNotSelfReferential As Boolean
     
     funcVal = ITestingFunctions_SetDefaultFuncVal
@@ -1499,9 +1555,19 @@ Private Function IHaveTestFuncs_Elements( _
     testingValueIsNotSelfReferential = inputIsValid(testingValue, flTestType.flIsNotSelfReferential)
     
     If testingValueIsNotSelfReferential And IsDataStructure Then
-        elemCount = pExpressions.getDsCount(testingInput)
+'        elemCount = pExpressions.getDsCount(testingInput)
+'
+'        For Each elem In testingInput
+'            If IBeTestFuncs_InDataStructure(elem, testingValue, False, False) Then
+'                boolCounter = boolCounter + 1
+'            End If
+'        Next elem
 
-        For Each elem In testingInput
+        Set tempTestingInput = getElementsFromDsUpToFirstMissing(testingInput)
+
+        elemCount = pExpressions.getDsCount(tempTestingInput)
+
+        For Each elem In tempTestingInput
             If IBeTestFuncs_InDataStructure(elem, testingValue, False, False) Then
                 boolCounter = boolCounter + 1
             End If
@@ -1513,7 +1579,7 @@ Private Function IHaveTestFuncs_Elements( _
     IHaveTestFuncs_Elements = funcVal
     
     If updateFluentPath Then
-        Call pExpressions.addToTestAndFluentPath("Elements", funcVal, VBA.Conversion.CBool(negateValue), tempTestingValue, testingInput, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential)
+        Call pExpressions.addToTestAndFluentPath("Elements", funcVal, VBA.Conversion.CBool(negateValue), testingValue, tempTestingInput, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential)
     End If
     
 End Function
@@ -1751,6 +1817,23 @@ Private Function IHaveTestFuncs_NestedCountOf( _
     IHaveTestFuncs_NestedCountOf = funcVal
     
     Call pExpressions.addToTestAndFluentPath("NestedCountOf", funcVal, VBA.Conversion.CBool(negateValue), testingValue, testingInput, recurIterFunc:=True, TestingValueIsSelfReferential:=testingValueIsNotSelfReferential)
+End Function
+
+Private Function getElementsFromDsUpToFirstMissing(ds As Variant) As VBA.Collection
+    Dim tempCol As VBA.Collection
+    Dim elem As Variant
+    
+    Set tempCol = New VBA.Collection
+    
+    For Each elem In ds
+        If VBA.Information.IsMissing(elem) Then
+            Exit For
+        Else
+            tempCol.Add elem
+        End If
+    Next elem
+    
+    Set getElementsFromDsUpToFirstMissing = tempCol
 End Function
 
 Private Sub Class_Terminate()

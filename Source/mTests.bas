@@ -174,6 +174,7 @@ Private Sub runEqualPosNegTests(ByVal fluent As IFluent, ByVal testFluent As IFl
     If Not G_TB_SKIP Then
         Set posAndNegTestFluent = ErroneousTests(fluent, posAndNegTestFluent, testFluentResult)
         Set posAndNegTestFluent = ErrorDescriptionOfTests(fluent, posAndNegTestFluent, testFluentResult)
+        
         Set posAndNegTestFluent = ErrorNumberOfTests(fluent, posAndNegTestFluent, testFluentResult)
 
         counter = 0
@@ -220,13 +221,24 @@ Private Sub TrueAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent A
     Dim inputRecur As String
     Dim valueIter As String
     Dim valueRecur As String
+'    Dim testFluent As cFluent
+    Dim testFluentOf As cFluentOf
 
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
     
-    Debug.Assert testFluent.Meta.tests.Count = mCounter
+'    If TypeOf fluentInput Is cFluent Or TypeOf fluentInput Is IFluent Then
+'        Set testFluent = fluentInput
+'        Debug.Assert testFluent.Meta.tests.Count = mCounter
+''        fluent.testValue = testFluent.Meta.tests(mCounter).result
+'    ElseIf TypeOf fluentInput Is cFluentOf Or TypeOf fluentInput Is IFluentOf Then
+'        Set testFluentOf = fluentInput
+        Debug.Assert testFluent.Meta.tests.Count = mCounter
+'        fluent.testValue = testFluentOf.Meta.tests(mCounter).result
+'    End If
 
     With fluent.Meta.tests
+        Debug.Assert fluent.testValue = testFluent.Meta.tests(mCounter).result
         Debug.Assert fluent.Should.Be.EqualTo(True)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(False)
         Debug.Assert testFluentResult.Of(.result).Should.Be.EqualTo(True)
@@ -239,12 +251,12 @@ Private Sub TrueAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent A
         With testFluent.Meta.tests
             Set td = .item(.Count)
         End With
-    
+
         inputIter = td.TestInputIter
         inputRecur = td.TestInputRecur
         valueIter = td.TestValueIter
         valueRecur = td.TestValueRecur
-        
+
         Debug.Assert _
         inputIter = inputRecur And _
         valueIter = valueRecur
@@ -257,13 +269,26 @@ Private Sub FalseAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent 
     Dim inputRecur As String
     Dim valueIter As String
     Dim valueRecur As String
+'    Dim testFluent As cFluent
+    Dim testFluentOf As cFluentOf
     
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
+
+'    If TypeOf fluentInput Is cFluent Or TypeOf fluentInput Is IFluent Then
+'        Set testFluent = fluentInput
+'        Debug.Assert testFluent.Meta.tests.Count = mCounter
+'        fluent.testValue = testFluent.Meta.tests(mCounter).result
+'    ElseIf TypeOf fluentInput Is cFluentOf Or TypeOf fluentInput Is IFluentOf Then
+'        Set testFluentOf = fluentInput
+'        Debug.Assert testFluentOf.Meta.tests.Count = mCounter
+''        fluent.testValue = testFluentOf.Meta.tests(mCounter).result
+'    End If
     
     Debug.Assert testFluent.Meta.tests.Count = mCounter
 
     With fluent.Meta.tests
+        Debug.Assert fluent.testValue = testFluent.Meta.tests(mCounter).result
         Debug.Assert fluent.Should.Be.EqualTo(False)
         Debug.Assert fluent.ShouldNot.Be.EqualTo(True)
         Debug.Assert testFluentResult.Of(.result).Should.Be.EqualTo(True)
@@ -271,17 +296,17 @@ Private Sub FalseAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent 
         testFluentResult.Of(.result).Should.Be.EqualTo (False) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
         testFluentResult.Of(.result).ShouldNot.Be.EqualTo (True) '//Not asserting. Intentionally failing to test TestFailed event linked to object.
     End With
-    
+
     If testFluent.Meta.tests.ToStrDev Then
         With testFluent.Meta.tests
             Set td = .item(.Count)
         End With
-    
+
         inputIter = td.TestInputIter
         inputRecur = td.TestInputRecur
         valueIter = td.TestValueIter
         valueRecur = td.TestValueRecur
-        
+
         Debug.Assert _
         inputIter = inputRecur And _
         valueIter = valueRecur
@@ -295,9 +320,10 @@ Private Sub NullAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent A
     Debug.Assert testFluent.Meta.tests.Count = mCounter
 
     With fluent
-        Debug.Assert testFluentResult.Of(.TestValue).Should.Be.EqualTo(Null)
-        Debug.Assert testFluentResult.Of(.TestValue).ShouldNot.Be.EqualTo(True)
-        Debug.Assert testFluentResult.Of(.TestValue).ShouldNot.Be.EqualTo(False)
+        Debug.Assert VBA.Information.IsNull(.testValue) And VBA.Information.IsNull(testFluent.Meta.tests(mCounter).result)
+        Debug.Assert testFluentResult.Of(.testValue).Should.Be.EqualTo(Null)
+        Debug.Assert testFluentResult.Of(.testValue).ShouldNot.Be.EqualTo(True)
+        Debug.Assert testFluentResult.Of(.testValue).ShouldNot.Be.EqualTo(False)
     End With
 End Sub
 
@@ -315,7 +341,8 @@ Private Sub EmptyAssertAndRaiseEvents(ByVal fluent As IFluent, ByVal testFluent 
     Debug.Assert testFluent.Meta.tests(mCounter).TestValueSet = False
 
     With fluent
-        Debug.Assert VBA.Information.IsEmpty(fluent.TestValue)
+'        Debug.Assert VBA.Information.IsEmpty(fluent.testValue)
+        Debug.Assert VBA.Information.IsEmpty(.testValue) And VBA.Information.IsEmpty(testFluent.Meta.tests(mCounter).result)
     End With
 End Sub
 
@@ -332,137 +359,137 @@ Private Function EqualityDocumentationTests(ByVal fluent As IFluent, ByVal testF
 
     With fluent.Meta.tests
     
-        fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(True)
+        fluent.testValue = testFluent.Of(True).Should.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(True).Should.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of(True).Should.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(False).Should.Be.EqualTo(True)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        fluent.TestValue = testFluent.Of(False).Should.Be.EqualTo(False)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        fluent.TestValue = testFluent.Of(True).ShouldNot.Be.EqualTo(True)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        fluent.TestValue = testFluent.Of(True).ShouldNot.Be.EqualTo(False)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        fluent.TestValue = testFluent.Of(False).ShouldNot.Be.EqualTo(True)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        fluent.TestValue = testFluent.Of(False).ShouldNot.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of(False).Should.Be.EqualTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of(-1).Should.Be.EqualTo(True)
+        fluent.testValue = testFluent.Of(False).Should.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(-1).Should.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of(True).ShouldNot.Be.EqualTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(True)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-        fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of(True).ShouldNot.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(-1).ShouldNot.Be.EqualTo(True)
-        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        fluent.TestValue = testFluent.Of(-1).ShouldNot.Be.EqualTo(False)
-        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        
-        fluent.TestValue = testFluent.Of(0).ShouldNot.Be.EqualTo(True)
+        fluent.testValue = testFluent.Of(False).ShouldNot.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of(0).ShouldNot.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of(False).ShouldNot.Be.EqualTo(False)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        fluent.testValue = testFluent.Of(-1).Should.Be.EqualTo(True)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.testValue = testFluent.Of(-1).Should.Be.EqualTo(False)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.testValue = testFluent.Of(0).Should.Be.EqualTo(True)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        fluent.testValue = testFluent.Of(0).Should.Be.EqualTo(False)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.testValue = testFluent.Of(-1).ShouldNot.Be.EqualTo(True)
+        Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.testValue = testFluent.Of(-1).ShouldNot.Be.EqualTo(False)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+        
+        fluent.testValue = testFluent.Of(0).ShouldNot.Be.EqualTo(True)
+        Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+        fluent.testValue = testFluent.Of(0).ShouldNot.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         '//Approximate equality tests
     
         testFluent.Meta.tests.ApproximateEqual = True
-        fluent.TestValue = testFluent.Of("TRUE").Should.Be.EqualTo(True)
+        fluent.testValue = testFluent.Of("TRUE").Should.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("TRUE").Should.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of("TRUE").Should.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("FALSE").Should.Be.EqualTo(True)
+        fluent.testValue = testFluent.Of("FALSE").Should.Be.EqualTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("FALSE").Should.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of("FALSE").Should.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of("TRUE").ShouldNot.Be.EqualTo(True)
+        fluent.testValue = testFluent.Of("TRUE").ShouldNot.Be.EqualTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("TRUE").ShouldNot.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of("TRUE").ShouldNot.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("FALSE").ShouldNot.Be.EqualTo(True)
+        fluent.testValue = testFluent.Of("FALSE").ShouldNot.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("FALSE").ShouldNot.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of("FALSE").ShouldNot.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("true").Should.Be.EqualTo(True)
+        fluent.testValue = testFluent.Of("true").Should.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("true").Should.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of("true").Should.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("false").Should.Be.EqualTo(True)
+        fluent.testValue = testFluent.Of("false").Should.Be.EqualTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("false").Should.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of("false").Should.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of("true").ShouldNot.Be.EqualTo(True)
+        fluent.testValue = testFluent.Of("true").ShouldNot.Be.EqualTo(True)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("true").ShouldNot.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of("true").ShouldNot.Be.EqualTo(False)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("false").ShouldNot.Be.EqualTo(True)
+        fluent.testValue = testFluent.Of("false").ShouldNot.Be.EqualTo(True)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-        fluent.TestValue = testFluent.Of("false").ShouldNot.Be.EqualTo(False)
+        fluent.testValue = testFluent.Of("false").ShouldNot.Be.EqualTo(False)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
         testFluent.Meta.tests.ApproximateEqual = False
         
         '//Null and Empty tests
         
-        fluent.TestValue = testFluent.Of(Null).Should.Be.EqualTo(Null)
+        fluent.testValue = testFluent.Of(Null).Should.Be.EqualTo(Null)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.EqualTo(Null)
+        fluent.testValue = testFluent.Of(Null).ShouldNot.Be.EqualTo(Null)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(Empty).Should.Be.EqualTo(Empty)
+        fluent.testValue = testFluent.Of(Empty).Should.Be.EqualTo(Empty)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(Empty).ShouldNot.Be.EqualTo(Empty)
+        fluent.testValue = testFluent.Of(Empty).ShouldNot.Be.EqualTo(Empty)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of("").Should.Be.EqualTo(Empty)
+        fluent.testValue = testFluent.Of("").Should.Be.EqualTo(Empty)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of("").ShouldNot.Be.EqualTo(Empty)
+        fluent.testValue = testFluent.Of("").ShouldNot.Be.EqualTo(Empty)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(0).Should.Be.EqualTo(Empty)
+        fluent.testValue = testFluent.Of(0).Should.Be.EqualTo(Empty)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(0).ShouldNot.Be.EqualTo(Empty)
+        fluent.testValue = testFluent.Of(0).ShouldNot.Be.EqualTo(Empty)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(False).Should.Be.EqualTo(Empty)
+        fluent.testValue = testFluent.Of(False).Should.Be.EqualTo(Empty)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-        fluent.TestValue = testFluent.Of(False).ShouldNot.Be.EqualTo(Empty)
+        fluent.testValue = testFluent.Of(False).ShouldNot.Be.EqualTo(Empty)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     End With
@@ -522,34 +549,36 @@ Sub validateTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf)
     
     With testFluent.Meta
         For Each test In .tests
-            resultBool = test.result = .tests(i).result
-            fluentBool = test.FluentPath = .tests(i).FluentPath
-            valueBool = test.strTestValue = .tests(i).strTestValue
-            inputBool = test.StrTestInput = .tests(i).StrTestInput
-            valueBool2 = test.strTestValuePretty = .tests(i).strTestValuePretty
-            inputBool2 = test.StrTestInputPretty = .tests(i).StrTestInputPretty
-            
-            If test.HasSelfReferential And .tests(i).HasSelfReferential Then
-                If VBA.Information.IsNull(test.TestingInputIsSelfReferential) Then
-                    inputSelfReferential = VBA.Information.IsNull(test.TestingInputIsSelfReferential) And VBA.Information.IsNull(.tests(i).TestingInputIsSelfReferential)
+            If Not VBA.Information.IsNull(test.result) And Not VBA.Information.IsNull(.tests(i).result) Then
+                resultBool = test.result = .tests(i).result
+                fluentBool = test.FluentPath = .tests(i).FluentPath
+                valueBool = test.strTestValue = .tests(i).strTestValue
+                inputBool = test.StrTestInput = .tests(i).StrTestInput
+                valueBool2 = test.strTestValuePretty = .tests(i).strTestValuePretty
+                inputBool2 = test.StrTestInputPretty = .tests(i).StrTestInputPretty
+                
+                If test.HasSelfReferential And .tests(i).HasSelfReferential Then
+                    If VBA.Information.IsNull(test.TestingInputIsSelfReferential) Then
+                        inputSelfReferential = VBA.Information.IsNull(test.TestingInputIsSelfReferential) And VBA.Information.IsNull(.tests(i).TestingInputIsSelfReferential)
+                    Else
+                        inputSelfReferential = test.TestingInputIsSelfReferential = .tests(i).TestingInputIsSelfReferential
+                    End If
+                    
+                    If VBA.Information.IsNull(test.TestingValueIsSelfReferential) Then
+                        valueSelfReferential = VBA.Information.IsNull(test.TestingValueIsSelfReferential) And VBA.Information.IsNull(.tests(i).TestingValueIsSelfReferential)
+                    Else
+                        valueSelfReferential = test.TestingValueIsSelfReferential = .tests(i).TestingValueIsSelfReferential
+                    End If
+                    
+                    selfReferentialBool = inputSelfReferential And valueSelfReferential
+                    
+                    Debug.Assert resultBool And fluentBool And valueBool And inputBool And selfReferentialBool
                 Else
-                    inputSelfReferential = test.TestingInputIsSelfReferential = .tests(i).TestingInputIsSelfReferential
+                    Debug.Assert resultBool And fluentBool And valueBool And inputBool
                 End If
                 
-                If VBA.Information.IsNull(test.TestingValueIsSelfReferential) Then
-                    valueSelfReferential = VBA.Information.IsNull(test.TestingValueIsSelfReferential) And VBA.Information.IsNull(.tests(i).TestingValueIsSelfReferential)
-                Else
-                    valueSelfReferential = test.TestingValueIsSelfReferential = .tests(i).TestingValueIsSelfReferential
-                End If
-                
-                selfReferentialBool = inputSelfReferential And valueSelfReferential
-                
-                Debug.Assert resultBool And fluentBool And valueBool And inputBool And selfReferentialBool
-            Else
-                Debug.Assert resultBool And fluentBool And valueBool And inputBool
+                i = i + 1
             End If
-            
-            i = i + 1
         Next test
     End With
 End Sub
@@ -727,121 +756,121 @@ Private Function EqualToTests(ByVal fluent As IFluent, ByVal testFluent As IFlue
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     
-    fluent.TestValue = testFluent.Of("""abc""").Should.Be.EqualTo("""abc""")
+    fluent.testValue = testFluent.Of("""abc""").Should.Be.EqualTo("""abc""")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.EqualTo(10)
+    fluent.testValue = testFluent.Of(10).Should.Be.EqualTo(10)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     ' //Approximate equality tests
     testFluent.Meta.tests.ApproximateEqual = True
-    fluent.TestValue = testFluent.Of("10").Should.Be.EqualTo(10)
+    fluent.testValue = testFluent.Of("10").Should.Be.EqualTo(10)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("True").Should.Be.EqualTo(True)
+    fluent.testValue = testFluent.Of("True").Should.Be.EqualTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     '//default epsilon for double comparisons is 0.000001
     '//the default can be modified by setting a value
     '//for the epsilon property in the Meta object.
     
-    fluent.TestValue = testFluent.Of(5.0000001).Should.Be.EqualTo(5)
+    fluent.testValue = testFluent.Of(5.0000001).Should.Be.EqualTo(5)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(CStr(Excel.Evaluate("1 / 0"))).Should.Be.EqualTo("Error 2007")
+    fluent.testValue = testFluent.Of(CStr(Excel.Evaluate("1 / 0"))).Should.Be.EqualTo("Error 2007")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""abc""").ShouldNot.Be.EqualTo("""abc""")
+    fluent.testValue = testFluent.Of("""abc""").ShouldNot.Be.EqualTo("""abc""")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.EqualTo(10)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.EqualTo(10)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(CStr(Excel.Evaluate("1 / 0"))).ShouldNot.Be.EqualTo("Error 2007")
+    fluent.testValue = testFluent.Of(CStr(Excel.Evaluate("1 / 0"))).ShouldNot.Be.EqualTo("Error 2007")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     ' //Approximate equality tests
     testFluent.Meta.tests.ApproximateEqual = True
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.Be.EqualTo(10)
+    fluent.testValue = testFluent.Of("10").ShouldNot.Be.EqualTo(10)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("True").ShouldNot.Be.EqualTo(True)
+    fluent.testValue = testFluent.Of("True").ShouldNot.Be.EqualTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     '//default epsilon for double comparisons is 0.000001
     '//the default can be modified by setting a value
     '//for the epsilon property in the Meta object.
     
-    fluent.TestValue = testFluent.Of(5.0000001).ShouldNot.Be.EqualTo(5)
+    fluent.testValue = testFluent.Of(5.0000001).ShouldNot.Be.EqualTo(5)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.EqualTo("Hello world")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.EqualTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.EqualTo("Hello world")
+    fluent.testValue = testFluent.Of(col).Should.Be.EqualTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Be.EqualTo("Hello world")
+    fluent.testValue = testFluent.Of(d).Should.Be.EqualTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.EqualTo("""Hello world""")
+    fluent.testValue = testFluent.Of(col).Should.Be.EqualTo("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Be.EqualTo(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(d).Should.Be.EqualTo(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.EqualTo("Hello world")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.EqualTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.EqualTo("Hello world")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.EqualTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.EqualTo("Hello world")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.EqualTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.EqualTo("""Hello world""")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.EqualTo("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.EqualTo(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.EqualTo(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty tests
 
-    fluent.TestValue = testFluent.Of().Should.Be.EqualTo("Hello world")
+    fluent.testValue = testFluent.Of().Should.Be.EqualTo("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.EqualTo("Hello world")
+    fluent.testValue = testFluent.Of().ShouldNot.Be.EqualTo("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().Should.Be.EqualTo("""Hello world""")
+    fluent.testValue = testFluent.Of().Should.Be.EqualTo("""Hello world""")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.EqualTo("""Hello world""")
+    fluent.testValue = testFluent.Of().ShouldNot.Be.EqualTo("""Hello world""")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().Should.Be.EqualTo(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of().Should.Be.EqualTo(" ""Hello world"" ")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.EqualTo(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of().ShouldNot.Be.EqualTo(" ""Hello world"" ")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().Should.Be.EqualTo(""" Hello world """)
+    fluent.testValue = testFluent.Of().Should.Be.EqualTo(""" Hello world """)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.EqualTo(""" Hello world """)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.EqualTo(""" Hello world """)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Call validateTests(fluent, testFluent)
@@ -858,105 +887,105 @@ Private Function GreaterThanTests(ByVal fluent As IFluent, ByVal testFluent As I
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
         
-    fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThan(9)
+    fluent.testValue = testFluent.Of(10).Should.Be.GreaterThan(9)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThan(11)
+    fluent.testValue = testFluent.Of(10).Should.Be.GreaterThan(11)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThan(9)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.GreaterThan(9)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThan(11)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.GreaterThan(11)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null tests
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """Hello world!"""
-    fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add " ""Hello world!"" "
-    fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """ Hello world! """
-    fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(d).Should.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).Should.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(d).Should.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(Null).Should.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """Hello world!"""
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add " ""Hello world!"" "
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """ Hello world! """
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Be.GreaterThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documentation tests
     
-    fluent.TestValue = testFluent.Of().Should.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of().Should.Be.GreaterThan(10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.GreaterThan(10)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.GreaterThan(10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -972,113 +1001,113 @@ Private Function LessThanTests(ByVal fluent As IFluent, ByVal testFluent As IFlu
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.LessThan(9)
+    fluent.testValue = testFluent.Of(10).Should.Be.LessThan(9)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.LessThan(11)
+    fluent.testValue = testFluent.Of(10).Should.Be.LessThan(11)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThan(9)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.LessThan(9)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThan(11)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.LessThan(11)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """Hello world!"""
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add " ""Hello world!"" "
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """ Hello world! """
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(d).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(d).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(Null).Should.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """Hello world!"""
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add " ""Hello world!"" "
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """ Hello world! """
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Be.LessThan(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'empty documentation tests
-    fluent.TestValue = testFluent.Of().Should.Be.LessThan(10)
+    fluent.testValue = testFluent.Of().Should.Be.LessThan(10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.LessThan(10)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.LessThan(10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Call validateTests(fluent, testFluent)
@@ -1095,276 +1124,276 @@ Private Function ContainTests(ByVal fluent As IFluent, ByVal testFluent As IFlue
     Dim d As Scripting.Dictionary
     
     'positive documentation tests
-    fluent.TestValue = testFluent.Of(10).Should.Contain(1)
+    fluent.testValue = testFluent.Of(10).Should.Contain(1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Contain(0)
+    fluent.testValue = testFluent.Of(10).Should.Contain(0)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Contain(10)
+    fluent.testValue = testFluent.Of(10).Should.Contain(10)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Contain(2)
+    fluent.testValue = testFluent.Of(10).Should.Contain(2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of("10").Should.Contain("1")
+    fluent.testValue = testFluent.Of("10").Should.Contain("1")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").Should.Contain("0")
+    fluent.testValue = testFluent.Of("10").Should.Contain("0")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").Should.Contain("10")
+    fluent.testValue = testFluent.Of("10").Should.Contain("10")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").Should.Contain("2")
+    fluent.testValue = testFluent.Of("10").Should.Contain("2")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").Should.Contain("Hello")
+    fluent.testValue = testFluent.Of("Hello world").Should.Contain("Hello")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").Should.Contain("world")
+    fluent.testValue = testFluent.Of("Hello world").Should.Contain("world")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.Contain("ru")
+    fluent.testValue = testFluent.Of(True).Should.Contain("ru")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""10""").Should.Contain("1")
+    fluent.testValue = testFluent.Of("""10""").Should.Contain("1")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""10""").Should.Contain("0")
+    fluent.testValue = testFluent.Of("""10""").Should.Contain("0")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""10""").Should.Contain("10")
+    fluent.testValue = testFluent.Of("""10""").Should.Contain("10")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""10""").Should.Contain("2")
+    fluent.testValue = testFluent.Of("""10""").Should.Contain("2")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""Hello world""").Should.Contain("Hello")
+    fluent.testValue = testFluent.Of("""Hello world""").Should.Contain("Hello")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""Hello world""").Should.Contain("world")
+    fluent.testValue = testFluent.Of("""Hello world""").Should.Contain("world")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.Contain("ru")
+    fluent.testValue = testFluent.Of(True).Should.Contain("ru")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).Should.Contain("als")
+    fluent.testValue = testFluent.Of(False).Should.Contain("als")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'negative documentation tests
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(1)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Contain(1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(0)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Contain(0)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(10)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Contain(10)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Contain(2)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Contain(2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.Contain("1")
+    fluent.testValue = testFluent.Of("10").ShouldNot.Contain("1")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.Contain("0")
+    fluent.testValue = testFluent.Of("10").ShouldNot.Contain("0")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.Contain("10")
+    fluent.testValue = testFluent.Of("10").ShouldNot.Contain("10")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.Contain("2")
+    fluent.testValue = testFluent.Of("10").ShouldNot.Contain("2")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Contain("Hello")
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Contain("Hello")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Contain("world")
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Contain("world")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""10""").ShouldNot.Contain("1")
+    fluent.testValue = testFluent.Of("""10""").ShouldNot.Contain("1")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""10""").ShouldNot.Contain("0")
+    fluent.testValue = testFluent.Of("""10""").ShouldNot.Contain("0")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""10""").ShouldNot.Contain("10")
+    fluent.testValue = testFluent.Of("""10""").ShouldNot.Contain("10")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""10""").ShouldNot.Contain("2")
+    fluent.testValue = testFluent.Of("""10""").ShouldNot.Contain("2")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""Hello world""").ShouldNot.Contain("Hello")
+    fluent.testValue = testFluent.Of("""Hello world""").ShouldNot.Contain("Hello")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""Hello world""").ShouldNot.Contain("world")
+    fluent.testValue = testFluent.Of("""Hello world""").ShouldNot.Contain("world")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.Contain("ru")
+    fluent.testValue = testFluent.Of(True).ShouldNot.Contain("ru")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).ShouldNot.Contain("als")
+    fluent.testValue = testFluent.Of(False).ShouldNot.Contain("als")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""abcde""").ShouldNot.Contain("abc")
+    fluent.testValue = testFluent.Of("""abcde""").ShouldNot.Contain("abc")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Contain(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Contain(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Contain("Hello world!")
+    fluent.testValue = testFluent.Of(col).Should.Contain("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Contain("Hello world!")
+    fluent.testValue = testFluent.Of(col).Should.Contain("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Contain("Hello world!")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Contain("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.Contain("Hello world!")
+    fluent.testValue = testFluent.Of(d).Should.Contain("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Contain("""Hello world!""")
+    fluent.testValue = testFluent.Of(col).Should.Contain("""Hello world!""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Contain("""Hello world!""")
+    fluent.testValue = testFluent.Of(col).Should.Contain("""Hello world!""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Contain("""Hello world!""")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Contain("""Hello world!""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.Contain("""Hello world!""")
+    fluent.testValue = testFluent.Of(d).Should.Contain("""Hello world!""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Contain(" ""Hello world!"" ")
+    fluent.testValue = testFluent.Of(col).Should.Contain(" ""Hello world!"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Contain(" ""Hello world!"" ")
+    fluent.testValue = testFluent.Of(col).Should.Contain(" ""Hello world!"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Contain(" ""Hello world!"" ")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Contain(" ""Hello world!"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.Contain(" ""Hello world!"" ")
+    fluent.testValue = testFluent.Of(d).Should.Contain(" ""Hello world!"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Contain(""" Hello world! """)
+    fluent.testValue = testFluent.Of(col).Should.Contain(""" Hello world! """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Contain(""" Hello world! """)
+    fluent.testValue = testFluent.Of(col).Should.Contain(""" Hello world! """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Contain(""" Hello world! """)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Contain(""" Hello world! """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.Contain(""" Hello world! """)
+    fluent.testValue = testFluent.Of(d).Should.Contain(""" Hello world! """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).Should.Contain(2.34)
+    fluent.testValue = testFluent.Of(d).Should.Contain(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Contain("Hello world!")
+    fluent.testValue = testFluent.Of(Null).Should.Contain("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Contain(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Contain(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Contain("Hello world!")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Contain("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Contain("Hello world!")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Contain("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Contain("Hello world!")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Contain("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Contain("Hello world!")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Contain("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Contain("""Hello world!""")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Contain("""Hello world!""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Contain("""Hello world!""")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Contain("""Hello world!""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Contain("""Hello world!""")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Contain("""Hello world!""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Contain("""Hello world!""")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Contain("""Hello world!""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Contain(" ""Hello world!"" ")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Contain(" ""Hello world!"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Contain(" ""Hello world!"" ")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Contain(" ""Hello world!"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Contain(" ""Hello world!"" ")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Contain(" ""Hello world!"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Contain(" ""Hello world!"" ")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Contain(" ""Hello world!"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Contain(""" Hello world! """)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Contain(""" Hello world! """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Contain(""" Hello world! """)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Contain(""" Hello world! """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Contain(""" Hello world! """)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Contain(""" Hello world! """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Contain(""" Hello world! """)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Contain(""" Hello world! """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Contain(2.34)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Contain(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Contain("Hello world!")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Contain("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'empty tests
-    fluent.TestValue = testFluent.Of().Should.Contain("Hello world!")
+    fluent.testValue = testFluent.Of().Should.Contain("Hello world!")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Contain("Hello world!")
+    fluent.testValue = testFluent.Of().ShouldNot.Contain("Hello world!")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Call validateTests(fluent, testFluent)
@@ -1381,237 +1410,237 @@ Private Function StartWithTests(ByVal fluent As IFluent, ByVal testFluent As IFl
     Dim d As Scripting.Dictionary
     
     'positive documentation tests
-    fluent.TestValue = testFluent.Of(10).Should.StartWith(1)
+    fluent.testValue = testFluent.Of(10).Should.StartWith(1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).Should.StartWith(2)
+    fluent.testValue = testFluent.Of(10).Should.StartWith(2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").Should.StartWith("1")
+    fluent.testValue = testFluent.Of("10").Should.StartWith("1")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of("10").Should.StartWith("2")
+    fluent.testValue = testFluent.Of("10").Should.StartWith("2")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello World").Should.StartWith("Hello")
+    fluent.testValue = testFluent.Of("Hello World").Should.StartWith("Hello")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("1 ""0"" ").Should.StartWith("1")
+    fluent.testValue = testFluent.Of("1 ""0"" ").Should.StartWith("1")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of("1 ""0"" ").Should.StartWith("2")
+    fluent.testValue = testFluent.Of("1 ""0"" ").Should.StartWith("2")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello ""World"" ").Should.StartWith("Hello")
+    fluent.testValue = testFluent.Of("Hello ""World"" ").Should.StartWith("Hello")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.StartWith("True")
+    fluent.testValue = testFluent.Of(True).Should.StartWith("True")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.StartWith("T")
+    fluent.testValue = testFluent.Of(True).Should.StartWith("T")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).Should.StartWith("False")
+    fluent.testValue = testFluent.Of(False).Should.StartWith("False")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).Should.StartWith("F")
+    fluent.testValue = testFluent.Of(False).Should.StartWith("F")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'negative documentation tests
-    fluent.TestValue = testFluent.Of(10).ShouldNot.StartWith(1)
+    fluent.testValue = testFluent.Of(10).ShouldNot.StartWith(1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.StartWith(2)
+    fluent.testValue = testFluent.Of(10).ShouldNot.StartWith(2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.StartWith("1")
+    fluent.testValue = testFluent.Of("10").ShouldNot.StartWith("1")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.StartWith("2")
+    fluent.testValue = testFluent.Of("10").ShouldNot.StartWith("2")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of("Hello World").ShouldNot.StartWith("Hello")
+    fluent.testValue = testFluent.Of("Hello World").ShouldNot.StartWith("Hello")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("1 ""0"" ").ShouldNot.StartWith("1")
+    fluent.testValue = testFluent.Of("1 ""0"" ").ShouldNot.StartWith("1")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of("1 ""0"" ").ShouldNot.StartWith("2")
+    fluent.testValue = testFluent.Of("1 ""0"" ").ShouldNot.StartWith("2")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello ""World"" ").ShouldNot.StartWith("Hello")
+    fluent.testValue = testFluent.Of("Hello ""World"" ").ShouldNot.StartWith("Hello")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.StartWith("True")
+    fluent.testValue = testFluent.Of(True).ShouldNot.StartWith("True")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.StartWith("T")
+    fluent.testValue = testFluent.Of(True).ShouldNot.StartWith("T")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).ShouldNot.StartWith("False")
+    fluent.testValue = testFluent.Of(False).ShouldNot.StartWith("False")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).ShouldNot.StartWith("F")
+    fluent.testValue = testFluent.Of(False).ShouldNot.StartWith("F")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.StartWith(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.StartWith(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).Should.StartWith(2.34)
+    fluent.testValue = testFluent.Of(d).Should.StartWith(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.StartWith("Hello")
+    fluent.testValue = testFluent.Of(col).Should.StartWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.StartWith("Hello")
+    fluent.testValue = testFluent.Of(col).Should.StartWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.StartWith("Hello")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.StartWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.StartWith("Hello world!")
+    fluent.testValue = testFluent.Of(d).Should.StartWith("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.StartWith("""Hello""")
+    fluent.testValue = testFluent.Of(col).Should.StartWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.StartWith("""Hello""")
+    fluent.testValue = testFluent.Of(col).Should.StartWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.StartWith("""Hello""")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.StartWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.StartWith("""Hello""")
+    fluent.testValue = testFluent.Of(d).Should.StartWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.StartWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(col).Should.StartWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.StartWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(col).Should.StartWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.StartWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.StartWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.StartWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(d).Should.StartWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.StartWith(""" Hello """)
+    fluent.testValue = testFluent.Of(col).Should.StartWith(""" Hello """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.StartWith(""" Hello """)
+    fluent.testValue = testFluent.Of(col).Should.StartWith(""" Hello """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.StartWith(""" Hello """)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.StartWith(""" Hello """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.StartWith(""" Hello """)
+    fluent.testValue = testFluent.Of(d).Should.StartWith(""" Hello """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.StartWith("Hello")
+    fluent.testValue = testFluent.Of(Null).Should.StartWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.StartWith(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.StartWith(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).ShouldNot.StartWith(2.34)
+    fluent.testValue = testFluent.Of(d).ShouldNot.StartWith(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.StartWith("Hello")
+    fluent.testValue = testFluent.Of(col).ShouldNot.StartWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.StartWith("Hello")
+    fluent.testValue = testFluent.Of(col).ShouldNot.StartWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.StartWith("Hello")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.StartWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.StartWith("Hello world!")
+    fluent.testValue = testFluent.Of(d).ShouldNot.StartWith("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.EndWith("Hello")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.StartWith("""Hello""")
+    fluent.testValue = testFluent.Of(col).ShouldNot.StartWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.StartWith("""Hello""")
+    fluent.testValue = testFluent.Of(col).ShouldNot.StartWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.StartWith("""Hello""")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.StartWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.StartWith("""Hello""")
+    fluent.testValue = testFluent.Of(d).ShouldNot.StartWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.StartWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(col).ShouldNot.StartWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.StartWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(col).ShouldNot.StartWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.StartWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.StartWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.StartWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(d).ShouldNot.StartWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.StartWith(""" Hello """)
+    fluent.testValue = testFluent.Of(col).ShouldNot.StartWith(""" Hello """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.StartWith(""" Hello """)
+    fluent.testValue = testFluent.Of(col).ShouldNot.StartWith(""" Hello """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.StartWith(""" Hello """)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.StartWith(""" Hello """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.StartWith(""" Hello """)
+    fluent.testValue = testFluent.Of(d).ShouldNot.StartWith(""" Hello """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.StartWith("Hello")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.StartWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documentation tests
-    fluent.TestValue = testFluent.Of().Should.StartWith("Hello")
+    fluent.testValue = testFluent.Of().Should.StartWith("Hello")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.StartWith("Hello")
+    fluent.testValue = testFluent.Of().ShouldNot.StartWith("Hello")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -1629,262 +1658,262 @@ Private Function EndWithTests(ByVal fluent As IFluent, ByVal testFluent As IFlue
     
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of(10).Should.EndWith(0)
+    fluent.testValue = testFluent.Of(10).Should.EndWith(0)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.EndWith(2)
+    fluent.testValue = testFluent.Of(10).Should.EndWith(2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").Should.EndWith("0")
+    fluent.testValue = testFluent.Of("10").Should.EndWith("0")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").Should.EndWith("2")
+    fluent.testValue = testFluent.Of("10").Should.EndWith("2")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello World").Should.EndWith("World")
+    fluent.testValue = testFluent.Of("Hello World").Should.EndWith("World")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
             
-    fluent.TestValue = testFluent.Of(" ""1"" 0").Should.EndWith("0")
+    fluent.testValue = testFluent.Of(" ""1"" 0").Should.EndWith("0")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""1"" 0").Should.EndWith("2")
+    fluent.testValue = testFluent.Of(" ""1"" 0").Should.EndWith("2")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""Hello"" World").Should.EndWith("World")
+    fluent.testValue = testFluent.Of(" ""Hello"" World").Should.EndWith("World")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.EndWith("True")
+    fluent.testValue = testFluent.Of(True).Should.EndWith("True")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.EndWith("e")
+    fluent.testValue = testFluent.Of(True).Should.EndWith("e")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).Should.EndWith("False")
+    fluent.testValue = testFluent.Of(False).Should.EndWith("False")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).Should.EndWith("e")
+    fluent.testValue = testFluent.Of(False).Should.EndWith("e")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.EndWith(0)
+    fluent.testValue = testFluent.Of(10).ShouldNot.EndWith(0)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.EndWith(2)
+    fluent.testValue = testFluent.Of(10).ShouldNot.EndWith(2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.EndWith("0")
+    fluent.testValue = testFluent.Of("10").ShouldNot.EndWith("0")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.EndWith("2")
+    fluent.testValue = testFluent.Of("10").ShouldNot.EndWith("2")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello World").ShouldNot.EndWith("World")
+    fluent.testValue = testFluent.Of("Hello World").ShouldNot.EndWith("World")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
             
-    fluent.TestValue = testFluent.Of(" ""1"" 0").ShouldNot.EndWith("0")
+    fluent.testValue = testFluent.Of(" ""1"" 0").ShouldNot.EndWith("0")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""1"" 0").ShouldNot.EndWith("2")
+    fluent.testValue = testFluent.Of(" ""1"" 0").ShouldNot.EndWith("2")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""Hello"" World").ShouldNot.EndWith("World")
+    fluent.testValue = testFluent.Of(" ""Hello"" World").ShouldNot.EndWith("World")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.EndWith("True")
+    fluent.testValue = testFluent.Of(True).ShouldNot.EndWith("True")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.EndWith("e")
+    fluent.testValue = testFluent.Of(True).ShouldNot.EndWith("e")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).ShouldNot.EndWith("False")
+    fluent.testValue = testFluent.Of(False).ShouldNot.EndWith("False")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).ShouldNot.EndWith("e")
+    fluent.testValue = testFluent.Of(False).ShouldNot.EndWith("e")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(Null).Should.EndWith("Hello")
+    fluent.testValue = testFluent.Of(Null).Should.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-    fluent.TestValue = testFluent.Of(Null).Should.EndWith("""Hello""")
+    fluent.testValue = testFluent.Of(Null).Should.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(Null).Should.EndWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.EndWith(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.EndWith(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.EndWith("Hello")
+    fluent.testValue = testFluent.Of(Null).Should.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.EndWith("Hello")
+    fluent.testValue = testFluent.Of(col).Should.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.EndWith("Hello")
+    fluent.testValue = testFluent.Of(col).Should.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.EndWith("Hello")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.EndWith("Hello world!")
+    fluent.testValue = testFluent.Of(d).Should.EndWith("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.EndWith("Hello")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.EndWith("""Hello""")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.EndWith("""Hello""")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.EndWith("""Hello""")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.EndWith("""Hello""")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(Null).Should.EndWith("""Hello""")
+    fluent.testValue = testFluent.Of(Null).Should.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(col).Should.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(col).Should.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(d).Should.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(Null).Should.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.EndWith(""" Hello """)
+    fluent.testValue = testFluent.Of(col).Should.EndWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.EndWith(""" Hello """)
+    fluent.testValue = testFluent.Of(col).Should.EndWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.EndWith(""" Hello """)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.EndWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.EndWith(""" Hello """)
+    fluent.testValue = testFluent.Of(d).Should.EndWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.EndWith("Hello")
+    fluent.testValue = testFluent.Of(Null).Should.EndWith(" ""Hello"" ")
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set col = New VBA.Collection
+    fluent.testValue = testFluent.Of(col).Should.EndWith(""" Hello """)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    col.Add "Hello world!"
+    fluent.testValue = testFluent.Of(col).Should.EndWith(""" Hello """)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.EndWith(""" Hello """)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
+    fluent.testValue = testFluent.Of(d).Should.EndWith(""" Hello """)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.testValue = testFluent.Of(Null).Should.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.EndWith("""Hello""")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.EndWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.EndWith(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.EndWith(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.EndWith("Hello")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.EndWith("Hello")
+    fluent.testValue = testFluent.Of(col).ShouldNot.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.EndWith("Hello")
+    fluent.testValue = testFluent.Of(col).ShouldNot.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.EndWith("Hello")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.EndWith("Hello world!")
+    fluent.testValue = testFluent.Of(d).ShouldNot.EndWith("Hello world!")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.EndWith("Hello")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.EndWith("""Hello""")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.EndWith("""Hello""")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.EndWith("""Hello""")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.EndWith("""Hello""")
-    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.EndWith("""Hello""")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(col).ShouldNot.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(col).ShouldNot.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(d).ShouldNot.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.EndWith(" ""Hello"" ")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.EndWith("""Hello""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.EndWith(""" Hello """)
+    fluent.testValue = testFluent.Of(col).ShouldNot.EndWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.EndWith(""" Hello """)
+    fluent.testValue = testFluent.Of(col).ShouldNot.EndWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.EndWith(""" Hello """)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.EndWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.EndWith(""" Hello """)
+    fluent.testValue = testFluent.Of(d).ShouldNot.EndWith(" ""Hello"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.EndWith("Hello")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.EndWith(" ""Hello"" ")
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set col = New VBA.Collection
+    fluent.testValue = testFluent.Of(col).ShouldNot.EndWith(""" Hello """)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    col.Add "Hello world!"
+    fluent.testValue = testFluent.Of(col).ShouldNot.EndWith(""" Hello """)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.EndWith(""" Hello """)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
+    fluent.testValue = testFluent.Of(d).ShouldNot.EndWith(""" Hello """)
+    Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    fluent.testValue = testFluent.Of(Null).ShouldNot.EndWith("Hello")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'empty documention tests
-    fluent.TestValue = testFluent.Of().Should.EndWith("Hello")
+    fluent.testValue = testFluent.Of().Should.EndWith("Hello")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.EndWith("Hello")
+    fluent.testValue = testFluent.Of().ShouldNot.EndWith("Hello")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -1902,116 +1931,116 @@ Private Function LengthOfTests(ByVal fluent As IFluent, ByVal testFluent As IFlu
     
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(10).Should.Have.LengthOf(2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("abc").Should.Have.LengthOf(3)
+    fluent.testValue = testFluent.Of("abc").Should.Have.LengthOf(3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.Have.LengthOf(4)
+    fluent.testValue = testFluent.Of(True).Should.Have.LengthOf(4)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.LengthOf(Len("10"))
+    fluent.testValue = testFluent.Of(10).Should.Have.LengthOf(Len("10"))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("abc").Should.Have.LengthOf(Len("abc"))
+    fluent.testValue = testFluent.Of("abc").Should.Have.LengthOf(Len("abc"))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.Have.LengthOf(Len("True"))
+    fluent.testValue = testFluent.Of(True).Should.Have.LengthOf(Len("True"))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.LengthOf(1)
+    fluent.testValue = testFluent.Of(10).Should.Have.LengthOf(1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.LengthOf(2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("abc").ShouldNot.Have.LengthOf(3)
+    fluent.testValue = testFluent.Of("abc").ShouldNot.Have.LengthOf(3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.Have.LengthOf(4)
+    fluent.testValue = testFluent.Of(True).ShouldNot.Have.LengthOf(4)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthOf(Len("10"))
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.LengthOf(Len("10"))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("abc").ShouldNot.Have.LengthOf(Len("abc"))
+    fluent.testValue = testFluent.Of("abc").ShouldNot.Have.LengthOf(Len("abc"))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.Have.LengthOf(Len("True"))
+    fluent.testValue = testFluent.Of(True).ShouldNot.Have.LengthOf(Len("True"))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthOf(1)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.LengthOf(1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(col).Should.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(col).Should.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(d).Should.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).Should.Have.LengthOf(2.34)
+    fluent.testValue = testFluent.Of(d).Should.Have.LengthOf(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(Null).Should.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.LengthOf(2.34)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.LengthOf(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.LengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of().Should.Have.LengthOf(2)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.LengthOf(2)
+    fluent.testValue = testFluent.Of().ShouldNot.Have.LengthOf(2)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -2029,110 +2058,110 @@ Private Function MaxLengthOfTests(ByVal fluent As IFluent, ByVal testFluent As I
     
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.MaxLengthOf(3)
+    fluent.testValue = testFluent.Of(10).Should.Have.MaxLengthOf(3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.MaxLengthOf(1)
+    fluent.testValue = testFluent.Of(10).Should.Have.MaxLengthOf(1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of("10").Should.Have.MaxLengthOf(3)
+    fluent.testValue = testFluent.Of("10").Should.Have.MaxLengthOf(3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").Should.Have.MaxLengthOf(1)
+    fluent.testValue = testFluent.Of("10").Should.Have.MaxLengthOf(1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.Have.MaxLengthOf(Len("True"))
+    fluent.testValue = testFluent.Of(True).Should.Have.MaxLengthOf(Len("True"))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).Should.Have.MaxLengthOf(Len("False"))
+    fluent.testValue = testFluent.Of(False).Should.Have.MaxLengthOf(Len("False"))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MaxLengthOf(3)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.MaxLengthOf(3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MaxLengthOf(1)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.MaxLengthOf(1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.Have.MaxLengthOf(3)
+    fluent.testValue = testFluent.Of("10").ShouldNot.Have.MaxLengthOf(3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.Have.MaxLengthOf(1)
+    fluent.testValue = testFluent.Of("10").ShouldNot.Have.MaxLengthOf(1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.Have.MaxLengthOf(Len("True"))
+    fluent.testValue = testFluent.Of(True).ShouldNot.Have.MaxLengthOf(Len("True"))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).ShouldNot.Have.MaxLengthOf(Len("False"))
+    fluent.testValue = testFluent.Of(False).ShouldNot.Have.MaxLengthOf(Len("False"))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(col).Should.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(col).Should.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(d).Should.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).Should.Have.MaxLengthOf(2.34)
+    fluent.testValue = testFluent.Of(d).Should.Have.MaxLengthOf(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(Null).Should.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.MaxLengthOf(2.34)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.MaxLengthOf(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.MaxLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of().Should.Have.MaxLengthOf(2)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.MaxLengthOf(2)
+    fluent.testValue = testFluent.Of().ShouldNot.Have.MaxLengthOf(2)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -2150,134 +2179,134 @@ Private Function MinLengthOfTests(ByVal fluent As IFluent, ByVal testFluent As I
     
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.MinLengthOf(3)
+    fluent.testValue = testFluent.Of(10).Should.Have.MinLengthOf(3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.MinLengthOf(1)
+    fluent.testValue = testFluent.Of(10).Should.Have.MinLengthOf(1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").Should.Have.MinLengthOf(3)
+    fluent.testValue = testFluent.Of("10").Should.Have.MinLengthOf(3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").Should.Have.MinLengthOf(1)
+    fluent.testValue = testFluent.Of("10").Should.Have.MinLengthOf(1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.Have.MinLengthOf(Len("True"))
+    fluent.testValue = testFluent.Of(True).Should.Have.MinLengthOf(Len("True"))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).Should.Have.MinLengthOf(Len("False"))
+    fluent.testValue = testFluent.Of(False).Should.Have.MinLengthOf(Len("False"))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MinLengthOf(3)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.MinLengthOf(3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.MinLengthOf(1)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.MinLengthOf(1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.Have.MinLengthOf(3)
+    fluent.testValue = testFluent.Of("10").ShouldNot.Have.MinLengthOf(3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("10").ShouldNot.Have.MinLengthOf(1)
+    fluent.testValue = testFluent.Of("10").ShouldNot.Have.MinLengthOf(1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.Have.MinLengthOf(Len("True"))
+    fluent.testValue = testFluent.Of(True).ShouldNot.Have.MinLengthOf(Len("True"))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).ShouldNot.Have.MinLengthOf(Len("False"))
+    fluent.testValue = testFluent.Of(False).ShouldNot.Have.MinLengthOf(Len("False"))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(col).Should.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(col).Should.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """Hello world!"""
-    fluent.TestValue = testFluent.Of(col).Should.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(col).Should.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add " ""Hello world!"" "
-    fluent.TestValue = testFluent.Of(col).Should.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(col).Should.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """ Hello world! """
-    fluent.TestValue = testFluent.Of(col).Should.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(col).Should.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(d).Should.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).Should.Have.MinLengthOf(2.34)
+    fluent.testValue = testFluent.Of(d).Should.Have.MinLengthOf(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(Null).Should.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """Hello world!"""
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add " ""Hello world!"" "
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """ Hello world! """
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.MinLengthOf(2.34)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.MinLengthOf(2.34)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.MinLengthOf(2)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
 
-    fluent.TestValue = testFluent.Of().Should.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of().Should.Have.MinLengthOf(2)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.MinLengthOf(2)
+    fluent.testValue = testFluent.Of().ShouldNot.Have.MinLengthOf(2)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -2295,134 +2324,134 @@ Private Function GreaterThanOrEqualToTests(ByVal fluent As IFluent, ByVal testFl
     
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(9)
+    fluent.testValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(9)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(10)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10.1).Should.Be.GreaterThanOrEqualTo(9.1)
+    fluent.testValue = testFluent.Of(10.1).Should.Be.GreaterThanOrEqualTo(9.1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(11)
+    fluent.testValue = testFluent.Of(10).Should.Be.GreaterThanOrEqualTo(11)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10.1).Should.Be.GreaterThanOrEqualTo(11.1)
+    fluent.testValue = testFluent.Of(10.1).Should.Be.GreaterThanOrEqualTo(11.1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(9)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(9)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.GreaterThanOrEqualTo(9.1)
+    fluent.testValue = testFluent.Of(10.1).ShouldNot.Be.GreaterThanOrEqualTo(9.1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(11)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.GreaterThanOrEqualTo(11)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.GreaterThanOrEqualTo(11.1)
+    fluent.testValue = testFluent.Of(10.1).ShouldNot.Be.GreaterThanOrEqualTo(11.1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """Hello world!"""
-    fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add " ""Hello world!"" "
-    fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """ Hello world! """
-    fluent.TestValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(d).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(d).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(Null).Should.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """Hello world!"""
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add " ""Hello world!"" "
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """ Hello world! """
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of().Should.Be.GreaterThanOrEqualTo(10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.GreaterThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.GreaterThanOrEqualTo(10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -2440,142 +2469,142 @@ Private Function LessThanOrEqualToTests(ByVal fluent As IFluent, ByVal testFluen
     
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(9)
+    fluent.testValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(9)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(10)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(11)
+    fluent.testValue = testFluent.Of(10).Should.Be.LessThanOrEqualTo(11)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10.1).Should.Be.LessThanOrEqualTo(10.1)
+    fluent.testValue = testFluent.Of(10.1).Should.Be.LessThanOrEqualTo(10.1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10.1).Should.Be.LessThanOrEqualTo(11.1)
+    fluent.testValue = testFluent.Of(10.1).Should.Be.LessThanOrEqualTo(11.1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10.1).Should.Be.LessThanOrEqualTo(9.1)
+    fluent.testValue = testFluent.Of(10.1).Should.Be.LessThanOrEqualTo(9.1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(9)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(9)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(10)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(11)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.LessThanOrEqualTo(11)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.LessThanOrEqualTo(10.1)
+    fluent.testValue = testFluent.Of(10.1).ShouldNot.Be.LessThanOrEqualTo(10.1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.LessThanOrEqualTo(11.1)
+    fluent.testValue = testFluent.Of(10.1).ShouldNot.Be.LessThanOrEqualTo(11.1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10.1).ShouldNot.Be.LessThanOrEqualTo(9.1)
+    fluent.testValue = testFluent.Of(10.1).ShouldNot.Be.LessThanOrEqualTo(9.1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """Hello world!"""
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add " ""Hello world!"" "
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """ Hello world! """
-    fluent.TestValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(d).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(d).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(Null).Should.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add "Hello world!"
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """Hello world!"""
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add " ""Hello world!"" "
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     col.Add """ Hello world! """
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array()).ShouldNot.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = VBA.Interaction.CreateObject("Scripting.Dictionary")
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
     d.Add 1, 1.23
     d.Add 2, 2.34
     d.Add 3, 3.34
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Be.LessThanOrEqualTo(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of().Should.Be.LessThanOrEqualTo(10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.LessThanOrEqualTo(10)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.LessThanOrEqualTo(10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -2593,106 +2622,106 @@ Private Function BetweenTests(ByVal fluent As IFluent, ByVal testFluent As IFlue
     
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.Between(10, 10)
+    fluent.testValue = testFluent.Of(10).Should.Be.Between(10, 10)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.Between(9.99, 10.01)
+    fluent.testValue = testFluent.Of(10).Should.Be.Between(9.99, 10.01)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.Between(9, 11)
+    fluent.testValue = testFluent.Of(10).Should.Be.Between(9, 11)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.Between(9.1, 11.1)
+    fluent.testValue = testFluent.Of(10).Should.Be.Between(9.1, 11.1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.Between(11, 9)
+    fluent.testValue = testFluent.Of(10).Should.Be.Between(11, 9)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.Between(11.1, 9.1)
+    fluent.testValue = testFluent.Of(10).Should.Be.Between(11.1, 9.1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(10, 10)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.Between(10, 10)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(9.99, 10.01)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.Between(9.99, 10.01)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(9, 11)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.Between(9, 11)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(9.1, 11.1)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.Between(9.1, 11.1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(11, 9)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.Between(11, 9)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.Between(11.1, 9.1)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.Between(11.1, 9.1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of("Hello World!").Should.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of("Hello World!").Should.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""Hello World!""").Should.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of("""Hello World!""").Should.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""Hello World!"" ").Should.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(" ""Hello World!"" ").Should.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" Hello World! """).Should.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(""" Hello World! """).Should.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(col).Should.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(d).Should.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(Null).Should.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of("Hello World!").ShouldNot.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of("Hello World!").ShouldNot.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""Hello World!""").ShouldNot.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of("""Hello World!""").ShouldNot.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""Hello World!"" ").ShouldNot.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(" ""Hello World!"" ").ShouldNot.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" Hello World! """).ShouldNot.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(""" Hello World! """).ShouldNot.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Be.Between(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of().Should.Be.Between(1, 10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.Between(1, 10)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.Between(1, 10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -2710,76 +2739,76 @@ Private Function LengthBetweenTests(ByVal fluent As IFluent, ByVal testFluent As
     
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(1, 3)
+    fluent.testValue = testFluent.Of(10).Should.Have.LengthBetween(1, 3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(0, 2)
+    fluent.testValue = testFluent.Of(10).Should.Have.LengthBetween(0, 2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(2, 2)
+    fluent.testValue = testFluent.Of(10).Should.Have.LengthBetween(2, 2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(3, 1)
+    fluent.testValue = testFluent.Of(10).Should.Have.LengthBetween(3, 1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Have.LengthBetween(2, 0)
+    fluent.testValue = testFluent.Of(10).Should.Have.LengthBetween(2, 0)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(1, 3)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(1, 3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(0, 2)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(0, 2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(2, 2)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(2, 2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(3, 1)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(3, 1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(2, 0)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Have.LengthBetween(2, 0)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.LengthBetween(1, 10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.LengthBetween(1, 10)
+    fluent.testValue = testFluent.Of(col).Should.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.LengthBetween(1, 10)
+    fluent.testValue = testFluent.Of(d).Should.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Have.LengthBetween(1, 10)
+    fluent.testValue = testFluent.Of(Null).Should.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.LengthBetween(1, 10)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.LengthBetween(1, 10)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.LengthBetween(1, 10)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.LengthBetween(1, 10)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.LengthBetween(1, 10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Have.LengthBetween(1, 10)
+    fluent.testValue = testFluent.Of().Should.Have.LengthBetween(1, 10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.LengthBetween(1, 10)
+    fluent.testValue = testFluent.Of().ShouldNot.Have.LengthBetween(1, 10)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -2797,68 +2826,68 @@ Private Function OneOfTests(ByVal fluent As IFluent, ByVal testFluent As IFluent
     
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(9, 10, 11)
+    fluent.testValue = testFluent.Of(10).Should.Be.OneOf(9, 10, 11)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(10)
+    fluent.testValue = testFluent.Of(10).Should.Be.OneOf(10)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(9, 11, 13)
+    fluent.testValue = testFluent.Of(10).Should.Be.OneOf(9, 11, 13)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(11)
+    fluent.testValue = testFluent.Of(10).Should.Be.OneOf(11)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.OneOf() 'intentionally empty
+    fluent.testValue = testFluent.Of(10).Should.Be.OneOf() 'intentionally empty
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     ' //Object and data structure tests
     
     Set col = New VBA.Collection
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(col).Should.Be.OneOf(col, d)
+    fluent.testValue = testFluent.Of(col).Should.Be.OneOf(col, d)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set d = Nothing
     
-    fluent.TestValue = testFluent.Of(10).Should.Be.OneOf(col, d, 10)
+    fluent.testValue = testFluent.Of(10).Should.Be.OneOf(col, d, 10)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(10)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.OneOf(10)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(9, 10, 11)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.OneOf(9, 10, 11)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(9, 11, 13)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.OneOf(9, 11, 13)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(11)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.OneOf(11)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf()  'intentionally empty
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.OneOf()  'intentionally empty
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     ' //Object and data structure tests
     
     Set col = New VBA.Collection
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.OneOf(col, d)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.OneOf(col, d)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set d = Nothing
     
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.OneOf(col, d, 10)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.OneOf(col, d, 10)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'OneOf does not have positive or negative null documentation tests
         
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Be.OneOf("Hello world", 5, True)
+    fluent.testValue = testFluent.Of().Should.Be.OneOf("Hello world", 5, True)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.OneOf("Hello world", 5, True)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.OneOf("Hello world", 5, True)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -2877,87 +2906,87 @@ Private Function SomethingTests(ByVal fluent As IFluent, ByVal testFluent As IFl
     'positive documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.Something
+    fluent.testValue = testFluent.Of(col).Should.Be.Something
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = Nothing
-    fluent.TestValue = testFluent.Of(col).Should.Be.Something
+    fluent.testValue = testFluent.Of(col).Should.Be.Something
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.Something
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = Nothing
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.Something
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
                         
-    fluent.TestValue = testFluent.Of("Hello World!").Should.Be.Something
+    fluent.testValue = testFluent.Of("Hello World!").Should.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""Hello World!""").Should.Be.Something
+    fluent.testValue = testFluent.Of("""Hello World!""").Should.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""Hello World!"" ").Should.Be.Something
+    fluent.testValue = testFluent.Of(" ""Hello World!"" ").Should.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" Hello World! """).Should.Be.Something
+    fluent.testValue = testFluent.Of(""" Hello World! """).Should.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(123).Should.Be.Something
+    fluent.testValue = testFluent.Of(123).Should.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(1.23).Should.Be.Something
+    fluent.testValue = testFluent.Of(1.23).Should.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.Be.Something
+    fluent.testValue = testFluent.Of(True).Should.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Something
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Be.Something
+    fluent.testValue = testFluent.Of(Null).Should.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of("Hello World!").ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of("Hello World!").ShouldNot.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""Hello World!""").ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of("""Hello World!""").ShouldNot.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""Hello World!"" ").ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of(" ""Hello World!"" ").ShouldNot.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" Hello World! """).ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of(""" Hello World! """).ShouldNot.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(123).ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of(123).ShouldNot.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(1.23).ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of(1.23).ShouldNot.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of(True).ShouldNot.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Be.Something
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Be.Something
+    fluent.testValue = testFluent.Of().Should.Be.Something
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.Something
+    fluent.testValue = testFluent.Of().ShouldNot.Be.Something
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -2985,19 +3014,19 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
 'positive documentation tests
     
     arr = VBA.[_HiddenModule].Array()
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructure(arr) = tfIter.Of(10).Should.Be.InDataStructure(arr)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(False) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(False) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(9, 10, 11)
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructure(arr) = tfIter.Of(10).Should.Be.InDataStructure(arr)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     ReDim arr(1, 1)
@@ -3005,11 +3034,11 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     arr(0, 1) = 10
     arr(1, 0) = 11
     arr(1, 1) = 12
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructure(arr) = tfIter.Of(10).Should.Be.InDataStructure(arr)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     ReDim arr(1, 1, 1)
@@ -3021,41 +3050,41 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     arr(1, 0, 1) = 11
     arr(1, 1, 0) = 12
     arr(1, 1, 1) = 13
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructure(arr) = tfIter.Of(10).Should.Be.InDataStructure(arr)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     
     arr = VBA.[_HiddenModule].Array(9, VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11)))
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(arr) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructure(arr) = tfIter.Of(10).Should.Be.InDataStructure(arr)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 9
     col.Add 10
     col.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(col) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructure(col) = tfIter.Of(10).Should.Be.InDataStructure(col)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 9
     col.Add VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11))
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(col) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(col) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructure(col) = tfIter.Of(10).Should.Be.InDataStructure(col)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set col = Nothing
     
@@ -3063,22 +3092,22 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     d.Add 1, 9
     d.Add 2, 10
     d.Add 3, 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(d) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructure(d) = tfIter.Of(10).Should.Be.InDataStructure(d)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set d = Nothing
     
     Set d = New Scripting.Dictionary
     d.Add 1, 9
     d.Add 2, VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11))
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(d) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructure(d) = tfIter.Of(10).Should.Be.InDataStructure(d)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set d = Nothing
     
@@ -3086,11 +3115,11 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     d.Add 9, 1
     d.Add 10, 2
     d.Add 11, 3
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(d.Keys) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(d.Keys) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructure(d.Keys) = tfIter.Of(10).Should.Be.InDataStructure(d.Keys)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set d = Nothing
     
@@ -3098,11 +3127,11 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(al) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(al) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructure(al) = tfIter.Of(10).Should.Be.InDataStructure(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -3123,29 +3152,29 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     d2.Add "B", col
     d.Add "A", d2
     
-    fluent.TestValue = testFluent.Of(1).Should.Be.InDataStructure(d) 'with implicit recur
+    fluent.testValue = testFluent.Of(1).Should.Be.InDataStructure(d) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(1).Should.Be.InDataStructure(d) = tfIter.Of(1).Should.Be.InDataStructure(d)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'negative documentation tests
     
     arr = VBA.[_HiddenModule].Array()
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(arr) = tfIter.Of(10).ShouldNot.Be.InDataStructure(arr)
     mMiscNegTests = mMiscNegTests + 1
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(False) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(False) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     
     arr = VBA.[_HiddenModule].Array(9, 10, 11)
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(arr) = tfIter.Of(10).ShouldNot.Be.InDataStructure(arr)
     mMiscNegTests = mMiscNegTests + 1
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     
     ReDim arr(1, 1)
@@ -3153,11 +3182,11 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     arr(0, 1) = 10
     arr(1, 0) = 11
     arr(1, 1) = 12
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(arr) = tfIter.Of(10).ShouldNot.Be.InDataStructure(arr)
     mMiscNegTests = mMiscNegTests + 1
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     
     ReDim arr(1, 1, 1)
@@ -3169,41 +3198,41 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     arr(1, 0, 1) = 11
     arr(1, 1, 0) = 12
     arr(1, 1, 1) = 13
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(arr) = tfIter.Of(10).ShouldNot.Be.InDataStructure(arr)
     mMiscNegTests = mMiscNegTests + 1
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     
     
     arr = VBA.[_HiddenModule].Array(9, VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11)))
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(arr) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(arr) = tfIter.Of(10).ShouldNot.Be.InDataStructure(arr)
     mMiscNegTests = mMiscNegTests + 1
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     
     Set col = New VBA.Collection
     col.Add 9
     col.Add 10
     col.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(col) = tfIter.Of(10).ShouldNot.Be.InDataStructure(col)
     mMiscNegTests = mMiscNegTests + 1
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     
     Set col = New VBA.Collection
     col.Add 9
     col.Add VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11))
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(col) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(col) = tfIter.Of(10).ShouldNot.Be.InDataStructure(col)
     mMiscNegTests = mMiscNegTests + 1
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     Set col = Nothing
     
@@ -3211,22 +3240,22 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     d.Add 1, 9
     d.Add 2, 10
     d.Add 3, 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(d) = tfIter.Of(10).ShouldNot.Be.InDataStructure(d)
     mMiscNegTests = mMiscNegTests + 1
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     Set d = Nothing
     
     Set d = New Scripting.Dictionary
     d.Add 1, 9
     d.Add 2, VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11))
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(d) = tfIter.Of(10).ShouldNot.Be.InDataStructure(d)
     mMiscNegTests = mMiscNegTests + 1
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     Set d = Nothing
     
@@ -3234,11 +3263,11 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     d.Add 9, 1
     d.Add 10, 2
     d.Add 11, 3
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d.Keys) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(d.Keys) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(d.Keys) = tfIter.Of(10).ShouldNot.Be.InDataStructure(d.Keys)
     mMiscNegTests = mMiscNegTests + 1
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     Set d = Nothing
     
@@ -3246,11 +3275,11 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(al) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructure(al) = tfIter.Of(10).ShouldNot.Be.InDataStructure(al)
     mMiscNegTests = mMiscNegTests + 1
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
@@ -3271,213 +3300,213 @@ Private Function InDataStructureTests(ByVal fluent As IFluent, ByVal testFluent 
     d2.Add "B", col
     d.Add "A", d2
     
-    fluent.TestValue = testFluent.Of(1).ShouldNot.Be.InDataStructure(d) 'with implicit recur
+    fluent.testValue = testFluent.Of(1).ShouldNot.Be.InDataStructure(d) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(1).ShouldNot.Be.InDataStructure(d) = tfIter.Of(1).ShouldNot.Be.InDataStructure(d)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'positive null documentation tests
 
     val = "Hello World"
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = """ Hello World """
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 10
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 123.45
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = True
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = Null
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructure(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'negative null documentation tests
     
     val = "Hello World"
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = """ Hello World """
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(""" Hello World """)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(""" Hello World """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = 10
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(10)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(10)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 123.45
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = True
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = Null
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructure(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructure(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'empty documention tests
     
     val = "Hello World"
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of().Should.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructure(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = """Hello world"""
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of().Should.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructure(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = " ""Hello world"" "
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of().Should.Be.InDataStructure(" ""Hello world"" ")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructure(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = """ Hello world """
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of().Should.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructure(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.InDataStructure(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructure(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructure(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Debug.Assert tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
@@ -3528,22 +3557,22 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
 'positive documentation tests
            
     arr2 = VBA.[_HiddenModule].Array(9, 10, 11)
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr2) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(arr2) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(arr2) = tfIter.Of(10).Should.Be.InDataStructures(arr2)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     ReDim arr(1, 1)
@@ -3552,22 +3581,22 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     arr(1, 0) = 14
     arr(1, 1) = 15
     arr2 = VBA.[_HiddenModule].Array(9, 10, 11)
-    fluent.TestValue = testFluent.Of(12).Should.Be.InDataStructures(arr, arr2)
+    fluent.testValue = testFluent.Of(12).Should.Be.InDataStructures(arr, arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(12).Should.Be.InDataStructures(arr, arr2) = tfIter.Of(12).Should.Be.InDataStructures(arr, arr2)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     ReDim arr(1, 1, 1)
@@ -3580,64 +3609,64 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     arr(1, 1, 0) = 12
     arr(1, 1, 1) = 13
     arr2 = VBA.[_HiddenModule].Array(15, 16, 17)
-    fluent.TestValue = testFluent.Of(9).Should.Be.InDataStructures(arr, arr2)
+    fluent.testValue = testFluent.Of(9).Should.Be.InDataStructures(arr, arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(9).Should.Be.InDataStructures(arr, arr2) = tfIter.Of(9).Should.Be.InDataStructures(arr, arr2)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     arr = VBA.[_HiddenModule].Array(9, VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11)))
     arr2 = VBA.[_HiddenModule].Array(15, 16, 17)
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(arr, arr2)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(arr, arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(arr, arr2) = tfIter.Of(10).Should.Be.InDataStructures(arr, arr2)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 12
     col.Add 13
     col.Add 14
-    fluent.TestValue = testFluent.Of(13).Should.Be.InDataStructures(col)
+    fluent.testValue = testFluent.Of(13).Should.Be.InDataStructures(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(13).Should.Be.InDataStructures(col) = tfIter.Of(13).Should.Be.InDataStructures(col)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -3646,43 +3675,43 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     col.Add 14
     arr = VBA.[_HiddenModule].Array(9, VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11)))
     arr2 = VBA.[_HiddenModule].Array(15, 16, 17)
-    fluent.TestValue = testFluent.Of(16).Should.Be.InDataStructures(arr, col, arr2)
+    fluent.testValue = testFluent.Of(16).Should.Be.InDataStructures(arr, col, arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(16).Should.Be.InDataStructures(arr, col, arr2) = tfIter.Of(16).Should.Be.InDataStructures(arr, col, arr2)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
                     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 9
     col.Add VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11))
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(col)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(col) = tfIter.Of(10).Should.Be.InDataStructures(col)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set col = Nothing
     
@@ -3690,22 +3719,22 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     Set col = New VBA.Collection
     col.Add 9
     col.Add VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11))
-    fluent.TestValue = testFluent.Of(14).Should.Be.InDataStructures(col, arr)
+    fluent.testValue = testFluent.Of(14).Should.Be.InDataStructures(col, arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(14).Should.Be.InDataStructures(col, arr) = tfIter.Of(14).Should.Be.InDataStructures(col, arr)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set col = Nothing
 
@@ -3713,22 +3742,22 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     d.Add 1, 9
     d.Add 2, 10
     d.Add 3, 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(d)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(d)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(d) = tfIter.Of(10).Should.Be.InDataStructures(d)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set d = Nothing
     
@@ -3736,44 +3765,44 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     d.Add 1, 9
     d.Add 2, 10
     d.Add 3, 11
-    fluent.TestValue = testFluent.Of(2).Should.Be.InDataStructures(d.Items, d.Keys)
+    fluent.testValue = testFluent.Of(2).Should.Be.InDataStructures(d.Items, d.Keys)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(2).Should.Be.InDataStructures(d.Items, d.Keys) = tfIter.Of(2).Should.Be.InDataStructures(d.Items, d.Keys)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = Nothing
     Set d = New Scripting.Dictionary
     d.Add 1, 9
     d.Add 2, VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11))
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(d)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(d)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(d) = tfIter.Of(10).Should.Be.InDataStructures(d)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set d = Nothing
     
@@ -3781,22 +3810,22 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(6, VBA.[_HiddenModule].Array(7, VBA.[_HiddenModule].Array(8)))
@@ -3804,43 +3833,43 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(8).Should.Be.InDataStructures(al, arr)
+    fluent.testValue = testFluent.Of(8).Should.Be.InDataStructures(al, arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(8).Should.Be.InDataStructures(al, arr) = tfIter.Of(8).Should.Be.InDataStructures(al, arr)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'negative documentation tests
     
     arr2 = VBA.[_HiddenModule].Array(9, 10, 11)
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(arr2) 'with implicit recur
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(arr2) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(arr2) = tfIter.Of(10).ShouldNot.Be.InDataStructures(arr2)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     ReDim arr(1, 1)
@@ -3849,22 +3878,22 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     arr(1, 0) = 14
     arr(1, 1) = 15
     arr2 = VBA.[_HiddenModule].Array(9, 10, 11)
-    fluent.TestValue = testFluent.Of(12).ShouldNot.Be.InDataStructures(arr, arr2)
+    fluent.testValue = testFluent.Of(12).ShouldNot.Be.InDataStructures(arr, arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(12).ShouldNot.Be.InDataStructures(arr, arr2) = tfIter.Of(12).ShouldNot.Be.InDataStructures(arr, arr2)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     ReDim arr(1, 1, 1)
@@ -3877,64 +3906,64 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     arr(1, 1, 0) = 12
     arr(1, 1, 1) = 13
     arr2 = VBA.[_HiddenModule].Array(15, 16, 17)
-    fluent.TestValue = testFluent.Of(9).ShouldNot.Be.InDataStructures(arr, arr2)
+    fluent.testValue = testFluent.Of(9).ShouldNot.Be.InDataStructures(arr, arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(9).ShouldNot.Be.InDataStructures(arr, arr2) = tfIter.Of(9).ShouldNot.Be.InDataStructures(arr, arr2)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     arr = VBA.[_HiddenModule].Array(9, VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11)))
     arr2 = VBA.[_HiddenModule].Array(15, 16, 17)
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(arr, arr2)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(arr, arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(arr, arr2) = tfIter.Of(10).ShouldNot.Be.InDataStructures(arr, arr2)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     Set col = New VBA.Collection
     col.Add 12
     col.Add 13
     col.Add 14
-    fluent.TestValue = testFluent.Of(13).ShouldNot.Be.InDataStructures(col)
+    fluent.testValue = testFluent.Of(13).ShouldNot.Be.InDataStructures(col)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(13).ShouldNot.Be.InDataStructures(col) = tfIter.Of(13).ShouldNot.Be.InDataStructures(col)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     
     Set col = New VBA.Collection
@@ -3943,43 +3972,43 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     col.Add 14
     arr = VBA.[_HiddenModule].Array(9, VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11)))
     arr2 = VBA.[_HiddenModule].Array(15, 16, 17)
-    fluent.TestValue = testFluent.Of(16).ShouldNot.Be.InDataStructures(arr, col, arr2)
+    fluent.testValue = testFluent.Of(16).ShouldNot.Be.InDataStructures(arr, col, arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(16).ShouldNot.Be.InDataStructures(arr, col, arr2) = tfIter.Of(16).ShouldNot.Be.InDataStructures(arr, col, arr2)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     Set col = New VBA.Collection
     col.Add 9
     col.Add VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11))
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(col)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(col)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(col) = tfIter.Of(10).ShouldNot.Be.InDataStructures(col)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     Set col = Nothing
 
@@ -3987,22 +4016,22 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     Set col = New VBA.Collection
     col.Add 9
     col.Add VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11))
-    fluent.TestValue = testFluent.Of(14).ShouldNot.Be.InDataStructures(col, arr)
+    fluent.testValue = testFluent.Of(14).ShouldNot.Be.InDataStructures(col, arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(14).ShouldNot.Be.InDataStructures(col, arr) = tfIter.Of(14).ShouldNot.Be.InDataStructures(col, arr)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     Set col = Nothing
 
@@ -4010,22 +4039,22 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     d.Add 1, 9
     d.Add 2, 10
     d.Add 3, 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(d) = tfIter.Of(10).ShouldNot.Be.InDataStructures(d)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set d = Nothing ''
 
@@ -4033,44 +4062,44 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     d.Add 1, 9
     d.Add 2, 10
     d.Add 3, 11
-    fluent.TestValue = testFluent.Of(2).ShouldNot.Be.InDataStructures(d.Items, d.Keys)
+    fluent.testValue = testFluent.Of(2).ShouldNot.Be.InDataStructures(d.Items, d.Keys)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(2).ShouldNot.Be.InDataStructures(d.Items, d.Keys) = tfIter.Of(2).ShouldNot.Be.InDataStructures(d.Items, d.Keys)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     Set d = Nothing
     Set d = New Scripting.Dictionary
     d.Add 1, 9
     d.Add 2, VBA.[_HiddenModule].Array(10, VBA.[_HiddenModule].Array(11))
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(d)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(d) = tfIter.Of(10).ShouldNot.Be.InDataStructures(d)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
     Set d = Nothing
 
@@ -4078,22 +4107,22 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(al)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).ShouldNot.Be.InDataStructures(al) = tfIter.Of(10).ShouldNot.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     arr = VBA.[_HiddenModule].Array(6, VBA.[_HiddenModule].Array(7, VBA.[_HiddenModule].Array(8)))
@@ -4101,421 +4130,421 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(8).ShouldNot.Be.InDataStructures(al, arr)
+    fluent.testValue = testFluent.Of(8).ShouldNot.Be.InDataStructures(al, arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(8).ShouldNot.Be.InDataStructures(al, arr) = tfIter.Of(8).ShouldNot.Be.InDataStructures(al, arr)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult) ''
 
     Set al = VBA.Interaction.CreateObject("System.Collections.Arraylist")
     al.Add 9
     al.Add 10
     al.Add 11
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(al)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(al)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(10).Should.Be.InDataStructures(al) = tfIter.Of(10).Should.Be.InDataStructures(al)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
 'positive null documentation tests
     
     val = "Hello World"
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = """Hello World"""
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures("""Hello World""")
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures("""Hello World""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = " ""Hello World"" "
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = """ Hello World """
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = 10
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = 123.45
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = True
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = Null
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = "Hello World"
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = """Hello World"""
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = " ""Hello World "" "
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = """ Hello World """
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 10
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 123.45
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = True
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = Null
-    fluent.TestValue = testFluent.Of(10).Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).Should.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).Should.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'negative null documentation tests
     
     val = "Hello World"
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = """Hello World"""
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures("""Hello World""")
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures("""Hello World""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = " ""Hello World"" "
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = """ Hello World """
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = 10
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = 123.45
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = True
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = Null
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = "Hello World"
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = """Hello World"""
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = " ""Hello World "" "
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = """ Hello World """
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 10
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 123.45
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = True
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = Null
-    fluent.TestValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of(10).ShouldNot.Be.InDataStructures(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'empty documention tests
     
     val = "Hello World"
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of().Should.Be.InDataStructures(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructures(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures(val)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.InDataStructures(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructures("""Hello world""")
+    fluent.testValue = testFluent.Of().Should.Be.InDataStructures("""Hello world""")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructures(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures("""Hello world""")
+    fluent.testValue = testFluent.Of().ShouldNot.Be.InDataStructures("""Hello world""")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructures(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of().Should.Be.InDataStructures(" ""Hello world"" ")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructures(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of().ShouldNot.Be.InDataStructures(" ""Hello world"" ")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().Should.Be.InDataStructures(""" Hello world """)
+    fluent.testValue = testFluent.Of().Should.Be.InDataStructures(""" Hello world """)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Be.InDataStructures(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.InDataStructures(""" Hello world """)
+    fluent.testValue = testFluent.Of().ShouldNot.Be.InDataStructures(""" Hello world """)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Be.InDataStructures(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Be.InDataStructures(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Debug.Assert tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
@@ -4548,7 +4577,7 @@ Private Function InDataStructuresTests(ByVal fluent As IFluent, ByVal testFluent
     Debug.Print "InDataStructuresTests finished"
     printTestCount (mTestCounter)
     mTestCounter = 0
-    
+
     Set InDataStructuresTests = testFluent
 End Function
 
@@ -4560,216 +4589,216 @@ Private Function EvaluateToTests(ByVal fluent As IFluent, ByVal testFluent As IF
     Dim arr() As Variant
 
     'positive documentation tests
-    fluent.TestValue = testFluent.Of(True).Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(True).Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.EvaluateTo(False)
+    fluent.testValue = testFluent.Of(True).Should.EvaluateTo(False)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(False).Should.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).Should.EvaluateTo(False)
+    fluent.testValue = testFluent.Of(False).Should.EvaluateTo(False)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("true").Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("true").Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("false").Should.EvaluateTo(False)
+    fluent.testValue = testFluent.Of("false").Should.EvaluateTo(False)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("TRUE").Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("TRUE").Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("FALSE").Should.EvaluateTo(False)
+    fluent.testValue = testFluent.Of("FALSE").Should.EvaluateTo(False)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(-1).Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(-1).Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(-1).Should.EvaluateTo(False)
+    fluent.testValue = testFluent.Of(-1).Should.EvaluateTo(False)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(0).Should.EvaluateTo(False)
+    fluent.testValue = testFluent.Of(0).Should.EvaluateTo(False)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(0).Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(0).Should.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("-1").Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("-1").Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("-1").Should.EvaluateTo(False)
+    fluent.testValue = testFluent.Of("-1").Should.EvaluateTo(False)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("0").Should.EvaluateTo(False)
+    fluent.testValue = testFluent.Of("0").Should.EvaluateTo(False)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("0").Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("0").Should.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(5 + 5).Should.EvaluateTo(10)
+    fluent.testValue = testFluent.Of(5 + 5).Should.EvaluateTo(10)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("5 + 5").Should.EvaluateTo(10)
+    fluent.testValue = testFluent.Of("5 + 5").Should.EvaluateTo(10)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("5 + 5 = 10").Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("5 + 5 = 10").Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("5 + 5 > 9").Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("5 + 5 > 9").Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array()
-    fluent.TestValue = testFluent.Of(VBA.Information.TypeName(arr) = "Variant()").Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(VBA.Information.TypeName(arr) = "Variant()").Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.Information.IsArray(arr)).Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(VBA.Information.IsArray(arr)).Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(VBA.Information.TypeName(col) = "Collection").Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(VBA.Information.TypeName(col) = "Collection").Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(TypeOf col Is Collection).Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(TypeOf col Is Collection).Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(VBA.Information.TypeName(d) = "Dictionary").Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(VBA.Information.TypeName(d) = "Dictionary").Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(TypeOf d Is Scripting.Dictionary).Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(TypeOf d Is Scripting.Dictionary).Should.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     '//Testing errors is possible if they're put in strings
-    fluent.TestValue = testFluent.Of("1 / 0").Should.EvaluateTo(CVErr(xlErrDiv0))
+    fluent.testValue = testFluent.Of("1 / 0").Should.EvaluateTo(CVErr(xlErrDiv0))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'negative documentation tests
                 
-    fluent.TestValue = testFluent.Of(True).ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(True).ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.EvaluateTo(False)
+    fluent.testValue = testFluent.Of(True).ShouldNot.EvaluateTo(False)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(False).ShouldNot.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).ShouldNot.EvaluateTo(False)
+    fluent.testValue = testFluent.Of(False).ShouldNot.EvaluateTo(False)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("true").ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("true").ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("false").ShouldNot.EvaluateTo(False)
+    fluent.testValue = testFluent.Of("false").ShouldNot.EvaluateTo(False)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("TRUE").ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("TRUE").ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("FALSE").ShouldNot.EvaluateTo(False)
+    fluent.testValue = testFluent.Of("FALSE").ShouldNot.EvaluateTo(False)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(-1).ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(-1).ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(-1).ShouldNot.EvaluateTo(False)
+    fluent.testValue = testFluent.Of(-1).ShouldNot.EvaluateTo(False)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(0).ShouldNot.EvaluateTo(False)
+    fluent.testValue = testFluent.Of(0).ShouldNot.EvaluateTo(False)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(0).ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(0).ShouldNot.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("-1").ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("-1").ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("-1").ShouldNot.EvaluateTo(False)
+    fluent.testValue = testFluent.Of("-1").ShouldNot.EvaluateTo(False)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("0").ShouldNot.EvaluateTo(False)
+    fluent.testValue = testFluent.Of("0").ShouldNot.EvaluateTo(False)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("0").ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("0").ShouldNot.EvaluateTo(True)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(5 + 5).ShouldNot.EvaluateTo(10)
+    fluent.testValue = testFluent.Of(5 + 5).ShouldNot.EvaluateTo(10)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("5 + 5").ShouldNot.EvaluateTo(10)
+    fluent.testValue = testFluent.Of("5 + 5").ShouldNot.EvaluateTo(10)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("5 + 5 = 10").ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("5 + 5 = 10").ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("5 + 5 > 9").ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of("5 + 5 > 9").ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array()
-    fluent.TestValue = testFluent.Of(VBA.Information.TypeName(arr) = "Variant()").ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(VBA.Information.TypeName(arr) = "Variant()").ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.Information.IsArray(arr)).ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(VBA.Information.IsArray(arr)).ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(VBA.Information.TypeName(col) = "Collection").ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(VBA.Information.TypeName(col) = "Collection").ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(TypeOf col Is Collection).ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(TypeOf col Is Collection).ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(VBA.Information.TypeName(d) = "Dictionary").ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(VBA.Information.TypeName(d) = "Dictionary").ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(TypeOf d Is Scripting.Dictionary).ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(TypeOf d Is Scripting.Dictionary).ShouldNot.EvaluateTo(True)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     '//Testing errors is possible if they're put in strings
-    fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.EvaluateTo(CVErr(xlErrDiv0))
+    fluent.testValue = testFluent.Of("1 / 0").ShouldNot.EvaluateTo(CVErr(xlErrDiv0))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.EvaluateTo(True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(col).Should.EvaluateTo(True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(d).Should.EvaluateTo(True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(Null).Should.EvaluateTo(True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.EvaluateTo(True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(col).ShouldNot.EvaluateTo(True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(d).ShouldNot.EvaluateTo(True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.EvaluateTo(True)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.EvaluateTo(True)
+    fluent.testValue = testFluent.Of().Should.EvaluateTo(True)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.EvaluateTo(True)
+    fluent.testValue = testFluent.Of().ShouldNot.EvaluateTo(True)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -4790,180 +4819,180 @@ Private Function AlphabeticTests(ByVal fluent As IFluent, ByVal testFluent As IF
 
     'positive documentation tests
         
-    fluent.TestValue = testFluent.Of("abc").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of("abc").Should.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("abc!@#").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of("abc!@#").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("123").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of("123").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("!@#").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of("!@#").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
-    fluent.TestValue = testFluent.Of("abc def").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of("abc def").Should.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" abc ").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" abc ").Should.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" abc!@# ").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" abc!@# ").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" 123 ").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" 123 ").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" !@# ").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" !@# ").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""abc""").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of("""abc""").Should.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""abc!@#""").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of("""abc!@#""").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""123""").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of("""123""").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""!@#""").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of("""!@#""").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""abc"" ").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" ""abc"" ").Should.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""abc!@#"" ").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" ""abc!@#"" ").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""123"" ").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" ""123"" ").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""!@#"" ").Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" ""!@#"" ").Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" abc """).Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(""" abc """).Should.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" abc!@# """).Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(""" abc!@# """).Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" 123 """).Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(""" 123 """).Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" !@# """).Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(""" !@# """).Should.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = False
 
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of("abc").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of("abc").ShouldNot.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("abc!@#").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of("abc!@#").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("123").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of("123").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("!@#").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of("!@#").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
-    fluent.TestValue = testFluent.Of("abc def").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of("abc def").ShouldNot.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" abc ").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" abc ").ShouldNot.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" abc!@# ").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" abc!@# ").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" 123 ").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" 123 ").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" !@# ").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" !@# ").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
             
-    fluent.TestValue = testFluent.Of("""abc""").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of("""abc""").ShouldNot.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""abc!@#""").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of("""abc!@#""").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""123""").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of("""123""").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""!@#""").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of("""!@#""").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""abc"" ").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" ""abc"" ").ShouldNot.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""abc!@#"" ").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" ""abc!@#"" ").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""123"" ").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" ""123"" ").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""!@#"" ").ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(" ""!@#"" ").ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" abc """).ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(""" abc """).ShouldNot.Be.Alphabetic
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" abc!@# """).ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(""" abc!@# """).ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" 123 """).ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(""" 123 """).ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" !@# """).ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(""" !@# """).ShouldNot.Be.Alphabetic
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = False
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Alphabetic
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(col).Should.Be.Alphabetic
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(d).Should.Be.Alphabetic
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of(Null).Should.Be.Alphabetic
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Alphabetic
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.Alphabetic
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.Alphabetic
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Be.Alphabetic
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Be.Alphabetic
+    fluent.testValue = testFluent.Of().Should.Be.Alphabetic
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.Alphabetic
+    fluent.testValue = testFluent.Of().ShouldNot.Be.Alphabetic
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -4981,162 +5010,162 @@ Private Function NumericTests(ByVal fluent As IFluent, ByVal testFluent As IFlue
 
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of(123).Should.Be.Numeric
+    fluent.testValue = testFluent.Of(123).Should.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("123").Should.Be.Numeric
+    fluent.testValue = testFluent.Of("123").Should.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("123!@#").Should.Be.Numeric
+    fluent.testValue = testFluent.Of("123!@#").Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("abc").Should.Be.Numeric
+    fluent.testValue = testFluent.Of("abc").Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("!@#").Should.Be.Numeric
+    fluent.testValue = testFluent.Of("!@#").Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
-    fluent.TestValue = testFluent.Of("123 456").Should.Be.Numeric
+    fluent.testValue = testFluent.Of("123 456").Should.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""123""").Should.Be.Numeric
+    fluent.testValue = testFluent.Of("""123""").Should.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""123!@#""").Should.Be.Numeric
+    fluent.testValue = testFluent.Of("""123!@#""").Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""abc""").Should.Be.Numeric
+    fluent.testValue = testFluent.Of("""abc""").Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""!@#""").Should.Be.Numeric
+    fluent.testValue = testFluent.Of("""!@#""").Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""123"" ").Should.Be.Numeric
+    fluent.testValue = testFluent.Of(" ""123"" ").Should.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""123!@#"" ").Should.Be.Numeric
+    fluent.testValue = testFluent.Of(" ""123!@#"" ").Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""abc"" ").Should.Be.Numeric
+    fluent.testValue = testFluent.Of(" ""abc"" ").Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""!@#"" ").Should.Be.Numeric
+    fluent.testValue = testFluent.Of(" ""!@#"" ").Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" 123 """).Should.Be.Numeric
+    fluent.testValue = testFluent.Of(""" 123 """).Should.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" 123!@# """).Should.Be.Numeric
+    fluent.testValue = testFluent.Of(""" 123!@# """).Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" abc """).Should.Be.Numeric
+    fluent.testValue = testFluent.Of(""" abc """).Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" !@# """).Should.Be.Numeric
+    fluent.testValue = testFluent.Of(""" !@# """).Should.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = False
     
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of(123).ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(123).ShouldNot.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("123").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of("123").ShouldNot.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("123!@#").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of("123!@#").ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
             
-    fluent.TestValue = testFluent.Of("abc").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of("abc").ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("!@#").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of("!@#").ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
-    fluent.TestValue = testFluent.Of("123 456").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of("123 456").ShouldNot.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""123""").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of("""123""").ShouldNot.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""123!@#""").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of("""123!@#""").ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
             
-    fluent.TestValue = testFluent.Of("""abc""").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of("""abc""").ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""!@#""").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of("""!@#""").ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""123"" ").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(" ""123"" ").ShouldNot.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""123!@#"" ").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(" ""123!@#"" ").ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
             
-    fluent.TestValue = testFluent.Of(" ""abc"" ").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(" ""abc"" ").ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""!@#"" ").ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(" ""!@#"" ").ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" 123 """).ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(""" 123 """).ShouldNot.Be.Numeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" 123!@# """).ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(""" 123!@# """).ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
             
-    fluent.TestValue = testFluent.Of(""" abc """).ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(""" abc """).ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" !@# """).ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(""" !@# """).ShouldNot.Be.Numeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = False
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Numeric
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Numeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.Numeric
+    fluent.testValue = testFluent.Of(col).Should.Be.Numeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Be.Numeric
+    fluent.testValue = testFluent.Of(d).Should.Be.Numeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Be.Numeric
+    fluent.testValue = testFluent.Of(Null).Should.Be.Numeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Numeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.Numeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.Numeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Be.Numeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Be.Numeric
+    fluent.testValue = testFluent.Of().Should.Be.Numeric
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.Numeric
+    fluent.testValue = testFluent.Of().ShouldNot.Be.Numeric
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -5154,156 +5183,156 @@ Private Function AlphanumericTests(ByVal fluent As IFluent, ByVal testFluent As 
 
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of("abc123").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("abc123").Should.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("abc").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("abc").Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("123").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("123").Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("!@#").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("!@#").Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
-    fluent.TestValue = testFluent.Of("abc 123").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("abc 123").Should.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""abc123""").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("""abc123""").Should.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""abc""").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("""abc""").Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""123""").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("""123""").Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""!@#""").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("""!@#""").Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""abc123"" ").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(" ""abc123"" ").Should.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""abc"" ").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(" ""abc"" ").Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""123"" ").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(" ""123"" ").Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""!@#"" ").Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(" ""!@#"" ").Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" abc123 """).Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(""" abc123 """).Should.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" abc """).Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(""" abc """).Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" 123 """).Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(""" 123 """).Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" !@# """).Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(""" !@# """).Should.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = False
     
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of("abc123").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("abc123").ShouldNot.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("abc").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("abc").ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("123").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("123").ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("!@#").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("!@#").ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = True
     
-    fluent.TestValue = testFluent.Of("abc 123").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("abc 123").ShouldNot.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""abc123""").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("""abc123""").ShouldNot.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""abc""").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("""abc""").ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""123""").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("""123""").ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("""!@#""").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of("""!@#""").ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""abc123"" ").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(" ""abc123"" ").ShouldNot.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""abc"" ").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(" ""abc"" ").ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""123"" ").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(" ""123"" ").ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(" ""!@#"" ").ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(" ""!@#"" ").ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" abc123 """).ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(""" abc123 """).ShouldNot.Be.Alphanumeric
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" abc """).ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(""" abc """).ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" 123 """).ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(""" 123 """).ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(""" !@# """).ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(""" !@# """).ShouldNot.Be.Alphanumeric
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     testFluent.Meta.tests.TestStrings.CleanTestStrings = False
 
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Alphanumeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(col).Should.Be.Alphanumeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(d).Should.Be.Alphanumeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(Null).Should.Be.Alphanumeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Alphanumeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.Alphanumeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.Alphanumeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Be.Alphanumeric
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Be.Alphanumeric
+    fluent.testValue = testFluent.Of().Should.Be.Alphanumeric
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.Alphanumeric
+    fluent.testValue = testFluent.Of().ShouldNot.Be.Alphanumeric
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -5321,92 +5350,92 @@ Private Function ErroneousTests(ByVal fluent As IFluent, ByVal testFluent As IFl
 
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of("1 / 0").Should.Be.Erroneous
+    fluent.testValue = testFluent.Of("1 / 0").Should.Be.Erroneous
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     On Error Resume Next
         Debug.Print 1 / 0
     
-        fluent.TestValue = testFluent.Of(Err).Should.Be.Erroneous
+        fluent.testValue = testFluent.Of(Err).Should.Be.Erroneous
     On Error GoTo 0
     
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) 'good
                 
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Be.Erroneous
+    fluent.testValue = testFluent.Of("1 / 0").ShouldNot.Be.Erroneous
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     On Error Resume Next
         Debug.Print 1 / 0
     
-        fluent.TestValue = testFluent.Of(Err).ShouldNot.Be.Erroneous
+        fluent.testValue = testFluent.Of(Err).ShouldNot.Be.Erroneous
     On Error GoTo 0
     
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(123).Should.Be.Erroneous
+    fluent.testValue = testFluent.Of(123).Should.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(1.23).Should.Be.Erroneous
+    fluent.testValue = testFluent.Of(1.23).Should.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).Should.Be.Erroneous
+    fluent.testValue = testFluent.Of(True).Should.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).Should.Be.Erroneous
+    fluent.testValue = testFluent.Of(False).Should.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Be.Erroneous
+    fluent.testValue = testFluent.Of(Null).Should.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Erroneous
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.Erroneous
+    fluent.testValue = testFluent.Of(col).Should.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Be.Erroneous
+    fluent.testValue = testFluent.Of(d).Should.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(123).ShouldNot.Be.Erroneous
+    fluent.testValue = testFluent.Of(123).ShouldNot.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(1.23).ShouldNot.Be.Erroneous
+    fluent.testValue = testFluent.Of(1.23).ShouldNot.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(True).ShouldNot.Be.Erroneous
+    fluent.testValue = testFluent.Of(True).ShouldNot.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(False).ShouldNot.Be.Erroneous
+    fluent.testValue = testFluent.Of(False).ShouldNot.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Be.Erroneous
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Erroneous
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.Erroneous
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.Erroneous
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.Erroneous
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Be.Erroneous
+    fluent.testValue = testFluent.Of().Should.Be.Erroneous
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.Erroneous
+    fluent.testValue = testFluent.Of().ShouldNot.Be.Erroneous
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -5424,92 +5453,92 @@ Private Function ErrorNumberOfTests(ByVal fluent As IFluent, ByVal testFluent As
 
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of("1 / 0").Should.Have.ErrorNumberOf(2007)
+    fluent.testValue = testFluent.Of("1 / 0").Should.Have.ErrorNumberOf(2007)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     On Error Resume Next
         Debug.Print 1 / 0
     
-        fluent.TestValue = testFluent.Of(Err).Should.Have.ErrorNumberOf(11)
+        fluent.testValue = testFluent.Of(Err).Should.Have.ErrorNumberOf(11)
     On Error GoTo 0
     
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorNumberOf(2007)
+    fluent.testValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorNumberOf(2007)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     On Error Resume Next
         Debug.Print 1 / 0
     
-        fluent.TestValue = testFluent.Of(Err).ShouldNot.Have.ErrorNumberOf(11)
+        fluent.testValue = testFluent.Of(Err).ShouldNot.Have.ErrorNumberOf(11)
     On Error GoTo 0
     
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(123).Should.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(123).Should.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(1.23).Should.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(1.23).Should.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(True).Should.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(True).Should.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(False).Should.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(False).Should.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(Null).Should.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(Null).Should.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(col).Should.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(d).Should.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(123).ShouldNot.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(123).ShouldNot.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(1.23).ShouldNot.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(1.23).ShouldNot.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(True).ShouldNot.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(True).ShouldNot.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(False).ShouldNot.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(False).ShouldNot.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.ErrorNumberOf("2007")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of().Should.Have.ErrorNumberOf("2007")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.ErrorNumberOf("2007")
+    fluent.testValue = testFluent.Of().ShouldNot.Have.ErrorNumberOf("2007")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -5527,126 +5556,126 @@ Private Function SameTypeAsTests(ByVal fluent As IFluent, ByVal testFluent As IF
     Dim arr() As Variant
 
     'positive documentation tests
-    fluent.TestValue = testFluent.Of(CBool(True)).Should.Have.SameTypeAs(CBool(True))
+    fluent.testValue = testFluent.Of(CBool(True)).Should.Have.SameTypeAs(CBool(True))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CStr("Hello World!")).Should.Have.SameTypeAs(CStr("Goodbye World!"))
+    fluent.testValue = testFluent.Of(CStr("Hello World!")).Should.Have.SameTypeAs(CStr("Goodbye World!"))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CStr("""Hello World!""")).Should.Have.SameTypeAs(CStr("""Goodbye World!"""))
+    fluent.testValue = testFluent.Of(CStr("""Hello World!""")).Should.Have.SameTypeAs(CStr("""Goodbye World!"""))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(CStr("""Hello World!""")).Should.Have.SameTypeAs(CStr("Goodbye World!"))
+    fluent.testValue = testFluent.Of(CStr("""Hello World!""")).Should.Have.SameTypeAs(CStr("Goodbye World!"))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CStr("Hello World!")).Should.Have.SameTypeAs(CStr("""Goodbye World!"""))
+    fluent.testValue = testFluent.Of(CStr("Hello World!")).Should.Have.SameTypeAs(CStr("""Goodbye World!"""))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CLng(12345)).Should.Have.SameTypeAs(CLng(54321))
+    fluent.testValue = testFluent.Of(CLng(12345)).Should.Have.SameTypeAs(CLng(54321))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CSng(123.45)).Should.Have.SameTypeAs(CSng(543.21))
+    fluent.testValue = testFluent.Of(CSng(123.45)).Should.Have.SameTypeAs(CSng(543.21))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CDbl(123.45)).Should.Have.SameTypeAs(CDbl(543.21))
+    fluent.testValue = testFluent.Of(CDbl(123.45)).Should.Have.SameTypeAs(CDbl(543.21))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CDate(#12/31/1999#)).Should.Have.SameTypeAs(CDate(#12/31/2000#))
+    fluent.testValue = testFluent.Of(CDate(#12/31/1999#)).Should.Have.SameTypeAs(CDate(#12/31/2000#))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameTypeAs(arr)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameTypeAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Nothing).Should.Have.SameTypeAs(Nothing)
+    fluent.testValue = testFluent.Of(Nothing).Should.Have.SameTypeAs(Nothing)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameTypeAs(col)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameTypeAs(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set col = Nothing
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameTypeAs(col)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameTypeAs(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.SameTypeAs(d)
+    fluent.testValue = testFluent.Of(d).Should.Have.SameTypeAs(d)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set col = Nothing
     
-    fluent.TestValue = testFluent.Of(d).Should.Have.SameTypeAs(d)
+    fluent.testValue = testFluent.Of(d).Should.Have.SameTypeAs(d)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CLng(123)).Should.Have.SameTypeAs(CStr("Hello world"))
+    fluent.testValue = testFluent.Of(CLng(123)).Should.Have.SameTypeAs(CStr("Hello world"))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CLng(123)).Should.Have.SameTypeAs(CDbl(123.456))
+    fluent.testValue = testFluent.Of(CLng(123)).Should.Have.SameTypeAs(CDbl(123.456))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(CLng(123)).Should.Have.SameTypeAs(col)
+    fluent.testValue = testFluent.Of(CLng(123)).Should.Have.SameTypeAs(col)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set col = Nothing
 
     'negative documentation tests
-    fluent.TestValue = testFluent.Of(CBool(True)).ShouldNot.Have.SameTypeAs(CBool(True))
+    fluent.testValue = testFluent.Of(CBool(True)).ShouldNot.Have.SameTypeAs(CBool(True))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CStr("Hello World!")).ShouldNot.Have.SameTypeAs(CStr("Goodbye World!"))
+    fluent.testValue = testFluent.Of(CStr("Hello World!")).ShouldNot.Have.SameTypeAs(CStr("Goodbye World!"))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CStr("""Hello World!""")).ShouldNot.Have.SameTypeAs(CStr("""Goodbye World!"""))
+    fluent.testValue = testFluent.Of(CStr("""Hello World!""")).ShouldNot.Have.SameTypeAs(CStr("""Goodbye World!"""))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CStr("""Hello World!""")).ShouldNot.Have.SameTypeAs(CStr("Goodbye World!"))
+    fluent.testValue = testFluent.Of(CStr("""Hello World!""")).ShouldNot.Have.SameTypeAs(CStr("Goodbye World!"))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CStr("Hello World!")).ShouldNot.Have.SameTypeAs(CStr("""Goodbye World!"""))
+    fluent.testValue = testFluent.Of(CStr("Hello World!")).ShouldNot.Have.SameTypeAs(CStr("""Goodbye World!"""))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CLng(12345)).ShouldNot.Have.SameTypeAs(CLng(54321))
+    fluent.testValue = testFluent.Of(CLng(12345)).ShouldNot.Have.SameTypeAs(CLng(54321))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CSng(123.45)).ShouldNot.Have.SameTypeAs(CSng(543.21))
+    fluent.testValue = testFluent.Of(CSng(123.45)).ShouldNot.Have.SameTypeAs(CSng(543.21))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CDbl(123.45)).ShouldNot.Have.SameTypeAs(CDbl(543.21))
+    fluent.testValue = testFluent.Of(CDbl(123.45)).ShouldNot.Have.SameTypeAs(CDbl(543.21))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CDate(#12/31/1999#)).ShouldNot.Have.SameTypeAs(CDate(#12/31/2000#))
+    fluent.testValue = testFluent.Of(CDate(#12/31/1999#)).ShouldNot.Have.SameTypeAs(CDate(#12/31/2000#))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameTypeAs(arr)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.SameTypeAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Nothing).ShouldNot.Have.SameTypeAs(Nothing)
+    fluent.testValue = testFluent.Of(Nothing).ShouldNot.Have.SameTypeAs(Nothing)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameTypeAs(col)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameTypeAs(col)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set col = Nothing
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameTypeAs(col)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameTypeAs(col)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameTypeAs(d)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.SameTypeAs(d)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set col = Nothing
     
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameTypeAs(d)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.SameTypeAs(d)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(CLng(123)).ShouldNot.Have.SameTypeAs(CStr("Hello world"))
+    fluent.testValue = testFluent.Of(CLng(123)).ShouldNot.Have.SameTypeAs(CStr("Hello world"))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(CLng(123)).ShouldNot.Have.SameTypeAs(CDbl(123.456))
+    fluent.testValue = testFluent.Of(CLng(123)).ShouldNot.Have.SameTypeAs(CDbl(123.456))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(CLng(123)).ShouldNot.Have.SameTypeAs(col)
+    fluent.testValue = testFluent.Of(CLng(123)).ShouldNot.Have.SameTypeAs(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     Set col = Nothing
     
@@ -5654,10 +5683,10 @@ Private Function SameTypeAsTests(ByVal fluent As IFluent, ByVal testFluent As IF
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Have.SameTypeAs("Hello world")
+    fluent.testValue = testFluent.Of().Should.Have.SameTypeAs("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.SameTypeAs("Hello world")
+    fluent.testValue = testFluent.Of().ShouldNot.Have.SameTypeAs("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     
@@ -5681,21 +5710,21 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     'positive documentation tests
     Set col = New VBA.Collection
     col.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col)
+    fluent.testValue = testFluent.Of(col).Should.Be.IdenticalTo(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col2)
+    fluent.testValue = testFluent.Of(col).Should.Be.IdenticalTo(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col2)
+    fluent.testValue = testFluent.Of(col).Should.Be.IdenticalTo(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -5706,9 +5735,9 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     col3.Add 1
     
     With testFluent.Of(col).Should.Be
-        fluent.TestValue = .IdenticalTo(col2)
+        fluent.testValue = .IdenticalTo(col2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .IdenticalTo(col3)
+        fluent.testValue = .IdenticalTo(col3)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -5720,9 +5749,9 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     col3.Add 1
     
     With testFluent.Of(col).Should.Be
-        fluent.TestValue = .IdenticalTo(col2)
+        fluent.testValue = .IdenticalTo(col2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .IdenticalTo(col3)
+        fluent.testValue = .IdenticalTo(col3)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -5733,9 +5762,9 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     col2.Add 2
     col3.Add 1
     
-    fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col2)
+    fluent.testValue = testFluent.Of(col).Should.Be.IdenticalTo(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    fluent.TestValue = testFluent.Of(col2).Should.Be.IdenticalTo(col3)
+    fluent.testValue = testFluent.Of(col2).Should.Be.IdenticalTo(col3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -5744,16 +5773,16 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     col.Add 1
     col2.Add 1
     col3.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(col3)
+    fluent.testValue = testFluent.Of(col).Should.Be.IdenticalTo(col3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    fluent.TestValue = testFluent.Of(col2).Should.Be.IdenticalTo(col3)
+    fluent.testValue = testFluent.Of(col2).Should.Be.IdenticalTo(col3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col2).Should.Be.IdenticalTo(col)
+    fluent.testValue = testFluent.Of(col2).Should.Be.IdenticalTo(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -5763,9 +5792,9 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     col2.Add 1
     col3.Add 1
     With testFluent.Of(col2).Should.Be
-        fluent.TestValue = .IdenticalTo(col)
+        fluent.testValue = .IdenticalTo(col)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .IdenticalTo(col3)
+        fluent.testValue = .IdenticalTo(col3)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     Set col = Nothing
@@ -5773,57 +5802,57 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     Set col3 = Nothing
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr)
+    fluent.testValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
-    fluent.TestValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
     
     With testFluent.Of(arr).Should.Be
-        fluent.TestValue = .IdenticalTo(arr2)
+        fluent.testValue = .IdenticalTo(arr2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .IdenticalTo(VBA.[_HiddenModule].Array(1, 2, 3))
+        fluent.testValue = .IdenticalTo(VBA.[_HiddenModule].Array(1, 2, 3))
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(2, 3, 4)
-    fluent.TestValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Be.IdenticalTo(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
     
     With testFluent.Of(VBA.[_HiddenModule].Array(2, 3, 4)).Should.Be
-        fluent.TestValue = .IdenticalTo(arr)
+        fluent.testValue = .IdenticalTo(arr)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .IdenticalTo(arr2)
+        fluent.testValue = .IdenticalTo(arr2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
 
     'negative documentation tests
     Set col = New VBA.Collection
     col.Add 1
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -5834,9 +5863,9 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     col3.Add 1
     
     With testFluent.Of(col).ShouldNot.Be
-        fluent.TestValue = .IdenticalTo(col2)
+        fluent.testValue = .IdenticalTo(col2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .IdenticalTo(col3)
+        fluent.testValue = .IdenticalTo(col3)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -5848,9 +5877,9 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     col3.Add 1
     
     With testFluent.Of(col).ShouldNot.Be
-        fluent.TestValue = .IdenticalTo(col2)
+        fluent.testValue = .IdenticalTo(col2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .IdenticalTo(col3)
+        fluent.testValue = .IdenticalTo(col3)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -5861,9 +5890,9 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     col2.Add 2
     col3.Add 1
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    fluent.TestValue = testFluent.Of(col2).ShouldNot.Be.IdenticalTo(col3)
+    fluent.testValue = testFluent.Of(col2).ShouldNot.Be.IdenticalTo(col3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -5872,16 +5901,16 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     col.Add 1
     col2.Add 1
     col3.Add 2
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col3)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(col3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    fluent.TestValue = testFluent.Of(col2).ShouldNot.Be.IdenticalTo(col3)
+    fluent.testValue = testFluent.Of(col2).ShouldNot.Be.IdenticalTo(col3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col2).ShouldNot.Be.IdenticalTo(col)
+    fluent.testValue = testFluent.Of(col2).ShouldNot.Be.IdenticalTo(col)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -5891,9 +5920,9 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     col2.Add 1
     col3.Add 1
     With testFluent.Of(col2).ShouldNot.Be
-        fluent.TestValue = .IdenticalTo(col)
+        fluent.testValue = .IdenticalTo(col)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .IdenticalTo(col3)
+        fluent.testValue = .IdenticalTo(col3)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     Set col = Nothing
@@ -5901,145 +5930,145 @@ Private Function IdenticalToTests(ByVal fluent As IFluent, ByVal testFluent As I
     Set col3 = Nothing
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr2)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
     
     With testFluent.Of(arr).ShouldNot.Be
-        fluent.TestValue = .IdenticalTo(arr2)
+        fluent.testValue = .IdenticalTo(arr2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .IdenticalTo(VBA.[_HiddenModule].Array(1, 2, 3))
+        fluent.testValue = .IdenticalTo(VBA.[_HiddenModule].Array(1, 2, 3))
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(2, 3, 4)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr2)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Be.IdenticalTo(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
     
     With testFluent.Of(VBA.[_HiddenModule].Array(2, 3, 4)).ShouldNot.Be
-        fluent.TestValue = .IdenticalTo(arr)
+        fluent.testValue = .IdenticalTo(arr)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .IdenticalTo(arr2)
+        fluent.testValue = .IdenticalTo(arr2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
     'positive null documentation tests
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.IdenticalTo("Hello world")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Be.IdenticalTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo("Hello world")
+    fluent.testValue = testFluent.Of(col).Should.Be.IdenticalTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo("""Hello world""")
+    fluent.testValue = testFluent.Of(col).Should.Be.IdenticalTo("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(col).Should.Be.IdenticalTo(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Be.IdenticalTo(""" Hello world """)
+    fluent.testValue = testFluent.Of(col).Should.Be.IdenticalTo(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Be.IdenticalTo("Hello world")
+    fluent.testValue = testFluent.Of(d).Should.Be.IdenticalTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Be.IdenticalTo("""Hello world""")
+    fluent.testValue = testFluent.Of(d).Should.Be.IdenticalTo("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Be.IdenticalTo(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(d).Should.Be.IdenticalTo(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Be.IdenticalTo(""" Hello world """)
+    fluent.testValue = testFluent.Of(d).Should.Be.IdenticalTo(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").Should.Be.IdenticalTo(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of("Hello world").Should.Be.IdenticalTo(VBA.[_HiddenModule].Array(1, 2, 3))
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of("Hello world").Should.Be.IdenticalTo(col)
+    fluent.testValue = testFluent.Of("Hello world").Should.Be.IdenticalTo(col)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of("Hello world").Should.Be.IdenticalTo(d)
+    fluent.testValue = testFluent.Of("Hello world").Should.Be.IdenticalTo(d)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").Should.Be.IdenticalTo(Null)
+    fluent.testValue = testFluent.Of("Hello world").Should.Be.IdenticalTo(Null)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.IdenticalTo("Hello world")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Be.IdenticalTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo("Hello world")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo("""Hello world""")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(""" Hello world """)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Be.IdenticalTo(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.IdenticalTo("Hello world")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.IdenticalTo("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.IdenticalTo("""Hello world""")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.IdenticalTo("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.IdenticalTo(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.IdenticalTo(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Be.IdenticalTo(""" Hello world """)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Be.IdenticalTo(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Be.IdenticalTo(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Be.IdenticalTo(VBA.[_HiddenModule].Array(1, 2, 3))
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Be.IdenticalTo(col)
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Be.IdenticalTo(col)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Be.IdenticalTo(d)
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Be.IdenticalTo(d)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Be.IdenticalTo(Null)
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Be.IdenticalTo(Null)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Be.IdenticalTo("Hello world")
+    fluent.testValue = testFluent.Of().Should.Be.IdenticalTo("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Be.IdenticalTo("Hello world")
+    fluent.testValue = testFluent.Of().ShouldNot.Be.IdenticalTo("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -6062,21 +6091,21 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     'positive documentation tests
     Set col = New VBA.Collection
     col.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.ExactSameElementsAs(col)
+    fluent.testValue = testFluent.Of(col).Should.Have.ExactSameElementsAs(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.ExactSameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.ExactSameElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.ExactSameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.ExactSameElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6087,9 +6116,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col3.Add 1
     
     With testFluent.Of(col).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(col2)
+        fluent.testValue = .ExactSameElementsAs(col2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col3)
+        fluent.testValue = .ExactSameElementsAs(col3)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
 
@@ -6101,9 +6130,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col3.Add 1
 
     With testFluent.Of(col).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(col2)
+        fluent.testValue = .ExactSameElementsAs(col2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col3)
+        fluent.testValue = .ExactSameElementsAs(col3)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
 
@@ -6115,9 +6144,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col3.Add 1
 
     With testFluent.Of(col2).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col3)
+        fluent.testValue = .ExactSameElementsAs(col3)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
 
@@ -6129,9 +6158,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col3.Add 2
 
     With testFluent.Of(col3).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col2)
+        fluent.testValue = .ExactSameElementsAs(col2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -6139,7 +6168,7 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col2).Should.Have.ExactSameElementsAs(col)
+    fluent.testValue = testFluent.Of(col2).Should.Have.ExactSameElementsAs(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6150,9 +6179,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col3.Add 1
 
     With testFluent.Of(col2).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col3)
+        fluent.testValue = .ExactSameElementsAs(col3)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     Set col = Nothing
@@ -6160,46 +6189,46 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     Set col3 = Nothing
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.ExactSameElementsAs(arr)
+    fluent.testValue = testFluent.Of(arr).Should.Have.ExactSameElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
-    fluent.TestValue = testFluent.Of(arr).Should.Have.ExactSameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.ExactSameElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
 
     With testFluent.Of(arr).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(arr2)
+        fluent.testValue = .ExactSameElementsAs(arr2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
+        fluent.testValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(2, 3, 4)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.ExactSameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.ExactSameElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
 
     With testFluent.Of(VBA.[_HiddenModule].Array(2, 3, 4)).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(arr)
+        fluent.testValue = .ExactSameElementsAs(arr)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(arr2)
+        fluent.testValue = .ExactSameElementsAs(arr2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
 
     Set col = New VBA.Collection
     col.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
+    fluent.testValue = testFluent.Of(col).Should.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(2))
+    fluent.testValue = testFluent.Of(col).Should.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(2))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6208,9 +6237,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col2.Add 1
 
     With testFluent.Of(VBA.[_HiddenModule].Array(1)).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col2)
+        fluent.testValue = .ExactSameElementsAs(col2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -6220,9 +6249,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col2.Add 1
 
     With testFluent.Of(col).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
+        fluent.testValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col2)
+        fluent.testValue = .ExactSameElementsAs(col2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
 
@@ -6232,9 +6261,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col2.Add 2
 
     With testFluent.Of(col2).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
+        fluent.testValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -6244,9 +6273,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col2.Add 2
 
     With testFluent.Of(col2).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
+        fluent.testValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -6254,16 +6283,16 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col2).Should.Have.ExactSameElementsAs(col)
+    fluent.testValue = testFluent.Of(col2).Should.Have.ExactSameElementsAs(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 
     Set col = New VBA.Collection
     col.Add 1
     With testFluent.Of(VBA.[_HiddenModule].Array(2)).Should.Have
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
+        fluent.testValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     Set col = Nothing
@@ -6273,21 +6302,21 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     
     Set col = New VBA.Collection
     col.Add 1
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs(col)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs(col)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6298,9 +6327,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col3.Add 1
     
     With testFluent.Of(col).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(col2)
+        fluent.testValue = .ExactSameElementsAs(col2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col3)
+        fluent.testValue = .ExactSameElementsAs(col3)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
 
@@ -6312,9 +6341,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col3.Add 1
 
     With testFluent.Of(col).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(col2)
+        fluent.testValue = .ExactSameElementsAs(col2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col3)
+        fluent.testValue = .ExactSameElementsAs(col3)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
 
@@ -6326,9 +6355,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col3.Add 1
 
     With testFluent.Of(col2).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col3)
+        fluent.testValue = .ExactSameElementsAs(col3)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
 
@@ -6340,9 +6369,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col3.Add 2
 
     With testFluent.Of(col3).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col2)
+        fluent.testValue = .ExactSameElementsAs(col2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -6350,7 +6379,7 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col2).ShouldNot.Have.ExactSameElementsAs(col)
+    fluent.testValue = testFluent.Of(col2).ShouldNot.Have.ExactSameElementsAs(col)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6361,9 +6390,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col3.Add 1
 
     With testFluent.Of(col2).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col3)
+        fluent.testValue = .ExactSameElementsAs(col3)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     Set col = Nothing
@@ -6371,46 +6400,46 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     Set col3 = Nothing
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.ExactSameElementsAs(arr)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.ExactSameElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.ExactSameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.ExactSameElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
 
     With testFluent.Of(arr).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(arr2)
+        fluent.testValue = .ExactSameElementsAs(arr2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
+        fluent.testValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(2, 3, 4)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.ExactSameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.ExactSameElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = arr
 
     With testFluent.Of(VBA.[_HiddenModule].Array(2, 3, 4)).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(arr)
+        fluent.testValue = .ExactSameElementsAs(arr)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(arr2)
+        fluent.testValue = .ExactSameElementsAs(arr2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
 
     Set col = New VBA.Collection
     col.Add 1
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(2))
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(2))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6419,9 +6448,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col2.Add 1
 
     With testFluent.Of(VBA.[_HiddenModule].Array(1)).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col2)
+        fluent.testValue = .ExactSameElementsAs(col2)
         Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -6431,9 +6460,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col2.Add 1
 
     With testFluent.Of(col).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
+        fluent.testValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col2)
+        fluent.testValue = .ExactSameElementsAs(col2)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
 
@@ -6443,9 +6472,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col2.Add 2
 
     With testFluent.Of(col2).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
+        fluent.testValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -6455,9 +6484,9 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     col2.Add 2
 
     With testFluent.Of(col2).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
+        fluent.testValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     
@@ -6465,79 +6494,79 @@ Private Function ExactSameElementsAsTests(ByVal fluent As IFluent, ByVal testFlu
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col2).ShouldNot.Have.ExactSameElementsAs(col)
+    fluent.testValue = testFluent.Of(col2).ShouldNot.Have.ExactSameElementsAs(col)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 1
     With testFluent.Of(VBA.[_HiddenModule].Array(2)).ShouldNot.Have
-        fluent.TestValue = .ExactSameElementsAs(col)
+        fluent.testValue = .ExactSameElementsAs(col)
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-        fluent.TestValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
+        fluent.testValue = .ExactSameElementsAs(VBA.[_HiddenModule].Array(1))
         Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     End With
     Set col = Nothing
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.ExactSameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.ExactSameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.ExactSameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(col).Should.Have.ExactSameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.ExactSameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(d).Should.Have.ExactSameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").Should.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of("Hello world").Should.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of("Hello world").Should.Have.ExactSameElementsAs(col)
+    fluent.testValue = testFluent.Of("Hello world").Should.Have.ExactSameElementsAs(col)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of("Hello world").Should.Have.ExactSameElementsAs(d)
+    fluent.testValue = testFluent.Of("Hello world").Should.Have.ExactSameElementsAs(d)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Have.ExactSameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(Null).Should.Have.ExactSameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.ExactSameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.ExactSameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ExactSameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.ExactSameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.ExactSameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Have.ExactSameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Have.ExactSameElementsAs(col)
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Have.ExactSameElementsAs(col)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Have.ExactSameElementsAs(d)
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Have.ExactSameElementsAs(d)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.ExactSameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.ExactSameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Have.ExactSameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of().Should.Have.ExactSameElementsAs("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.ExactSameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of().ShouldNot.Have.ExactSameElementsAs("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -6561,33 +6590,14 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     
     Set col = New VBA.Collection
     col.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
-    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    Set col = New VBA.Collection
-    Set col2 = New VBA.Collection
-    col.Add 1
-    col.Add 2
-    col2.Add 2
-    col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
-    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    Set col = New VBA.Collection
-    Set col2 = New VBA.Collection
-    col.Add 1
-    col.Add 2
-    col.Add 1
-    col2.Add 2
-    col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6596,8 +6606,7 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col2.Add 2
     col2.Add 1
-    col2.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6607,57 +6616,77 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 1
     col2.Add 2
     col2.Add 1
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set col = New VBA.Collection
+    Set col2 = New VBA.Collection
+    col.Add 1
     col.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    col2.Add 2
+    col2.Add 1
+    col2.Add 2
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set col = New VBA.Collection
+    Set col2 = New VBA.Collection
+    col.Add 1
+    col.Add 2
+    col.Add 1
+    col2.Add 2
+    col2.Add 1
+    col.Add 2
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1)
     arr2 = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 1)
     arr2 = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 1)
     arr2 = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 1
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(1, 2)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6665,14 +6694,14 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col.Add 1
     arr = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6680,14 +6709,14 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col.Add 1
     arr = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6696,7 +6725,7 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col2.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6706,7 +6735,7 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 3
     col2.Add 2
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6716,7 +6745,7 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col2.Add 2
     col2.Add 1
     col2.Add 3
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6727,52 +6756,52 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col2.Add 2
     col2.Add 1
     col.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1)
     arr2 = VBA.[_HiddenModule].Array(2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(2, 2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(2, 1, 0)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 1
     arr = VBA.[_HiddenModule].Array(2)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(1, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 2
     col.Add 2
     arr = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6780,14 +6809,14 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col.Add 3
     arr = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(2, 1, 0)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6795,40 +6824,21 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col.Add 3
     arr = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     
     Set col = New VBA.Collection
     col.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
-    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    Set col = New VBA.Collection
-    Set col2 = New VBA.Collection
-    col.Add 1
-    col.Add 2
-    col2.Add 2
-    col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
-    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
-    
-    Set col = New VBA.Collection
-    Set col2 = New VBA.Collection
-    col.Add 1
-    col.Add 2
-    col.Add 1
-    col2.Add 2
-    col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6837,8 +6847,7 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col2.Add 2
     col2.Add 1
-    col2.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6848,57 +6857,77 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 1
     col2.Add 2
     col2.Add 1
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set col = New VBA.Collection
+    Set col2 = New VBA.Collection
+    col.Add 1
     col.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    col2.Add 2
+    col2.Add 1
+    col2.Add 2
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
+    
+    Set col = New VBA.Collection
+    Set col2 = New VBA.Collection
+    col.Add 1
+    col.Add 2
+    col.Add 1
+    col2.Add 2
+    col2.Add 1
+    col.Add 2
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1)
     arr2 = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 1)
     arr2 = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 1)
     arr2 = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 1
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(1, 2)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6906,14 +6935,14 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col.Add 1
     arr = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6921,14 +6950,14 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col.Add 1
     arr = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6937,7 +6966,7 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col2.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6947,7 +6976,7 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 3
     col2.Add 2
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6957,7 +6986,7 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col2.Add 2
     col2.Add 1
     col2.Add 3
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -6968,38 +6997,38 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col2.Add 2
     col2.Add 1
     col.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1)
     arr2 = VBA.[_HiddenModule].Array(2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(2, 2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(2, 1, 0)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameUniqueElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 1
     arr = VBA.[_HiddenModule].Array(2)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 
@@ -7008,14 +7037,14 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(1, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 2
     col.Add 2
     arr = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -7023,14 +7052,14 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col.Add 3
     arr = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(2, 1, 0)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -7038,117 +7067,117 @@ Private Function SameUniqueElementsAsTests(ByVal fluent As IFluent, ByVal testFl
     col.Add 2
     col.Add 3
     arr = VBA.[_HiddenModule].Array(2, 1, 2)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.SameUniqueElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.SameUniqueElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs("""Hello world""")
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(""" Hello world """)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameUniqueElementsAs(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.SameUniqueElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(d).Should.Have.SameUniqueElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.SameUniqueElementsAs("""Hello world""")
+    fluent.testValue = testFluent.Of(d).Should.Have.SameUniqueElementsAs("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.SameUniqueElementsAs(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(d).Should.Have.SameUniqueElementsAs(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.SameUniqueElementsAs(""" Hello world """)
+    fluent.testValue = testFluent.Of(d).Should.Have.SameUniqueElementsAs(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").Should.Have.SameUniqueElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of("Hello world").Should.Have.SameUniqueElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of("Hello world").Should.Have.SameUniqueElementsAs(col)
+    fluent.testValue = testFluent.Of("Hello world").Should.Have.SameUniqueElementsAs(col)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of("Hello world").Should.Have.SameUniqueElementsAs(d)
+    fluent.testValue = testFluent.Of("Hello world").Should.Have.SameUniqueElementsAs(d)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Have.SameUniqueElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(Null).Should.Have.SameUniqueElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.SameUniqueElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.SameUniqueElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameUniqueElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameUniqueElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameUniqueElementsAs("""Hello world""")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameUniqueElementsAs("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameUniqueElementsAs(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameUniqueElementsAs(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameUniqueElementsAs(""" Hello world """)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameUniqueElementsAs(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameUniqueElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.SameUniqueElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameUniqueElementsAs("""Hello world""")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.SameUniqueElementsAs("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameUniqueElementsAs(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.SameUniqueElementsAs(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameUniqueElementsAs(""" Hello world """)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.SameUniqueElementsAs(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Have.SameUniqueElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Have.SameUniqueElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Have.SameUniqueElementsAs(col)
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Have.SameUniqueElementsAs(col)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Have.SameUniqueElementsAs(d)
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Have.SameUniqueElementsAs(d)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.SameUniqueElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.SameUniqueElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Have.SameUniqueElementsAs("Hello world")
+    fluent.testValue = testFluent.Of().Should.Have.SameUniqueElementsAs("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.SameUniqueElementsAs("Hello world")
+    fluent.testValue = testFluent.Of().ShouldNot.Have.SameUniqueElementsAs("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -7171,14 +7200,14 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     'positive documentation tests
     Set col = New VBA.Collection
     col.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(col)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
@@ -7187,7 +7216,7 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col.Add 2
     col2.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -7198,39 +7227,39 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col2.Add 1
     col2.Add 2
     col2.Add 3
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     arr = VBA.[_HiddenModule].Array(1)
     arr2 = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(1, 2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 1
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(1, 2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -7238,14 +7267,14 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col.Add 2
     col.Add 3
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
@@ -7254,7 +7283,7 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col.Add 1
     col2.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -7263,7 +7292,7 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col.Add 2
     col2.Add 2
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -7274,35 +7303,35 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col2.Add 3
     col2.Add 2
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     arr = VBA.[_HiddenModule].Array(1)
     arr2 = VBA.[_HiddenModule].Array(2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(3, 2, 1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).Should.Have.SameElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 1
     arr = VBA.[_HiddenModule].Array(2)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -7310,20 +7339,20 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col.Add 2
     col.Add 3
     arr = VBA.[_HiddenModule].Array(3, 2, 1)
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     Set col = New VBA.Collection
     col.Add 1
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
@@ -7332,7 +7361,7 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col.Add 2
     col2.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -7343,41 +7372,41 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col2.Add 1
     col2.Add 2
     col2.Add 3
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
 
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     arr = VBA.[_HiddenModule].Array(1)
     arr2 = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
 
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(1, 2)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 1
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(1, 2)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -7385,7 +7414,7 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col.Add 2
     col.Add 3
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(arr)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     
@@ -7394,7 +7423,7 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     Set col2 = New VBA.Collection
     col.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
@@ -7403,7 +7432,7 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col.Add 1
     col2.Add 1
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     
@@ -7413,7 +7442,7 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col.Add 2
     col2.Add 2
     col2.Add 2
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     
@@ -7425,36 +7454,36 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col2.Add 3
     col2.Add 2
     col2.Add 1
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(col2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     arr = VBA.[_HiddenModule].Array(1)
     arr2 = VBA.[_HiddenModule].Array(2)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
 
     arr = VBA.[_HiddenModule].Array(1, 2)
     arr2 = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
     arr2 = VBA.[_HiddenModule].Array(3, 2, 1)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.SameElementsAs(arr2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 1
     arr = VBA.[_HiddenModule].Array(2)
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
     col.Add 1
     col.Add 2
     arr = VBA.[_HiddenModule].Array(2, 1)
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
@@ -7462,117 +7491,117 @@ Private Function SameElementsAsTests(ByVal fluent As IFluent, ByVal testFluent A
     col.Add 2
     col.Add 3
     arr = VBA.[_HiddenModule].Array(3, 2, 1)
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(arr)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(arr)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.SameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs("""Hello world""")
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.SameElementsAs(""" Hello world """)
+    fluent.testValue = testFluent.Of(col).Should.Have.SameElementsAs(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.SameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(d).Should.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.SameElementsAs("""Hello world""")
+    fluent.testValue = testFluent.Of(d).Should.Have.SameElementsAs("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.SameElementsAs(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(d).Should.Have.SameElementsAs(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.SameElementsAs(""" Hello world """)
+    fluent.testValue = testFluent.Of(d).Should.Have.SameElementsAs(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").Should.Have.SameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of("Hello world").Should.Have.SameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of("Hello world").Should.Have.SameElementsAs(col)
+    fluent.testValue = testFluent.Of("Hello world").Should.Have.SameElementsAs(col)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of("Hello world").Should.Have.SameElementsAs(d)
+    fluent.testValue = testFluent.Of("Hello world").Should.Have.SameElementsAs(d)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).Should.Have.SameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(Null).Should.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.SameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs("""Hello world""")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(""" Hello world """)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.SameElementsAs(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameElementsAs("""Hello world""")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.SameElementsAs("""Hello world""")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameElementsAs(" ""Hello world"" ")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.SameElementsAs(" ""Hello world"" ")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.SameElementsAs(""" Hello world """)
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.SameElementsAs(""" Hello world """)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Have.SameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Have.SameElementsAs(VBA.[_HiddenModule].Array(1, 2, 3))
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Have.SameElementsAs(col)
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Have.SameElementsAs(col)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of("Hello world").ShouldNot.Have.SameElementsAs(d)
+    fluent.testValue = testFluent.Of("Hello world").ShouldNot.Have.SameElementsAs(d)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.SameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.SameElementsAs("Hello world")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Have.SameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of().Should.Have.SameElementsAs("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.SameElementsAs("Hello world")
+    fluent.testValue = testFluent.Of().ShouldNot.Have.SameElementsAs("Hello world")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -7590,31 +7619,31 @@ Private Function ProcedureTests(ByVal fluent As IFluent, ByVal testFluent As IFl
 
     'positive documentation tests
 
-    fluent.TestValue = testFluent.Of(testFluent).Should.Have.Procedure("Of", VbMethod)
+    fluent.testValue = testFluent.Of(testFluent).Should.Have.Procedure("Of", VbMethod)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of(testFluent).ShouldNot.Have.Procedure("Of", VbMethod)
+    fluent.testValue = testFluent.Of(testFluent).ShouldNot.Have.Procedure("Of", VbMethod)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of("Hello World").Should.Have.Procedure("Of", VbMethod)
+    fluent.testValue = testFluent.Of("Hello World").Should.Have.Procedure("Of", VbMethod)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of("Hello World").ShouldNot.Have.Procedure("Of", VbMethod)
+    fluent.testValue = testFluent.Of("Hello World").ShouldNot.Have.Procedure("Of", VbMethod)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Have.Procedure("Of", VbMethod)
+    fluent.testValue = testFluent.Of().Should.Have.Procedure("Of", VbMethod)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.Procedure("Of", VbMethod)
+    fluent.testValue = testFluent.Of().ShouldNot.Have.Procedure("Of", VbMethod)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -7636,25 +7665,25 @@ Private Function ElementsTests(ByVal fluent As IFluent, ByVal testFluent As IFlu
     col.Add 2
     col.Add 3
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.Elements(1)
+    fluent.testValue = testFluent.Of(col).Should.Have.Elements(1)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.Elements(2)
+    fluent.testValue = testFluent.Of(col).Should.Have.Elements(2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.Elements(3)
+    fluent.testValue = testFluent.Of(col).Should.Have.Elements(3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.Elements(1, 2)
+    fluent.testValue = testFluent.Of(col).Should.Have.Elements(1, 2)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.Elements(2, 3)
+    fluent.testValue = testFluent.Of(col).Should.Have.Elements(2, 3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.Elements(1, 3)
+    fluent.testValue = testFluent.Of(col).Should.Have.Elements(1, 3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.Elements(1, 2, 3)
+    fluent.testValue = testFluent.Of(col).Should.Have.Elements(1, 2, 3)
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     'negative documentation tests
@@ -7663,40 +7692,40 @@ Private Function ElementsTests(ByVal fluent As IFluent, ByVal testFluent As IFlu
     col.Add 2
     col.Add 3
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(1)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.Elements(1)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.Elements(2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(3)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.Elements(3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(1, 2)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.Elements(1, 2)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(2, 3)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.Elements(2, 3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(1, 3)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.Elements(1, 3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.Elements(1, 2, 3)
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.Elements(1, 2, 3)
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
-    fluent.TestValue = testFluent.Of(Null).Should.Have.Elements(1, 2, 3)
+    fluent.testValue = testFluent.Of(Null).Should.Have.Elements(1, 2, 3)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     'negative null documentation tests
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.Elements(1, 2, 3)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.Elements(1, 2, 3)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
-    fluent.TestValue = testFluent.Of().Should.Have.Elements(1, 2, 3)
+    fluent.testValue = testFluent.Of().Should.Have.Elements(1, 2, 3)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.Elements(1, 2, 3)
+    fluent.testValue = testFluent.Of().ShouldNot.Have.Elements(1, 2, 3)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     
@@ -7719,25 +7748,25 @@ Private Function ElementsInDataStructureTests(ByVal fluent As IFluent, ByVal tes
     col.Add 2
     col.Add 3
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1))
+    fluent.testValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(2))
+    fluent.testValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(2))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(3))
+    fluent.testValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(3))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2))
+    fluent.testValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(2, 3))
+    fluent.testValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(2, 3))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 3))
+    fluent.testValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 3))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of(col).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
         
@@ -7747,41 +7776,41 @@ Private Function ElementsInDataStructureTests(ByVal fluent As IFluent, ByVal tes
     col.Add 2
     col.Add 3
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1))
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(2))
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(2))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(3))
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(3))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2))
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(2, 3))
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(2, 3))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 3))
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 3))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
-    fluent.TestValue = testFluent.Of(Null).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of(Null).Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of().Should.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
+    fluent.testValue = testFluent.Of().ShouldNot.Have.ElementsInDataStructure(VBA.[_HiddenModule].Array(1, 2, 3))
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     
@@ -7809,35 +7838,35 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
 'positive documentation tests
 
     arr = VBA.[_HiddenModule].Array()
-    fluent.TestValue = testFluent.Of(arr).Should.Have.DepthCountOf(0) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.DepthCountOf(0) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.DepthCountOf(0) = tfIter.Of(arr).Should.Have.DepthCountOf(0)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.DepthCountOf(1) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.DepthCountOf(1) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.DepthCountOf(1) = tfIter.Of(arr).Should.Have.DepthCountOf(1)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
     arr = VBA.[_HiddenModule].Array(1, VBA.[_HiddenModule].Array(2))
-    fluent.TestValue = testFluent.Of(arr).Should.Have.DepthCountOf(2) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.DepthCountOf(2) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.DepthCountOf(2) = tfIter.Of(arr).Should.Have.DepthCountOf(2)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, VBA.[_HiddenModule].Array(2, VBA.[_HiddenModule].Array(3)))
-    fluent.TestValue = testFluent.Of(arr).Should.Have.DepthCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.DepthCountOf(3) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.DepthCountOf(3) = tfIter.Of(arr).Should.Have.DepthCountOf(3)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d1 = New Scripting.Dictionary
@@ -7848,11 +7877,11 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     d2.Add "B", d3
     d1.Add "A", d2
     
-    fluent.TestValue = testFluent.Of(d1).Should.Have.DepthCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(d1).Should.Have.DepthCountOf(3) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(d1).Should.Have.DepthCountOf(3) = tfIter.Of(d1).Should.Have.DepthCountOf(3)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d1 = New Scripting.Dictionary
@@ -7866,45 +7895,45 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     d1.Add "A", 1
     d1.Add "B", d2
     
-    fluent.TestValue = testFluent.Of(d1).Should.Have.DepthCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(d1).Should.Have.DepthCountOf(3) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(d1).Should.Have.DepthCountOf(3) = tfIter.Of(d1).Should.Have.DepthCountOf(3)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
 'negative documentation tests
 
     arr = VBA.[_HiddenModule].Array()
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.DepthCountOf(0) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.DepthCountOf(0) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.DepthCountOf(0) = tfIter.Of(arr).ShouldNot.Have.DepthCountOf(0)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.DepthCountOf(1) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.DepthCountOf(1) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.DepthCountOf(1) = tfIter.Of(arr).ShouldNot.Have.DepthCountOf(1)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, VBA.[_HiddenModule].Array(2))
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.DepthCountOf(2) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.DepthCountOf(2) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.DepthCountOf(2) = tfIter.Of(arr).ShouldNot.Have.DepthCountOf(2)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, VBA.[_HiddenModule].Array(2, VBA.[_HiddenModule].Array(3)))
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.DepthCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.DepthCountOf(3) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.DepthCountOf(3) = tfIter.Of(arr).ShouldNot.Have.DepthCountOf(3)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d1 = New Scripting.Dictionary
@@ -7915,11 +7944,11 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     d2.Add "B", d3
     d1.Add "A", d2
     
-    fluent.TestValue = testFluent.Of(d1).ShouldNot.Have.DepthCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(d1).ShouldNot.Have.DepthCountOf(3) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(d1).ShouldNot.Have.DepthCountOf(3) = tfIter.Of(d1).ShouldNot.Have.DepthCountOf(3)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Set d1 = New Scripting.Dictionary
@@ -7933,173 +7962,173 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     d1.Add "A", 1
     d1.Add "B", d2
     
-    fluent.TestValue = testFluent.Of(d1).ShouldNot.Have.DepthCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(d1).ShouldNot.Have.DepthCountOf(3) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(d1).ShouldNot.Have.DepthCountOf(3) = tfIter.Of(d1).ShouldNot.Have.DepthCountOf(3)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'positive null documentation tests
     
     val = 0
-    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(Null).Should.Have.DepthCountOf(val)) And _
     VBA.Information.IsNull(tfIter.Of(Null).Should.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     val = 1
-    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(Null).Should.Have.DepthCountOf(val)) And _
     VBA.Information.IsNull(tfIter.Of(Null).Should.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 2
-    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(Null).Should.Have.DepthCountOf(val)) And _
     VBA.Information.IsNull(tfIter.Of(Null).Should.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 3
-    fluent.TestValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of(Null).Should.Have.DepthCountOf(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(Null).Should.Have.DepthCountOf(val)) And _
     VBA.Information.IsNull(tfIter.Of(Null).Should.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'negative null documentation tests
     
     val = 0
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(Null).ShouldNot.Have.DepthCountOf(val)) And _
     VBA.Information.IsNull(tfIter.Of(Null).ShouldNot.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 1
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(Null).ShouldNot.Have.DepthCountOf(val)) And _
     VBA.Information.IsNull(tfIter.Of(Null).ShouldNot.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 2
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(Null).ShouldNot.Have.DepthCountOf(val)) And _
     VBA.Information.IsNull(tfIter.Of(Null).ShouldNot.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 3
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.DepthCountOf(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(Null).ShouldNot.Have.DepthCountOf(val)) And _
     VBA.Information.IsNull(tfIter.Of(Null).ShouldNot.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'empty documention tests
     
     val = 0
-    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of().Should.Have.DepthCountOf(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Have.DepthCountOf(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Have.DepthCountOf(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 1
-    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of().Should.Have.DepthCountOf(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Have.DepthCountOf(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Have.DepthCountOf(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 2
-    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of().Should.Have.DepthCountOf(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Have.DepthCountOf(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Have.DepthCountOf(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     val = 3
-    fluent.TestValue = testFluent.Of().Should.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of().Should.Have.DepthCountOf(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Have.DepthCountOf(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
+    fluent.testValue = testFluent.Of().ShouldNot.Have.DepthCountOf(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Have.DepthCountOf(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Have.DepthCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Debug.Assert tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
@@ -8132,7 +8161,7 @@ Private Function DepthCountOfTests(ByVal fluent As IFluent, ByVal testFluent As 
     Debug.Print "DepthCountOfTests finished"
     printTestCount (mTestCounter)
     mTestCounter = 0
-    
+
     Set DepthCountOfTests = testFluent
 End Function
 
@@ -8142,92 +8171,92 @@ Private Function ErrorDescriptionOfTests(ByVal fluent As IFluent, ByVal testFlue
     
     'positive documentation tests
     
-    fluent.TestValue = testFluent.Of("1 / 0").Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of("1 / 0").Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult) 'good
     
     On Error Resume Next
         Debug.Print 1 / 0
     
-        fluent.TestValue = testFluent.Of(Err).Should.Have.ErrorDescriptionOf("Division by zero")
+        fluent.testValue = testFluent.Of(Err).Should.Have.ErrorDescriptionOf("Division by zero")
     On Error GoTo 0
     
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
             
     'negative documentation tests
     
-    fluent.TestValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of("1 / 0").ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     On Error Resume Next
         Debug.Print 1 / 0
     
-        fluent.TestValue = testFluent.Of(Err).ShouldNot.Have.ErrorDescriptionOf("Division by zero")
+        fluent.testValue = testFluent.Of(Err).ShouldNot.Have.ErrorDescriptionOf("Division by zero")
     On Error GoTo 0
     
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'positive null documentation tests
     
-    fluent.TestValue = testFluent.Of(123).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(123).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(1.23).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(1.23).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(True).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(True).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(False).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(False).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(Null).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(Null).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(col).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(d).Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(123).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(123).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(1.23).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(1.23).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(True).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(True).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(False).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(False).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(VBA.[_HiddenModule].Array(1, 2, 3)).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set col = New VBA.Collection
-    fluent.TestValue = testFluent.Of(col).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(col).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     Set d = New Scripting.Dictionary
-    fluent.TestValue = testFluent.Of(d).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of(d).ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     'empty documention tests
     
-    fluent.TestValue = testFluent.Of().Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of().Should.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
+    fluent.testValue = testFluent.Of().ShouldNot.Have.ErrorDescriptionOf("Application-defined or object-defined error")
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     Call validateTests(fluent, testFluent)
@@ -8251,274 +8280,274 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
 'positive documentation tests
 
     arr = VBA.[_HiddenModule].Array()
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(0) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(0) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(0) = tfIter.Of(arr).Should.Have.NestedCountOf(0)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(1) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(1) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(1) = tfIter.Of(arr).Should.Have.NestedCountOf(1)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(2) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(2) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(2) = tfIter.Of(arr).Should.Have.NestedCountOf(2)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(3) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(3) = tfIter.Of(arr).Should.Have.NestedCountOf(3)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array())
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(0) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(0) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(0) = tfIter.Of(arr).Should.Have.NestedCountOf(0)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1))
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(1) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(1) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(1) = tfIter.Of(arr).Should.Have.NestedCountOf(1)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1, 2))
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(2) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(2) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(2) = tfIter.Of(arr).Should.Have.NestedCountOf(2)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1, 2, 3))
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(3) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(3) = tfIter.Of(arr).Should.Have.NestedCountOf(3)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array()))
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(0) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(0) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(0) = tfIter.Of(arr).Should.Have.NestedCountOf(0)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1)))
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(1) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(1) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(1) = tfIter.Of(arr).Should.Have.NestedCountOf(1)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1, 2)))
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(2) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(2) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(2) = tfIter.Of(arr).Should.Have.NestedCountOf(2)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1, 2, 3)))
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(3) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(3) = tfIter.Of(arr).Should.Have.NestedCountOf(3)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, VBA.[_HiddenModule].Array(2))
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(2) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(2) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(2) = tfIter.Of(arr).Should.Have.NestedCountOf(2)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, VBA.[_HiddenModule].Array(2, VBA.[_HiddenModule].Array(3)))
-    fluent.TestValue = testFluent.Of(arr).Should.Have.NestedCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).Should.Have.NestedCountOf(3) 'with implicit recur
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).Should.Have.NestedCountOf(3) = tfIter.Of(arr).Should.Have.NestedCountOf(3)
     mMiscPosTests = mMiscPosTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
         
 'negative documentation tests
 
     arr = VBA.[_HiddenModule].Array()
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(0) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(0) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(0) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(0)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(1) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(1) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(1) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(1)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(2) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(2) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(2) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(2)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, 2, 3)
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(3) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(3) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(3)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array())
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(0) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(0) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(0) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(0)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1))
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(1) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(1) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(1) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(1)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1, 2))
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(2) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(2) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(2) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(2)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1, 2, 3))
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(3) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(3) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(3)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array()))
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(0) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(0) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(0) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(0)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1)))
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(1) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(1) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(1) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(1)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1, 2)))
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(2) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(2) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(2) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(2)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(VBA.[_HiddenModule].Array(1, 2, 3)))
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(3) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(3) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(3)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, VBA.[_HiddenModule].Array(2))
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(2) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(2) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(2) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(2)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     arr = VBA.[_HiddenModule].Array(1, VBA.[_HiddenModule].Array(2, VBA.[_HiddenModule].Array(3)))
-    fluent.TestValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(3) 'with implicit recur
+    fluent.testValue = testFluent.Of(arr).ShouldNot.Have.NestedCountOf(3) 'with implicit recur
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = tfRecur.Of(arr).ShouldNot.Have.NestedCountOf(3) = tfIter.Of(arr).ShouldNot.Have.NestedCountOf(3)
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'positive null documentation tests
     val = 0
-    fluent.TestValue = testFluent.Of(Null).Should.Have.NestedCountOf(val)
+    fluent.testValue = testFluent.Of(Null).Should.Have.NestedCountOf(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(Null).Should.Have.NestedCountOf(val)) And _
     VBA.Information.IsNull(tfIter.Of(Null).Should.Have.NestedCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
 'negative null documentation tests
     
-    fluent.TestValue = testFluent.Of(Null).ShouldNot.Have.NestedCountOf(val)
+    fluent.testValue = testFluent.Of(Null).ShouldNot.Have.NestedCountOf(val)
     Call NullAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsNull(tfRecur.Of(10).ShouldNot.Have.NestedCountOf(val)) And _
     VBA.Information.IsNull(tfIter.Of(10).ShouldNot.Have.NestedCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     
 'empty documention tests
     
     val = 0
-    fluent.TestValue = testFluent.Of().Should.Have.NestedCountOf(val)
+    fluent.testValue = testFluent.Of().Should.Have.NestedCountOf(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().Should.Have.NestedCountOf(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().Should.Have.NestedCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).Should.Be.EqualTo(True) 'with explicit recur and iter
     Call TrueAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
 
     
-    fluent.TestValue = testFluent.Of().ShouldNot.Have.NestedCountOf(val)
+    fluent.testValue = testFluent.Of().ShouldNot.Have.NestedCountOf(val)
     Call EmptyAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     b = _
     VBA.Information.IsEmpty(tfRecur.Of().ShouldNot.Have.NestedCountOf(val)) And _
     VBA.Information.IsEmpty(tfIter.Of().ShouldNot.Have.NestedCountOf(val))
     mMiscNegTests = mMiscNegTests + 1 'incrementing misc counter to account for second test in b
-    fluent.TestValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
+    fluent.testValue = testFluent.Of(b).ShouldNot.Be.EqualTo(True) 'with explicit recur and iter
     Call FalseAssertAndRaiseEvents(fluent, testFluent, testFluentResult)
     
     
@@ -8552,33 +8581,8 @@ Private Function NestedCountOfTests(ByVal fluent As IFluent, ByVal testFluent As
     Debug.Print "NestedCountOfTests finished"
     printTestCount (mTestCounter)
     mTestCounter = 0
-    
+
     Set NestedCountOfTests = testFluent
-End Function
-
-
-
-Private Function StubTests(ByVal fluent As IFluent, ByVal testFluent As IFluentOf, ByVal testFluentResult As IFluentOf) As IFluentOf
-    Dim col As VBA.Collection
-    Dim d As Scripting.Dictionary
-    
-    'positive documentation tests
-            
-    'negative documentation tests
-    
-    'positive null documentation tests
-    
-    'negative null documentation tests
-    
-    'empty documention tests
-    
-    Call validateTests(fluent, testFluent)
-    
-    Debug.Print "StubTests finished"
-    printTestCount (mTestCounter)
-    mTestCounter = 0
-    
-    Set StubTests = testFluent
 End Function
 
 Private Function cleanStringTests(ByVal fluent As IFluent) As Long
@@ -8586,28 +8590,28 @@ Private Function cleanStringTests(ByVal fluent As IFluent) As Long
     
     fluent.Meta.tests.TestStrings.CleanTestValueStr = True
     
-    fluent.TestValue = """abc"""
+    fluent.testValue = """abc"""
     
     Debug.Assert fluent.Should.Be.EqualTo("abc")
     
     fluent.Meta.tests.TestStrings.CleanTestValueStr = False
     fluent.Meta.tests.TestStrings.CleanTestInputStr = True
     
-    fluent.TestValue = "abc"
+    fluent.testValue = "abc"
 
     Debug.Assert fluent.Should.Be.EqualTo("""abc""")
     
     fluent.Meta.tests.TestStrings.CleanTestValueStr = True
     fluent.Meta.tests.TestStrings.CleanTestInputStr = True
 
-    fluent.TestValue = """abc"""
+    fluent.testValue = """abc"""
     
     fluent.Meta.tests.TestStrings.CleanTestValueStr = False
     fluent.Meta.tests.TestStrings.CleanTestInputStr = False
     
     fluent.Meta.tests.TestStrings.CleanTestStrings = True
 
-    fluent.TestValue = """abc"""
+    fluent.testValue = """abc"""
 
     Debug.Assert fluent.Should.Be.EqualTo("""abc""")
     
@@ -8617,14 +8621,14 @@ Private Function cleanStringTests(ByVal fluent As IFluent) As Long
 
     fluent.Meta.tests.TestStrings.CleanTestValueStr = True
     
-    fluent.TestValue = "'abc def'"
+    fluent.testValue = "'abc def'"
 
     Debug.Assert fluent.Should.Be.EqualTo("abcdef")
 
     fluent.Meta.tests.TestStrings.CleanTestValueStr = False
     fluent.Meta.tests.TestStrings.CleanTestInputStr = True
     
-    fluent.TestValue = "abcdef"
+    fluent.testValue = "abcdef"
     
     Debug.Assert fluent.Should.Be.EqualTo("'abc def'")
 
@@ -8636,14 +8640,14 @@ Private Function cleanStringTests(ByVal fluent As IFluent) As Long
     fluent.Meta.tests.TestStrings.CleanTestValueStr = True
     fluent.Meta.tests.TestStrings.CleanTestInputStr = False
     
-    fluent.TestValue = "'abc def'"
+    fluent.testValue = "'abc def'"
     
     Debug.Assert fluent.Should.Be.EqualTo("abc_def")
     
     fluent.Meta.tests.TestStrings.CleanTestValueStr = False
     fluent.Meta.tests.TestStrings.CleanTestInputStr = True
     
-    fluent.TestValue = "abc_def"
+    fluent.testValue = "abc_def"
     
     Debug.Assert fluent.Should.Be.EqualTo("'abc def'")
     
@@ -8651,15 +8655,15 @@ Private Function cleanStringTests(ByVal fluent As IFluent) As Long
     
     fluent.Meta.tests.TestStrings.CleanTestStrings = False
     
-    fluent.TestValue = """abc"""
+    fluent.testValue = """abc"""
     
-    fluent.TestValue = fluent.Meta.tests.TestStrings.CleanString(fluent.TestValue)
+    fluent.testValue = fluent.Meta.tests.TestStrings.CleanString(fluent.testValue)
     
     Debug.Assert fluent.Should.Be.EqualTo("abc")
     
-    fluent.TestValue = """bcd"""
+    fluent.testValue = """bcd"""
     
-    fluent.TestValue = fluent.Meta.tests.TestStrings.CleanString(fluent.TestValue)
+    fluent.testValue = fluent.Meta.tests.TestStrings.CleanString(fluent.testValue)
     
     Debug.Assert fluent.Should.Be.EqualTo(fluent.Meta.tests.TestStrings.CleanString("""bcd"""))
     
@@ -8698,12 +8702,12 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     Debug.Assert VBA.Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
     
     'test to ensure fluent object's TestValue property can return a value
-    fluent.TestValue = fluent.TestValue
+    fluent.testValue = fluent.testValue
     Debug.Assert fluent.Should.Be.EqualTo(Empty)
     
     'test to ensure fluent object's TestValue property can return an object
-    Set fluent.TestValue = New VBA.Collection
-    Set fluent.TestValue = fluent.TestValue
+    Set fluent.testValue = New VBA.Collection
+    Set fluent.testValue = fluent.testValue
     Debug.Assert fluent.Should.Be.Something
     
     'test to ensure that addDataStructure is working with non-default datastructure
@@ -8714,7 +8718,7 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     
     fluent.Meta.tests.AddDataStructure q
     
-    fluent.TestValue = "Hello"
+    fluent.testValue = "Hello"
     
     Debug.Assert fluent.Should.Be.InDataStructure(q)
     
@@ -8729,7 +8733,7 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     
     Set fluent2 = MakeFluent
     
-    Set fluent.TestValue = fluent2
+    Set fluent.testValue = fluent2
     
     Debug.Assert fluent.Should.Have.Procedure("TestValue", VbLet)
     Debug.Assert fluent.Should.Have.Procedure("TestValue", VbGet)
@@ -8758,7 +8762,7 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     
     Set col = New Collection
     
-    Set fluent.TestValue = col
+    Set fluent.testValue = col
     
     Debug.Assert fluent.Should.Be.Something
     
@@ -8787,7 +8791,7 @@ Private Function MiscTests(ByVal fluent As IFluent) As Long
     
     '//testingValueIsSelfReferential, testingInputIsSelfReferential, and hasSelfReferential should be true
     
-    fluent.TestValue = 1
+    fluent.testValue = 1
     
     Debug.Assert VBA.Information.IsNull(fluent.Should.Be.InDataStructure(col))
     

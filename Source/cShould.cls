@@ -28,11 +28,11 @@ End Property
 Private Property Let ISetTestFuncsAndValue_testValue(ByVal value As Variant)
     Dim tf As ITestingFunctions
     
-    pShouldVal = pTestingFunctions.TestValue
+    pShouldVal = pTestingFunctions.testValue
 End Property
 
 Private Property Set ISetTestFuncsAndValue_testValue(ByVal value As Variant)
-    Set pShouldVal = pTestingFunctions.TestValue
+    Set pShouldVal = pTestingFunctions.testValue
 End Property
 
 Private Property Get IShould_have() As IHave
@@ -44,9 +44,9 @@ Private Property Get IShould_have() As IHave
     Set pHaveSet.SetTestFunc = pTestingFunctions
 
     If VBA.Information.IsObject(pShouldVal) Then
-        Set pHaveSet.TestValue = pShouldVal
+        Set pHaveSet.testValue = pShouldVal
     Else
-        pHaveSet.TestValue = pShouldVal
+        pHaveSet.testValue = pShouldVal
     End If
     
     Set IShould_have = pHaveSet
@@ -61,9 +61,9 @@ Private Property Get IShould_be() As IBe
     Set pBeSet.SetTestFunc = pTestingFunctions
     
     If VBA.Information.IsObject(pShouldVal) Then
-        Set pBeSet.TestValue = pShouldVal
+        Set pBeSet.testValue = pShouldVal
     Else
-        pBeSet.TestValue = pShouldVal
+        pBeSet.testValue = pShouldVal
     End If
     
     Set IShould_be = pBeSet

@@ -21,7 +21,7 @@ Private Sub FluentAndFluentOfExample()
     Set fluent = MakeFluent
     Set fluentOf = MakeFluentOf
     
-    fluent.TestValue = fluentOf.Of(True).Should.Be.EqualTo(True)
+    fluent.testValue = fluentOf.Of(True).Should.Be.EqualTo(True)
     Debug.Assert fluent.Should.Be.EqualTo(True)
     
     Debug.Print "All tests passed!"
