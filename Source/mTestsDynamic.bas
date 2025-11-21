@@ -23,15 +23,23 @@ Sub edtrTest()
     Set tf = New cFluentOf
     
     fiArr = Array(fi, fi2)
-    
-    Set tfRecur = MakeFluentOf
-    Set tfIter = MakeFluentOf
-    
-    tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
-    tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
 
     For i = LBound(fiArr) To UBound(fiArr)
         mCounter = 0
+        
+        'Creating new instances of tfRecur and tfIter in the
+        'loop is necessary. Otherwise, the checks in
+        'validateRecurIterFluentOfsRefactor will fail since
+        'tfRecur and tfIter will maintain their counts from
+        'the previous element in the array while the new
+        'element in fiArr will not. And so, their counts will
+        'be different and one of the tests will fail.
+        
+        Set tfRecur = MakeFluentOf
+        Set tfIter = MakeFluentOf
+    
+        tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
+        tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
         
         Call AlphabeticTestsRefactor(f, fiArr(i), tf)
         Call AlphanumericTestsRefactor(f, fiArr(i), tf)
@@ -66,14 +74,20 @@ Sub edtrTest()
         Call SameUniqueElementsAsTestsRefactor(f, fiArr(i), tf)
         Call SameElementsAsTestsRefactor(f, fiArr(i), tf)
     
-    '    If Not G_TB_SKIP Then
+'        If Not G_TB_SKIP Then
+
             Call ErroneousTestsRefactor(f, fiArr(i), tf)
             Call ErrorDescriptionOfTestsRefactor(f, fiArr(i), tf)
             Call ErrorNumberOfTestsRefactor(f, fiArr(i), tf)
-    '        counter = 0
-    '    Else
-    '        counter = 3
-    '    End If
+            
+'            counter = 0
+'        Else
+'            counter = 3
+'        End If
+        
+        Call runRecurIterTestsRefactor(fiArr(i))
+        Call cleanStringTestsRefactor(fiArr(i))
+        Call MiscTestsRefactor(fiArr(i))
     Next i
     
     Debug.Print "All tests finished!"
@@ -14823,6 +14837,437 @@ Private Function ErrorNumberOfTestsRefactor(ByVal fluent As IFluent, ByVal fluen
 '    Set ErrorNumberOfTestsRefactor = testFluent
 End Function
 
+Private Function cleanStringTestsRefactor(ByVal fluentInput As Variant) As Long
+    Dim testCount As Long
+    Dim testingValue As Variant
+    Dim testingInput As Variant
+    Dim shouldMatch As Boolean
+    Dim functionName As String
+    
+    fluentInput.Meta.tests.TestStrings.CleanTestValueStr = True
+    
+    testingValue = """abc"""
+    
+    testingInput = "abc"
+    
+    functionName = "EqualTo"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+    
+    fluentInput.Meta.tests.TestStrings.CleanTestValueStr = False
+    fluentInput.Meta.tests.TestStrings.CleanTestInputStr = True
+    
+    testingValue = "abc"
+
+    testingInput = """abc"""
+    
+    functionName = "EqualTo"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+    
+    fluentInput.Meta.tests.TestStrings.CleanTestValueStr = True
+    fluentInput.Meta.tests.TestStrings.CleanTestInputStr = True
+
+    testingValue = """abc"""
+    
+    fluentInput.Meta.tests.TestStrings.CleanTestValueStr = False
+    fluentInput.Meta.tests.TestStrings.CleanTestInputStr = False
+    
+    fluentInput.Meta.tests.TestStrings.CleanTestStrings = True
+
+    testingValue = """abc"""
+
+    testingInput = """abc"""
+    
+    functionName = "EqualTo"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+    
+    'Add to clean strings tests
+    
+    fluentInput.Meta.tests.TestStrings.AddToCleanStringDict ("'")
+
+    fluentInput.Meta.tests.TestStrings.CleanTestValueStr = True
+    
+    testingValue = "'abc def'"
+
+    testingInput = "abcdef"
+    
+    functionName = "EqualTo"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+
+    fluentInput.Meta.tests.TestStrings.CleanTestValueStr = False
+    fluentInput.Meta.tests.TestStrings.CleanTestInputStr = True
+    
+    testingValue = "abcdef"
+    
+    testingInput = "'abc def'"
+    
+    functionName = "EqualTo"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+
+    fluentInput.Meta.tests.TestStrings.CleanTestValueStr = False
+    fluentInput.Meta.tests.TestStrings.CleanTestInputStr = True
+    
+    fluentInput.Meta.tests.TestStrings.AddToCleanStringDict " ", "_", True
+    
+    fluentInput.Meta.tests.TestStrings.CleanTestValueStr = True
+    fluentInput.Meta.tests.TestStrings.CleanTestInputStr = False
+    
+    testingValue = "'abc def'"
+    
+    testingInput = "abc_def"
+    
+    functionName = "EqualTo"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+    
+    fluentInput.Meta.tests.TestStrings.CleanTestValueStr = False
+    fluentInput.Meta.tests.TestStrings.CleanTestInputStr = True
+    
+    testingValue = "abc_def"
+    
+    testingInput = "'abc def'"
+    
+    functionName = "EqualTo"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+    
+    'Explicit clean strings using cUtilities
+    
+    fluentInput.Meta.tests.TestStrings.CleanTestStrings = False
+    
+    testingValue = """abc"""
+    
+    testingInput = fluentInput.Meta.tests.TestStrings.CleanString(testingValue)
+    
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+    Debug.Assert fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result
+    
+    testingValue = """bcd"""
+    
+    testingInput = fluentInput.Meta.tests.TestStrings.CleanString(testingValue)
+    
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+    Debug.Assert fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result
+    
+'    Debug.Print "Clean string tests finished"
+'
+'    testCount = fluentInput.Meta.tests.Count
+'    printTestCount (testCount)
+'
+'    cleanStringTestsRefactor = testCount
+End Function
+
+Private Function MiscTestsRefactor(ByVal fluentInput As Variant) As Long
+    Dim testCount As Long
+    Dim q As Object
+    Dim elem As Variant
+    Dim fluent2 As cFluent
+    Dim col As Collection
+    Dim testingValue As Variant
+    Dim testingInput As Variant
+    Dim testingInput1 As Variant
+    Dim testingInput2 As Variant
+    Dim shouldMatch As Boolean
+    Dim functionName As String
+    
+'    Set mEvents.setFluentEventDuplicate = fluent
+
+    'test to ensure fluent object's default TestValue value is equal to empty
+'    Debug.Assert VBA.Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
+    
+    testingInput = Empty
+    shouldMatch = True
+    functionName = "EqualTo"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
+    Debug.Assert VBA.Information.IsEmpty(fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result)
+    
+    'test to ensure that a duplicate test event is not raised since skipDupCheck
+    'is set to true
+    
+'    With fluent.Meta.tests
+'        .SkipDupCheck = True
+'            Debug.Assert VBA.Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
+'        .SkipDupCheck = False
+'    End With
+    
+    'test to ensure that a duplicate test event is raised since skipDupCheck
+    'is set to false
+    
+'    Debug.Assert VBA.Information.IsEmpty(fluent.Should.Be.EqualTo(Empty))
+    
+    'test to ensure fluent object's TestValue property can return a value
+'    testingValue = fluentInput.Meta.tests(fluentInput.Meta.tests.Count).testingValue
+'    testingInput = Empty
+'    shouldMatch = True
+'    functionName = "EqualTo"
+'    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+'    Debug.Assert VBA.Information.IsEmpty(fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result)
+    
+    'test to ensure fluent object's TestValue property can return an object
+'    Set fluent.testValue = New VBA.Collection
+'    Set fluent.testValue = fluent.testValue
+'    Debug.Assert fluent.Should.Be.Something
+
+    Set testingValue = New VBA.Collection
+    shouldMatch = True
+    functionName = "Something"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue)
+    Debug.Assert VBA.Information.IsObject(fluentInput.Meta.tests(fluentInput.Meta.tests.Count).testingValue)
+    
+    'test to ensure that addDataStructure is working with non-default datastructure
+    
+    Set q = VBA.Interaction.CreateObject("system.collections.Queue")
+    
+    q.Enqueue ("Hello")
+    
+    fluentInput.Meta.tests.AddDataStructure q
+    
+'    fluent.testValue = "Hello"
+'
+'    Debug.Assert fluent.Should.Be.InDataStructure(q)
+
+    testingValue = "Hello"
+    Set testingInput = q
+    shouldMatch = True
+    functionName = "InDataStructure"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+    Debug.Assert fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result
+    
+    'test to ensure that StrTestValue and StrTestInput are working with non-default datastructure
+    
+    With fluentInput.Meta
+        Debug.Assert .tests(.tests.Count).strTestValue = "`Hello`"
+        Debug.Assert .tests(.tests.Count).StrTestInput = "Queue(`Hello`)"
+    End With
+    
+    'Procedure bitwise flag tests
+    
+    Set fluent2 = MakeFluent
+    
+'    Set fluent.testValue = fluent2
+    Set testingValue = fluent2
+    testingInput1 = "TestValue"
+    functionName = "Procedure"
+    
+'    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbLet)
+    testingInput2 = VbLet
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput1:=testingInput1, testingInput2:=testingInput2)
+    Debug.Assert fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result
+    
+'    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbGet)
+    testingInput2 = VbGet
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput1:=testingInput1, testingInput2:=testingInput2)
+    Debug.Assert fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result
+    
+'    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbSet)
+    testingInput2 = VbSet
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput1:=testingInput1, testingInput2:=testingInput2)
+    Debug.Assert fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result
+    
+'    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbLet + VbGet)
+    testingInput2 = VbLet + VbGet
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput1:=testingInput1, testingInput2:=testingInput2)
+    Debug.Assert fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result
+    
+'    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbLet + VbSet)
+    testingInput2 = VbLet + VbSet
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput1:=testingInput1, testingInput2:=testingInput2)
+    Debug.Assert fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result
+    
+'    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbGet + VbSet)
+    testingInput2 = VbGet + VbSet
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput1:=testingInput1, testingInput2:=testingInput2)
+    Debug.Assert fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result
+    
+'    Debug.Assert fluent.Should.Have.Procedure("TestValue", VbLet + VbGet + VbSet)
+    testingInput2 = VbLet + VbGet + VbSet
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput1:=testingInput1, testingInput2:=testingInput2)
+    Debug.Assert fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result
+    
+    '//below tests will all fail since fluent objects do not have a TestValue method
+    
+'    If Not G_TB_SKIP Then
+'        Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbMethod)
+'        Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbLet + VbMethod)
+'        Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbGet + VbMethod)
+'        Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbSet + VbMethod)
+'        Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbLet + VbGet + VbMethod)
+'        Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbLet + VbSet + VbMethod)
+'        Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbGet + VbSet + VbMethod)
+'        Debug.Assert fluent.ShouldNot.Have.Procedure("TestValue", VbLet + VbGet + VbSet + VbMethod)
+'    End If
+    
+    '//self referential tests
+    
+    '//All self referential flags should be false
+    
+    Set col = New Collection
+'    Debug.Assert fluent.Should.Be.Something
+    
+    Set testingValue = col
+    shouldMatch = True
+    functionName = "Something"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue)
+    Debug.Assert VBA.Information.IsObject(fluentInput.Meta.tests(fluentInput.Meta.tests.Count).testingValue)
+
+    
+    '//Checks that all properties self-referential properties should be Null since neither
+    '//the testing value nor testing input is self referential
+    
+    With fluentInput.Meta
+        Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).TestingValueIsSelfReferential)
+        Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).TestingInputIsSelfReferential)
+        Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).HasSelfReferential)
+    End With
+    
+    Set col = New VBA.Collection
+    
+    col.Add 1
+    col.Add col
+    
+'    set fluent.testValue = col
+'    Debug.Assert VBA.Information.IsNull(fluent.Should.Be.Something)
+    
+    Set testingValue = col
+    shouldMatch = True
+    functionName = "Something"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue)
+    Debug.Assert VBA.Information.IsNull(fluentInput.Meta.tests(fluentInput.Meta.tests.Count).testingValue)
+    
+    '//testingValueIsSelfReferential and hasSelfReferential should be true
+    
+    With fluentInput.Meta
+        Debug.Assert .tests(.tests.Count).strTestValue = "Null"
+        Debug.Assert .tests(.tests.Count).TestingValueIsSelfReferential = True
+        Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).TestingInputIsSelfReferential)
+        Debug.Assert .tests(.tests.Count).HasSelfReferential = True
+    End With
+    
+    '//testingValueIsSelfReferential, testingInputIsSelfReferential, and hasSelfReferential should be true
+    
+'    fluent.testValue = 1
+'
+'    Debug.Assert VBA.Information.IsNull(fluent.Should.Be.InDataStructure(col))
+
+    testingValue = 1
+    Set testingInput = col
+    shouldMatch = True
+    functionName = "InDataStructure"
+    Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingValue:=testingValue, testingInput:=testingInput)
+    Debug.Assert VBA.Information.IsNull(fluentInput.Meta.tests(fluentInput.Meta.tests.Count).result)
+    
+    With fluentInput.Meta
+        Debug.Assert Not VBA.Information.IsNull(.tests(.tests.Count).strTestValue)
+        Debug.Assert .tests(.tests.Count).StrTestInput = "Null"
+        Debug.Assert VBA.Information.IsNull(.tests(.tests.Count).TestingValueIsSelfReferential)
+        Debug.Assert .tests(.tests.Count).TestingInputIsSelfReferential = True
+        Debug.Assert .tests(.tests.Count).HasSelfReferential = True
+    End With
+    
+'    Debug.Print "Misc tests finished"
+'
+'    testCount = fluent.Meta.tests.Count
+'    printTestCount (testCount)
+'
+'    MiscTests = testCount
+End Function
+
+Sub runRecurIterTestsRefactor(ByVal fluentInput As Variant)
+    Dim recurCount1 As Long, iterCount1 As Long
+    Dim recurCount2 As Long, iterCount2 As Long
+    
+    Call validateRecurIterFluentOfsRefactor(fluentInput, tfRecur, tfIter, "main")
+    
+    Call validateRecurIterFuncCounts2(tfRecur)
+    
+    recurCount1 = validateRecurIterFuncCounts(tfRecur)
+    iterCount1 = validateRecurIterFuncCounts(tfIter)
+    Debug.Assert recurCount1 = iterCount1
+    
+    recurCount2 = validateRecurIterFuncCounts2(tfRecur)
+    iterCount2 = validateRecurIterFuncCounts2(tfIter)
+    Debug.Assert recurCount2 = iterCount2
+    
+    Debug.Assert _
+    (recurCount1 = iterCount1) And _
+    (recurCount2 = iterCount2) And _
+    (recurCount1 = recurCount2) And _
+    (iterCount1 = iterCount2)
+    
+'    Debug.Assert _
+'    validateRecurIterFuncNamesFromFluentOfInDict(tfRecur) And _
+'    validateRecurIterFuncNamesFromFluentOfInDict(tfIter)
+End Sub
+
+Sub validateRecurIterFluentOfsRefactor(ByVal fluentInput As Variant, ByVal tfRecur As cFluentOf, ByVal tfIter As cFluentOf, ByVal recurIterFuncName As String)
+    Dim test As ITestDev
+    Dim test2 As cTest
+    Dim implicitRecurCount As Long
+    Dim explicitRecurCount As Long
+    Dim explicitIterCount As Long
+    Dim b1 As Boolean
+    Dim b2 As Boolean
+    
+    implicitRecurCount = 0
+    explicitRecurCount = 0
+    explicitIterCount = 0
+    b1 = False
+    b2 = False
+    
+    For Each test In fluentInput.Meta.tests
+        If Not VBA.Information.IsNull(test.Algorithm) Then
+            Set test2 = test
+            
+            b1 = test.AlgorithmValueSet = False 'False because testFluent should use implicit flAlgorithm.flRecursive
+            b2 = test.Algorithm = flAlgorithm.flRecursive
+            
+            Debug.Assert b1
+            Debug.Assert b2
+            Debug.Assert test.IsRecurIterFunc
+            
+            If b1 And b2 Then
+                implicitRecurCount = implicitRecurCount + 1
+            End If
+        End If
+    Next test
+    
+    b1 = False
+    b2 = False
+    
+    For Each test In tfRecur.Meta.tests
+        b1 = test.AlgorithmValueSet = True 'True because tfRecur should use explicit flAlgorithm.flRecursive
+        b2 = test.Algorithm = flAlgorithm.flRecursive
+        
+        Debug.Assert b1
+        Debug.Assert b2
+        Debug.Assert test.IsRecurIterFunc
+        Debug.Assert test.IsBaseCaseRecur
+        
+        If b1 And b2 Then
+            explicitRecurCount = explicitRecurCount + 1
+        End If
+    Next test
+    
+    b1 = False
+    b2 = False
+    
+    For Each test In tfIter.Meta.tests
+        b1 = test.AlgorithmValueSet = True 'True because tfIter should use explicit flAlgorithm.flIterative
+        b2 = test.Algorithm = flAlgorithm.flIterative
+        
+        Debug.Assert b1
+        Debug.Assert b2
+        Debug.Assert test.IsRecurIterFunc
+        Debug.Assert test.IsBaseCaseIter
+        
+        If b1 And b2 Then
+            explicitIterCount = explicitIterCount + 1
+        End If
+    Next test
+    
+    Debug.Assert (implicitRecurCount = explicitRecurCount) And (explicitRecurCount = explicitIterCount)
+    
+'    If recurIterFuncName <> "main" Then
+'        mRecurIterFuncNamesDict.Add recurIterFuncName, recurIterFuncName
+'    End If
+End Sub
 
 Private Function getShouldOrShouldNotFromFluentInputAndSetTestingValue(fluentInput As Variant, testingValue As Variant, isShould As Boolean) As IShould
     Dim shouldOrShouldNot  As IShould
