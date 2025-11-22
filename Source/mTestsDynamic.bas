@@ -1,31 +1,44 @@
 Attribute VB_Name = "mTestsDynamic"
 Option Explicit
 
+Private Const G_TB_SKIP As Boolean = False
+
 Private mCounter As Long
 Private mTestCounter As Long
 Private mMiscPosTests As Long
 Private mMiscNegTests As Long
 Private tfRecur As Variant
 Private tfIter As Variant
+Private mEvents As zEvents
+Private mRecurIterFuncNamesDict As Scripting.Dictionary
 
-Sub edtrTest()
-    Dim f As cFluent
-    Dim fi As cFluentOf
-    Dim fi2 As cFluent
-    Dim tf As cFluentOf
+Sub runMainTestsRefactor()
+    Dim f As IFluent
+    Dim fo As IFluentOf
+    Dim f2 As IFluent
+    Dim tf As IFluentOf
     Dim temp As Variant
     Dim fiArr As Variant
     Dim i As Long
+    Dim counter As Long
     
-    Set f = New cFluent
-    Set fi = New cFluentOf
-    Set fi2 = New cFluent
-    Set tf = New cFluentOf
+    Set fo = New cFluentOf
+    Set f2 = New cFluent
     
-    fiArr = Array(fi, fi2)
+    fiArr = Array(fo, f2)
 
     For i = LBound(fiArr) To UBound(fiArr)
         mCounter = 0
+        
+        'Creating new instances of f and tf in the loop is
+        'necessary. Otherwise the counts will be incorrect
+        'in getAndInitEventRefactor in the second element
+        'of the fiArr array which will make the test fail.
+        
+        Set f = New cFluent
+        Set tf = New cFluentOf
+        'This is needed for validateRecurIterFluentOfs
+        Set mRecurIterFuncNamesDict = New Scripting.Dictionary
         
         'Creating new instances of tfRecur and tfIter in the
         'loop is necessary. Otherwise, the checks in
@@ -41,53 +54,60 @@ Sub edtrTest()
         tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
         tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
         
-        Call AlphabeticTestsRefactor(f, fiArr(i), tf)
-        Call AlphanumericTestsRefactor(f, fiArr(i), tf)
-        Call BetweenTestsRefactor(f, fiArr(i), tf)
-        Call ContainTestsRefactor(f, fiArr(i), tf)
-        Call DepthCountOfTestsRefactor(f, fiArr(i), tf)
-        Call ElementsInDataStructureTestsRefactor(f, fiArr(i), tf)
-        Call ElementsTestsRefactor(f, fiArr(i), tf)
-        Call EndWithTestsRefactor(f, fiArr(i), tf)
-        Call EqualityDocumentationTestsRefactor(f, fiArr(i), tf)
-        Call EqualToTestsRefactor(f, fiArr(i), tf)
-        Call EvaluateToTestsRefactor(f, fiArr(i), tf)
-        Call ExactSameElementsAsTestsRefactor(f, fiArr(i), tf)
-        Call GreaterThanTestsRefactor(f, fiArr(i), tf)
-        Call GreaterThanOrEqualToTestsRfactor(f, fiArr(i), tf)
-        Call IdenticalToTestsRefactor(f, fiArr(i), tf)
-        Call InDataStructureTestsRefactor(f, fiArr(i), tf)
-        Call InDataStructuresTestsRefactor(f, fiArr(i), tf)
-        Call LengthBetweenTestsRefactor(f, fiArr(i), tf)
-        Call LengthOfTestsRefactor(f, fiArr(i), tf)
-        Call LessThanTestsRefactor(f, fiArr(i), tf)
-        Call LessThanOrEqualToTestsRefactor(f, fiArr(i), tf)
-        Call MaxLengthOfTestsRefactor(f, fiArr(i), tf)
-        Call MinLengthOfTestsRefactor(f, fiArr(i), tf)
-        Call NestedCountOfTestsRefactor(f, fiArr(i), tf)
-        Call NumericTestsReactor(f, fiArr(i), tf)
-        Call OneOfTestsRefactor(f, fiArr(i), tf)
-        Call ProcedureTestsRefactor(f, fiArr(i), tf)
-        Call StartWithTestsRefactor(f, fiArr(i), tf)
-        Call SomethingTestsReactor(f, fiArr(i), tf)
-        Call SameTypeAsTestsRefactor(f, fiArr(i), tf)
-        Call SameUniqueElementsAsTestsRefactor(f, fiArr(i), tf)
-        Call SameElementsAsTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = InitFluentInput(fiArr(i))
+        Set mEvents = getAndInitEventRefactor(f, fiArr(i), tf)
+        
+        Set fiArr(i) = AlphabeticTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = AlphanumericTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = BetweenTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = ContainTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = DepthCountOfTestsRefactor(f, fiArr(i), tf)
+        
+        Set fiArr(i) = ElementsInDataStructureTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = ElementsTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = EndWithTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = EqualityDocumentationTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = EqualToTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = EvaluateToTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = ExactSameElementsAsTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = GreaterThanTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = GreaterThanOrEqualToTestsRfactor(f, fiArr(i), tf)
+        Set fiArr(i) = IdenticalToTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = InDataStructureTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = InDataStructuresTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = LengthBetweenTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = LengthOfTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = LessThanTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = LessThanOrEqualToTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = MaxLengthOfTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = MinLengthOfTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = NestedCountOfTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = NumericTestsReactor(f, fiArr(i), tf)
+        Set fiArr(i) = OneOfTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = ProcedureTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = StartWithTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = SomethingTestsReactor(f, fiArr(i), tf)
+        Set fiArr(i) = SameTypeAsTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = SameUniqueElementsAsTestsRefactor(f, fiArr(i), tf)
+        Set fiArr(i) = SameElementsAsTestsRefactor(f, fiArr(i), tf)
     
-'        If Not G_TB_SKIP Then
-
-            Call ErroneousTestsRefactor(f, fiArr(i), tf)
-            Call ErrorDescriptionOfTestsRefactor(f, fiArr(i), tf)
-            Call ErrorNumberOfTestsRefactor(f, fiArr(i), tf)
-            
-'            counter = 0
-'        Else
-'            counter = 3
-'        End If
+        If Not G_TB_SKIP Then
+            Set fiArr(i) = ErroneousTestsRefactor(f, fiArr(i), tf)
+            Set fiArr(i) = ErrorDescriptionOfTestsRefactor(f, fiArr(i), tf)
+            Set fiArr(i) = ErrorNumberOfTestsRefactor(f, fiArr(i), tf)
+            counter = 0
+        Else
+            counter = 3
+        End If
         
         Call runRecurIterTestsRefactor(fiArr(i))
         Call cleanStringTestsRefactor(fiArr(i))
         Call MiscTestsRefactor(fiArr(i))
+        
+        Set mEvents = Nothing
+        Set tfRecur = Nothing
+        Set tfIter = Nothing
+        Set mRecurIterFuncNamesDict = Nothing
     Next i
     
     Debug.Print "All tests finished!"
@@ -99,8 +119,9 @@ Public Sub TrueAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal fluen
     Dim inputRecur As String
     Dim valueIter As String
     Dim valueRecur As String
-    Dim testFluent As cFluent
-    Dim testFluentOf As cFluentOf
+    Dim testFluent As IFluent
+    Dim testFluentOf As IFluentOf
+    Dim testFluentFunction As IFluentFunction
 
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
@@ -113,6 +134,10 @@ Public Sub TrueAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal fluen
         Set testFluentOf = fluentInput
         Debug.Assert testFluentOf.Meta.tests.Count = mCounter
         fluent.testValue = testFluentOf.Meta.tests(mCounter).result  '//comment out until all tests are refactored unless testing.
+    ElseIf TypeOf fluentInput Is cFluentFunction Or TypeOf fluentInput Is IFluentFunction Then
+        Set testFluentFunction = fluentInput
+        Debug.Assert testFluentFunction.Meta.tests.Count = mCounter
+        fluent.testValue = testFluentFunction.Meta.tests(mCounter).result  '//comment out until all tests are refactored unless testing.
     End If
 
     With fluent.Meta.tests
@@ -146,8 +171,9 @@ Public Sub FalseAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal flue
     Dim inputRecur As String
     Dim valueIter As String
     Dim valueRecur As String
-    Dim testFluent As cFluent
-    Dim testFluentOf As cFluentOf
+    Dim testFluent As IFluent
+    Dim testFluentOf As IFluentOf
+    Dim testFluentFunction As IFluentFunction
     
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
@@ -160,6 +186,10 @@ Public Sub FalseAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal flue
         Set testFluentOf = fluentInput
         Debug.Assert testFluentOf.Meta.tests.Count = mCounter
         fluent.testValue = testFluentOf.Meta.tests(mCounter).result  '//comment out until all tests are refactored unless testing.
+    ElseIf TypeOf fluentInput Is cFluentFunction Or TypeOf fluentInput Is IFluentFunction Then
+        Set testFluentFunction = fluentInput
+        Debug.Assert testFluentFunction.Meta.tests.Count = mCounter
+        fluent.testValue = testFluentFunction.Meta.tests(mCounter).result  '//comment out until all tests are refactored unless testing.
     End If
     
     With fluent.Meta.tests
@@ -188,8 +218,9 @@ Public Sub FalseAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal flue
 End Sub
 
 Private Sub NullAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf)
-    Dim testFluent As cFluent
-    Dim testFluentOf As cFluentOf
+    Dim testFluent As IFluent
+    Dim testFluentOf As IFluentOf
+    Dim testFluentFunction As IFluentFunction
     
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
@@ -202,6 +233,10 @@ Private Sub NullAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal flue
         Set testFluentOf = fluentInput
         Debug.Assert testFluentOf.Meta.tests.Count = mCounter
         fluent.testValue = testFluentOf.Meta.tests(mCounter).result  '//comment out until all tests are refactored unless testing.
+    ElseIf TypeOf fluentInput Is cFluentFunction Or TypeOf fluentInput Is IFluentFunction Then
+        Set testFluentFunction = fluentInput
+        Debug.Assert testFluentFunction.Meta.tests.Count = mCounter
+        fluent.testValue = testFluentFunction.Meta.tests(mCounter).result  '//comment out until all tests are refactored unless testing.
     End If
     
 '    Debug.Assert fluentInput.Meta.tests.Count = mCounter
@@ -214,8 +249,9 @@ Private Sub NullAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal flue
 End Sub
 
 Private Sub EmptyAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf)
-    Dim testFluent As cFluent
-    Dim testFluentOf As cFluentOf
+    Dim testFluent As IFluent
+    Dim testFluentOf As IFluentOf
+    Dim testFluentFunction As IFluentFunction
 
     mCounter = mCounter + 1
     mTestCounter = mTestCounter + 1
@@ -229,6 +265,10 @@ Private Sub EmptyAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal flu
         Set testFluentOf = fluentInput
         Debug.Assert testFluentOf.Meta.tests.Count = mCounter
         fluent.testValue = testFluentOf.Meta.tests(mCounter).result  '//comment out until all tests are refactored unless testing.
+    ElseIf TypeOf fluentInput Is cFluentFunction Or TypeOf fluentInput Is IFluentFunction Then
+        Set testFluentFunction = fluentInput
+        Debug.Assert testFluentFunction.Meta.tests.Count = mCounter
+        fluent.testValue = testFluentFunction.Meta.tests(mCounter).result  '//comment out until all tests are refactored unless testing.
     End If
     
     Debug.Assert fluent.Should.Be.EqualTo(Empty)
@@ -241,7 +281,7 @@ Private Sub EmptyAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal flu
     End With
 End Sub
 
-Private Function EqualityDocumentationTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function EqualityDocumentationTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim test As ITest
     Dim i As Long
     Dim resultBool As Boolean
@@ -586,14 +626,14 @@ Private Function EqualityDocumentationTestsRefactor(ByVal fluent As IFluent, ByV
         Next test
     End With
     
-'    Debug.Print "Equality tests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set EqualityDocumentationTestsRefactor = testFluent
+    Debug.Print "Equality tests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set EqualityDocumentationTestsRefactor = fluentInput
 End Function
 
-Private Function GreaterThanTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function GreaterThanTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -804,16 +844,16 @@ Private Function GreaterThanTestsRefactor(ByVal fluent As IFluent, ByVal fluentI
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
+    Call validateTestsRefactor(fluent, fluentInput)
     
-'    Debug.Print "GreaterThanTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set GreaterThanTestsRefactor = testFluent
+    Debug.Print "GreaterThanTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set GreaterThanTestsRefactor = fluentInput
 End Function
 
-Private Function EqualToTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function EqualToTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -1050,17 +1090,17 @@ Private Function EqualToTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
 
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "EqualToTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set EqualToTests = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "EqualToTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set EqualToTestsRefactor = fluentInput
 
 End Function
 
-Private Function GreaterThanOrEqualToTestsRfactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function GreaterThanOrEqualToTestsRfactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -1334,16 +1374,16 @@ Private Function GreaterThanOrEqualToTestsRfactor(ByVal fluent As IFluent, ByVal
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "GreaterThanOrEqualToTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set GreaterThanOrEqualToTestsRfactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "GreaterThanOrEqualToTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set GreaterThanOrEqualToTestsRfactor = fluentInput
 End Function
 
-Private Function LessThanTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function LessThanTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -1570,16 +1610,16 @@ Private Function LessThanTestsRefactor(ByVal fluent As IFluent, ByVal fluentInpu
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
 
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "LessThanTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set LessThanTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "LessThanTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set LessThanTestsRefactor = fluentInput
 End Function
 
-Private Function LessThanOrEqualToTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function LessThanOrEqualToTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -1869,17 +1909,17 @@ Private Function LessThanOrEqualToTestsRefactor(ByVal fluent As IFluent, ByVal f
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "LessThanOrEqualToTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set LessThanOrEqualToTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "LessThanOrEqualToTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set LessThanOrEqualToTestsRefactor = fluentInput
 End Function
 
 
-Private Function ContainTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function ContainTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -2470,16 +2510,16 @@ Private Function ContainTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
 
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "ContainTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set ContainTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "ContainTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set ContainTestsRefactor = fluentInput
 End Function
 
-Private Function StartWithTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function StartWithTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -2979,16 +3019,16 @@ Private Function StartWithTestsRefactor(ByVal fluent As IFluent, ByVal fluentInp
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "StartWithTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set StartWithTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "StartWithTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set StartWithTestsRefactor = fluentInput
 End Function
 
-Private Function EndWithTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function EndWithTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -3554,16 +3594,16 @@ Private Function EndWithTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "EndWithTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set EndWithTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "EndWithTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set EndWithTestsRefactor = fluentInput
 End Function
 
-Private Function LengthOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function LengthOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -3803,16 +3843,16 @@ Private Function LengthOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInpu
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "LengthOfTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set LengthOfTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "LengthOfTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set LengthOfTestsRefactor = fluentInput
 End Function
 
-Private Function MaxLengthOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function MaxLengthOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -4038,16 +4078,16 @@ Private Function MaxLengthOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentI
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "MaxLengthOfTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set MaxLengthOfTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "MaxLengthOfTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set MaxLengthOfTestsRefactor = fluentInput
 End Function
 
-Private Function MinLengthOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function MinLengthOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -4321,17 +4361,17 @@ Private Function MinLengthOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentI
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "MinLengthOfTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set MinLengthOfTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "MinLengthOfTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set MinLengthOfTestsRefactor = fluentInput
 End Function
 
 
-Private Function BetweenTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function BetweenTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -4592,18 +4632,18 @@ Private Function BetweenTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, lowerVal:=testingInput1, higherVal:=testingInput2)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "BetweenTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set BetweenTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "BetweenTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set BetweenTestsRefactor = fluentInput
 End Function
 
 
 
-Private Function LengthBetweenTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function LengthBetweenTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -4784,16 +4824,16 @@ Private Function LengthBetweenTestsRefactor(ByVal fluent As IFluent, ByVal fluen
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, lowerVal:=testingInput1, higherVal:=testingInput2)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "LengthBetweenTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set LengthBetweenTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "LengthBetweenTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set LengthBetweenTestsRefactor = fluentInput
 End Function
 
-Private Function OneOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function OneOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -4948,16 +4988,16 @@ Private Function OneOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput A
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput1:=testingInput1, testingInput2:=testingInput2, testingInput3:=testingInput3)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "OneOfTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set OneOfTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "OneOfTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set OneOfTestsRefactor = fluentInput
 End Function
 
-Private Function SomethingTestsReactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function SomethingTestsReactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -5121,16 +5161,16 @@ Private Function SomethingTestsReactor(ByVal fluent As IFluent, ByVal fluentInpu
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "SomethingTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set SomethingTestsReactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "SomethingTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set SomethingTestsReactor = fluentInput
 End Function
 
-Private Function EvaluateToTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function EvaluateToTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim arr() As Variant
@@ -5606,16 +5646,16 @@ Private Function EvaluateToTestsRefactor(ByVal fluent As IFluent, ByVal fluentIn
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "EvaluateToTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set EvaluateToTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "EvaluateToTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set EvaluateToTestsRefactor = fluentInput
 End Function
 
-Private Function AlphabeticTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function AlphabeticTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -5955,16 +5995,16 @@ Private Function AlphabeticTestsRefactor(ByVal fluent As IFluent, ByVal fluentIn
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "AlphabeticTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set AlphabeticTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "AlphabeticTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set AlphabeticTestsRefactor = fluentInput
 End Function
 
-Private Function NumericTestsReactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function NumericTestsReactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -6268,16 +6308,16 @@ Private Function NumericTestsReactor(ByVal fluent As IFluent, ByVal fluentInput 
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "NumericTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set NumericTestsReactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "NumericTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set NumericTestsReactor = fluentInput
 End Function
 
-Private Function AlphanumericTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function AlphanumericTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -6569,16 +6609,16 @@ Private Function AlphanumericTestsRefactor(ByVal fluent As IFluent, ByVal fluent
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "AlphanumericTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set AlphanumericTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "AlphanumericTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set AlphanumericTestsRefactor = fluentInput
 End Function
 
-Private Function SameTypeAsTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function SameTypeAsTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim arr() As Variant
@@ -6872,16 +6912,16 @@ Private Function SameTypeAsTestsRefactor(ByVal fluent As IFluent, ByVal fluentIn
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
 
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "SameTypeAsTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set SameTypeAsTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "SameTypeAsTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set SameTypeAsTestsRefactor = fluentInput
 End Function
 
-Private Function IdenticalToTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function IdenticalToTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim col2 As VBA.Collection
@@ -7527,16 +7567,16 @@ Private Function IdenticalToTestsRefactor(ByVal fluent As IFluent, ByVal fluentI
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "IdenticalToTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set IdenticalToTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "IdenticalToTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set IdenticalToTestsRefactor = fluentInput
 End Function
 
-Private Function ExactSameElementsAsTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function ExactSameElementsAsTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim col2 As VBA.Collection
@@ -8319,16 +8359,16 @@ Private Function ExactSameElementsAsTestsRefactor(ByVal fluent As IFluent, ByVal
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "ExactSameElementsAsTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set ExactSameElementsAsTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "ExactSameElementsAsTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set ExactSameElementsAsTestsRefactor = fluentInput
 End Function
 
-Private Function SameUniqueElementsAsTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function SameUniqueElementsAsTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim col2 As VBA.Collection
@@ -9316,16 +9356,16 @@ Private Function SameUniqueElementsAsTestsRefactor(ByVal fluent As IFluent, ByVa
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "SameUniqueElementsAsTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set SameUniqueElementsAsTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "SameUniqueElementsAsTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set SameUniqueElementsAsTestsRefactor = fluentInput
 End Function
 
-Private Function SameElementsAsTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function SameElementsAsTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim col2 As VBA.Collection
@@ -10022,16 +10062,16 @@ Private Function SameElementsAsTestsRefactor(ByVal fluent As IFluent, ByVal flue
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "SameElementsAsTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set SameElementsAsTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "SameElementsAsTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set SameElementsAsTestsRefactor = fluentInput
 End Function
 
-Private Function ProcedureTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function ProcedureTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -10098,16 +10138,16 @@ Private Function ProcedureTestsRefactor(ByVal fluent As IFluent, ByVal fluentInp
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput1:=testingInput1, testingInput2:=testingInput2)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "ProcedureTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set ProcedureTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "ProcedureTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set ProcedureTestsRefactor = fluentInput
 End Function
 
-Private Function ElementsTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function ElementsTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -10276,16 +10316,16 @@ Private Function ElementsTestsRefactor(ByVal fluent As IFluent, ByVal fluentInpu
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
 
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "ElementsTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set ElementsTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "ElementsTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set ElementsTestsRefactor = fluentInput
 End Function
 
-Private Function ElementsInDataStructureTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function ElementsInDataStructureTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -10438,16 +10478,16 @@ Private Function ElementsInDataStructureTestsRefactor(ByVal fluent As IFluent, B
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
 
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "ElementsInDataStructureTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set ElementsInDataStructureTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "ElementsInDataStructureTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set ElementsInDataStructureTestsRefactor = fluentInput
 End Function
 
-Private Function InDataStructureTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function InDataStructureTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim col2 As VBA.Collection
     Dim d As Scripting.Dictionary
@@ -10461,9 +10501,6 @@ Private Function InDataStructureTestsRefactor(ByVal fluent As IFluent, ByVal flu
     Dim testInfoDev As ITestingFunctionsInfoDev
     Dim testingValue As Variant
     Dim testingInput As Variant
-    'Dim testingInput1 As Variant
-    'Dim testingInput2 As Variant
-    'Dim testingInput3 As Variant
     Dim shouldMatch As Boolean
     Dim functionName As String
     
@@ -11311,9 +11348,9 @@ Private Function InDataStructureTestsRefactor(ByVal fluent As IFluent, ByVal flu
     Debug.Assert tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
     Debug.Assert tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
     
-'    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "InDataStructure")
-'
-'    Call validateTests(fluent, testFluent)
+    Call validateRecurIterFluentOfsRefactor(fluentInput, tfRecur, tfIter, "InDataStructure")
+
+    Call validateTestsRefactor(fluent, fluentInput)
     
 'bitwise flags tests
 
@@ -11335,14 +11372,14 @@ Private Function InDataStructureTestsRefactor(ByVal fluent As IFluent, ByVal flu
     
     Set tfBitwiseFlag = Nothing
     
-'    Debug.Print "InDataStructureTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set InDataStructureTestsRefactor = testFluent
+    Debug.Print "InDataStructureTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set InDataStructureTestsRefactor = fluentInput
 End Function
 
-Private Function InDataStructuresTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function InDataStructuresTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim arr() As Variant
@@ -11350,7 +11387,7 @@ Private Function InDataStructuresTestsRefactor(ByVal fluent As IFluent, ByVal fl
     Dim b As Boolean
     Dim al As Object
     Dim val As Variant
-    Dim tfBitwiseFlag As cFluentOf
+    Dim tfBitwiseFlag As IFluentOf
     Dim testInfoDev As ITestingFunctionsInfoDev
     Dim testingValue As Variant
     Dim testingInput As Variant
@@ -11359,10 +11396,6 @@ Private Function InDataStructuresTestsRefactor(ByVal fluent As IFluent, ByVal fl
     Dim testingInput3 As Variant
     Dim shouldMatch As Boolean
     Dim functionName As String
-    
-    'Something happens in InDataStructure that throws the count off by 2 in the end
-    'This is a temporary fix.
-'    mCounter = mCounter + 2
 
 'positive documentation tests
            
@@ -13105,9 +13138,9 @@ Private Function InDataStructuresTestsRefactor(ByVal fluent As IFluent, ByVal fl
     Debug.Assert tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
     Debug.Assert tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
 
-'    Call validateRecurIterFluentOfs(fluentInput, tfRecur, tfIter, "InDataStructures")
+    Call validateRecurIterFluentOfsRefactor(fluentInput, tfRecur, tfIter, "InDataStructures")
 '
-'    Call validateTests(fluent, fluentInput)
+    Call validateTestsRefactor(fluent, fluentInput)
     
 'bitwise flags tests
 
@@ -13129,14 +13162,14 @@ Private Function InDataStructuresTestsRefactor(ByVal fluent As IFluent, ByVal fl
     
     Set tfBitwiseFlag = Nothing
     
-'    Debug.Print "InDataStructuresTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set InDataStructuresTestsRefactor = testFluent
+    Debug.Print "InDataStructuresTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set InDataStructuresTestsRefactor = fluentInput
 End Function
 
-Private Function DepthCountOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function DepthCountOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim b As Boolean
@@ -13145,7 +13178,7 @@ Private Function DepthCountOfTestsRefactor(ByVal fluent As IFluent, ByVal fluent
     Dim d2 As Scripting.Dictionary
     Dim d3 As Scripting.Dictionary
     Dim val As Variant
-    Dim tfBitwiseFlag As cFluentOf
+    Dim tfBitwiseFlag As IFluentOf
     Dim testInfoDev As ITestingFunctionsInfoDev
     Dim testingValue As Variant
     Dim testingInput As Variant
@@ -13671,9 +13704,9 @@ Private Function DepthCountOfTestsRefactor(ByVal fluent As IFluent, ByVal fluent
     Debug.Assert tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
     Debug.Assert tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
     
-'    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "DepthCountOf")
+    Call validateRecurIterFluentOfsRefactor(fluentInput, tfRecur, tfIter, "DepthCountOf")
     
-'    Call validateTests(fluent, fluentInput)
+    Call validateTestsRefactor(fluent, fluentInput)
     
 'bitwise flags tests
 
@@ -13695,26 +13728,23 @@ Private Function DepthCountOfTestsRefactor(ByVal fluent As IFluent, ByVal fluent
     
     Set tfBitwiseFlag = Nothing
     
-'    Debug.Print "DepthCountOfTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set DepthCountOfTestsRefactor = testFluent
+    Debug.Print "DepthCountOfTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set DepthCountOfTestsRefactor = fluentInput
 End Function
 
-Private Function NestedCountOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function NestedCountOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim b As Boolean
     Dim arr() As Variant
     Dim val As Variant
-    Dim tfBitwiseFlag As cFluentOf
+    Dim tfBitwiseFlag As IFluentOf
     Dim testInfoDev As ITestingFunctionsInfoDev
     Dim testingValue As Variant
     Dim testingInput As Variant
-'    Dim testingInput1 As Variant
-'    Dim testingInput2 As Variant
-'    Dim testingInput3 As Variant
     Dim shouldMatch As Boolean
     Dim functionName As String
     
@@ -14249,9 +14279,9 @@ Private Function NestedCountOfTestsRefactor(ByVal fluent As IFluent, ByVal fluen
     Debug.Assert tfIter.Meta.tests.Algorithm = flAlgorithm.flIterative
     Debug.Assert tfRecur.Meta.tests.Algorithm = flAlgorithm.flRecursive
     
-'    Call validateRecurIterFluentOfs(testFluent, tfRecur, tfIter, "NestedCountOf")
+    Call validateRecurIterFluentOfsRefactor(fluentInput, tfRecur, tfIter, "NestedCountOf")
     
-'    Call validateTests(fluent, fluentInput)
+    Call validateTestsRefactor(fluent, fluentInput)
     
 'bitwise flags tests
 
@@ -14273,14 +14303,14 @@ Private Function NestedCountOfTestsRefactor(ByVal fluent As IFluent, ByVal fluen
     
     Set tfBitwiseFlag = Nothing
     
-'    Debug.Print "NestedCountOfTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set NestedCountOfTestsRefactor = testFluent
+    Debug.Print "NestedCountOfTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set NestedCountOfTestsRefactor = fluentInput
 End Function
 
-Private Function ErroneousTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function ErroneousTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -14442,16 +14472,16 @@ Private Function ErroneousTestsRefactor(ByVal fluent As IFluent, ByVal fluentInp
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "ErroneousTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set ErroneousTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "ErroneousTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set ErroneousTestsRefactor = fluentInput
 End Function
 
-Private Function ErrorDescriptionOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function ErrorDescriptionOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -14635,16 +14665,16 @@ Private Function ErrorDescriptionOfTestsRefactor(ByVal fluent As IFluent, ByVal 
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
+    Call validateTestsRefactor(fluent, fluentInput)
     
-'    Debug.Print "ErrorDescriptionOfTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set ErrorDescriptionOfTestsRefactor = testFluent
+    Debug.Print "ErrorDescriptionOfTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set ErrorDescriptionOfTestsRefactor = fluentInput
 End Function
 
-Private Function ErrorNumberOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As IFluentOf
+Private Function ErrorNumberOfTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As Variant
     Dim col As VBA.Collection
     Dim d As Scripting.Dictionary
     Dim testingValue As Variant
@@ -14828,13 +14858,13 @@ Private Function ErrorNumberOfTestsRefactor(ByVal fluent As IFluent, ByVal fluen
     Set fluentInput = fluentTester(fluentInput, functionName, shouldMatch, testingInput:=testingInput)
     Call EmptyAssertAndRaiseEventsRefactor(fluent, fluentInput, testFluentResult)
     
-'    Call validateTests(fluent, testFluent)
-'
-'    Debug.Print "ErrorNumberOfTests finished"
-'    printTestCount (mTestCounter)
-'    mTestCounter = 0
-'
-'    Set ErrorNumberOfTestsRefactor = testFluent
+    Call validateTestsRefactor(fluent, fluentInput)
+
+    Debug.Print "ErrorNumberOfTests finished"
+    printTestCountRefactor (mTestCounter)
+    mTestCounter = 0
+
+    Set ErrorNumberOfTestsRefactor = fluentInput
 End Function
 
 Private Function cleanStringTestsRefactor(ByVal fluentInput As Variant) As Long
@@ -14958,7 +14988,7 @@ Private Function MiscTestsRefactor(ByVal fluentInput As Variant) As Long
     Dim testCount As Long
     Dim q As Object
     Dim elem As Variant
-    Dim fluent2 As cFluent
+    Dim fluent2 As IFluent
     Dim col As Collection
     Dim testingValue As Variant
     Dim testingInput As Variant
@@ -15191,12 +15221,32 @@ Sub runRecurIterTestsRefactor(ByVal fluentInput As Variant)
     (recurCount1 = recurCount2) And _
     (iterCount1 = iterCount2)
     
-'    Debug.Assert _
-'    validateRecurIterFuncNamesFromFluentOfInDict(tfRecur) And _
-'    validateRecurIterFuncNamesFromFluentOfInDict(tfIter)
+    Debug.Assert _
+    validateRecurIterFuncNamesFromFluentOfInDict(tfRecur) And _
+    validateRecurIterFuncNamesFromFluentOfInDict(tfIter)
 End Sub
 
-Sub validateRecurIterFluentOfsRefactor(ByVal fluentInput As Variant, ByVal tfRecur As cFluentOf, ByVal tfIter As cFluentOf, ByVal recurIterFuncName As String)
+Function validateRecurIterFuncNamesFromFluentOfInDict(ByVal recurIterFluentOf As cFluentOf) As Boolean
+    Dim elem As Variant
+    Dim counter As Long
+    Dim recurIterFuncNamesCol As VBA.Collection
+    Dim TestingInfoDev As ITestingFunctionsInfoDev
+    
+    Set TestingInfoDev = recurIterFluentOf.Meta.tests.TestingFunctionsInfos
+    Set recurIterFuncNamesCol = TestingInfoDev.getRecurIterFuncNameCol
+    
+    Debug.Assert recurIterFuncNamesCol.Count = mRecurIterFuncNamesDict.Count
+    
+    For Each elem In recurIterFuncNamesCol
+        If mRecurIterFuncNamesDict.Exists(elem) Then
+            counter = counter + 1
+        End If
+    Next elem
+    
+    validateRecurIterFuncNamesFromFluentOfInDict = (recurIterFuncNamesCol.Count) = counter And (mRecurIterFuncNamesDict.Count = counter)
+End Function
+
+Sub validateRecurIterFluentOfsRefactor(ByVal fluentInput As Variant, ByVal tfRecur As IFluentOf, ByVal tfIter As IFluentOf, ByVal recurIterFuncName As String)
     Dim test As ITestDev
     Dim test2 As cTest
     Dim implicitRecurCount As Long
@@ -15264,15 +15314,75 @@ Sub validateRecurIterFluentOfsRefactor(ByVal fluentInput As Variant, ByVal tfRec
     
     Debug.Assert (implicitRecurCount = explicitRecurCount) And (explicitRecurCount = explicitIterCount)
     
-'    If recurIterFuncName <> "main" Then
-'        mRecurIterFuncNamesDict.Add recurIterFuncName, recurIterFuncName
-'    End If
+    If recurIterFuncName <> "main" Then
+        mRecurIterFuncNamesDict.Add recurIterFuncName, recurIterFuncName
+    End If
+End Sub
+
+Sub validateTestsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant)
+    Dim test As ITest
+    Dim i As Long
+    Dim resultBool As Boolean
+    Dim fluentBool As Boolean
+    Dim valueBool As Boolean
+    Dim inputBool As Boolean
+    Dim valueBool2 As Boolean
+    Dim inputBool2 As Boolean
+    Dim selfReferentialBool As Boolean
+    Dim inputSelfReferential As Boolean
+    Dim valueSelfReferential As Boolean
+    
+    For Each test In fluent.Meta.tests
+        Debug.Assert test.result
+    Next test
+    
+    For i = 1 To fluent.Meta.tests.Count
+        Debug.Assert fluent.Meta.tests(i).result
+    Next i
+    
+    i = 1
+    
+    With fluentInput.Meta
+        For Each test In .tests
+            If Not VBA.Information.IsNull(test.result) And Not VBA.Information.IsNull(.tests(i).result) Then
+                resultBool = test.result = .tests(i).result
+                fluentBool = test.FluentPath = .tests(i).FluentPath
+                valueBool = test.strTestValue = .tests(i).strTestValue
+                inputBool = test.StrTestInput = .tests(i).StrTestInput
+                valueBool2 = test.strTestValuePretty = .tests(i).strTestValuePretty
+                inputBool2 = test.StrTestInputPretty = .tests(i).StrTestInputPretty
+                
+                If test.HasSelfReferential And .tests(i).HasSelfReferential Then
+                    If VBA.Information.IsNull(test.TestingInputIsSelfReferential) Then
+                        inputSelfReferential = VBA.Information.IsNull(test.TestingInputIsSelfReferential) And VBA.Information.IsNull(.tests(i).TestingInputIsSelfReferential)
+                    Else
+                        inputSelfReferential = test.TestingInputIsSelfReferential = .tests(i).TestingInputIsSelfReferential
+                    End If
+                    
+                    If VBA.Information.IsNull(test.TestingValueIsSelfReferential) Then
+                        valueSelfReferential = VBA.Information.IsNull(test.TestingValueIsSelfReferential) And VBA.Information.IsNull(.tests(i).TestingValueIsSelfReferential)
+                    Else
+                        valueSelfReferential = test.TestingValueIsSelfReferential = .tests(i).TestingValueIsSelfReferential
+                    End If
+                    
+                    selfReferentialBool = inputSelfReferential And valueSelfReferential
+                    
+                    Debug.Assert resultBool And fluentBool And valueBool And inputBool And selfReferentialBool
+                Else
+                    Debug.Assert resultBool And fluentBool And valueBool And inputBool
+                End If
+                
+                i = i + 1
+            End If
+        Next test
+    End With
 End Sub
 
 Private Function getShouldOrShouldNotFromFluentInputAndSetTestingValue(fluentInput As Variant, testingValue As Variant, isShould As Boolean) As IShould
     Dim shouldOrShouldNot  As IShould
     Dim tempFluent As IFluent
     Dim tempFluentOf As IFluentOf
+    Dim tempFluentFunction As IFluentFunction
     
     If TypeOf fluentInput Is cFluent Or TypeOf fluentInput Is IFluent Then
         Set tempFluent = fluentInput
@@ -15295,6 +15405,22 @@ Private Function getShouldOrShouldNotFromFluentInputAndSetTestingValue(fluentInp
             Set shouldOrShouldNot = tempFluentOf.Of(testingValue).Should
         Else
             Set shouldOrShouldNot = tempFluentOf.Of(testingValue).ShouldNot
+        End If
+    ElseIf TypeOf fluentInput Is IFluentFunction Or TypeOf fluentInput Is cFluentFunction Then
+        Set tempFluentFunction = fluentInput
+        
+        If Not IsMissing(testingValue) Then
+            If isShould Then
+                Set shouldOrShouldNot = tempFluentFunction.OfCalledFunction("getVal", testingValue).Should
+            Else
+                Set shouldOrShouldNot = tempFluentFunction.OfCalledFunction("getVal", testingValue).ShouldNot
+            End If
+        Else
+            If isShould Then
+                Set shouldOrShouldNot = tempFluentFunction.OfCalledFunction("getVal", testingValue).Should
+            Else
+                Set shouldOrShouldNot = tempFluentFunction.OfCalledFunction("getVal", testingValue).ShouldNot
+            End If
         End If
     End If
     
@@ -15421,4 +15547,47 @@ Private Function fluentTester( _
     End Select
     
     Set fluentTester = fluentInput
+End Function
+
+Private Sub printTestCountRefactor(ByVal testCount As Long)
+    If testCount > 1 Then
+        Debug.Print testCount & " tests finished!" & vbNewLine
+    ElseIf testCount = 1 Then
+        Debug.Print "1 Test finished!"
+    End If
+End Sub
+
+Private Function InitFluentInput(fluentInput As Variant) As Variant
+    With fluentInput.Meta
+        .Printing.PassedMessage = "Success"
+        .Printing.FailedMessage = "Failure"
+        .Printing.UnexpectedMessage = "What?"
+        
+        .tests.ToStrDev = True
+    End With
+    
+    
+    Set InitFluentInput = fluentInput
+End Function
+
+Private Function getAndInitEventRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As zEvents
+    Set mEvents = New zEvents
+    
+    Set mEvents.setFluent = fluent
+    
+    If TypeOf fluentInput Is cFluentOf Or TypeOf fluentInput Is IFluentOf Then
+        Set mEvents.setFluentOf = fluentInput
+    End If
+    
+    Set mEvents.setFluentEventOfResult = testFluentResult
+    
+    Set getAndInitEventRefactor = mEvents
+End Function
+
+Public Function getVal(Optional val As Variant) As Variant
+    If VBA.Information.IsObject(val) Then
+        Set getVal = val
+    Else
+        getVal = val
+    End If
 End Function
