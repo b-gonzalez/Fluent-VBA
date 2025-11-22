@@ -15205,14 +15205,14 @@ Sub runRecurIterTestsRefactor(ByVal fluentInput As Variant)
     
     Call validateRecurIterFluentOfsRefactor(fluentInput, tfRecur, tfIter, "main")
     
-    Call validateRecurIterFuncCounts2(tfRecur)
+    Call validateRecurIterFuncCounts2Refactor(tfRecur)
     
-    recurCount1 = validateRecurIterFuncCounts(tfRecur)
-    iterCount1 = validateRecurIterFuncCounts(tfIter)
+    recurCount1 = validateRecurIterFuncCountsRefactor(tfRecur)
+    iterCount1 = validateRecurIterFuncCountsRefactor(tfIter)
     Debug.Assert recurCount1 = iterCount1
     
-    recurCount2 = validateRecurIterFuncCounts2(tfRecur)
-    iterCount2 = validateRecurIterFuncCounts2(tfIter)
+    recurCount2 = validateRecurIterFuncCounts2Refactor(tfRecur)
+    iterCount2 = validateRecurIterFuncCounts2Refactor(tfIter)
     Debug.Assert recurCount2 = iterCount2
     
     Debug.Assert _
@@ -15568,6 +15568,58 @@ Private Function InitFluentInput(fluentInput As Variant) As Variant
     
     
     Set InitFluentInput = fluentInput
+End Function
+
+Function validateRecurIterFuncCountsRefactor(ByVal recurIterFluentOf As cFluentOf) As Long
+    Dim TestingInfoDev As ITestingFunctionsInfoDev
+    Dim counter As Long
+
+    With recurIterFluentOf.Meta.tests
+        Set TestingInfoDev = .TestingFunctionsInfos
+
+        With TestingInfoDev
+            Debug.Assert .DepthCountOfIter.Count = .DepthCountOfRecur.Count
+            If .DepthCountOfIter.Count = .DepthCountOfRecur.Count Then counter = counter + 1
+
+            Debug.Assert .InDataStructureIter.Count = .InDataStructureRecur.Count
+            If .DepthCountOfIter.Count = .DepthCountOfRecur.Count Then counter = counter + 1
+
+            Debug.Assert .InDataStructuresIter.Count = .InDataStructuresRecur.Count
+            If .DepthCountOfIter.Count = .DepthCountOfRecur.Count Then counter = counter + 1
+
+            Debug.Assert .NestedCountOfIter.Count = .NestedCountOfRecur.Count
+            If .DepthCountOfIter.Count = .DepthCountOfRecur.Count Then counter = counter + 1
+        End With
+    End With
+
+    validateRecurIterFuncCountsRefactor = counter
+End Function
+
+Function validateRecurIterFuncCounts2Refactor(ByVal recurIterFluentOf As cFluentOf) As Long
+    Dim TestingInfoDev As ITestingFunctionsInfoDev
+    Dim counter As Long
+    Dim recurIterFuncNameCol As VBA.Collection
+    Dim elem As Variant
+    Dim testSubInfoRecur As ITestingFunctionsInfo
+    Dim testSubInfoIter As ITestingFunctionsInfo
+
+    'In order for this function to work correctly, the individual testing functions
+    'for the recursive and iterative methods must be called.
+
+    Set TestingInfoDev = recurIterFluentOf.Meta.tests.TestingFunctionsInfos
+    Set recurIterFuncNameCol = TestingInfoDev.getRecurIterFuncNameCol
+    counter = 0
+
+    For Each elem In recurIterFuncNameCol
+        Set testSubInfoRecur = VBA.Interaction.CallByName(TestingInfoDev, elem & "Recur", VbGet)
+        Set testSubInfoIter = VBA.Interaction.CallByName(TestingInfoDev, elem & "Iter", VbGet)
+
+        Debug.Assert testSubInfoIter.Count = testSubInfoRecur.Count
+
+        If testSubInfoIter.Count = testSubInfoRecur.Count Then counter = counter + 1
+    Next elem
+
+    validateRecurIterFuncCounts2Refactor = counter
 End Function
 
 Private Function getAndInitEventRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf) As zEvents
