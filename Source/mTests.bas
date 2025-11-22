@@ -18,7 +18,6 @@ Public Sub runMainTests()
     Dim fluent As IFluent
     Dim testFluent As IFluentOf
     Dim testFluentResult As IFluentOf
-    Dim events As zEvents
     Dim nulTestFluent As IFluentOf
     Dim emptyTestFluent As IFluentOf
     Dim tempCounter As Long
@@ -27,6 +26,7 @@ Public Sub runMainTests()
     Dim recurCount1 As Long, iterCount1 As Long
     Dim recurCount2 As Long, iterCount2 As Long
     
+    'This is needed for validateRecurIterFluentOfs
     Set mRecurIterFuncNamesDict = New Scripting.Dictionary
     Set fluent = MakeFluent
     Set testFluentResult = MakeFluentOf
@@ -688,6 +688,9 @@ Function validateRecurIterFuncCounts2(ByVal recurIterFluentOf As cFluentOf) As L
     Dim elem As Variant
     Dim testSubInfoRecur As ITestingFunctionsInfo
     Dim testSubInfoIter As ITestingFunctionsInfo
+    
+    'In order for this function to work correctly, the individual testing functions
+    'for the recursive and iterative methods must be called.
     
     Set TestingInfoDev = recurIterFluentOf.Meta.tests.TestingFunctionsInfos
     Set recurIterFuncNameCol = TestingInfoDev.getRecurIterFuncNameCol

@@ -16,6 +16,7 @@ Sub runMainTestsRefactor()
     Dim f As IFluent
     Dim fo As IFluentOf
     Dim f2 As IFluent
+    Dim ff As IFluentFunction
     Dim tf As IFluentOf
     Dim temp As Variant
     Dim fiArr As Variant
@@ -24,8 +25,9 @@ Sub runMainTestsRefactor()
     
     Set fo = New cFluentOf
     Set f2 = New cFluent
+    Set ff = New cFluentFunction
     
-    fiArr = Array(fo, f2)
+    fiArr = Array(fo, f2, ff)
 
     For i = LBound(fiArr) To UBound(fiArr)
         mCounter = 0
