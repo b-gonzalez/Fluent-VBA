@@ -35,8 +35,8 @@ Private Property Get IUnitFluent_TestingFunctions() As cTestingFunctions
 End Property
 
 Private Property Let IUnitFluent_testValue(ByVal value As Variant)
-    pTestingFunctions.TestValue = value
-    pUnitVal = pTestingFunctions.TestValue
+    pTestingFunctions.testValue = value
+    pUnitVal = pTestingFunctions.testValue
     
     With pMeta.tests.TestStrings
         If .CleanTestValueStr Or .CleanTestStrings Then
@@ -46,8 +46,8 @@ Private Property Let IUnitFluent_testValue(ByVal value As Variant)
 End Property
 
 Private Property Set IUnitFluent_testValue(ByVal value As Variant)
-    Set pTestingFunctions.TestValue = value
-    Set pUnitVal = pTestingFunctions.TestValue
+    Set pTestingFunctions.testValue = value
+    Set pUnitVal = pTestingFunctions.testValue
 End Property
 
 Private Property Get IUnitFluent_testValue() As Variant
@@ -84,9 +84,9 @@ Private Function getShould() As cShould
     Set tempShould.SetTestFunc = pTestingFunctions
     
     If VBA.Information.IsObject(pUnitVal) Then
-        Set tempShould.TestValue = pUnitVal
+        Set tempShould.testValue = pUnitVal
     Else
-        tempShould.TestValue = pUnitVal
+        tempShould.testValue = pUnitVal
     End If
     Set getShould = tempShould
 End Function
@@ -101,9 +101,9 @@ Private Function getShouldNot() As cShouldNot
     Set tempShouldNot.SetTestFunc = pTestingFunctions
     
     If VBA.Information.IsObject(pUnitVal) Then
-        Set tempShouldNot.TestValue = pUnitVal
+        Set tempShouldNot.testValue = pUnitVal
     Else
-        tempShouldNot.TestValue = pUnitVal
+        tempShouldNot.testValue = pUnitVal
     End If
     
     Set getShouldNot = tempShouldNot

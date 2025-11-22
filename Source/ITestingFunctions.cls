@@ -9,16 +9,16 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Let TestValue(ByVal value As Variant)
+Public Property Let testValue(ByVal value As Variant)
 End Property
 
 Public Property Let TestValueClean(ByVal value As Variant)
 End Property
 
-Public Property Set TestValue(ByVal value As Variant)
+Public Property Set testValue(ByVal value As Variant)
 End Property
 
-Public Property Get TestValue() As Variant
+Public Property Get testValue() As Variant
 End Property
 
 Public Property Let TestValueSet(ByVal value As Boolean)

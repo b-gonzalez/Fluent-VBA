@@ -25,10 +25,10 @@ Private Function IFluentOf_Of(Optional ByVal All As Variant) As IUnitFluentOf
     If Not VBA.Information.IsMissing(All) Or VBA.Information.IsArray(All) Then
         If VBA.Information.IsObject(All) Then
             Set pFluentOfVal = All
-            Set pUnit.TestValue = pFluentOfVal
+            Set pUnit.testValue = pFluentOfVal
         Else
             pFluentOfVal = All
-            pUnit.TestValue = pFluentOfVal
+            pUnit.testValue = pFluentOfVal
         End If
     Else
         Set tf = pUnit.TestingFunctions

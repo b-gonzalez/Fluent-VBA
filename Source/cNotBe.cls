@@ -89,7 +89,7 @@ End Function
 
 Private Function IBe_OneOf(ParamArray All() As Variant) As Variant
     Dim result As Variant
-    result = pBeTestFuncs.OneOf(pNotBeValue, False, All)
+    result = pBeTestFuncs.OneOf(pNotBeValue, True, All)
     result = pUtilities.NegateIfBool(result)
     IBe_OneOf = result
 End Function

@@ -29,20 +29,34 @@ Private Property Get IFluent_Meta() As IMeta
 End Property
 
 Private Property Set IFluent_TestValue(ByVal All As Variant)
-    Set pFluentVal = All
-    Set pUnit.TestValue = pFluentVal
+    Dim tf As ITestingFunctions
+    
+    If Not VBA.Information.IsMissing(All) Or VBA.Information.IsArray(All) Then
+        Set pFluentVal = All
+        Set pUnit.testValue = pFluentVal
+    Else
+        Set tf = pUnit.TestingFunctions
+        tf.TestValueSet = False
+    End If
 End Property
 
 Private Property Let IFluent_TestValue(ByVal All As Variant)
-    pFluentVal = All
-    pUnit.TestValue = pFluentVal
+    Dim tf As ITestingFunctions
+    
+    If Not VBA.Information.IsMissing(All) Or VBA.Information.IsArray(All) Then
+        pFluentVal = All
+        pUnit.testValue = pFluentVal
+    Else
+        Set tf = pUnit.TestingFunctions
+        tf.TestValueSet = False
+    End If
 End Property
 
 Private Property Get IFluent_TestValue() As Variant
     If VBA.Information.IsObject(pFluentVal) Then
-        Set IFluent_TestValue = pUnit.TestValue
+        Set IFluent_TestValue = pUnit.testValue
     Else
-        IFluent_TestValue = pUnit.TestValue
+        IFluent_TestValue = pUnit.testValue
     End If
 End Property
 
@@ -58,19 +72,19 @@ Public Property Get Meta() As IMeta
     Set Meta = IFluent_Meta
 End Property
 
-Public Property Set TestValue(ByVal All As Variant)
+Public Property Set testValue(ByVal All As Variant)
     Set IFluent_TestValue = All
 End Property
 
-Public Property Let TestValue(ByVal All As Variant)
+Public Property Let testValue(ByVal All As Variant)
     IFluent_TestValue = All
 End Property
 
-Public Property Get TestValue() As Variant
+Public Property Get testValue() As Variant
     If VBA.Information.IsObject(pFluentVal) Then
-        Set TestValue = IFluent_TestValue
+        Set testValue = IFluent_TestValue
     Else
-        TestValue = IFluent_TestValue
+        testValue = IFluent_TestValue
     End If
 End Property
 
