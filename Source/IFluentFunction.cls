@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Property Get Meta() As IMeta
+Public Property Get Meta() As IMetaFluentFunction
 End Property
 
 Public Function OfCalledFunction( _
@@ -28,7 +28,8 @@ Public Function OfCalledFunction( _
     Optional ByVal testingInput23 As Variant, Optional ByVal testingInput24 As Variant, _
     Optional ByVal testingInput25 As Variant, Optional ByVal testingInput26 As Variant, _
     Optional ByVal testingInput27 As Variant, Optional ByVal testingInput28 As Variant, _
-    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant _
+    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant, _
+    Optional ByVal returnTypeIsObject As Boolean = False _
 ) As IUnitFluentOf
 End Function
 
@@ -49,6 +50,7 @@ Public Function OfCalledMethod( _
     Optional ByVal testingInput23 As Variant, Optional ByVal testingInput24 As Variant, _
     Optional ByVal testingInput25 As Variant, Optional ByVal testingInput26 As Variant, _
     Optional ByVal testingInput27 As Variant, Optional ByVal testingInput28 As Variant, _
-    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant _
+    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant, _
+    Optional ByVal returnTypeIsObject As Boolean = False _
 ) As IUnitFluentOf
 End Function

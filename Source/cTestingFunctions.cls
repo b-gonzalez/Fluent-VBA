@@ -1452,7 +1452,7 @@ Private Function IHaveTestFuncs_Procedure( _
                         errCounter = errCounter + 1
                         actualStr = tempStr
                     Else
-                        Err.Clear
+                        Err.clear
                     End If
                     
                     callTypeStr = tempStr
@@ -1469,7 +1469,7 @@ Private Function IHaveTestFuncs_Procedure( _
                         
                         actualStr = assignOrConcatStr(actualStr, tempStr)
                     Else
-                        Err.Clear
+                        Err.clear
                     End If
                     
                     callTypeStr = assignOrConcatStr(callTypeStr, tempStr)
@@ -1486,7 +1486,7 @@ Private Function IHaveTestFuncs_Procedure( _
                         
                         actualStr = assignOrConcatStr(actualStr, tempStr)
                     Else
-                        Err.Clear
+                        Err.clear
                     End If
                     
                     callTypeStr = assignOrConcatStr(callTypeStr, tempStr)
@@ -1504,7 +1504,7 @@ Private Function IHaveTestFuncs_Procedure( _
                         
                         actualStr = assignOrConcatStr(actualStr, tempStr)
                     Else
-                        Err.Clear
+                        Err.clear
                     End If
                     
                     callTypeStr = assignOrConcatStr(callTypeStr, tempStr)
