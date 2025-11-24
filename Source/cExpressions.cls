@@ -52,7 +52,7 @@ Private Property Set IExpressions_setMeta(ByVal value As IMeta)
     End If
 End Property
 
-Private Function setTestResultProps(ByVal test As ITest, ByVal result As Variant, ByVal negateValue As Boolean) As ITest
+Private Function setTestResultProps(ByVal test As ITestSet, ByVal result As Variant, ByVal negateValue As Boolean) As ITest
     
     If VBA.Information.IsNull(result) Then
         test.HasNull = True
@@ -70,7 +70,7 @@ Private Function setTestResultProps(ByVal test As ITest, ByVal result As Variant
     Set setTestResultProps = test
 End Function
 
-Private Function initTest(ByVal test As ITest, ByVal functionName As String, ByVal pPrinting As IPrinting) As ITest
+Private Function initTest(ByVal test As ITestSet, ByVal functionName As String, ByVal pPrinting As IPrinting) As ITest
 
     With test
         .functionName = functionName
@@ -93,20 +93,24 @@ Private Function initTest(ByVal test As ITest, ByVal functionName As String, ByV
 End Function
 
 Private Function setTestValueTestInput(ByVal test As ITest, ByVal testingValue As Variant, ByVal testingInput As Variant) As ITest
+    Dim testSet As ITestSet
+    
+    Set testSet = test
+    
     If VBA.Information.TypeName(testingValue) <> "Nothing" Then
         If TypeOf testingValue Is Object  Then
-            Set test.testingValue = testingValue
+            Set testSet.testingValue = testingValue
         Else
-            test.testingValue = testingValue
+            testSet.testingValue = testingValue
         End If
     End If
     
     If Not VBA.Information.IsMissing(testingInput) Then
         If VBA.Information.TypeName(testingInput) <> "Nothing" Then
             If TypeOf testingInput Is Object  Then
-                Set test.testingInput = testingInput
+                Set testSet.testingInput = testingInput
             Else
-                test.testingInput = testingInput
+                testSet.testingInput = testingInput
             End If
         End If
     End If
@@ -114,7 +118,7 @@ Private Function setTestValueTestInput(ByVal test As ITest, ByVal testingValue A
     Set setTestValueTestInput = test
 End Function
 
-Private Function setLowerValHigherVal(ByVal test As ITest, ByVal lowerVal As Variant, ByVal higherVal As Variant) As ITest
+Private Function setLowerValHigherVal(ByVal test As ITestSet, ByVal lowerVal As Variant, ByVal higherVal As Variant) As ITest
     test.lowerVal = lowerVal
 
     test.higherVal = higherVal
@@ -125,11 +129,15 @@ Private Function setLowerValHigherVal(ByVal test As ITest, ByVal lowerVal As Var
 End Function
 
 Private Function getCleanedTest(ByVal test As ITest, ByVal cleanedTestValue As Variant, ByVal cleanedTestInput As Variant) As ITest
+    Dim testSet As ITestSet
+    
+    Set testSet = test
+    
     If Not VBA.Information.IsMissing(cleanedTestValue) Then
         If VBA.Information.TypeName(cleanedTestValue) = "String" Then
             If test.testingValue <> cleanedTestValue Then
-                test.cleanedTestValue = cleanedTestValue
-                test.HasCleanTestValue = True
+                testSet.cleanedTestValue = cleanedTestValue
+                testSet.HasCleanTestValue = True
             End If
         End If
     End If
@@ -137,14 +145,14 @@ Private Function getCleanedTest(ByVal test As ITest, ByVal cleanedTestValue As V
     If Not VBA.Information.IsMissing(cleanedTestInput) Then
         If VBA.Information.TypeName(cleanedTestInput) = "String" Then
             If test.testingInput <> cleanedTestInput Then
-                test.cleanedTestInput = cleanedTestInput
-                test.HasCleanTestInput = True
+                testSet.cleanedTestInput = cleanedTestInput
+                testSet.HasCleanTestInput = True
             End If
         End If
     End If
     
     If test.HasCleanTestInput And test.HasCleanTestValue Then
-        test.HasCleanTestStrings = True
+        testSet.HasCleanTestStrings = True
     End If
     
     Set getCleanedTest = test
@@ -153,12 +161,15 @@ End Function
 Private Function setStrTestValueStrTestInput(ByVal test As ITest, ByVal Meta As IMeta, ByVal negateValue As Boolean) As ITest
     Dim testDev As ITestDev
     Dim algo As Long
+    Dim testSet As ITestSet
     
-    With test
-        .StrTestInputPretty = IExpressions_InputToString(.testingInput, indent:=True)
-        .strTestValuePretty = IExpressions_InputToString(.testingValue, indent:=True)
-        .StrTestInput = deprettify(.StrTestInputPretty)
-        .strTestValue = deprettify(.strTestValuePretty)
+    Set testSet = test
+    
+    With testSet
+        .StrTestInputPretty = IExpressions_InputToString(test.testingInput, indent:=True)
+        .strTestValuePretty = IExpressions_InputToString(test.testingValue, indent:=True)
+        .StrTestInput = deprettify(test.StrTestInputPretty)
+        .strTestValue = deprettify(test.strTestValuePretty)
     End With
     
     Set testDev = test
@@ -211,7 +222,8 @@ Private Sub IExpressions_addToTestAndFluentPath( _
     'properties into one method. And perhaps similar properties from some of the other
     'functions as well.
     
-    Dim test As ITest
+'    Dim test As ITest
+    Dim test As ITestSet
     Dim testDev As ITestDev
     Dim tempTestingInput As Variant
     Dim tempTestingValue As Variant
@@ -624,6 +636,9 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
     Dim iterName As String
     Dim TestingInfoRecur As ITestingFunctionsInfo
     Dim TestingInfoIter As ITestingFunctionsInfo
+    Dim testSet As ITestSet
+    
+    Set testSet = test
     
     FluentPath = ""
     fluentElement = 1
@@ -690,7 +705,7 @@ Private Sub IExpressions_addFluentPathNew(ByVal test As ITest, ByVal negateValue
     
     iPrint.FluentPath = finalFluentPath
     
-    test.FluentPath = finalFluentPath
+    testSet.FluentPath = finalFluentPath
     
     iPrint.TestCollection.Add test
     
