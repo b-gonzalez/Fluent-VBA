@@ -22,3 +22,25 @@ Private Function IUtilities_NegateIfBool(ByVal result As Variant) As Variant
     
     IUtilities_NegateIfBool = tempResult
 End Function
+
+Function IUtilities_getElementFromCollection(col As VBA.Collection, index As Long) As VBA.Collection
+    Dim indexOffset As Long
+    Dim temp As Variant
+    Dim tempCol As Collection
+    
+    Set tempCol = New Collection
+    indexOffset = 1
+    
+    If Abs(index) <= col.Count Then
+        If index > 0 Then
+            tempCol.Add col(index)
+        ElseIf index < 0 Then
+            tempCol.Add col(col.Count + indexOffset + index)
+        End If
+    Else
+        tempCol.Add Null
+    End If
+    
+    
+    Set IUtilities_getElementFromCollection = tempCol
+End Function

@@ -34,6 +34,7 @@ Private pTestingFunctionsInfos As ITestingFunctionsInfos
 Private pToStrDev As Boolean
 Private pTestStrings As ITestStrings
 Private pContinueWithSelfReferentialIfPossible As Boolean
+Private pUtilities As IUtilities
 
 Private Const defaultEpsilon As Double = 0.000001
 Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
@@ -43,7 +44,13 @@ Private Property Get ITests_result() As Boolean
 End Property
 
 Private Property Get ITests_item(ByVal OneBasedIndex As Long) As ITest
-    Set ITests_item = pCol(OneBasedIndex)
+    Dim tempCol As Collection
+    
+    Set tempCol = pUtilities.getElementFromCollection(pCol, OneBasedIndex)
+    
+    If Not VBA.Information.IsNull(tempCol(1)) Then
+        Set ITests_item = tempCol(1)
+    End If
 End Property
 
 Private Property Get ITests_NewEnum() As IUnknown
@@ -413,12 +420,10 @@ Private Sub Class_Initialize()
     pEpsilon = defaultEpsilon
     
     Set pFluentPathDict = New Scripting.Dictionary
-    
     Set pTestingFunctionsInfos = New cTestingFunctionsInfos
-    
     Set pTestStrings = New cTestStrings
-        
     Set pDataStructures = New VBA.Collection
+    Set pUtilities = New cUtilities
     
     pDataStructures.Add "Dictionary"
     pDataStructures.Add "Collection"
@@ -434,4 +439,5 @@ Private Sub Class_Terminate()
     Set pTestStrings = Nothing
     Set pDataStructures = Nothing
     Set pCol = Nothing
+    Set pUtilities = Nothing
 End Sub

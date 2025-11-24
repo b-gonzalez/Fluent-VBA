@@ -11,3 +11,6 @@ Option Explicit
 
 Public Function NegateIfBool(ByVal result As Variant) As Variant
 End Function
+
+Function getElementFromCollection(col As VBA.Collection, index As Long) As VBA.Collection
+End Function

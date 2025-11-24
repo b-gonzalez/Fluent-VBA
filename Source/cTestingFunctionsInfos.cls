@@ -61,10 +61,17 @@ Private pNestedCountOfIter As cTestingFunctionsInfo
 Private pTestingFunctionsDict As Scripting.Dictionary
 Private pRecurIterFuncCol As VBA.Collection
 Private pTestingFunctionsInfoCol As VBA.Collection
+Private pUtilities As IUtilities
 Private pAddDevTestingFunctionsInfo As Boolean
 
 Private Property Get ITestingFunctionsInfos_item(ByVal OneBasedIndex As Long) As ITestingFunctionsInfo
-    Set ITestingFunctionsInfos_item = pTestingFunctionsInfoCol(OneBasedIndex)
+    Dim tempCol As Collection
+    
+    Set tempCol = pUtilities.getElementFromCollection(pTestingFunctionsInfoCol, OneBasedIndex)
+    
+    If Not VBA.Information.IsNull(tempCol(1)) Then
+        Set ITestingFunctionsInfos_item = tempCol(1)
+    End If
 End Property
 
 Private Property Get ITestingFunctionsInfos_NewEnum() As IUnknown
@@ -508,6 +515,7 @@ Private Sub Class_Initialize()
     Set pTestingFunctionsDict = New Scripting.Dictionary
     Set pRecurIterFuncCol = New VBA.Collection
     Set pTestingFunctionsInfoCol = New VBA.Collection
+    Set pUtilities = New cUtilities
     
     Call initTestingFunctionsInfoObjects
     Call populateDictWithTestFuncInfo
@@ -564,4 +572,6 @@ Private Sub Class_Terminate()
     Set pRecurIterFuncCol = Nothing
     
     Set pTestingFunctionsInfoCol = Nothing
+    
+    Set pUtilities = Nothing
 End Sub
