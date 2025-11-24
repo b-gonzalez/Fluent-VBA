@@ -11,6 +11,7 @@ Option Explicit
 
 Implements IPrintExpr
 Implements IPrinting
+Implements IPrintingFluentFunction
 
 Private pPrintTotalTests As Boolean
 Private pName As String
@@ -27,6 +28,8 @@ Private pWorkbook As Excel.Workbook
 Private pExpressions As IExpressions
 Private pCategorySet As Boolean
 Private pNameSet As Boolean
+Private pPathDict As Scripting.Dictionary
+Private pFunctionDict As Scripting.Dictionary
 
 Private TestProperty As cTestProperty
 
@@ -96,6 +99,95 @@ End Property
 Private Property Get IPrinting_FluentPath() As String
     IPrinting_FluentPath = pFluentPath
 End Property
+
+
+
+Private Property Let IPrintingFluentFunction_Category(ByVal value As String)
+    pCategory = value
+End Property
+
+Private Property Get IPrintingFluentFunction_Category() As String
+    IPrintingFluentFunction_Category = pCategory
+End Property
+
+Private Property Let IPrintingFluentFunction_Name(ByVal value As String)
+    pName = value
+End Property
+
+Private Property Get IPrintingFluentFunction_Name() As String
+    IPrinting_Name = pName
+End Property
+
+Private Property Let IPrintingFluentFunction_PassedMessage(ByVal value As String)
+    pPassedMessage = value
+End Property
+
+Private Property Get IPrintingFluentFunction_PassedMessage() As String
+    IPrinting_PassedMessage = pPassedMessage
+End Property
+
+Private Property Let IPrintingFluentFunction_FailedMessage(ByVal value As String)
+    pFailedMessage = value
+End Property
+
+Private Property Get IPrintingFluentFunction_FailedMessage() As String
+    IPrinting_FailedMessage = pFailedMessage
+End Property
+
+Private Property Let IPrintingFluentFunction_UnexpectedMessage(ByVal value As String)
+    pUnexpectedMessage = value
+End Property
+
+Private Property Get IPrintingFluentFunction_UnexpectedMessage() As String
+    IPrinting_UnexpectedMessage = pUnexpectedMessage
+End Property
+
+Private Property Get IPrintingFluentFunction_FluentPath() As String
+    IPrintingFluentFunction_FluentPath = pFluentPath
+End Property
+
+Private Sub IPrintingFluentFunction_PrintToImmediate()
+    Call IPrinting_PrintToImmediate
+End Sub
+
+Private Sub IPrintingFluentFunction_PrintToSheet()
+    Call IPrinting_PrintToSheet
+End Sub
+
+Private Property Set IPrintingFluentFunction_PathDict(value As Scripting.Dictionary)
+    Set pPathDict = value
+End Property
+
+Private Property Set IPrintingFluentFunction_FunctionDict(value As Scripting.Dictionary)
+    Set pFunctionDict = value
+End Property
+
+Private Sub IPrintingFluentFunction_printPathDict()
+    Dim temp As String
+    temp = pExpressions.InputToString(pPathDict, indent:=True)
+    temp = Replace(temp, "Dictionary", "")
+    Debug.Print temp
+    
+End Sub
+
+Private Sub IPrintingFluentFunction_queryAndPrintFunctionDict(query As String)
+    Dim d As Scripting.Dictionary
+    Dim key As Variant
+    Dim temp As String
+    
+    Set d = New Scripting.Dictionary
+    
+    For Each key In pFunctionDict.Keys
+        If Application.Evaluate(pFunctionDict(key) & query) Then
+            d.Add key, pFunctionDict(key)
+        End If
+    Next key
+    
+    temp = pExpressions.InputToString(d, indent:=True)
+    temp = Replace(temp, "Dictionary", "")
+    Debug.Print temp
+    
+End Sub
 
 Private Function ArrayFromTests(ByVal col As VBA.Collection, ByVal tp As Long) As Variant()
     Dim test As ITest

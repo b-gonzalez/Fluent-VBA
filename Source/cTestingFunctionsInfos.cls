@@ -63,7 +63,7 @@ Private pRecurIterFuncCol As VBA.Collection
 Private pTestingFunctionsInfoCol As VBA.Collection
 Private pAddDevTestingFunctionsInfo As Boolean
 
-Private Property Get ITestingFunctionsInfos_item(ByVal OneBasedIndex As Long) As ITest
+Private Property Get ITestingFunctionsInfos_item(ByVal OneBasedIndex As Long) As ITestingFunctionsInfo
     Set ITestingFunctionsInfos_item = pTestingFunctionsInfoCol(OneBasedIndex)
 End Property
 

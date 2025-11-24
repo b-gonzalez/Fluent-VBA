@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Get item(ByVal OneBasedIndex As Long) As ITest
+Public Property Get item(ByVal OneBasedIndex As Long) As ITestingFunctionsInfo
 Attribute item.VB_UserMemId = 0
 End Property
 
