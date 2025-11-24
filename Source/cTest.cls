@@ -11,6 +11,7 @@ Option Explicit
 
 Implements ITest
 Implements ITestDev
+Implements ITestSet
 
 Private pAcutal As String
 Private pAlgorithm As Variant
@@ -51,11 +52,11 @@ Private pIsBaseCaseIter As Boolean
 
 Private Const INVALID_ENUM_VALUE_ERROR As Long = vbObjectError + 516
 
-Private Property Let ITest_testingValue(ByVal value As Variant)
+Private Property Let ITestSet_testingValue(ByVal value As Variant)
     pTestingValue = value
 End Property
 
-Private Property Set ITest_testingValue(ByVal value As Variant)
+Private Property Set ITestSet_testingValue(ByVal value As Variant)
     Set pTestingValue = value
 End Property
 
@@ -67,11 +68,11 @@ Private Property Get ITest_testingValue() As Variant
     End If
 End Property
 
-Private Property Let ITest_testingInput(ByVal value As Variant)
+Private Property Let ITestSet_testingInput(ByVal value As Variant)
     pTestingInput = value
 End Property
 
-Private Property Set ITest_testingInput(ByVal value As Variant)
+Private Property Set ITestSet_testingInput(ByVal value As Variant)
     Set pTestingInput = value
 End Property
 
@@ -83,7 +84,7 @@ Private Property Get ITest_testingInput() As Variant
     End If
 End Property
 
-Private Property Let ITest_LowerVal(ByVal value As Variant)
+Private Property Let ITestSet_LowerVal(ByVal value As Variant)
     pLowerVal = value
 End Property
 
@@ -91,7 +92,7 @@ Private Property Get ITest_LowerVal() As Variant
     ITest_LowerVal = pLowerVal
 End Property
 
-Private Property Let ITest_HigherVal(ByVal value As Variant)
+Private Property Let ITestSet_HigherVal(ByVal value As Variant)
     pHigherVal = value
 End Property
 
@@ -99,7 +100,7 @@ Private Property Get ITest_HigherVal() As Variant
     ITest_HigherVal = pHigherVal
 End Property
 
-Private Property Let ITest_FluentPath(ByVal value As String)
+Private Property Let ITestSet_FluentPath(ByVal value As String)
     pFluentPath = value
 End Property
 
@@ -107,7 +108,7 @@ Private Property Get ITest_FluentPath() As String
     ITest_FluentPath = pFluentPath
 End Property
 
-Private Property Let ITest_result(ByVal value As Variant)
+Private Property Let ITestSet_result(ByVal value As Variant)
     pResult = value
 End Property
 
@@ -115,7 +116,7 @@ Private Property Get ITest_result() As Variant
     ITest_result = pResult
 End Property
 
-Private Property Let ITest_functionName(ByVal value As String)
+Private Property Let ITestSet_functionName(ByVal value As String)
     pFunctionName = value
 End Property
 
@@ -123,7 +124,7 @@ Private Property Get ITest_functionName() As String
     ITest_functionName = pFunctionName
 End Property
 
-Private Property Let ITest_StrTestValue(ByVal value As String)
+Private Property Let ITestSet_StrTestValue(ByVal value As String)
     pStrTestValue = value
 End Property
 
@@ -131,7 +132,7 @@ Private Property Get ITest_StrTestValue() As String
     ITest_StrTestValue = pStrTestValue
 End Property
 
-Private Property Let ITest_StrTestInput(ByVal value As String)
+Private Property Let ITestSet_StrTestInput(ByVal value As String)
     pStrTestInput = value
 End Property
 
@@ -139,7 +140,7 @@ Private Property Get ITest_StrTestInput() As String
     ITest_StrTestInput = pStrTestInput
 End Property
 
-Private Property Let ITest_StrTestValuePretty(ByVal value As String)
+Private Property Let ITestSet_StrTestValuePretty(ByVal value As String)
     pStrTestValuePretty = value
 End Property
 
@@ -147,7 +148,7 @@ Private Property Get ITest_StrTestValuePretty() As String
     ITest_StrTestValuePretty = pStrTestValuePretty
 End Property
 
-Private Property Let ITest_StrTestInputPretty(ByVal value As String)
+Private Property Let ITestSet_StrTestInputPretty(ByVal value As String)
     pStrTestInputPretty = value
 End Property
 
@@ -155,7 +156,7 @@ Private Property Get ITest_StrTestInputPretty() As String
     ITest_StrTestInputPretty = pStrTestInputPretty
 End Property
 
-Private Property Let ITest_HasNull(ByVal value As Boolean)
+Private Property Let ITestSet_HasNull(ByVal value As Boolean)
     pHasNull = value
 End Property
 
@@ -163,7 +164,7 @@ Private Property Get ITest_HasNull() As Boolean
     ITest_HasNull = pHasNull
 End Property
 
-Private Property Let ITest_Category(ByVal value As String)
+Private Property Let ITestSet_Category(ByVal value As String)
     pCategory = value
 End Property
 
@@ -171,7 +172,7 @@ Private Property Get ITest_Category() As String
     ITest_Category = pCategory
 End Property
 
-Private Property Let ITest_TestName(ByVal value As String)
+Private Property Let ITestSet_TestName(ByVal value As String)
     pTestName = value
 End Property
 
@@ -179,7 +180,7 @@ Private Property Get ITest_TestName() As String
     ITest_TestName = pTestName
 End Property
 
-Private Property Let ITest_TestValueSet(ByVal value As Boolean)
+Private Property Let ITestSet_TestValueSet(ByVal value As Boolean)
     pTestValueSet = value
 End Property
 
@@ -187,7 +188,7 @@ Private Property Get ITest_TestValueSet() As Boolean
     ITest_TestValueSet = pTestValueSet
 End Property
 
-Private Property Let ITest_HasEmpty(ByVal value As Boolean)
+Private Property Let ITestSet_HasEmpty(ByVal value As Boolean)
     pHasEmpty = value
 End Property
 
@@ -195,7 +196,7 @@ Private Property Get ITest_HasEmpty() As Boolean
     ITest_HasEmpty = pHasEmpty
 End Property
 
-Private Property Let ITest_CleanedTestValue(ByVal value As String)
+Private Property Let ITestSet_CleanedTestValue(ByVal value As String)
     pCleanedTestValue = value
 End Property
 
@@ -203,7 +204,7 @@ Private Property Get ITest_CleanedTestValue() As String
     ITest_CleanedTestValue = pCleanedTestValue
 End Property
 
-Private Property Let ITest_CleanedTestInput(ByVal value As String)
+Private Property Let ITestSet_CleanedTestInput(ByVal value As String)
     pCleanedTestInput = value
 End Property
 
@@ -211,7 +212,7 @@ Private Property Get ITest_CleanedTestInput() As String
     ITest_CleanedTestInput = pCleanedTestInput
 End Property
 
-Private Property Let ITest_HasCleanTestValue(ByVal value As Boolean)
+Private Property Let ITestSet_HasCleanTestValue(ByVal value As Boolean)
     pHasCleanTestValue = value
 End Property
 
@@ -219,7 +220,7 @@ Private Property Get ITest_HasCleanTestValue() As Boolean
     ITest_HasCleanTestValue = pHasCleanTestValue
 End Property
 
-Private Property Let ITest_HasCleanTestInput(ByVal value As Boolean)
+Private Property Let ITestSet_HasCleanTestInput(ByVal value As Boolean)
     pHasCleanTestInput = False
 End Property
 
@@ -227,7 +228,7 @@ Private Property Get ITest_HasCleanTestInput() As Boolean
     ITest_HasCleanTestInput = pHasCleanTestInput
 End Property
 
-Private Property Let ITest_HasCleanTestStrings(ByVal value As Boolean)
+Private Property Let ITestSet_HasCleanTestStrings(ByVal value As Boolean)
     pHasCleanTestStrings = value
 End Property
 
@@ -235,7 +236,7 @@ Private Property Get ITest_HasCleanTestStrings() As Boolean
     ITest_HasCleanTestStrings = pHasCleanTestStrings
 End Property
 
-Private Property Let ITest_Actual(ByVal value As String)
+Private Property Let ITestSet_Actual(ByVal value As String)
     pAcutal = value
 End Property
 
@@ -243,7 +244,7 @@ Private Property Get ITest_Actual() As String
     ITest_Actual = pAcutal
 End Property
 
-Private Property Let ITest_HasSelfReferential(ByVal value As Variant)
+Private Property Let ITestSet_HasSelfReferential(ByVal value As Variant)
     phasSelfReferential = value
 End Property
 
@@ -251,7 +252,7 @@ Private Property Get ITest_HasSelfReferential() As Variant
     ITest_HasSelfReferential = phasSelfReferential
 End Property
 
-Private Property Let ITest_TestingValueIsSelfReferential(ByVal value As Variant)
+Private Property Let ITestSet_TestingValueIsSelfReferential(ByVal value As Variant)
     pTestingValueIsSelfReferential = value
 End Property
 
@@ -259,7 +260,7 @@ Private Property Get ITest_TestingValueIsSelfReferential() As Variant
     ITest_TestingValueIsSelfReferential = pTestingValueIsSelfReferential
 End Property
 
-Private Property Let ITest_TestingInputIsSelfReferential(ByVal value As Variant)
+Private Property Let ITestSet_TestingInputIsSelfReferential(ByVal value As Variant)
     pTestingInputIsSelfReferential = value
 End Property
 
@@ -364,11 +365,11 @@ End Property
 'PUBLIC PROPERTIES
 
 Public Property Let testingValue(ByVal value As Variant)
-    ITest_testingValue = value
+    ITestSet_testingValue = value
 End Property
 
 Public Property Set testingValue(ByVal value As Variant)
-    Set ITest_testingValue = value
+    Set ITestSet_testingValue = value
 End Property
 
 Public Property Get testingValue() As Variant
@@ -380,11 +381,11 @@ Public Property Get testingValue() As Variant
 End Property
 
 Public Property Let testingInput(ByVal value As Variant)
-    ITest_testingInput = value
+    ITestSet_testingInput = value
 End Property
 
 Public Property Set testingInput(ByVal value As Variant)
-    Set ITest_testingInput = value
+    Set ITestSet_testingInput = value
 End Property
 
 Public Property Get testingInput() As Variant
@@ -396,7 +397,7 @@ Public Property Get testingInput() As Variant
 End Property
 
 Public Property Let lowerVal(ByVal value As Variant)
-    ITest_LowerVal = value
+    ITestSet_LowerVal = value
 End Property
 
 Public Property Get lowerVal() As Variant
@@ -404,7 +405,7 @@ Public Property Get lowerVal() As Variant
 End Property
 
 Public Property Let higherVal(ByVal value As Variant)
-    ITest_HigherVal = value
+    ITestSet_HigherVal = value
 End Property
 
 Public Property Get higherVal() As Variant
@@ -412,7 +413,7 @@ Public Property Get higherVal() As Variant
 End Property
 
 Public Property Let FluentPath(ByVal value As String)
-    ITest_FluentPath = value
+    ITestSet_FluentPath = value
 End Property
 
 Public Property Get FluentPath() As String
@@ -420,7 +421,7 @@ Public Property Get FluentPath() As String
 End Property
 
 Public Property Let result(ByVal value As Variant)
-    ITest_result = value
+    ITestSet_result = value
 End Property
 
 Public Property Get result() As Variant
@@ -428,7 +429,7 @@ Public Property Get result() As Variant
 End Property
 
 Public Property Let functionName(ByVal value As String)
-    ITest_functionName = value
+    ITestSet_functionName = value
 End Property
 
 Public Property Get functionName() As String
@@ -436,7 +437,7 @@ Public Property Get functionName() As String
 End Property
 
 Public Property Let strTestValue(ByVal value As String)
-    ITest_StrTestValue = value
+    ITestSet_StrTestValue = value
 End Property
 
 Public Property Get strTestValue() As String
@@ -444,7 +445,7 @@ Public Property Get strTestValue() As String
 End Property
 
 Public Property Let StrTestInput(ByVal value As String)
-    ITest_StrTestInput = value
+    ITestSet_StrTestInput = value
 End Property
 
 Public Property Get StrTestInput() As String
@@ -452,7 +453,7 @@ Public Property Get StrTestInput() As String
 End Property
 
 Public Property Let HasNull(ByVal value As Boolean)
-    ITest_HasNull = value
+    ITestSet_HasNull = value
 End Property
 
 Public Property Get HasNull() As Boolean
@@ -460,7 +461,7 @@ Public Property Get HasNull() As Boolean
 End Property
 
 Public Property Let Category(ByVal value As String)
-    ITest_Category = value
+    ITestSet_Category = value
 End Property
 
 Public Property Get Category() As String
@@ -468,7 +469,7 @@ Public Property Get Category() As String
 End Property
 
 Public Property Let TestName(ByVal value As String)
-    ITest_TestName = value
+    ITestSet_TestName = value
 End Property
 
 Public Property Get TestName() As String
@@ -476,7 +477,7 @@ Public Property Get TestName() As String
 End Property
 
 Public Property Let TestValueSet(ByVal value As Boolean)
-    ITest_TestValueSet = value
+    ITestSet_TestValueSet = value
 End Property
 
 Public Property Get TestValueSet() As Boolean
@@ -484,7 +485,7 @@ Public Property Get TestValueSet() As Boolean
 End Property
 
 Public Property Let HasEmpty(ByVal value As Boolean)
-    ITest_HasEmpty = value
+    ITestSet_HasEmpty = value
 End Property
 
 Public Property Get HasEmpty() As Boolean
@@ -492,7 +493,7 @@ Public Property Get HasEmpty() As Boolean
 End Property
 
 Public Property Let cleanedTestValue(ByVal value As String)
-    ITest_CleanedTestValue = value
+    ITestSet_CleanedTestValue = value
 End Property
 
 Public Property Get cleanedTestValue() As String
@@ -500,7 +501,7 @@ Public Property Get cleanedTestValue() As String
 End Property
 
 Public Property Let cleanedTestInput(ByVal value As String)
-    ITest_CleanedTestInput = value
+    ITestSet_CleanedTestInput = value
 End Property
 
 Public Property Get cleanedTestInput() As String
@@ -508,7 +509,7 @@ Public Property Get cleanedTestInput() As String
 End Property
 
 Public Property Let HasCleanTestValue(ByVal value As Boolean)
-    ITest_HasCleanTestValue = value
+    ITestSet_HasCleanTestValue = value
 End Property
 
 Public Property Get HasCleanTestValue() As Boolean
@@ -516,7 +517,7 @@ Public Property Get HasCleanTestValue() As Boolean
 End Property
 
 Public Property Let HasCleanTestInput(ByVal value As Boolean)
-    ITest_HasCleanTestInput = value
+    ITestSet_HasCleanTestInput = value
 End Property
 
 Public Property Get HasCleanTestInput() As Boolean
@@ -524,7 +525,7 @@ Public Property Get HasCleanTestInput() As Boolean
 End Property
 
 Public Property Let HasCleanTestStrings(ByVal value As Boolean)
-    ITest_HasCleanTestStrings = value
+    ITestSet_HasCleanTestStrings = value
 End Property
 
 Public Property Get HasCleanTestStrings() As Boolean
@@ -532,7 +533,7 @@ Public Property Get HasCleanTestStrings() As Boolean
 End Property
 
 Public Property Let Actual(ByVal value As String)
-    ITest_Actual = value
+    ITestSet_Actual = value
 End Property
 
 Public Property Get Actual() As String
@@ -540,7 +541,7 @@ Public Property Get Actual() As String
 End Property
 
 Public Property Let HasSelfReferential(ByVal value As Variant)
-    ITest_HasSelfReferential = value
+    ITestSet_HasSelfReferential = value
 End Property
 
 Public Property Get HasSelfReferential() As Variant
@@ -548,7 +549,7 @@ Public Property Get HasSelfReferential() As Variant
 End Property
 
 Public Property Let TestingValueIsSelfReferential(ByVal value As Variant)
-    ITest_TestingValueIsSelfReferential = value
+    ITestSet_TestingValueIsSelfReferential = value
 End Property
 
 Public Property Get TestingValueIsSelfReferential() As Variant
@@ -556,7 +557,7 @@ Public Property Get TestingValueIsSelfReferential() As Variant
 End Property
 
 Public Property Let TestingInputIsSelfReferential(ByVal value As Variant)
-    ITest_TestingInputIsSelfReferential = value
+    ITestSet_TestingInputIsSelfReferential = value
 End Property
 
 Public Property Get TestingInputIsSelfReferential() As Variant
