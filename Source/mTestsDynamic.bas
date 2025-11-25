@@ -112,7 +112,7 @@ Sub runMainTestsRefactor()
         Set mRecurIterFuncNamesDict = Nothing
     Next i
     
-    Debug.Print "All tests finished!"
+    Debug.Print "All refactored tests finished!"
 End Sub
 
 Public Sub TrueAssertAndRaiseEventsRefactor(ByVal fluent As IFluent, ByVal fluentInput As Variant, ByVal testFluentResult As IFluentOf)

@@ -28,12 +28,11 @@ Public Function OfCalledFunction( _
     Optional ByVal testingInput23 As Variant, Optional ByVal testingInput24 As Variant, _
     Optional ByVal testingInput25 As Variant, Optional ByVal testingInput26 As Variant, _
     Optional ByVal testingInput27 As Variant, Optional ByVal testingInput28 As Variant, _
-    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant, _
-    Optional ByVal returnTypeIsObject As Boolean = False _
+    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant _
 ) As IUnitFluentOf
 End Function
 
-Public Function OfCalledMethod( _
+Public Function OfCalledProcedure( _
     methodObject As Object, _
     methodName As String, _
     Optional ByVal testingInput1 As Variant, Optional ByVal testingInput2 As Variant, _
@@ -51,6 +50,6 @@ Public Function OfCalledMethod( _
     Optional ByVal testingInput25 As Variant, Optional ByVal testingInput26 As Variant, _
     Optional ByVal testingInput27 As Variant, Optional ByVal testingInput28 As Variant, _
     Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant, _
-    Optional ByVal returnTypeIsObject As Boolean = False _
+    Optional ByVal callType As VbCallType = 1 _
 ) As IUnitFluentOf
 End Function
