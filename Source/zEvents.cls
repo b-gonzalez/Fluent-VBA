@@ -22,10 +22,18 @@ Attribute pTestOfResults.VB_VarHelpID = -1
 Private WithEvents pTestDuplicate As cTests
 Attribute pTestDuplicate.VB_VarHelpID = -1
 
+Private WithEvents pTestFluent As cTests
+Attribute pTestFluent.VB_VarHelpID = -1
+Private WithEvents pTestFluentFunction As cTests
+Attribute pTestFluentFunction.VB_VarHelpID = -1
+
 Private pFluentEvent As IFluent
 Private pFluentEventOf As IFluentOf
 Private pFluentEventOfResult As IFluentOf
 Private pFluentEventDuplicate As IFluent
+
+Private pFluentTestEvent As IFluent
+Private pFluentFunctionTestEvent As IFluentFunction
 
 Private testCount As Long
 Private TestOfCount As Long
@@ -47,9 +55,19 @@ Public Property Set setFluent(ByVal value As IFluent)
     Set pTest = pFluentEvent.Meta.tests
 End Property
 
-Public Property Set setFluentOf(ByVal value As IFluentOf)
+Public Property Set setFluentOfTest(ByVal value As IFluentOf)
     Set pFluentEventOf = value
     Set pTestOf = pFluentEventOf.Meta.tests
+End Property
+
+Public Property Set setFluentTest(ByVal value As IFluent)
+    Set pFluentTestEvent = value
+    Set pTestFluent = pFluentTestEvent.Meta.tests
+End Property
+
+Public Property Set setFluentFunctionTest(ByVal value As IFluentFunction)
+    Set pFluentFunctionTestEvent = value
+    Set pTestFluentFunction = pFluentFunctionTestEvent.Meta.tests
 End Property
 
 Public Property Set setFluentEventOfResult(ByVal value As IFluentOf)
@@ -61,6 +79,36 @@ Public Property Set setFluentEventDuplicate(ByVal value As IFluent)
     Set pFluentEventDuplicate = value
     Set pTestDuplicate = pFluentEventDuplicate.Meta.tests
 End Property
+
+Private Sub pTestFluent_TestCompleted(ByVal test As ITest)
+    TestOfCount = TestOfCount + 1
+    Debug.Assert pFluentTestEvent.Meta.tests.Count = TestOfCount
+End Sub
+
+Private Sub pTestFluent_TestFailed(ByVal test As ITest)
+    Debug.Assert pFluentTestEvent.Meta.tests.result = test.result
+    Debug.Assert pFluentTestEvent.Meta.Printing.FluentPath = test.FluentPath
+End Sub
+
+Private Sub pTestFluent_TestPassed(ByVal test As ITest)
+    Debug.Assert pFluentTestEvent.Meta.tests.result = test.result
+    Debug.Assert pFluentTestEvent.Meta.Printing.FluentPath = test.FluentPath
+End Sub
+
+Private Sub pTestFluentFunction_TestCompleted(ByVal test As ITest)
+    TestOfCount = TestOfCount + 1
+    Debug.Assert pFluentFunctionTestEvent.Meta.tests.Count = TestOfCount
+End Sub
+
+Private Sub pTestFluentFunction_TestFailed(ByVal test As ITest)
+    Debug.Assert pFluentFunctionTestEvent.Meta.tests.result = test.result
+    Debug.Assert pFluentFunctionTestEvent.Meta.Printing.FluentPath = test.FluentPath
+End Sub
+
+Private Sub pTestFluentFunction_TestPassed(ByVal test As ITest)
+    Debug.Assert pFluentFunctionTestEvent.Meta.tests.result = test.result
+    Debug.Assert pFluentFunctionTestEvent.Meta.Printing.FluentPath = test.FluentPath
+End Sub
 
 Private Sub pTestOf_TestPassed(ByVal test As ITest)
     Debug.Assert pFluentEventOf.Meta.tests.result = test.result

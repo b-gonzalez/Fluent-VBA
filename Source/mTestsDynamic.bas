@@ -28,6 +28,7 @@ Sub runMainTestsRefactor()
     Set ff = New cFluentFunction
     
     fiArr = Array(fo, f2, ff)
+'    fiArr = Array(ff)
 
     For i = LBound(fiArr) To UBound(fiArr)
         mCounter = 0
@@ -15630,7 +15631,11 @@ Private Function getAndInitEventRefactor(ByVal fluent As IFluent, ByVal fluentIn
     Set mEvents.setFluent = fluent
     
     If TypeOf fluentInput Is cFluentOf Or TypeOf fluentInput Is IFluentOf Then
-        Set mEvents.setFluentOf = fluentInput
+        Set mEvents.setFluentOfTest = fluentInput
+    ElseIf TypeOf fluentInput Is cFluent Or TypeOf fluentInput Is IFluent Then
+        Set mEvents.setFluentTest = fluentInput
+    ElseIf TypeOf fluentInput Is cFluentFunction Or TypeOf fluentInput Is IFluentFunction Then
+        Set mEvents.setFluentFunctionTest = fluentInput
     End If
     
     Set mEvents.setFluentEventOfResult = testFluentResult

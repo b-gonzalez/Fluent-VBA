@@ -96,7 +96,7 @@ Private Function getAndInitEvent(ByVal fluent As IFluent, ByVal testFluent As IF
     Set mEvents = New zEvents
 
     Set mEvents.setFluent = fluent
-    Set mEvents.setFluentOf = testFluent
+    Set mEvents.setFluentOfTest = testFluent
     Set mEvents.setFluentEventOfResult = testFluentResult
 
     Set getAndInitEvent = mEvents
