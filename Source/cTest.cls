@@ -364,28 +364,12 @@ End Property
 
 'PUBLIC PROPERTIES
 
-Public Property Let testingValue(ByVal value As Variant)
-    ITestSet_testingValue = value
-End Property
-
-Public Property Set testingValue(ByVal value As Variant)
-    Set ITestSet_testingValue = value
-End Property
-
 Public Property Get testingValue() As Variant
     If TypeOf pTestingValue Is Object  Then
         Set testingValue = ITest_testingValue
     Else
         testingValue = ITest_testingValue
     End If
-End Property
-
-Public Property Let testingInput(ByVal value As Variant)
-    ITestSet_testingInput = value
-End Property
-
-Public Property Set testingInput(ByVal value As Variant)
-    Set ITestSet_testingInput = value
 End Property
 
 Public Property Get testingInput() As Variant
@@ -396,168 +380,84 @@ Public Property Get testingInput() As Variant
     End If
 End Property
 
-Public Property Let lowerVal(ByVal value As Variant)
-    ITestSet_LowerVal = value
-End Property
-
 Public Property Get lowerVal() As Variant
     lowerVal = ITest_LowerVal
-End Property
-
-Public Property Let higherVal(ByVal value As Variant)
-    ITestSet_HigherVal = value
 End Property
 
 Public Property Get higherVal() As Variant
     higherVal = ITest_HigherVal
 End Property
 
-Public Property Let FluentPath(ByVal value As String)
-    ITestSet_FluentPath = value
-End Property
-
 Public Property Get FluentPath() As String
     FluentPath = ITest_FluentPath
-End Property
-
-Public Property Let result(ByVal value As Variant)
-    ITestSet_result = value
 End Property
 
 Public Property Get result() As Variant
     result = ITest_result
 End Property
 
-Public Property Let functionName(ByVal value As String)
-    ITestSet_functionName = value
-End Property
-
 Public Property Get functionName() As String
     functionName = ITest_functionName
-End Property
-
-Public Property Let strTestValue(ByVal value As String)
-    ITestSet_StrTestValue = value
 End Property
 
 Public Property Get strTestValue() As String
     strTestValue = ITest_StrTestValue
 End Property
 
-Public Property Let StrTestInput(ByVal value As String)
-    ITestSet_StrTestInput = value
-End Property
-
 Public Property Get StrTestInput() As String
     StrTestInput = ITest_StrTestInput
-End Property
-
-Public Property Let HasNull(ByVal value As Boolean)
-    ITestSet_HasNull = value
 End Property
 
 Public Property Get HasNull() As Boolean
     HasNull = ITest_HasNull
 End Property
 
-Public Property Let Category(ByVal value As String)
-    ITestSet_Category = value
-End Property
-
 Public Property Get Category() As String
     Category = ITest_Category
-End Property
-
-Public Property Let TestName(ByVal value As String)
-    ITestSet_TestName = value
 End Property
 
 Public Property Get TestName() As String
     TestName = ITest_TestName
 End Property
 
-Public Property Let TestValueSet(ByVal value As Boolean)
-    ITestSet_TestValueSet = value
-End Property
-
 Public Property Get TestValueSet() As Boolean
     TestValueSet = ITest_TestValueSet
-End Property
-
-Public Property Let HasEmpty(ByVal value As Boolean)
-    ITestSet_HasEmpty = value
 End Property
 
 Public Property Get HasEmpty() As Boolean
     HasEmpty = ITest_HasEmpty
 End Property
 
-Public Property Let cleanedTestValue(ByVal value As String)
-    ITestSet_CleanedTestValue = value
-End Property
-
 Public Property Get cleanedTestValue() As String
     cleanedTestValue = ITest_CleanedTestValue
-End Property
-
-Public Property Let cleanedTestInput(ByVal value As String)
-    ITestSet_CleanedTestInput = value
 End Property
 
 Public Property Get cleanedTestInput() As String
     cleanedTestInput = ITest_CleanedTestInput
 End Property
 
-Public Property Let HasCleanTestValue(ByVal value As Boolean)
-    ITestSet_HasCleanTestValue = value
-End Property
-
 Public Property Get HasCleanTestValue() As Boolean
     HasCleanTestValue = ITest_HasCleanTestValue
-End Property
-
-Public Property Let HasCleanTestInput(ByVal value As Boolean)
-    ITestSet_HasCleanTestInput = value
 End Property
 
 Public Property Get HasCleanTestInput() As Boolean
     HasCleanTestInput = ITest_HasCleanTestInput
 End Property
 
-Public Property Let HasCleanTestStrings(ByVal value As Boolean)
-    ITestSet_HasCleanTestStrings = value
-End Property
-
 Public Property Get HasCleanTestStrings() As Boolean
     HasCleanTestStrings = ITest_HasCleanTestStrings
-End Property
-
-Public Property Let Actual(ByVal value As String)
-    ITestSet_Actual = value
 End Property
 
 Public Property Get Actual() As String
     Actual = ITest_Actual
 End Property
 
-Public Property Let HasSelfReferential(ByVal value As Variant)
-    ITestSet_HasSelfReferential = value
-End Property
-
 Public Property Get HasSelfReferential() As Variant
     HasSelfReferential = ITest_HasSelfReferential
 End Property
 
-Public Property Let TestingValueIsSelfReferential(ByVal value As Variant)
-    ITestSet_TestingValueIsSelfReferential = value
-End Property
-
 Public Property Get TestingValueIsSelfReferential() As Variant
     TestingValueIsSelfReferential = ITest_TestingValueIsSelfReferential
-End Property
-
-Public Property Let TestingInputIsSelfReferential(ByVal value As Variant)
-    ITestSet_TestingInputIsSelfReferential = value
 End Property
 
 Public Property Get TestingInputIsSelfReferential() As Variant
