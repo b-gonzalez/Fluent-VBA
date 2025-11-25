@@ -17,6 +17,9 @@ Private pTestingFunctions As cTestingFunctions
 Private pFluentOfVal As Variant
 Private pPath As String
 
+Const P_VB_METHOD_CALL_TYPE = 1
+Const P_VB_GET_CALL_TYPE = 2
+
 Public Property Get Meta() As IMetaFluentFunction
     Set Meta = IFluentFunction_Meta
 End Property
@@ -41,15 +44,14 @@ Public Function OfCalledFunction( _
     Optional ByVal testingInput23 As Variant, Optional ByVal testingInput24 As Variant, _
     Optional ByVal testingInput25 As Variant, Optional ByVal testingInput26 As Variant, _
     Optional ByVal testingInput27 As Variant, Optional ByVal testingInput28 As Variant, _
-    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant, _
-    Optional ByVal returnTypeIsObject As Boolean = False _
+    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant _
 ) As IUnitFluentOf
-    Set OfCalledFunction = IFluentFunction_OfCalledFunction(functionName, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29, testingInput30, returnTypeIsObject)
+    Set OfCalledFunction = IFluentFunction_OfCalledFunction(functionName, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29, testingInput30)
 End Function
 
-Public Function OfCalledMethod( _
-    methodObject As Object, _
-    methodName As String, _
+Public Function OfCalledProcedure( _
+    procedureObject As Object, _
+    procedureName As String, _
     Optional ByVal testingInput1 As Variant, Optional ByVal testingInput2 As Variant, _
     Optional ByVal testingInput3 As Variant, Optional ByVal testingInput4 As Variant, _
     Optional ByVal testingInput5 As Variant, Optional ByVal testingInput6 As Variant, _
@@ -65,9 +67,9 @@ Public Function OfCalledMethod( _
     Optional ByVal testingInput25 As Variant, Optional ByVal testingInput26 As Variant, _
     Optional ByVal testingInput27 As Variant, Optional ByVal testingInput28 As Variant, _
     Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant, _
-    Optional ByVal returnTypeIsObject As Boolean = False _
+    Optional ByVal callType As VbCallType = 1 _
 ) As IUnitFluentOf
-    Set OfCalledMethod = IFluentFunction_OfCalledMethod(methodObject, methodName, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29, testingInput30, returnTypeIsObject)
+    Set OfCalledProcedure = IFluentFunction_OfCalledProcedure(procedureObject, procedureName, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29, testingInput30, callType)
 End Function
 
 Private Function IFluentFunction_OfCalledFunction( _
@@ -86,8 +88,7 @@ Private Function IFluentFunction_OfCalledFunction( _
     Optional ByVal testingInput23 As Variant, Optional ByVal testingInput24 As Variant, _
     Optional ByVal testingInput25 As Variant, Optional ByVal testingInput26 As Variant, _
     Optional ByVal testingInput27 As Variant, Optional ByVal testingInput28 As Variant, _
-    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant, _
-    Optional ByVal returnTypeIsObject As Boolean = False _
+    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant _
 ) As IUnitFluentOf
     Dim tf As ITestingFunctions
     Dim tempResult As Variant
@@ -158,7 +159,7 @@ Private Function IFluentFunction_OfCalledFunction( _
     Set IFluentFunction_OfCalledFunction = pUnit
 End Function
 
-Private Function IFluentFunction_OfCalledMethod( _
+Private Function IFluentFunction_OfCalledProcedure( _
     methodObject As Object, _
     methodName As String, _
     Optional ByVal testingInput1 As Variant, Optional ByVal testingInput2 As Variant, _
@@ -176,7 +177,7 @@ Private Function IFluentFunction_OfCalledMethod( _
     Optional ByVal testingInput25 As Variant, Optional ByVal testingInput26 As Variant, _
     Optional ByVal testingInput27 As Variant, Optional ByVal testingInput28 As Variant, _
     Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant, _
-    Optional ByVal returnTypeIsObject As Boolean = False _
+    Optional ByVal callType As VbCallType = 1 _
 ) As IUnitFluentOf
     Dim tf As ITestingFunctions
     Dim tempResult As Variant
@@ -185,10 +186,14 @@ Private Function IFluentFunction_OfCalledMethod( _
     
     'Integrate the same functionality here for dealing with error objects that I integrated in OfCalledFunction.
     
+    Set cbnwoaCol = New Collection
+    
     On Error Resume Next
-        Set cbnwoaCol = callByNameWithOptionalArgs(methodObject, methodName, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29, testingInput30)
+        If callType = P_VB_GET_CALL_TYPE Or callType = P_VB_METHOD_CALL_TYPE Then
+            Set cbnwoaCol = callByNameWithOptionalArgs(methodObject, methodName, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29, testingInput30, callType)
+        End If
         
-        If Err.Number = 0 Then
+        If Err.Number = 0 And cbnwoaCol.Count > 0 Then
             If VBA.Information.IsObject(cbnwoaCol(1)) Then
                 Set All = cbnwoaCol(1)
             Else
@@ -212,7 +217,7 @@ Private Function IFluentFunction_OfCalledMethod( _
         tf.TestValueSet = False
     End If
     
-    Set IFluentFunction_OfCalledMethod = pUnit
+    Set IFluentFunction_OfCalledProcedure = pUnit
 End Function
 
 Private Function callByNameWithOptionalArgs( _
@@ -232,7 +237,8 @@ Private Function callByNameWithOptionalArgs( _
     Optional ByVal testingInput23 As Variant, Optional ByVal testingInput24 As Variant, _
     Optional ByVal testingInput25 As Variant, Optional ByVal testingInput26 As Variant, _
     Optional ByVal testingInput27 As Variant, Optional ByVal testingInput28 As Variant, _
-    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant _
+    Optional ByVal testingInput29 As Variant, Optional ByVal testingInput30 As Variant, _
+    Optional ByVal callType As VbCallType = 1 _
 ) As VBA.Collection
     Dim temp As Variant
     Dim elem As Variant
@@ -252,184 +258,184 @@ Private Function callByNameWithOptionalArgs( _
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29, testingInput30)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29, testingInput30)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29, testingInput30)
             End If
         Case Not VBA.Information.IsMissing(testingInput29)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28, testingInput29)
             End If
         Case Not VBA.Information.IsMissing(testingInput28)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27, testingInput28)
             End If
         Case Not VBA.Information.IsMissing(testingInput27)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26, testingInput27)
             End If
         Case Not VBA.Information.IsMissing(testingInput26)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25, testingInput26)
             End If
         Case Not VBA.Information.IsMissing(testingInput25)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24, testingInput25)
             End If
         Case Not VBA.Information.IsMissing(testingInput24)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23, testingInput24)
             End If
         Case Not VBA.Information.IsMissing(testingInput23)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22, testingInput23)
             End If
         Case Not VBA.Information.IsMissing(testingInput22)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21, testingInput22)
             End If
         Case Not VBA.Information.IsMissing(testingInput21)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20, testingInput21)
             End If
         Case Not VBA.Information.IsMissing(testingInput20)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19, testingInput20)
             End If
         Case Not VBA.Information.IsMissing(testingInput19)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18, testingInput19)
             End If
         Case Not VBA.Information.IsMissing(testingInput18)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17, testingInput18)
             End If
         Case Not VBA.Information.IsMissing(testingInput17)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16, testingInput17)
             End If
         Case Not VBA.Information.IsMissing(testingInput16)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15, testingInput16)
             End If
         Case Not VBA.Information.IsMissing(testingInput15)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14, testingInput15)
             End If
         Case Not VBA.Information.IsMissing(testingInput14)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13, testingInput14)
             End If
         Case Not VBA.Information.IsMissing(testingInput13)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12, testingInput13)
             End If
         Case Not VBA.Information.IsMissing(testingInput12)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11, testingInput12)
             End If
         Case Not VBA.Information.IsMissing(testingInput11)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10, testingInput11)
             End If
         Case Not VBA.Information.IsMissing(testingInput10)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9, testingInput10)
             End If
         Case Not VBA.Information.IsMissing(testingInput9)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8, testingInput9)
             End If
         Case Not VBA.Information.IsMissing(testingInput8)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7, testingInput8)
             End If
         Case Not VBA.Information.IsMissing(testingInput7)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6, testingInput7)
             End If
         Case Not VBA.Information.IsMissing(testingInput6)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5, testingInput6)
             End If
         Case Not VBA.Information.IsMissing(testingInput5)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4, testingInput5)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4, testingInput5)
             End If
         Case Not VBA.Information.IsMissing(testingInput4)
             tempArr = Array(testingInput1, testingInput2, testingInput3, testingInput4)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3, testingInput4)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3, testingInput4)
             End If
         Case Not VBA.Information.IsMissing(testingInput3)
             tempArr = Array(testingInput1, testingInput2, testingInput3)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2, testingInput3)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2, testingInput3)
             End If
         Case Not VBA.Information.IsMissing(testingInput2)
             tempArr = Array(testingInput1, testingInput2)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1, testingInput2)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1, testingInput2)
             End If
         Case Not VBA.Information.IsMissing(testingInput1)
             tempArr = Array(testingInput1)
         
             If Not elementsAreMissing(tempArr) Then
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod, testingInput1)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType, testingInput1)
             End If
         Case VBA.Information.IsMissing(testingInput1)
-                col.Add VBA.Interaction.CallByName(methodObj, methodName, VbMethod)
+                col.Add VBA.Interaction.CallByName(methodObj, methodName, callType)
     End Select
     
     Set callByNameWithOptionalArgs = col
